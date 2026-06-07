@@ -20,7 +20,6 @@
             box-sizing: border-box;
         }
         
-        /* CABEÇALHO COM LOGO DINÂMICA */
         .main-header {
             text-align: center;
             margin: 10px 0 15px 0;
@@ -50,7 +49,6 @@
             margin-bottom: 4px;
         }
 
-        /* MENU DE ABAS (4 ABAS AGORA) */
         .tabs {
             display: flex;
             background: #e5e5ea;
@@ -84,7 +82,6 @@
             display: block;
         }
 
-        /* CONTADORES DO TOPO */
         .stats-row {
             display: flex;
             gap: 10px;
@@ -110,7 +107,6 @@
             color: #86868b;
         }
 
-        /* CARDS */
         .card {
             background: #ffffff;
             border-radius: 12px;
@@ -127,7 +123,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* INPUTS */
         .form-group {
             margin-bottom: 12px;
         }
@@ -155,7 +150,6 @@
         }
         textarea { resize: none; height: 110px; font-size: 14px; }
 
-        /* LISTA DE ITENS DINÂMICOS */
         .qty-row {
             display: flex;
             justify-content: space-between;
@@ -178,7 +172,6 @@
             padding: 6px !important;
         }
 
-        /* GERENCIADOR DE AJUSTES */
         .setting-item-list {
             display: flex;
             flex-direction: column;
@@ -209,7 +202,6 @@
             gap: 8px;
         }
 
-        /* BOTÕES */
         .btn-main {
             background-color: #34c759;
             color: #ffffff;
@@ -234,7 +226,6 @@
             cursor: pointer;
         }
 
-        /* AGENDA & TABELA */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -283,7 +274,6 @@
             font-size: 11px;
         }
 
-        /* PAINEL DE AÇÕES DE SUCESSO */
         .action-panel {
             display: none;
             background: #ffffff;
@@ -474,6 +464,12 @@
                 </p>
             </div>
         </div>
+        
+        <div class="card" style="border: 1px solid #ff3b30;">
+            <div class="card-title" style="color: #ff3b30;">⚠️ Limpar Banco de Dados</div>
+            <p style="font-size: 12px; margin: 0 0 10px 0; color: #86868b;">Use este botão caso queira apagar todos os agendamentos antigos de teste e zerar a memória.</p>
+            <button class="btn-mini-del" style="width: 100%; padding: 10px;" onclick="clearFullDatabase()">Zerar Todos os Dados do App</button>
+        </div>
     </div>
 </div>
 
@@ -493,7 +489,6 @@
 
     let osRecente = null;
 
-    // Inicialização de Horários do Dropdown
     const selectTime = document.getElementById('os-time');
     todosHorarios.forEach(h => {
         let opt = document.createElement('option');
@@ -509,7 +504,6 @@
         if(tabName === 'agenda') renderAgenda();
     }
 
-    // DB Helpers
     function getOSList() { return JSON.parse(localStorage.getItem('afia_os_db') || '[]'); }
     function setOSList(list) { localStorage.setItem('afia_os_db', JSON.stringify(list)); }
     function getClientsMap() { return JSON.parse(localStorage.getItem('afia_clients_map') || '{}'); }
@@ -529,7 +523,6 @@
         if (clients[phone]) document.getElementById('os-name').value = clients[phone];
     }
 
-    // Gerenciamento Dinâmico de Serviços e Inputs
     function renderDynamicFormServices() {
         const services = getServices();
         const container = document.getElementById('dynamic-qty-container');
@@ -573,13 +566,11 @@
         renderSettingsServices();
     }
 
-    // Gerenciamento de WhatsApp Template
     function saveWATemplate() {
         const txt = document.getElementById('wa-template-input').value;
         localStorage.setItem('afia_wa_template', txt);
     }
 
-    // Gerenciamento de Logo em Base64
     function uploadLogo(e) {
         const file = e.target.files[0];
         if(!file) return;
@@ -607,19 +598,22 @@
         }
     }
 
-    // Estatísticas do Topo
+    // ENGINE CORRIGIDA: Trata de forma unificada dados antigos (tools) e novos (totalTools)
+    function getToolsCountFromOS(os) {
+        return parseInt(os.totalTools || os.tools || 0);
+    }
+
     function updateTopStats(dateStr) {
         const osList = getOSList();
         const osDoDia = osList.filter(os => os.date === dateStr);
         document.getElementById('stat-orders').innerText = osDoDia.length;
-        document.getElementById('stat-pieces').innerText = osDoDia.reduce((sum, os) => sum + (os.totalTools || 0), 0);
+        document.getElementById('stat-pieces').innerText = osDoDia.reduce((sum, os) => sum + getToolsCountFromOS(os), 0);
     }
 
     function calculateLiveTotal() {
         updateTopStats(document.getElementById('agenda-date').value);
     }
 
-    // Salvar Ordem de Serviço Inteligente
     function saveOS(e) {
         e.preventDefault();
         const phone = document.getElementById('os-phone').value;
@@ -646,16 +640,19 @@
         }
 
         const osList = getOSList();
+        
+        // Validação Inteligente Unificada (Lê o passado e o presente sem bugar)
         const jaOcupadas = osList
             .filter(os => os.date === date && os.time === time)
-            .reduce((sum, os) => sum + os.totalTools, 0);
+            .reduce((sum, os) => sum + getToolsCountFromOS(os), 0);
 
         if (jaOcupadas + totalTools > 5) {
-            alert(`⚠️ HORÁRIO SEM VAGAS!\n\nEste horário já possui ${jaOcupadas} ferramentas.\nRestam apenas ${5 - jaOcupadas} vagas.`);
+            const vagasRestantes = 5 - jaOcupadas;
+            alert(`⚠️ HORÁRIO SEM VAGAS SUFICIENTES!\n\nEste horário (${time}) já possui ${jaOcupadas} ferramentas agendadas.\n\nRestam apenas ${vagasRestantes < 0 ? 0 : vagasRestantes} vaga(s) e você está tentando colocar ${totalTools}. Agende menos peças ou mude o horário!`);
             return;
         }
 
-        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools };
+        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools };
         osList.push(osRecente);
         setOSList(osList);
 
@@ -663,7 +660,6 @@
         clients[phone] = name;
         setClientsMap(clients);
 
-        // Preenche ticket de Impressão
         document.getElementById('pt-date').innerText = formatDisplayDate(date);
         document.getElementById('pt-time').innerText = time;
         document.getElementById('pt-name').innerText = name;
@@ -735,7 +731,9 @@
         
         const osDoDia = osList.filter(os => os.date === targetDate);
         osDoDia.forEach(os => {
-            if(ocupacaoPorHorario[os.time] !== undefined) ocupacaoPorHorario[os.time] += os.totalTools;
+            if(ocupacaoPorHorario[os.time] !== undefined) {
+                ocupacaoPorHorario[os.time] += getToolsCountFromOS(os);
+            }
         });
 
         function criarLinha(h) {
@@ -773,7 +771,7 @@
         osDoDia.forEach(os => {
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `<span class="time-tag">${os.time}h</span><button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças:</strong> ${os.totalTools} | <strong>Total:</strong> R$ ${os.value}</p>`;
+            card.innerHTML = `<span class="time-tag">${os.time}h</span><button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Total:</strong> R$ ${os.value}</p>`;
             listDiv.appendChild(card);
         });
     }
@@ -793,12 +791,19 @@
         historico.forEach(os => {
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Total Peças:</strong> ${os.totalTools} | <strong>Valor:</strong> R$ ${os.value}</p>`;
+            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Total Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Valor:</strong> R$ ${os.value}</p>`;
             resultsDiv.appendChild(card);
         });
     }
 
-    // Inicialização Geral do App
+    function clearFullDatabase() {
+        if(confirm("🚨 ATENÇÃO!\n\nIsso apagará permanentemente todos os seus testes e agendamentos anteriores. Deseja continuar?")) {
+            localStorage.clear();
+            alert("Banco de dados resetado! O aplicativo será recarregado limpo.");
+            window.location.reload();
+        }
+    }
+
     if(!localStorage.getItem('afia_wa_template')) localStorage.setItem('afia_wa_template', defaultTemplate);
     document.getElementById('wa-template-input').value = localStorage.getItem('afia_wa_template');
     
