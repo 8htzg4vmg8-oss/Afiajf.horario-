@@ -128,6 +128,15 @@ textarea{min-height:80px}
         <label>Valor total</label><input id="valorTotal" type="number" step="0.01" required>
         <button class="btn" type="submit">💾 Salvar OS</button>
       </form>
+
+      <div id="posSalvarPanel" class="card hidden">
+        <h3 class="title">✅ OS salva com sucesso</h3>
+        <p id="posSalvarResumo" class="small"></p>
+        <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar via da cliente no WhatsApp</button>
+        <button class="btn btn-blue" onclick="imprimirUltimaOS()">Baixar / imprimir minha via</button>
+        <button class="btn" onclick="novaOSDepoisDeSalvar()">Fazer nova OS</button>
+        <button class="btn btn-gray" onclick="showTab('agenda')">Ver agenda</button>
+      </div>
     </section>
 
     <section id="clientes" class="hidden">
@@ -181,7 +190,7 @@ const firebaseConfig = {
   appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
 };
 
-let db=null, ordens=[], config={};
+let db=null, ordens=[], config={}, ultimaOSSalva=null;
 const COL_ORDENS="ordens_afia_v2";
 const DOC_CONFIG="config/afia";
 const horarios=["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","14:30","15:00","15:30","16:00","16:30"];
@@ -295,6 +304,59 @@ function removerCamposUndefined(obj){
   return obj;
 }
 
+
+function ocupacaoDoDia(data, ignorarId){
+  let confirmado={}, agendado={};
+  horarios.forEach(h=>{confirmado[h]=0; agendado[h]=0;});
+  ordens.filter(o=>o.data===data && o.id!==ignorarId).forEach(o=>{
+    const alvo = (o.situacao === "agendado") ? agendado : confirmado;
+    if(o.alocacoes){
+      Object.entries(o.alocacoes).forEach(([h,q])=>{
+        if(alvo[h] !== undefined) alvo[h] += Number(q||0);
+      });
+    }else if(alvo[o.hora] !== undefined){
+      alvo[o.hora] += getPecasAgenda(o);
+    }
+  });
+  return {confirmado, agendado};
+}
+
+function calcularAlocacoes(data, horaBase, qtd, situacao){
+  let aloc = {};
+  let restante = Number(qtd || 0);
+  if(restante <= 0) return aloc;
+
+  const ocup = ocupacaoDoDia(data);
+  const mapa = (situacao === "agendado") ? ocup.agendado : ocup.confirmado;
+
+  const idx = horarios.indexOf(horaBase);
+  if(idx < 0) return aloc;
+
+  let ordem = [idx];
+  for(let dist=1; dist<horarios.length; dist++){
+    if(idx - dist >= 0) ordem.push(idx - dist);
+    if(idx + dist < horarios.length) ordem.push(idx + dist);
+  }
+
+  for(const i of ordem){
+    const h = horarios[i];
+    const usado = Number(mapa[h] || 0);
+    const livre = Math.max(0, 5 - usado);
+    if(livre > 0){
+      const pega = Math.min(livre, restante);
+      aloc[h] = (aloc[h] || 0) + pega;
+      restante -= pega;
+      if(restante <= 0) break;
+    }
+  }
+
+  if(restante > 0){
+    throw new Error("Não há vagas suficientes nesse dia para essa quantidade de ferramentas.");
+  }
+
+  return aloc;
+}
+
 async function salvarOS(e){
   e.preventDefault();
   let itens={}, pecas=0;
@@ -316,11 +378,44 @@ async function salvarOS(e){
   try{
     const ref=await db.collection(COL_ORDENS).add(os);
     os.id=ref.id;
+    ultimaOSSalva = os;
     prepararImpressao(os);
-    enviarWhatsApp(os);
-    e.target.reset(); dataEntrega.value=hoje(); renderServicosOS(); showTab("agenda");
+    mostrarAcoesDepoisDeSalvar(os);
+    e.target.reset();
+    document.getElementById("dataEntrega").value=hoje();
+    renderServicosOS();
   }catch(err){alert("Erro ao salvar: "+err.message)}
 }
+
+function mostrarAcoesDepoisDeSalvar(os){
+  const form = document.querySelector("#nova form");
+  if(form) form.classList.add("hidden");
+  const panel = document.getElementById("posSalvarPanel");
+  const resumo = document.getElementById("posSalvarResumo");
+  if(resumo){
+    resumo.innerHTML = `<b>${os.nome}</b><br>Entrega: ${dataBR(os.data)} às ${os.hora}<br>Total: ${moeda(os.valor)}`;
+  }
+  if(panel) panel.classList.remove("hidden");
+}
+
+function enviarUltimaOS(){
+  if(ultimaOSSalva) enviarWhatsApp(ultimaOSSalva);
+}
+
+function imprimirUltimaOS(){
+  if(ultimaOSSalva){
+    prepararImpressao(ultimaOSSalva);
+    window.print();
+  }
+}
+
+function novaOSDepoisDeSalvar(){
+  const form = document.querySelector("#nova form");
+  const panel = document.getElementById("posSalvarPanel");
+  if(panel) panel.classList.add("hidden");
+  if(form) form.classList.remove("hidden");
+}
+
 function itensTexto(os, sep="\n"){return Object.entries(os.itens||{}).map(([n,q])=>`${n}: ${q}`).join(sep)}
 
 function contaNaAgenda(nomeServico){
@@ -374,7 +469,8 @@ function renderAgenda(){
     let d=document.createElement("div"); d.className="card os-card";
     const sitTxt = (os.situacao === "agendado") ? "📅 Agendado / ainda vai trazer" : "📦 Serviço no balcão";
     const btnChegada = (os.situacao === "agendado") ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada e deixar vermelho</button>` : "";
-    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>📞 ${os.telefone}</p><p>${itensTexto(os," • ")}</p><p>💰 ${moeda(os.valor)} | ${os.pagamento}</p><p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas||0)}</b></p><p>Situação: <b>${sitTxt}</b></p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>📝 ${os.observacao}</p>`:""}${btnChegada}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
+    const dist = os.alocacoes ? Object.entries(os.alocacoes).map(([h,q]) => `${h}: ${q}`).join(" • ") : `${os.hora}: ${getPecasAgenda(os)}`;
+    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>📞 ${os.telefone}</p><p>${itensTexto(os," • ")}</p><p>💰 ${moeda(os.valor)} | ${os.pagamento}</p><p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas||0)}</b></p><p class="small">Distribuição: ${dist}</p><p>Situação: <b>${sitTxt}</b></p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>📝 ${os.observacao}</p>`:""}${btnChegada}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
     agendaLista.appendChild(d);
   });
 }
@@ -383,10 +479,13 @@ function renderGrid(dia){
   horarios.forEach(h=>{confirmado[h]=0; agendado[h]=0;});
 
   dia.forEach(o=>{
-    if(confirmado[o.hora] !== undefined){
-      const q = getPecasAgenda(o);
-      if(o.situacao === "agendado") agendado[o.hora] += q;
-      else confirmado[o.hora] += q;
+    const alvo = (o.situacao === "agendado") ? agendado : confirmado;
+    if(o.alocacoes){
+      Object.entries(o.alocacoes).forEach(([h,q])=>{
+        if(alvo[h] !== undefined) alvo[h] += Number(q || 0);
+      });
+    }else if(alvo[o.hora] !== undefined){
+      alvo[o.hora] += getPecasAgenda(o);
     }
   });
 
