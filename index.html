@@ -30,7 +30,7 @@
         }
         .main-header h1 {
             margin: 0;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #1d1d1f;
@@ -49,6 +49,7 @@
             margin-bottom: 4px;
         }
 
+        /* AJUSTE PARA 4 ABAS COUBEREM SEM SUBIR LINHA */
         .tabs {
             display: flex;
             background: #e5e5ea;
@@ -61,8 +62,8 @@
             flex: 1;
             background: none;
             border: none;
-            padding: 10px 4px;
-            font-size: 12px;
+            padding: 10px 2px;
+            font-size: 11px;
             font-weight: 600;
             color: #48484a;
             cursor: pointer;
@@ -82,27 +83,28 @@
             display: block;
         }
 
+        /* 3 STAT CARDS LADO A LADO */
         .stats-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 15px;
         }
         .stat-card {
             flex: 1;
             background: #ffffff;
             border-radius: 12px;
-            padding: 12px 8px;
+            padding: 10px 4px;
             text-align: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
         .stat-num {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: #1d1d1f;
             margin-bottom: 1px;
         }
         .stat-label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             color: #86868b;
         }
@@ -148,7 +150,7 @@
             -webkit-appearance: none;
             font-family: inherit;
         }
-        textarea { resize: none; height: 110px; font-size: 14px; }
+        textarea { resize: none; height: 90px; font-size: 13px; }
 
         .qty-row {
             display: flex;
@@ -267,7 +269,6 @@
             background-color: #ff3b30;
             border-color: #ff3b30;
         }
-        /* COR DA RESERVA LARANJA DO APP */
         .square.pending {
             background-color: #ff9500;
             border-color: #ff9500;
@@ -360,6 +361,7 @@
     <div class="prt-line">----------------------------------------</div>
     <div class="prt-line" id="pt-details"></div>
     <div class="prt-line">----------------------------------------</div>
+    <div class="prt-line"><strong>SITUAÇÃO PAGAMENTO:</strong> <span id="pt-pay-status"></span></div>
     <div class="prt-line"><strong>VALOR TOTAL:</strong> R$ <span id="pt-total"></span></div>
     <div class="prt-footer">Controle Interno de Oficina</div>
 </div>
@@ -380,11 +382,15 @@
     <div class="stats-row">
         <div class="stat-card">
             <div id="stat-orders" class="stat-num">0</div>
-            <div class="stat-label">Atendimentos</div>
+            <div class="stat-label">Pedidos</div>
         </div>
         <div class="stat-card">
             <div id="stat-pieces" class="stat-num">0</div>
-            <div class="stat-label">Peças Recebidas</div>
+            <div class="stat-label">Peças</div>
+        </div>
+        <div class="stat-card" style="border: 1px solid #34c759; background: #f6fff8;">
+            <div id="stat-money" class="stat-num" style="color: #34c759;">R$ 0,00</div>
+            <div class="stat-label" style="color: #34c759; font-weight: 700;">Faturamento</div>
         </div>
     </div>
 
@@ -399,6 +405,9 @@
             <thead><tr><th>HORÁRIO</th><th>VAGAS OCUPADAS</th></tr></thead>
             <tbody id="agenda-table-body"></tbody>
         </table>
+        
+        <div id="financial-day-summary" style="margin-top: 12px; display: flex; gap: 8px;"></div>
+
         <h3 style="font-size: 14px; font-weight: 700; margin: 15px 0 8px 2px;">Ordens do Dia</h3>
         <div id="day-os-list"></div>
     </div>
@@ -425,6 +434,13 @@
                         <option value="pending">📅 Apenas Reservou Horário (Reserva/Laranja)</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Status de Pagamento:</label>
+                    <select id="os-payment" style="border: 2px solid #34c759; font-weight: 600;">
+                        <option value="entrega">🔴 Pagar na Entrega (Ficará pendente)</option>
+                        <option value="pago">🟢 Já Pago (Entra direto no caixa)</option>
+                    </select>
+                </div>
                 <div class="form-group"><label>Valor Total do Serviço (R$):</label><input type="number" id="os-value" step="0.01" placeholder="R$ 0,00" required></div>
                 <div class="form-group"><label>Data da Entrega:</label><input type="date" id="os-date" required onchange="calculateLiveTotal()"></div>
                 <div class="form-group"><label>Horário da Entrega:</label><select id="os-time" required onchange="calculateLiveTotal()"></select></div>
@@ -442,18 +458,24 @@
 
     <div id="tab-clientes" class="tab-content">
         <div class="card">
-            <div class="card-title">🔍 Histórico por Cliente</div>
-            <div class="form-group" style="margin: 0;"><input type="tel" id="search-phone" placeholder="Digite o telefone..." oninput="searchCustomerHistory()"></div>
+            <div class="card-title">🔍 Histórico por Nome ou Telefone</div>
+            <div class="form-group" style="margin: 0;"><input type="text" id="search-query" placeholder="Digite o nome ou telefone do cliente..." oninput="searchCustomerHistory()"></div>
         </div>
         <div id="customer-history-results"></div>
     </div>
 
     <div id="tab-ajustes" class="tab-content">
         <div class="card">
+            <div class="card-title">🛡️ Cópia de Segurança (Backup)</div>
+            <p style="font-size:12px; color:#86868b; margin:0 0 10px 0;">Clique em gerar para criar o código de segurança do sistema. Copie e salve no seu WhatsApp pessoal.</p>
+            <button class="btn-sec" style="width:100%; background:#007aff; margin-bottom:10px;" onclick="exportDatabaseText()">📥 Gerar Código de Backup</button>
+            <textarea id="backup-box" placeholder="Para restaurar os dados em outro celular, cole o código gerado aqui..."></textarea>
+            <button class="btn-main" style="margin-top:8px; padding:10px; font-size:13px;" onclick="importDatabaseText()">📤 Restaurar Banco de Dados</button>
+        </div>
+
+        <div class="card">
             <div class="card-title">🖼️ Logo do Sistema</div>
-            <div class="form-group">
-                <input type="file" id="logo-input" accept="image/*" onchange="uploadLogo(event)" style="border:none; padding:0;">
-            </div>
+            <div class="form-group"><input type="file" id="logo-input" accept="image/*" onchange="uploadLogo(event)" style="border:none; padding:0;"></div>
             <button class="btn-mini-del" style="background:#86868b; margin-top:5px;" onclick="clearLogo()">Remover Logo Atual</button>
         </div>
 
@@ -479,7 +501,6 @@
         
         <div class="card" style="border: 1px solid #ff3b30;">
             <div class="card-title" style="color: #ff3b30;">⚠️ Limpar Banco de Dados</div>
-            <p style="font-size: 12px; margin: 0 0 10px 0; color: #86868b;">Use este botão caso queira apagar todos os agendamentos antigos de teste e zerar a memória.</p>
             <button class="btn-mini-del" style="width: 100%; padding: 10px;" onclick="clearFullDatabase()">Zerar Todos os Dados do App</button>
         </div>
     </div>
@@ -614,32 +635,62 @@
         return parseInt(os.totalTools || os.tools || 0);
     }
 
+    // ATUALIZAÇÃO DO PAINEL FINANCEIRO DO TOPO
     function updateTopStats(dateStr) {
         const osList = getOSList();
         const osDoDia = osList.filter(os => os.date === dateStr);
         document.getElementById('stat-orders').innerText = osDoDia.length;
         
         let totalPecas = 0;
+        let totalDinheiro = 0;
         osDoDia.forEach(os => {
             totalPecas += getToolsCountFromOS(os);
+            totalDinheiro += parseFloat(os.value || 0);
         });
         document.getElementById('stat-pieces').innerText = totalPecas;
+        document.getElementById('stat-money').innerText = `R$ ${totalDinheiro.toFixed(2)}`;
     }
 
     function calculateLiveTotal() {
         updateTopStats(document.getElementById('agenda-date').value);
     }
 
-    // AÇÃO RÁPIDA DE BALCÃO: Transforma a Reserva em Atendimento Real (Muda Laranja para Vermelho)
     function confirmOSArrival(id) {
         let osList = getOSList();
         let os = osList.find(item => item.id === id);
         if (os) {
             os.status = 'confirmed';
             setOSList(osList);
-            alert(`📦 Sucesso! As peças da(o) cliente ${os.name} foram recebidas no balcão. A agenda mudou para Vermelho.`);
+            alert(`📦 Peças de ${os.name} recebidas!`);
             renderAgenda();
         }
+    }
+
+    // BOTÃO DE CONFIRMAÇÃO DE PAGAMENTO NA RETIRADA
+    function confirmOSPayment(id) {
+        let osList = getOSList();
+        let os = osList.find(item => item.id === id);
+        if (os) {
+            os.payment = 'pago';
+            setOSList(osList);
+            alert(`✅ Pagamento de R$ ${os.value} confirmado no caixa!`);
+            renderAgenda();
+        }
+    }
+
+    // ALERTA AUTOMÁTICO DE SERVIÇO PRONTO VIA WHATSAPP
+    function triggerReadyWhatsApp(id) {
+        let osList = getOSList();
+        let os = osList.find(item => item.id === id);
+        if (!os) return;
+        
+        let cleanPhone = os.phone.replace(/\D/g, '');
+        if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
+        
+        let payText = (os.payment === 'pago') ? 'JÁ ESTÁ PAGO' : `Valor a pagar: R$ ${os.value}`;
+        
+        let msg = `*AFIA - SEUS ALICATES FICARAM PRONTOS!* ✂️🔥\n\nOlá, *${os.name}*!\nPassando para avisar que o seu serviço já foi finalizado com o nosso padrão máximo de qualidade e já está disponível para retirada no balcão.\n\n💰 *${payText}*\n\n_Estamos te aguardando!_`;
+        window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function saveOS(e) {
@@ -649,7 +700,8 @@
         const value = parseFloat(document.getElementById('os-value').value || 0).toFixed(2);
         const date = document.getElementById('os-date').value;
         const time = document.getElementById('os-time').value;
-        const status = document.getElementById('os-status').value; // 'confirmed' ou 'pending'
+        const status = document.getElementById('os-status').value;
+        const payment = document.getElementById('os-payment').value; // 'pago' ou 'entrega'
 
         const services = getServices();
         const osItems = {};
@@ -669,7 +721,6 @@
         }
 
         const osList = getOSList();
-        
         const ocupacaoAtual = {};
         todosHorarios.forEach(h => ocupacaoAtual[h] = 0);
         
@@ -712,11 +763,11 @@
         }
 
         if (remaining > 0) {
-            alert(`⚠️ AGENDA TOTALMENTE SEM VAGAS!\n\nNão há ${totalTools} vagas disponíveis próximas às ${time}h neste dia.`);
+            alert(`⚠️ AGENDA SEM VAGAS!\n\nNão há ${totalTools} vagas perto das ${time}h neste dia.`);
             return;
         }
 
-        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status };
+        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status, payment: payment };
         osList.push(osRecente);
         setOSList(osList);
 
@@ -724,11 +775,13 @@
         clients[phone] = name;
         setClientsMap(clients);
 
+        // Preenche ticket de Impressão
         document.getElementById('pt-date').innerText = formatDisplayDate(date);
         document.getElementById('pt-time').innerText = time;
         document.getElementById('pt-name').innerText = name;
         document.getElementById('pt-phone').innerText = phone;
         document.getElementById('pt-total').innerText = value;
+        document.getElementById('pt-pay-status').innerText = (payment === 'pago') ? 'JÁ PAGO' : 'PAGAR NA RETIRADA';
 
         let txtDetails = "";
         for (const [item, qty] of Object.entries(osItems)) {
@@ -748,9 +801,8 @@
         
         let template = localStorage.getItem('afia_wa_template') || defaultTemplate;
         
-        // Altera o texto de envio dinamicamente caso seja uma reserva pendente
         if (osRecente.status === 'pending') {
-            template = `*AFIA - HORÁRIO RESERVADO*\n\nOlá, *{nome}*!\nSeu horário para trazer as ferramentas foi guardado no sistema.\n\n📅 *Dia Combinado:* {data}\n⏰ *Horário da Reserva:* {horario}h\n\n*Resumo da Reserva:*\n{itens}\n\n💰 *Valor Estimado:* R$ {valor}\n\n_Estamos te aguardando! Obrigado._`;
+            template = `*AFIA - HORÁRIO RESERVADO*\n\nOlá, *{nome}*!\nSeu horário foi guardado no sistema.\n\n📅 *Dia Combinado:* {data}\n⏰ *Horário da Reserva:* {horario}h\n\n*Resumo da Reserva:*\n{itens}\n\n💰 *Valor Estimado:* R$ {valor} ({pg})\n\n_Estamos te aguardando!_`;
         }
         
         let itemText = "";
@@ -758,12 +810,15 @@
             itemText += `\n- ${item}: ${qty}`;
         }
         
+        let payLabel = (osRecente.payment === 'pago') ? 'Já Pago' : 'Pagar na Entrega';
+        
         let msg = template
             .replace(/{nome}/g, osRecente.name)
             .replace(/{data}/g, formatDisplayDate(osRecente.date))
             .replace(/{horario}/g, osRecente.time)
             .replace(/{valor}/g, osRecente.value)
-            .replace(/{itens}/g, itemText.trim());
+            .replace(/{itens}/g, itemText.trim())
+            .replace(/{pg}/g, payLabel);
             
         window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
@@ -781,7 +836,7 @@
     }
 
     function deleteOS(id) {
-        if(confirm("Deseja apagar esta OS? As vagas correspondentes serão liberadas.")) {
+        if(confirm("Deseja apagar esta OS?")) {
             let osList = getOSList();
             osList = osList.filter(os => os.id !== id);
             setOSList(osList);
@@ -796,7 +851,6 @@
         const tableBody = document.getElementById('agenda-table-body');
         tableBody.innerHTML = "";
 
-        // Rastreamento separado para construir a cor dos blocos de forma combinada
         const ocupacaoConfirmada = {};
         const ocupacaoPendente = {};
         todosHorarios.forEach(h => {
@@ -805,8 +859,20 @@
         });
         
         const osDoDia = osList.filter(os => os.date === targetDate);
+        
+        let caixaJaPago = 0;
+        let caixaAReceber = 0;
+
         osDoDia.forEach(os => {
             const status = os.status || 'confirmed';
+            
+            // Soma os dinheiros do dia
+            if (os.payment === 'pago') {
+                caixaJaPago += parseFloat(os.value || 0);
+            } else {
+                caixaAReceber += parseFloat(os.value || 0);
+            }
+
             if (os.allocations) {
                 for (let h in os.allocations) {
                     if (status === 'pending') {
@@ -825,6 +891,13 @@
             }
         });
 
+        // DESENHA O PAINEL DE FECHAMENTO FINANCEIRO DO DIA ABAIXO DA TABELA
+        const finSummaryDiv = document.getElementById('financial-day-summary');
+        finSummaryDiv.innerHTML = `
+            <div style="flex:1; background:#e8f5e9; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:#2e7d32;">💰 Entrou em Caixa<br>R$ ${caixaJaPago.toFixed(2)}</div>
+            <div style="flex:1; background:#ffebee; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:#c62828;">⏳ A Receber na Retirada<br>R$ ${caixaAReceber.toFixed(2)}</div>
+        `;
+
         function criarLinha(h) {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td class="time-col">${h}</td>`;
@@ -839,9 +912,9 @@
                 const square = document.createElement('div');
                 square.className = "square";
                 if (i < totalConf) {
-                    square.classList.add('occupied'); // Fica Vermelho
+                    square.classList.add('occupied');
                 } else if (i < (totalConf + totalPend)) {
-                    square.classList.add('pending'); // Fica Laranja
+                    square.classList.add('pending');
                 }
                 slotContainer.appendChild(square);
             }
@@ -866,36 +939,47 @@
         osDoDia.sort((a,b) => a.time.localeCompare(b.time));
         osDoDia.forEach(os => {
             let totalExibir = getToolsCountFromOS(os);
-            const statusLabel = (os.status === 'pending') ? '⏳ Reserva Pendente' : '📦 Confirmado na Oficina';
-            const statusColor = (os.status === 'pending') ? '#ff9500' : '#34c759';
+            const statusLabel = (os.status === 'pending') ? '⏳ Reserva' : '📦 Na Oficina';
+            const payLabel = (os.payment === 'pago') ? '🟢 PAGO' : '🔴 RECEBER';
             
-            // Cria o botão de confirmação laranja caso esteja pendente
             let actionBtn = "";
             if (os.status === 'pending') {
-                actionBtn = `<button class="btn-sec" style="background:#ff9500; margin-top:8px; padding:8px; font-size:12px; width:100%; border-radius:8px;" onclick="confirmOSArrival(${os.id})">📥 Confirmar Chegada das Peças (Mudar para Vermelho)</button>`;
+                actionBtn += `<button class="btn-sec" style="background:#ff9500; margin-top:8px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSArrival(${os.id})">📥 Confirmar Chegada das Peças</button>`;
             }
+            if (os.payment === 'entrega') {
+                actionBtn += `<button class="btn-sec" style="background:#34c759; margin-top:6px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSPayment(${os.id})">💵 Confirmar Pagamento do Cliente</button>`;
+            }
+            
+            // BOTÃO AUTOMÁTICO DE SERVIÇO PRONTO
+            actionBtn += `<button class="btn-sec" style="background:#007aff; margin-top:6px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="triggerReadyWhatsApp(${os.id})">⚡ Mandar WhatsApp: SERVIÇO PRONTO</button>`;
 
             const card = document.createElement('div');
             card.className = "os-card";
             card.innerHTML = `
                 <span class="time-tag">${os.time}h</span>
-                <span style="font-size:11px; font-weight:700; color:${statusColor}; float:right;">${statusLabel}</span>
+                <span style="font-size:11px; font-weight:700; margin-left:10px;">${statusLabel} | ${payLabel}</span>
                 <button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button>
                 <p style="margin-top:8px;"><strong>Cliente:</strong> ${os.name}</p>
-                <p><strong>Peças:</strong> ${totalExibir} ferramenta(s) | <strong>Total:</strong> R$ ${os.value}</p>
+                <p><strong>Peças:</strong> ${totalExibir} | <strong>Valor:</strong> R$ ${os.value}</p>
                 ${actionBtn}
             `;
             listDiv.appendChild(card);
         });
     }
 
+    // BUSCA HISTÓRICO QUE VALIDA NOME OU NÚMERO DE TELEFONE
     function searchCustomerHistory() {
-        const phone = document.getElementById('search-phone').value;
+        const query = document.getElementById('search-query').value.trim().toLowerCase();
         const resultsDiv = document.getElementById('customer-history-results');
         resultsDiv.innerHTML = "";
-        if(phone.trim() === "") return;
+        if(query === "") return;
         const osList = getOSList();
-        const historico = osList.filter(os => os.phone.includes(phone));
+        
+        const historico = osList.filter(os => 
+            (os.phone && os.phone.includes(query)) || 
+            (os.name && os.name.toLowerCase().includes(query))
+        );
+
         if(historico.length === 0) {
             resultsDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum registro encontrado.</div>";
             return;
@@ -903,17 +987,49 @@
         historico.sort((a,b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
         historico.forEach(os => {
             let totalExibir = getToolsCountFromOS(os);
+            const payLabel = (os.payment === 'pago') ? '🟢 Pago' : '🔴 Pagar na entrega';
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Total Peças:</strong> ${totalExibir} | <strong>Valor:</strong> R$ ${os.value}</p>`;
+            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name} (${os.phone})</p><p><strong>Peças:</strong> ${totalExibir} | <strong>Preço:</strong> R$ ${os.value} | <strong>Status:</strong> ${payLabel}</p>`;
             resultsDiv.appendChild(card);
         });
     }
 
+    // EXPORTAÇÃO E IMPORTAÇÃO DO BACKUP DO BANCO EM TEXTO
+    function exportDatabaseText() {
+        const data = {
+            os: localStorage.getItem('afia_os_db'),
+            clients: localStorage.getItem('afia_clients_map'),
+            services: localStorage.getItem('afia_services'),
+            template: localStorage.getItem('afia_wa_template'),
+            logo: localStorage.getItem('afia_logo')
+        };
+        const base64Code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+        document.getElementById('backup-box').value = base64Code;
+        alert("✅ Código de Segurança gerado na caixa abaixo! Dê dois toques nele, selecione tudo, copie e mande para o seu WhatsApp pessoal.");
+    }
+
+    function importDatabaseText() {
+        const code = document.getElementById('backup-box').value.trim();
+        if(code === "") { alert("⚠️ Cole o código de segurança na caixa antes de clicar."); return; }
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(code))));
+            if(decoded.os) localStorage.setItem('afia_os_db', decoded.os);
+            if(decoded.clients) localStorage.setItem('afia_clients_map', decoded.clients);
+            if(decoded.services) localStorage.setItem('afia_services', decoded.services);
+            if(decoded.template) localStorage.setItem('afia_wa_template', decoded.template);
+            if(decoded.logo) localStorage.setItem('afia_logo', decoded.logo);
+            alert("🎉 Excelente! Todos os seus clientes, finanças e configurações foram restaurados com sucesso.");
+            window.location.reload();
+        } catch(e) {
+            alert("❌ Código inválido! Verifique se copiou o texto completo sem faltar nenhuma letrinha.");
+        }
+    }
+
     function clearFullDatabase() {
-        if(confirm("🚨 RESET TOTAL!\n\nIsso apagará permanentemente os seus testes anteriores para limpar os conflitos de memória do iPhone. Deseja zerar?")) {
+        if(confirm("🚨 LIMPEZA TOTAL!\n\nIsso apagará permanentemente todos os agendamentos salvos. Caso queira, faça um backup antes. Deseja zerar?")) {
             localStorage.clear();
-            alert("Banco de dados resetado com sucesso! O sistema vai reiniciar limpo.");
+            alert("Aplicativo resetado com sucesso!");
             window.location.reload();
         }
     }
