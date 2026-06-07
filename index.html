@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -87,7 +87,7 @@
         .square.pending { background-color: #ff9500; border-color: #ff9500; }
         .interval-row td { background-color: #f5f5f7; font-weight: 600; color: #86868b; font-size: 11px; }
 
-        /* OS CARD */
+        /* CARDS */
         .os-card { background: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .time-tag { background: #007aff; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 4px; }
         .os-card p { margin: 3px 0; font-size: 13px; }
@@ -105,21 +105,10 @@
 
         .action-panel { display: none; background: #ffffff; border-radius: 12px; padding: 14px; margin-top: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .action-panel.active { display: block; }
-        .btn-panel { display: block; width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; color: white; -webkit-appearance: none; }
+        .btn-panel { display: block; width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; color: white; -webkit-appearance: none; text-decoration: none; box-sizing: border-box; }
         .btn-wa { background-color: #25d366; }
         .btn-prt { background-color: #007aff; }
         .btn-new { background-color: #86868b; }
-
-        #print-ticket { display: none; }
-        @media print {
-            body { background: white; padding: 0; margin: 0; }
-            .container { display: none !important; }
-            #print-ticket { display: block !important; padding: 15px; font-family: monospace; color: #000; line-height: 1.4; }
-            .prt-header { text-align: center; font-size: 16px; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 6px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; }
-            .prt-header img { max-height: 50px; margin-bottom: 5px; }
-            .prt-line { font-size: 13px; margin: 5px 0; }
-            .prt-footer { margin-top: 20px; text-align: center; font-size: 11px; border-top: 1px dashed #000; padding-top: 6px; }
-        }
     </style>
 </head>
 <body>
@@ -138,13 +127,28 @@
     <div class="prt-footer">Controle Interno de Oficina</div>
 </div>
 
-<div id="custom-apple-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:#ffffff; border-radius:14px; width:270px; text-align:center; font-family: -apple-system, sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow:hidden;">
+<div id="universal-apple-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#ffffff; border-radius:14px; width:270px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow:hidden;">
         <div style="padding:20px 16px;">
-            <div id="modal-title" style="font-weight:600; font-size:17px; margin-bottom:5px; color:#000000;"></div>
-            <div id="modal-message" style="font-size:13px; color:#000000; line-height:1.4;"></div>
+            <div id="u-modal-title" style="font-weight:600; font-size:17px; margin-bottom:5px; color:#000;"></div>
+            <div id="u-modal-msg" style="font-size:13px; color:#333; line-height:1.4;"></div>
         </div>
-        <div id="modal-buttons" style="display:flex; border-top:1px solid #d2d2d7;"></div>
+        <div style="border-top:1px solid #d2d2d7;">
+            <button onclick="closeUniversalModal()" style="width:100%; background:none; border:none; padding:12px; font-size:17px; color:#007aff; font-weight:600; cursor:pointer;-webkit-appearance:none;">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="reset-confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#ffffff; border-radius:14px; width:270px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow:hidden;">
+        <div style="padding:20px 16px;">
+            <div style="font-weight:600; font-size:17px; margin-bottom:5px; color:#000;">🚨 Reset de Fábrica</div>
+            <div style="font-size:13px; color:#333; line-height:1.4;">Isso apagará permanentemente todos os dados e testes salvos no aparelho. Deseja zerar?</div>
+        </div>
+        <div style="display:flex; border-top:1px solid #d2d2d7;">
+            <button onclick="closeResetModal()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#007aff; border-right:1px solid #d2d2d7; cursor:pointer;-webkit-appearance:none;">Cancelar</button>
+            <button onclick="executeFullReset()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#ff3b30; font-weight:600; cursor:pointer;-webkit-appearance:none;">Zerar</button>
+        </div>
     </div>
 </div>
 
@@ -221,7 +225,6 @@
         </table>
         
         <div id="financial-day-summary" style="margin-top: 12px; display: flex; gap: 8px;"></div>
-        
         <h3 style="font-size: 14px; font-weight: 700; margin: 15px 0 8px 2px;">Ordens do Dia</h3>
         <div id="day-os-list"></div>
     </div>
@@ -233,12 +236,7 @@
                 <div class="form-group"><input type="tel" id="os-phone" placeholder="Digite o telefone..." required oninput="autocompleteClient()"></div>
                 <div class="form-group"><label>Nome do Cliente:</label><input type="text" id="os-name" placeholder="Nome Completo" required></div>
             </div>
-
-            <div class="card">
-                <div class="card-title">✂️ Marcar Quantidades:</div>
-                <div id="dynamic-qty-container"></div>
-            </div>
-
+            <div class="card"><div class="card-title">✂️ Marcar Quantidades:</div><div id="dynamic-qty-container"></div></div>
             <div class="card">
                 <div class="card-title">💰 Fechamento da OS</div>
                 <div class="form-group">
@@ -262,7 +260,9 @@
         
         <div id="action-panel" class="action-panel">
             <p style="color:#34c759; font-weight:700; margin: 0 0 12px 0; font-size:15px;">🎉 OS Registrada com Sucesso!</p>
-            <button class="btn-panel btn-wa" onclick="triggerWhatsApp()">💬 Enviar OS para o Cliente</button>
+            
+            <a id="wa-share-link" class="btn-panel btn-wa" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center;">💬 Enviar OS para o Cliente</a>
+            
             <button class="btn-panel btn-prt" onclick="triggerPrint()">🖨️ Imprimir Via da Loja</button>
             <button class="btn-panel btn-new" onclick="resetOSForm()">↩️ Novo Agendamento</button>
         </div>
@@ -301,6 +301,7 @@
         <div class="card"><div class="card-title">🖼️ Logo da Oficina</div><div class="form-group"><input type="file" id="logo-input" accept="image/*" onchange="uploadLogo(event)" style="border:none; padding:0;"></div><button class="btn-mini-del" style="background:#86868b; margin-top:5px;" onclick="clearLogo()">Remover Logo</button></div>
         <div class="card"><div class="card-title">💬 Template do WhatsApp</div><div class="form-group"><textarea id="wa-template-input" oninput="saveWATemplate()"></textarea></div></div>
         <button class="btn-panel btn-new" style="background: #86868b; margin-bottom: 12px; color: white;" onclick="executeLogout()">🔒 Fechar Caixa Manualmente</button>
+        
         <div class="card" style="border: 1px solid #ff3b30;">
             <div class="card-title" style="color: #ff3b30;">⚠️ Reset de Fábrica</div>
             <button class="btn-mini-del" style="width: 100%; padding: 10px;" onclick="clearFullDatabase()">Zerar Todos os Dados</button>
@@ -335,33 +336,17 @@
         } catch(e) { console.error("Erro Firebase:", e); }
     }
 
-    // ENGENHARIA APPLE MODAL (SUBSTITUI OS ERROS DE POPUP DO IPHONE)
-    function showAppleAlert(title, message) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-message').innerText = message;
-        const btnContainer = document.getElementById('modal-buttons');
-        btnContainer.innerHTML = `<button onclick="closeAppleModal()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#007aff; font-weight:600; cursor:pointer;-webkit-appearance:none;">OK</button>`;
-        document.getElementById('custom-apple-modal').style.display = 'flex';
+    // MODAL DE ALERTAS ESTÁTICOS COMPATÍVEL COM CHROME IOS
+    function showUAlert(title, message) {
+        document.getElementById('u-modal-title').innerText = title;
+        document.getElementById('u-modal-msg').innerText = message;
+        document.getElementById('universal-apple-modal').style.display = 'flex';
     }
-
-    function showAppleConfirm(title, message, onConfirm) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-message').innerText = message;
-        const btnContainer = document.getElementById('modal-buttons');
-        btnContainer.innerHTML = `
-            <button onclick="closeAppleModal()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#007aff; border-right:1px solid #d2d2d7; cursor:pointer;-webkit-appearance:none;">Cancelar</button>
-            <button id="modal-confirm-btn" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#ff3b30; font-weight:600; cursor:pointer;-webkit-appearance:none;">Zerar</button>
-        `;
-        document.getElementById('modal-confirm-btn').onclick = function() {
-            closeAppleModal();
-            onConfirm();
-        };
-        document.getElementById('custom-apple-modal').style.display = 'flex';
-    }
-
-    function closeAppleModal() {
-        document.getElementById('custom-apple-modal').style.display = 'none';
-    }
+    function closeUniversalModal() { document.getElementById('universal-apple-modal').style.display = 'none'; }
+    
+    function clearFullDatabase() { document.getElementById('reset-confirm-modal').style.display = 'flex'; }
+    function closeResetModal() { document.getElementById('reset-confirm-modal').style.display = 'none'; }
+    function executeFullReset() { localStorage.clear(); window.location.reload(); }
 
     const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00"];
     const horariosTarde = ["14:30", "15:00", "15:30", "16:00", "16:30"];
@@ -400,29 +385,22 @@
         currentOffice = document.getElementById('login-office').value.trim().toLowerCase();
         currentRole = document.getElementById('login-role').value;
         const pin = document.getElementById('login-pin').value;
-
         if (!currentOffice || !pin) return;
-
         localStorage.setItem('afia_session_date', todayStr);
         localStorage.setItem('afia_office_code', currentOffice);
         localStorage.setItem('afia_user_role', currentRole);
-
         activateScreen('screen-app');
         applyRolePermissions();
         onDateChange();
     }
 
     function executeLogout() {
-        localStorage.removeItem('afia_session_date');
-        localStorage.removeItem('afia_office_code');
-        localStorage.removeItem('afia_user_role');
-        currentOffice = ""; currentRole = "";
-        activateScreen('screen-login');
+        localStorage.removeItem('afia_session_date'); localStorage.removeItem('afia_office_code'); localStorage.removeItem('afia_user_role');
+        currentOffice = ""; currentRole = ""; activateScreen('screen-login');
     }
 
     function applyRolePermissions() {
-        const isDono = (currentRole === 'dono');
-        if (isDono) {
+        if (currentRole === 'dono') {
             document.getElementById('btn-ajustes').style.display = "block";
             document.getElementById('owner-stat-money-card').style.display = "block";
         } else {
@@ -446,236 +424,116 @@
         if(tabName === 'agenda') renderAgenda();
     }
 
-    function getOSListLocal() { 
-        let raw = JSON.parse(localStorage.getItem('afia_os_db') || '[]');
-        return raw.filter(os => os.officeCode === currentOffice);
-    }
+    function getOSListLocal() { return JSON.parse(localStorage.getItem('afia_os_db') || '[]').filter(os => os.officeCode === currentOffice); }
     function setOSListLocal(list) {
         let oldRaw = JSON.parse(localStorage.getItem('afia_os_db') || '[]');
         let foreignData = oldRaw.filter(os => os.officeCode !== currentOffice);
-        let consolidated = [...foreignData, ...list];
-        localStorage.setItem('afia_os_db', JSON.stringify(consolidated));
+        localStorage.setItem('afia_os_db', JSON.stringify([...foreignData, ...list]));
     }
-    
     function getClientsMap() { return JSON.parse(localStorage.getItem('afia_clients_map') || '{}'); }
     function setClientsMap(map) { localStorage.setItem('afia_clients_map', JSON.stringify(map)); }
-    
-    function getServices() { 
-        let raw = JSON.parse(localStorage.getItem('afia_services'));
-        if (!raw || raw.length === 0) return defaultServices;
-        if (typeof raw[0] === 'string') return defaultServices;
-        return raw;
-    }
+    function getServices() { let raw = JSON.parse(localStorage.getItem('afia_services')); if (!raw || raw.length === 0 || typeof raw[0] === 'string') return defaultServices; return raw; }
     function setServices(srv) { localStorage.setItem('afia_services', JSON.stringify(srv)); }
+    function formatDisplayDate(dateStr) { if(!dateStr) return ''; const [a, m, d] = dateStr.split('-'); return `${d}/${m}/${a}`; }
+    function getToolsCountFromOS(os) { return parseInt(os.totalTools !== undefined ? os.totalTools : (os.tools || 0)); }
+
+    function autocompleteClient() {
+        const phone = document.getElementById('os-phone').value;
+        const clients = getClientsMap(); if (clients[phone]) document.getElementById('os-name').value = clients[phone];
+    }
 
     function calculateLiveTotal() {
-        const services = getServices();
-        let calculatedValue = 0;
+        const services = getServices(); let calculatedValue = 0;
         services.forEach((service, index) => {
             const inputField = document.getElementById(`qty-${index}`);
-            const qty = inputField ? (parseInt(inputField.value) || 0) : 0;
-            calculatedValue += qty * (parseFloat(service.price) || 0);
+            calculatedValue += (inputField ? (parseInt(inputField.value) || 0) : 0) * (parseFloat(service.price) || 0);
         });
         document.getElementById('os-value').value = calculatedValue.toFixed(2);
-
         const targetDate = document.getElementById('agenda-date').value;
         if (!isCloudActive) updateTopStats(getOSListLocal().filter(os => os.date === targetDate));
     }
 
     function renderDynamicFormServices() {
-        const services = getServices();
-        const container = document.getElementById('dynamic-qty-container');
-        if(!container) return;
+        const services = getServices(); const container = document.getElementById('dynamic-qty-container'); if(!container) return;
         container.innerHTML = "";
         services.forEach((service, index) => {
-            const div = document.createElement('div');
-            div.className = "qty-row";
+            const div = document.createElement('div'); div.className = "qty-row";
             div.innerHTML = `<div class="qty-label">${service.name}<span class="qty-price-hint">R$ ${parseFloat(service.price).toFixed(2)}</span></div><input type="number" id="qty-${index}" class="qty-input" min="0" placeholder="0" value="" oninput="calculateLiveTotal()">`;
             container.appendChild(div);
         });
     }
 
     function renderSettingsServices() {
-        const services = getServices();
-        const container = document.getElementById('setting-services-list');
-        if(!container) return;
+        const services = getServices(); const container = document.getElementById('setting-services-list'); if(!container) return;
         container.innerHTML = "";
         services.forEach((service, index) => {
-            const div = document.createElement('div');
-            div.className = "setting-item-row";
+            const div = document.createElement('div'); div.className = "setting-item-row";
             div.innerHTML = `<span>${service.name} (R$ ${parseFloat(service.price).toFixed(2)})</span><button class="btn-mini-del" onclick="removeService(${index})">Remover</button>`;
             container.appendChild(div);
         });
     }
 
     function addService() {
-        const nameInput = document.getElementById('new-service-name');
-        const priceInput = document.getElementById('new-service-price');
+        const nameInput = document.getElementById('new-service-name'); const priceInput = document.getElementById('new-service-price');
         if(nameInput.value.trim() === "" || !priceInput.value) return;
-        const services = getServices();
-        services.push({name: nameInput.value.trim(), price: parseFloat(priceInput.value)});
-        setServices(services);
-        nameInput.value = ""; priceInput.value = "";
-        renderDynamicFormServices(); renderSettingsServices();
+        const services = getServices(); services.push({name: nameInput.value.trim(), price: parseFloat(priceInput.value)}); setServices(services);
+        nameInput.value = ""; priceInput.value = ""; renderDynamicFormServices(); renderSettingsServices();
     }
 
-    function removeService(index) {
-        const services = getServices(); services.splice(index, 1); setServices(services);
-        renderDynamicFormServices(); renderSettingsServices();
-    }
-
+    function removeService(index) { const services = getServices(); services.splice(index, 1); setServices(services); renderDynamicFormServices(); renderSettingsServices(); }
     function saveWATemplate() { localStorage.setItem('afia_wa_template', document.getElementById('wa-template-input').value); }
     function uploadLogo(e) { const file = e.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onloadend = function() { localStorage.setItem('afia_logo', reader.result); loadLogo(); }; reader.readAsDataURL(file); }
     function clearLogo() { localStorage.removeItem('afia_logo'); loadLogo(); }
     function loadLogo() { const data = localStorage.getItem('afia_logo'); const appHeader = document.getElementById('main-app-header'); const printHeader = document.getElementById('pt-header-logo'); if(data) { appHeader.innerHTML = `<img src="${data}"><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `<img src="${data}"><div>VIA DA LOJA</div>`; } else { appHeader.innerHTML = `<h1>AFIA</h1><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `AFIA - VIA DA LOJA`; } }
 
-    function getToolsCountFromOS(os) { return parseInt(os.totalTools !== undefined ? os.totalTools : (os.tools || 0)); }
-
     function updateTopStats(osDoDia) {
-        const orderElem = document.getElementById('stat-orders');
-        const piecesElem = document.getElementById('stat-pieces');
-        const moneyElem = document.getElementById('stat-money');
-        
+        const orderElem = document.getElementById('stat-orders'); const piecesElem = document.getElementById('stat-pieces'); const moneyElem = document.getElementById('stat-money');
         if(orderElem) orderElem.innerText = osDoDia.length;
         let totalPecas = 0; let totalDinheiro = 0;
         osDoDia.forEach(os => { totalPecas += getToolsCountFromOS(os); totalDinheiro += parseFloat(os.value || 0); });
-        if(piecesElem) piecesElem.innerText = totalPecas;
-        if(moneyElem) moneyElem.innerText = `R$ ${totalDinheiro.toFixed(2)}`;
+        if(piecesElem) piecesElem.innerText = totalPecas; if(moneyElem) moneyElem.innerText = `R$ ${totalDinheiro.toFixed(2)}`;
     }
 
     async function changeProductionStatus(id, fireId, newStatus) {
-        if (isCloudActive && fireId) {
-            await db.collection("ordens").doc(fireId).update({ production: newStatus });
-        } else {
-            let list = getOSListLocal(); let os = list.find(o => o.id === id);
-            if (os) { os.production = newStatus; setOSListLocal(list); renderAgenda(); }
-        }
-        showAppleAlert("⚙️ Produção", `Status alterado para: ${newStatus.toUpperCase()}`);
+        if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).update({ production: newStatus }); } 
+        else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if (os) { os.production = newStatus; setOSListLocal(list); renderAgenda(); } }
+        showUAlert("⚙️ Produção", "Status interno atualizado com sucesso!");
     }
 
-    async function trackClientOrder() {
-        const phone = document.getElementById('track-client-phone').value.trim();
-        const resultDiv = document.getElementById('public-tracking-result');
-        if (!phone || !resultDiv) return;
-
-        let fullList = [];
-        if (isCloudActive) {
-            const snap = await db.collection("ordens").where("phone", "==", phone).get();
-            snap.forEach(doc => fullList.push(doc.data()));
-        } else {
-            let oldRaw = JSON.parse(localStorage.getItem('afia_os_db') || '[]');
-            fullList = oldRaw.filter(os => os.phone === phone);
-        }
-
-        if (fullList.length === 0) {
-            resultDiv.innerHTML = "<div style='color:#ff3b30; font-size:12px; font-weight:700; text-align:center;'>Nenhum pedido encontrado.</div>";
-            return;
-        }
-
-        fullList.sort((a,b) => b.id - a.id);
-        const activeOS = fullList[0];
-
-        const prod = activeOS.production || 'recebido';
-        let step1 = 'done', step2 = '', step3 = '';
-        if (prod === 'bancada') { step2 = 'current'; step1 = 'done'; }
-        if (prod === 'prto' || prod === 'pronto') { step1 = 'done'; step2 = 'done'; step3 = 'done'; }
-        if (prod === 'recebido') { step1 = 'current'; }
-
-        resultDiv.innerHTML = `
-            <div style="background:#fff; border:1px solid #d2d2d7; border-radius:10px; padding:10px; margin-top:5px;">
-                <p style="font-size:12px; margin:0;"><strong>Cliente:</strong> ${activeOS.name}</p>
-                <p style="font-size:12px; margin:3px 0;"><strong>Retirada:</strong> ${formatDisplayDate(activeOS.date)} às ${activeOS.time}h</p>
-                <div class="track-timeline">
-                    <div class="track-step ${step1}"><div class="track-dot">1</div>Recebido</div>
-                    <div class="track-step ${step2}"><div class="track-dot">2</div>Na Bancada</div>
-                    <div class="track-step ${step3}"><div class="track-dot">3</div>Pronto!</div>
-                </div>
-            </div>
-        `;
-    }
-
-    let currentUnsubscribe = null;
-    function onDateChange() {
-        const targetDate = document.getElementById('agenda-date').value;
-        if (isCloudActive) {
-            if(currentUnsubscribe) currentUnsubscribe();
-            currentUnsubscribe = db.collection("ordens")
-                .where("officeCode", "==", currentOffice)
-                .where("date", "==", targetDate)
-                .onSnapshot((snapshot) => {
-                    cachedCloudOS = [];
-                    snapshot.forEach(doc => { cachedCloudOS.push({ fireId: doc.id, ...doc.data() }); });
-                    buildAgendaDOM(cachedCloudOS);
-                });
-        } else {
-            renderAgenda();
-        }
-    }
-
-    async function confirmOSArrival(id, fireId) {
-        if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).update({ status: 'confirmed' }); } 
-        else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if(os){os.status = 'confirmed'; setOSListLocal(list); renderAgenda();} }
-        showAppleAlert("📥 Balcão", "Peças confirmadas como entregues!");
-    }
-
-    async function confirmOSPayment(id, fireId) {
-        if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).update({ payment: 'pago' }); } 
-        else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if(os){os.payment = 'pago'; setOSListLocal(list); renderAgenda();} }
-        showAppleAlert("💵 Caixa", "Pagamento registrado com sucesso!");
-    }
-
-    // ================= MOTOR DE SALVAMENTO BLINDADO CONTRA DATA CRUZADA =================
+    // ================= ENGENHARIA DE SALVAMENTO E COMPATIBILIDADE CHROME =================
     async function saveOS(e) {
         e.preventDefault();
         
-        // PRIORIDADE MÁXIMA: Transiciona a tela sem travar
+        // EXIBE AS OPÇÕES LOGO DE PRIMEIRA (FAIL-SAFE CONTRA TELAS CONGELADAS)
         document.getElementById('os-form').style.display = 'none';
         document.getElementById('action-panel').classList.add('active');
 
         try {
-            const phone = document.getElementById('os-phone').value;
-            const name = document.getElementById('os-name').value;
+            const phone = document.getElementById('os-phone').value; const name = document.getElementById('os-name').value;
             const value = parseFloat(document.getElementById('os-value').value || 0).toFixed(2);
-            const date = document.getElementById('os-date').value;
-            const time = document.getElementById('os-time').value;
-            const status = document.getElementById('os-status').value;
-            const payment = document.getElementById('os-payment').value;
+            const date = document.getElementById('os-date').value; const time = document.getElementById('os-time').value;
+            const status = document.getElementById('os-status').value; const payment = document.getElementById('os-payment').value;
             const production = document.getElementById('os-production').value;
 
-            const services = getServices(); 
-            const osItems = {}; 
-            let totalTools = 0;       
-            let totalGeralItens = 0;  
+            const services = getServices(); const osItems = {}; let totalTools = 0; let totalGeralItens = 0;  
 
             services.forEach((service, index) => {
-                const inputField = document.getElementById(`qty-${index}`);
-                const qty = inputField ? (parseInt(inputField.value) || 0) : 0;
+                const inputField = document.getElementById(`qty-${index}`); const qty = inputField ? (parseInt(inputField.value) || 0) : 0;
                 if (qty > 0) { 
-                    osItems[service.name] = qty; 
-                    totalGeralItens += qty;
-
-                    // FILTRO DE CARGA: Mola e Espátula entram na OS e preço, mas pesam 0 na agenda
+                    osItems[service.name] = qty; totalGeralItens += qty;
+                    // REGRA DE CARGA EXCLUSIVA DA AFIA: Mola e Espátula têm peso zero nos quadradinhos vermelhos
                     const nomeLower = service.name.toLowerCase();
-                    if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) {
-                        totalTools += qty;
-                    }
+                    if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) { totalTools += qty; }
                 }
             });
 
-            if (totalGeralItens === 0) { 
-                showAppleAlert("⚠️ Formutário Vazio", "Escolha a quantidade de pelo menos 1 serviço."); 
-                resetOSForm();
-                return; 
-            }
+            if (totalGeralItens === 0) { showUAlert("⚠️ Erro", "Escolha a quantidade de pelo menos 1 serviço."); resetOSForm(); return; }
 
-            // SEGURANÇA TOTAL: Isola rigidamente para calcular ocupação apenas da data selecionada
             let fullList = [];
             if (isCloudActive) {
                 const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).where("date", "==", date).get();
                 snap.forEach(doc => fullList.push(doc.data()));
-            } else { 
-                fullList = getOSListLocal().filter(os => os.date === date); 
-            }
+            } else { fullList = getOSListLocal().filter(os => os.date === date); }
 
             const ocupacaoAtual = {}; todosHorarios.forEach(h => ocupacaoAtual[h] = 0);
             fullList.forEach(os => {
@@ -684,10 +542,7 @@
                 } else { if(ocupacaoAtual[os.time] !== undefined) ocupacaoAtual[os.time] += getToolsCountFromOS(os); }
             });
 
-            let timeIndex = todosHorarios.indexOf(time); 
-            let allocations = {}; 
-            let remaining = totalTools;
-            
+            let timeIndex = todosHorarios.indexOf(time); let allocations = {}; let remaining = totalTools;
             if (remaining > 0 && timeIndex !== -1) {
                 for (let i = timeIndex; i >= 0; i--) {
                     let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
@@ -699,24 +554,17 @@
                         if (vagasLivres > 0) { allocations[h] = (allocations[h] || 0) + Math.min(vagasLivres, remaining); remaining -= Math.min(vagasLivres, remaining); if (remaining === 0) break; }
                     }
                 }
-                if (remaining > 0) { 
-                    showAppleAlert("⚠️ Sem Vagas", `Não há 5 vagas seguidas livres perto das ${time}h neste dia.`); 
-                    resetOSForm();
-                    return; 
-                }
+                if (remaining > 0) { showUAlert("⚠️ Sem Vagas", `Não há vagas suficientes perto das ${time}h.`); resetOSForm(); return; }
             }
 
-            osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status, payment: payment, production: production };
+            osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools, allocations, status, payment, production };
 
-            if (isCloudActive) { 
-                await db.collection("ordens").add(osRecente); 
-            } else { 
-                let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); 
-            }
+            if (isCloudActive) { await db.collection("ordens").add(osRecente); } 
+            else { let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); }
 
             const clients = getClientsMap(); clients[phone] = name; setClientsMap(clients);
 
-            // Popula os dados do bilhete impresso
+            // População dinâmica do ticket de impressão
             document.getElementById('pt-date').innerText = formatDisplayDate(date);
             document.getElementById('pt-time').innerText = time; document.getElementById('pt-name').innerText = name;
             document.getElementById('pt-phone').innerText = phone; document.getElementById('pt-total').innerText = value;
@@ -724,74 +572,48 @@
             let txtDetails = ""; for (const [item, qty] of Object.entries(osItems)) { txtDetails += `• ${item}: ${qty}<br>`; }
             document.getElementById('pt-details').innerHTML = txtDetails;
 
+            // INJETA O HIPERLINK NATIVO DO WHATSAPP DIRETAMENTE NO BOTÃO (PREVINE BLOQUEIO DO CHROME NO IPHONE)
+            let cleanPhone = phone.replace(/\D/g, ''); if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
+            let template = localStorage.getItem('afia_wa_template') || defaultTemplate;
+            if (status === 'pending') {
+                template = `*AFIA - HORÁRIO RESERVADO*\n\nOlá, *{nome}*!\nSeu horário foi guardado na nuvem.\n\n📅 *Dia Combinado:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo:*\n{itens}\n\n💰 *Valor Estimado:* R$ {valor} ({pg})`;
+            }
+            let itemText = ""; for (const [item, qty] of Object.entries(osItems)) { itemText += `\n- ${item}: ${qty}`; }
+            let payLabel = (payment === 'pago') ? 'Já Pago' : 'Pagar na Entrega';
+            let msg = template.replace(/{nome}/g, name).replace(/{data}/g, formatDisplayDate(date)).replace(/{horario}/g, time).replace(/{valor}/g, value).replace(/{itens}/g, itemText.trim()).replace(/{pg}/g, payLabel);
+            
+            // Grava o endereço real no link HTML para clique físico imediato do balcão
+            document.getElementById('wa-share-link').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+
             if (!isCloudActive) renderAgenda();
-
-        } catch (err) {
-            console.error("Erro interno controlado:", err);
-        }
-    }
-
-    // RESOLVE O BUG DO WHATSAPP NO IPHONE (Muda de window.open para direct deep-link injection)
-    function triggerWhatsApp() {
-        if(!osRecente) return;
-        let cleanPhone = osRecente.phone.replace(/\D/g, ''); if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
-        let template = localStorage.getItem('afia_wa_template') || defaultTemplate;
-        if (osRecente.status === 'pending') {
-            template = `*AFIA - HORÁRIO RESERVADO*\n\nOlá, *{nome}*!\nSeu horário foi guardado na nuvem.\n\n📅 *Dia Combinado:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo:*\n{itens}\n\n💰 *Valor Estimado:* R$ {valor} ({pg})`;
-        }
-        let itemText = ""; for (const [item, qty] of Object.entries(osRecente.items)) { itemText += `\n- ${item}: ${qty}`; }
-        let payLabel = (osRecente.payment === 'pago') ? 'Já Pago' : 'Pagar na Entrega';
-        let msg = template.replace(/{nome}/g, osRecente.name).replace(/{data}/g, formatDisplayDate(osRecente.date)).replace(/{horario}/g, osRecente.time).replace(/{valor}/g, osRecente.value).replace(/{itens}/g, itemText.trim()).replace(/{pg}/g, payLabel);
-        
-        // Abre o app nativo do WhatsApp de forma direta sem sofrer block da Apple
-        window.location.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
-    }
-
-    function triggerReadyWhatsApp(phone, name, payment, value) {
-        let cleanPhone = phone.replace(/\D/g, ''); if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
-        let payText = (payment === 'pago') ? 'JÁ ESTÁ PAGO' : `Valor a pagar: R$ ${value}`;
-        let msg = `*AFIA - SEUS ALICATES FICARAM PRONTOS!* ✂️🔥\n\nOlá, *${name}*!\nPassando para avisar que o seu serviço já foi finalizado com o nosso padrão máximo de qualidade e já está disponível para retirada no balcão.\n\n💰 *${payText}*\n\n_Estamos te aguardando!_`;
-        
-        window.location.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+        } catch (err) { console.error(err); }
     }
 
     function triggerPrint() { window.print(); }
     function resetOSForm() { osRecente = null; document.getElementById('os-form').reset(); document.getElementById('os-date').value = todayStr; document.getElementById('os-form').style.display = 'block'; document.getElementById('action-panel').classList.remove('active'); renderDynamicFormServices(); switchTab('agenda'); }
-
     function renderAgenda() { buildAgendaDOM(getOSListLocal().filter(os => os.date === document.getElementById('agenda-date').value)); }
 
-    // FILTRAGEM DE HISTÓRICO ISOLADO POR DATA CORRIGIDO
     function buildAgendaDOM(osDoDia) {
-        updateTopStats(osDoDia);
-        const tableBody = document.getElementById('agenda-table-body'); 
-        if (!tableBody) return;
+        updateTopStats(osDoDia); const tableBody = document.getElementById('agenda-table-body'); if (!tableBody) return;
         tableBody.innerHTML = "";
         
-        const ocupacaoConfirmada = {}; const ocupacaoPendente = {};
-        todosHorarios.forEach(h => { ocupacaoConfirmada[h] = 0; ocupacaoPendente[h] = 0; });
-        
-        let caixaPago = 0; let caixaReceber = 0;
-        let totalPecasDoDia = 0;
+        const ocupacaoConfirmada = {}; const ocupacaoPendente = {}; todosHorarios.forEach(h => { ocupacaoConfirmada[h] = 0; ocupacaoPendente[h] = 0; });
+        let caixaPago = 0; let caixaReceber = 0; let totalPecasDoDia = 0;
 
         osDoDia.forEach(os => {
             if (os.payment === 'pago') { caixaPago += parseFloat(os.value || 0); } else { caixaReceber += parseFloat(os.value || 0); }
             const isPending = os.status === 'pending';
-            
             if (os.allocations) {
                 for (let h in os.allocations) { 
                     if (isPending) ocupacaoPendente[h] += parseInt(os.allocations[h] || 0); else ocupacaoConfirmada[h] += parseInt(os.allocations[h] || 0);
                     totalPecasDoDia += parseInt(os.allocations[h] || 0);
                 }
             } else {
-                let t = getToolsCountFromOS(os); 
-                if (isPending) ocupacaoPendente[os.time] += t; else ocupacaoConfirmada[os.time] += t;
-                totalPecasDoDia += t;
+                let t = getToolsCountFromOS(os); if (isPending) ocupacaoPendente[os.time] += t; else ocupacaoConfirmada[os.time] += t; totalPecasDoDia += t;
             }
         });
 
-        const capacidadeMaxima = todosHorarios.length * 5; 
-        let capColor = (totalPecasDoDia >= capacidadeMaxima) ? '#ff3b30' : '#007aff';
-
+        const capacidadeMaxima = todosHorarios.length * 5; let capColor = (totalPecasDoDia >= capacidadeMaxima) ? '#ff3b30' : '#007aff';
         let financialHTML = "";
         if (currentRole === 'dono') {
             financialHTML = `
@@ -802,10 +624,7 @@
 
         const finSummaryDiv = document.getElementById('financial-day-summary');
         if (finSummaryDiv) {
-            finSummaryDiv.innerHTML = `
-                ${financialHTML}
-                <div style="flex:1; background:#f2f2f7; border: 1px solid ${capColor}; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:${capColor};">📊 Carga do Dia<br>${totalPecasDoDia} / ${capacidadeMaxima} pçs</div>
-            `;
+            finSummaryDiv.innerHTML = `${financialHTML}<div style="flex:1; background:#f2f2f7; border: 1px solid ${capColor}; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:${capColor};">📊 Carga do Dia<br>${totalPecasDoDia} / ${capacidadeMaxima} pçs</div>`;
         }
 
         function criarLinha(h) {
@@ -834,6 +653,12 @@
             if (os.status === 'pending') actBtn += `<button class="btn-sec" style="background:#ff9500; margin-top:8px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSArrival(${os.id}, ${fId})">📥 Confirmar Chegada</button>`;
             if (os.payment === 'entrega' && currentRole === 'dono') actBtn += `<button class="btn-sec" style="background:#34c759; margin-top:6px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSPayment(${os.id}, ${fId})">💵 Receber Dinheiro</button>`;
             
+            // LINKS NATIVOS PARA OS BOTÕES DE SERVIÇO PRONTO DA TABELA DA AGENDA
+            let clPhone = os.phone.replace(/\D/g, ''); if (!clPhone.startsWith('55')) clPhone = '55' + clPhone;
+            let payTxt = (os.payment === 'pago') ? 'JÁ ESTÁ PAGO' : `Valor a pagar: R$ ${os.value}`;
+            let rdyMsg = `*AFIA - SEUS ALICATES FICARAM PRONTOS!* ✂️🔥\n\nOlá, *${os.name}*!\nPassando para avisar que o seu serviço já foi finalizado com o nosso padrão máximo de qualidade e já está disponível para retirada no balcão.\n\n💰 *${payTxt}*\n\n_Estamos te aguardando!_`;
+            let readyHref = `https://wa.me/${clPhone}?text=${encodeURIComponent(rdyMsg)}`;
+
             actBtn += `
                 <div style="margin-top:6px; display:flex; gap:4px;">
                     <select style="font-size:11px; padding:4px; border-radius:6px;" onchange="changeProductionStatus(${os.id}, ${fId}, this.value)">
@@ -841,7 +666,7 @@
                         <option value="bancada" ${os.production==='bancada'?'selected':''}>🔥 Na Bancada</option>
                         <option value="pronto" ${os.production==='pronto'?'selected':''}>🟢 Pronto</option>
                     </select>
-                    <button class="btn-sec" style="background:#007aff; flex:1; padding:4px; font-size:11px; border-radius:6px;" onclick="triggerReadyWhatsApp('${os.phone}', '${os.name}', '${os.payment}', '${os.value}')">⚡ WhatsApp: PRONTO</button>
+                    <a class="btn-sec" style="background:#007aff; flex:1; padding:4px; font-size:11px; border-radius:6px; text-decoration:none; display:flex; align-items:center; justify-content:center; color:white; font-weight:600;" href="${readyHref}" target="_blank">⚡ WhatsApp: PRONTO</a>
                 </div>
             `;
 
@@ -851,20 +676,27 @@
         });
     }
 
-    async function searchCustomerHistory() {
-        const query = document.getElementById('search-query').value.trim().toLowerCase();
-        const resultsDiv = document.getElementById('customer-history-results'); resultsDiv.innerHTML = "";
-        if(query === "") return;
+    async function deleteOS(id, fireId) {
+        if(confirm("Deseja apagar esta OS?")) {
+            if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).delete(); } 
+            else { let list = getOSListLocal(); list = list.filter(os => os.id !== id); setOSListLocal(list); renderAgenda(); }
+        }
+    }
 
-        let fullList = [];
-        if (isCloudActive) {
-            const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).get();
-            snap.forEach(doc => fullList.push(doc.data()));
-        } else { fullList = getOSListLocal(); }
-        
+    async function trackClientOrder() {
+        const phone = document.getElementById('track-client-phone').value.trim(); const resultDiv = document.getElementById('public-tracking-result'); if (!phone || !resultDiv) return;
+        let fullList = []; if (isCloudActive) { const snap = await db.collection("ordens").where("phone", "==", phone).get(); snap.forEach(doc => fullList.push(doc.data())); } else { fullList = JSON.parse(localStorage.getItem('afia_os_db') || '[]').filter(os => os.phone === phone); }
+        if (fullList.length === 0) { resultDiv.innerHTML = "<div style='color:#ff3b30; font-size:12px; font-weight:700; text-align:center;'>Nenhum pedido encontrado.</div>"; return; }
+        fullList.sort((a,b) => b.id - a.id); const activeOS = fullList[0]; const prod = activeOS.production || 'recebido';
+        let step1 = 'done', step2 = '', step3 = ''; if (prod === 'bancada') { step2 = 'current'; step1 = 'done'; } if (prod === 'prto' || prod === 'pronto') { step1 = 'done'; step2 = 'done'; step3 = 'done'; } if (prod === 'recebido') { step1 = 'current'; }
+        resultDiv.innerHTML = `<div style="background:#fff; border:1px solid #d2d2d7; border-radius:10px; padding:10px; margin-top:5px;"><p style="font-size:12px; margin:0;"><strong>Cliente:</strong> ${activeOS.name}</p><p style="font-size:12px; margin:3px 0;"><strong>Retirada:</strong> ${formatDisplayDate(activeOS.date)} às ${activeOS.time}h</p><div class="track-timeline"><div class="track-step ${step1}"><div class="track-dot">1</div>Recebido</div><div class="track-step ${step2}"><div class="track-dot">2</div>Na Bancada</div><div class="track-step ${step3}"><div class="track-dot">3</div>Pronto!</div></div></div>`;
+    }
+
+    async function searchCustomerHistory() {
+        const query = document.getElementById('search-query').value.trim().toLowerCase(); const resultsDiv = document.getElementById('customer-history-results'); resultsDiv.innerHTML = ""; if(query === "") return;
+        let fullList = []; if (isCloudActive) { const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).get(); snap.forEach(doc => fullList.push(doc.data())); } else { fullList = getOSListLocal(); }
         const filtered = fullList.filter(os => (os.phone && os.phone.includes(query)) || (os.name && os.name.toLowerCase().includes(query)));
         if(filtered.length === 0) { resultsDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum registro.</div>"; return; }
-        
         filtered.sort((a,b) => b.id - a.id);
         filtered.forEach(os => {
             const card = document.createElement('div'); card.className = "os-card";
@@ -873,46 +705,16 @@
         });
     }
 
-    // RESOLVE O BLOQUEIO DO BOTÃO DE RESET (Muda para Modal Nativo Apple)
-    function clearFullDatabase() {
-        showAppleConfirm(
-            "🚨 Reset de Fábrica", 
-            "Isso apagará permanentemente todos os testes velhos armazenados na memória local do iPhone. Deseja zerar?", 
-            function() {
-                localStorage.clear();
-                window.location.reload();
-            }
-        );
-    }
-
-    function exportDatabaseText() {
-        const out = { os: localStorage.getItem('afia_os_db'), clients: localStorage.getItem('afia_clients_map'), services: localStorage.getItem('afia_services'), template: localStorage.getItem('afia_wa_template'), logo: localStorage.getItem('afia_logo') };
-        document.getElementById('backup-box').value = btoa(unescape(encodeURIComponent(JSON.stringify(out))));
-        showAppleAlert("🛡️ Cópia de Segurança", "Código gerado com sucesso na caixa de texto!");
-    }
-    function importDatabaseText() {
-        try {
-            const dec = JSON.parse(decodeURIComponent(escape(atob(document.getElementById('backup-box').value.trim()))));
-            if(dec.os) localStorage.setItem('afia_os_db', dec.os); if(dec.clients) localStorage.setItem('afia_clients_map', dec.clients); if(dec.services) localStorage.setItem('afia_services', dec.services); if(dec.template) localStorage.setItem('afia_wa_template', dec.template); if(dec.logo) localStorage.setItem('afia_logo', dec.logo);
-            showAppleAlert("🎉 Sucesso", "Banco de dados local restaurado!"); window.location.reload();
-        } catch(e) { showAppleAlert("❌ Erro", "Código de backup inválido!"); }
-    }
+    async function trackCustomerHistory() { searchCustomerHistory(); }
 
     const selectTimeForm = document.getElementById('os-time');
-    if (selectTimeForm && selectTimeForm.options.length === 0) {
-        todosHorarios.forEach(h => { let opt = document.createElement('option'); opt.value = h; opt.innerText = h; selectTimeForm.appendChild(opt); });
-    }
-
+    if (selectTimeForm && selectTimeForm.options.length === 0) { todosHorarios.forEach(h => { let opt = document.createElement('option'); opt.value = h; opt.innerText = h; selectTimeForm.appendChild(opt); }); }
     if(!localStorage.getItem('afia_wa_template')) localStorage.setItem('afia_wa_template', defaultTemplate);
     document.getElementById('wa-template-input').value = localStorage.getItem('afia_wa_template');
     
-    document.getElementById('agenda-date').value = todayStr;
-    document.getElementById('os-date').value = todayStr;
+    document.getElementById('agenda-date').value = todayStr; document.getElementById('os-date').value = todayStr;
 
-    loadLogo();
-    renderDynamicFormServices();
-    renderSettingsServices();
-    checkDailySession();
+    loadLogo(); renderDynamicFormServices(); renderSettingsServices(); checkDailySession();
 </script>
 </body>
 </html>
