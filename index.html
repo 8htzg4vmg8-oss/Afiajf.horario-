@@ -1,718 +1,477 @@
-html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AFIA - Sistema Comercial</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AFIA - Ordem de Serviço</title>
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f2f2f7;
-            margin: 0;
-            padding: 12px;
-            -webkit-tap-highlight-color: transparent;
-            color: #1d1d1f;
-        }
-        .container {
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
-        
-        /* TELAS PRINCIPAIS */
-        .screen { display: none; }
-        .screen.active { display: block; }
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-        /* HEADER */
-        .main-header {
-            text-align: center;
-            margin: 10px 0 15px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .main-header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; color: #1d1d1f; }
-        .main-header p { margin: 3px 0 0 0; font-size: 11px; font-weight: 700; color: #86868b; letter-spacing: 0.5px; }
-        .main-header img { max-height: 70px; max-width: 180px; object-fit: contain; margin-bottom: 4px; }
-
-        /* ABAS APPLE */
-        .tabs { display: flex; background: #e5e5ea; padding: 2px; border-radius: 10px; margin-bottom: 15px; gap: 2px; }
-        .tab-btn { flex: 1; background: none; border: none; padding: 10px 2px; font-size: 11px; font-weight: 600; color: #48484a; cursor: pointer; border-radius: 8px; -webkit-appearance: none; white-space: nowrap; }
-        .tab-btn.active { background: #ffffff; color: #1d1d1f; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* CONTADORES */
-        .stats-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .stat-card { flex: 1; background: #ffffff; border-radius: 12px; padding: 10px 4px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .stat-num { font-size: 16px; font-weight: 700; color: #1d1d1f; margin-bottom: 1px; }
-        .stat-label { font-size: 10px; font-weight: 600; color: #86868b; }
-        .card { background: #ffffff; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .card-title { font-size: 13px; font-weight: 700; color: #007aff; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* FORMULÁRIOS */
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #1d1d1f; margin-bottom: 5px; }
-        input[type="text"], input[type="tel"], input[type="number"], select, input[type="date"], textarea {
-            width: 100%; font-size: 16px; padding: 10px; border-radius: 8px; border: 1px solid #d2d2d7; background: #ffffff; color: #1d1d1f; box-sizing: border-box; -webkit-appearance: none; font-family: inherit;
-        }
-        textarea { resize: none; height: 75px; font-size: 13px; }
-
-        .qty-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f5f5f7; }
-        .qty-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .qty-label { font-size: 14px; font-weight: 600; color: #1d1d1f; }
-        .qty-price-hint { font-size: 11px; color: #86868b; font-weight: normal; margin-left: 5px; }
-        .qty-input { width: 65px !important; text-align: center; padding: 6px !important; }
-
-        /* BOTÕES */
-        .btn-main { background-color: #34c759; color: #ffffff; border: none; padding: 14px; font-size: 15px; font-weight: 600; border-radius: 10px; width: 100%; cursor: pointer; margin-top: 15px; -webkit-appearance: none; }
-        .btn-sec { background-color: #007aff; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .btn-mini-del { background: #ff3b30; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
-        .inline-form { display: flex; gap: 8px; }
-
-        /* TABELA DA AGENDA */
-        table { width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        th, td { padding: 10px 4px; text-align: center; border-bottom: 1px solid #e5e5ea; }
-        th { background: #f5f5f7; font-size: 11px; color: #86868b; font-weight: 600; }
-        .time-col { font-weight: 700; color: #1d1d1f; font-size: 15px; width: 25%; }
-        .slots-col { display: flex; justify-content: space-around; align-items: center; }
-        .square { width: 32px; height: 32px; border: 2px solid #d2d2d7; border-radius: 6px; background-color: #fff; }
-        .square.occupied { background-color: #ff3b30; border-color: #ff3b30; }
-        .square.pending { background-color: #ff9500; border-color: #ff9500; }
-        .interval-row td { background-color: #f5f5f7; font-weight: 600; color: #86868b; font-size: 11px; }
-
-        /* CARDS */
-        .os-card { background: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .time-tag { background: #007aff; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 4px; }
-        .os-card p { margin: 3px 0; font-size: 13px; }
-        .btn-del { position: absolute; top: 12px; right: 12px; background: #ff3b30; color: white; border: none; padding: 4px 8px; font-size: 11px; border-radius: 5px; -webkit-appearance: none; }
-
-        /* RASTREAMENTO TIMELINE */
-        .track-timeline { display: flex; justify-content: space-between; margin: 20px 0 10px 0; position: relative; }
-        .track-timeline::before { content: ''; position: absolute; background: #d2d2d7; height: 4px; width: 100%; top: 14px; left: 0; z-index: 1; }
-        .track-step { z-index: 2; text-align: center; font-size: 11px; font-weight: 600; color: #86868b; width: 33%; }
-        .track-dot { width: 30px; height: 30px; border-radius: 50%; background: #d2d2d7; margin: 0 auto 6px auto; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-        .track-step.done .track-dot { background: #34c759; }
-        .track-step.done { color: #1d1d1f; }
-        .track-step.current .track-dot { background: #007aff; }
-        .track-step.current { color: #007aff; }
-
-        .action-panel { display: none; background: #ffffff; border-radius: 12px; padding: 14px; margin-top: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .action-panel.active { display: block; }
-        .btn-panel { display: block; width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; color: white; -webkit-appearance: none; text-decoration: none; box-sizing: border-box; }
-        .btn-wa { background-color: #25d366; }
-        .btn-prt { background-color: #007aff; }
-        .btn-new { background-color: #86868b; }
-    </style>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #f2f2f7;
+      color: #1d1d1f;
+    }
+    .container { max-width: 520px; margin: 0 auto; }
+    .header { text-align: center; margin: 18px 0; }
+    .header h1 { margin: 0; font-size: 34px; letter-spacing: 2px; }
+    .header p { margin: 6px 0 0; font-size: 12px; color: #777; font-weight: 700; letter-spacing: 1px; }
+    .cloud {
+      background: #fff;
+      border-radius: 14px;
+      padding: 13px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .ok { color: #20a34a; }
+    .bad { color: #ff3b30; }
+    .tabs {
+      display: flex;
+      gap: 5px;
+      background: #e5e5ea;
+      padding: 5px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+    .tabs button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 11px 4px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #333;
+    }
+    .tabs button.active { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,.12); }
+    .stats { display: flex; gap: 8px; margin-bottom: 12px; }
+    .stat {
+      flex: 1;
+      background: #fff;
+      padding: 13px 4px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      font-size: 12px;
+      color: #777;
+      font-weight: 700;
+    }
+    .stat b { display: block; color: #111; font-size: 22px; margin-bottom: 3px; }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .title {
+      margin: 0 0 12px;
+      color: #007aff;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    label { display: block; font-size: 13px; font-weight: 700; margin: 10px 0 5px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #d2d2d7;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 16px;
+      background: #fff;
+      font-family: inherit;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    .row { display: flex; gap: 8px; }
+    .row > div { flex: 1; }
+    .btn {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      background: #34c759;
+    }
+    .btn-blue { background: #007aff; }
+    .btn-red { background: #ff3b30; }
+    .hidden { display: none; }
+    .os-card { border-left: 5px solid #007aff; }
+    .os-card p { margin: 5px 0; font-size: 14px; }
+    .small { color: #777; font-size: 13px; }
+  </style>
 </head>
+
 <body>
-
-<div id="print-ticket" style="display: none !important;">
-    <div class="prt-header" id="pt-header-logo">AFIA - VIA DA LOJA</div>
-    <div class="prt-line"><strong>ENTREGA:</strong> <span id="pt-date"></span> às <span id="pt-time"></span></div>
-    <div class="prt-line">----------------------------------------</div>
-    <div class="prt-line"><strong>CLIENTE:</strong> <span id="pt-name"></span></div>
-    <div class="prt-line"><strong>TELEFONE:</strong> <span id="pt-phone"></span></div>
-    <div class="prt-line">----------------------------------------</div>
-    <div class="prt-line" id="pt-details"></div>
-    <div class="prt-line">----------------------------------------</div>
-    <div class="prt-line"><strong>PAGAMENTO:</strong> <span id="pt-pay-status"></span></div>
-    <div class="prt-line"><strong>VALOR TOTAL:</strong> R$ <span id="pt-total"></span></div>
-    <div class="prt-footer">Controle Interno de Oficina</div>
-</div>
-
-<div id="universal-apple-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:#ffffff; border-radius:14px; width:270px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow:hidden;">
-        <div style="padding:20px 16px;">
-            <div id="u-modal-title" style="font-weight:600; font-size:17px; margin-bottom:5px; color:#000;"></div>
-            <div id="u-modal-msg" style="font-size:13px; color:#333; line-height:1.4;"></div>
-        </div>
-        <div style="border-top:1px solid #d2d2d7;">
-            <button onclick="closeUniversalModal()" style="width:100%; background:none; border:none; padding:12px; font-size:17px; color:#007aff; font-weight:600; cursor:pointer;-webkit-appearance:none;">OK</button>
-        </div>
-    </div>
-</div>
-
-<div id="reset-confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:#ffffff; border-radius:14px; width:270px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow:hidden;">
-        <div style="padding:20px 16px;">
-            <div style="font-weight:600; font-size:17px; margin-bottom:5px; color:#000;">🚨 Reset de Fábrica</div>
-            <div style="font-size:13px; color:#333; line-height:1.4;">Isso apagará permanentemente todos os dados e testes salvos no aparelho. Deseja zerar?</div>
-        </div>
-        <div style="display:flex; border-top:1px solid #d2d2d7;">
-            <button onclick="closeResetModal()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#007aff; border-right:1px solid #d2d2d7; cursor:pointer;-webkit-appearance:none;">Cancelar</button>
-            <button onclick="executeFullReset()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#ff3b30; font-weight:600; cursor:pointer;-webkit-appearance:none;">Zerar</button>
-        </div>
-    </div>
-</div>
-
-<div id="screen-login" class="container screen active">
-    <div class="main-header" style="margin-top: 40px;">
-        <h1>AFIA</h1>
-        <p>SISTEMA COMERCIAL INTELIGENTE</p>
-    </div>
-    <div class="card">
-        <div class="card-title">🔐 Acesso do Operador</div>
-        <form onsubmit="executeLogin(event)">
-            <div class="form-group">
-                <label>Código da Oficina:</label>
-                <input type="text" id="login-office" placeholder="Ex: afia01" required>
-            </div>
-            <div class="form-group">
-                <label>Cargo do Usuário:</label>
-                <select id="login-role">
-                    <option value="dono">👑 Proprietário / Dono</option>
-                    <option value="funcionario">🛠️ Balconista / Funcionário</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Senha / PIN Numérico:</label>
-                <input type="number" id="login-pin" placeholder="PIN de 4 dígitos" required pattern="[0-9]*" inputmode="numeric">
-            </div>
-            <button type="submit" class="btn-main" style="margin-top: 5px;">🔓 Entrar no Caixa</button>
-        </form>
+  <div class="container">
+    <div class="header">
+      <h1>AFIA</h1>
+      <p>ORDEM DE SERVIÇO • AGENDA • CLIENTES</p>
     </div>
 
-    <div class="card" style="border: 1px solid #007aff; background: #f4f9ff;">
-        <div class="card-title" style="color: #007aff;">🔍 Área do Cliente: Rastrear Pedido</div>
-        <p style="font-size:12px; color:#86868b; margin:0 0 10px 0;">Digite o número do telefone para ver o status real dos seus alicates.</p>
-        <div class="inline-form">
-            <input type="tel" id="track-client-phone" placeholder="Digite o telefone...">
-            <button class="btn-sec" onclick="trackClientOrder()">Buscar</button>
-        </div>
-        <div id="public-tracking-result" style="margin-top: 10px;"></div>
-    </div>
-</div>
-
-<div id="screen-app" class="container screen">
-    <div class="main-header" id="main-app-header">
-        <h1>AFIA</h1>
-        <p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>
-    </div>
+    <div class="cloud" id="cloudStatus">Conectando ao Firebase...</div>
 
     <div class="tabs">
-        <button id="btn-agenda" class="tab-btn" onclick="switchTab('agenda')">📅 Agenda</button>
-        <button id="btn-nova-os" class="tab-btn active" onclick="switchTab('nova-os')">📝 Nova OS</button>
-        <button id="btn-clientes" class="tab-btn" onclick="switchTab('clientes')">🔍 Clientes</button>
-        <button id="btn-ajustes" class="tab-btn" onclick="switchTab('ajustes')">⚙️ Ajustes</button>
+      <button id="btnAgenda" class="active" onclick="showTab('agenda')">📅 Agenda</button>
+      <button id="btnNova" onclick="showTab('nova')">📝 Nova OS</button>
+      <button id="btnClientes" onclick="showTab('clientes')">🔎 Clientes</button>
+      <button id="btnAjustes" onclick="showTab('ajustes')">⚙️ Ajustes</button>
     </div>
 
-    <div class="stats-row">
-        <div class="stat-card"><div id="stat-orders" class="stat-num">0</div><div class="stat-label">Pedidos</div></div>
-        <div class="stat-card"><div id="stat-pieces" class="stat-num">0</div><div class="stat-label">Peças</div></div>
-        <div id="owner-stat-money-card" class="stat-card" style="border: 1px solid #34c759; background: #f6fff8;">
-            <div id="stat-money" class="stat-num" style="color: #34c759;">R$ 0,00</div>
-            <div class="stat-label" style="color: #34c759; font-weight: 700;">Faturamento</div>
-        </div>
+    <div class="stats">
+      <div class="stat"><b id="statPedidos">0</b>Pedidos</div>
+      <div class="stat"><b id="statPecas">0</b>Peças</div>
+      <div class="stat"><b id="statValor">R$ 0,00</b>Faturamento</div>
     </div>
 
-    <div id="tab-agenda" class="tab-content">
-        <div class="card" style="padding: 10px; margin-bottom: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label style="margin: 0; font-weight: 600; font-size: 13px;">Data da Agenda:</label>
-                <input type="date" id="agenda-date" onchange="onDateChange()" style="width: auto; padding: 5px 8px; font-size: 14px;">
-            </div>
-        </div>
-        <table>
-            <thead><tr><th>HORÁRIO</th><th>VAGAS OCUPADAS</th></tr></thead>
-            <tbody id="agenda-table-body"></tbody>
-        </table>
-        
-        <div id="financial-day-summary" style="margin-top: 12px; display: flex; gap: 8px;"></div>
-        <h3 style="font-size: 14px; font-weight: 700; margin: 15px 0 8px 2px;">Ordens do Dia</h3>
-        <div id="day-os-list"></div>
-    </div>
+    <section id="agenda">
+      <div class="card">
+        <h3 class="title">📅 Agenda</h3>
+        <label>Data da agenda</label>
+        <input type="date" id="agendaData" onchange="renderAgenda()">
+      </div>
+      <div id="agendaLista"></div>
+    </section>
 
-    <div id="tab-nova-os" class="tab-content active">
-        <form id="os-form" onsubmit="saveOS(event)">
-            <div class="card">
-                <div class="card-title">🔍 Busca Rápida (Telefone)</div>
-                <div class="form-group"><input type="tel" id="os-phone" placeholder="Digite o telefone..." required oninput="autocompleteClient()"></div>
-                <div class="form-group"><label>Nome do Cliente:</label><input type="text" id="os-name" placeholder="Nome Completo" required></div>
-            </div>
-            <div class="card"><div class="card-title">✂️ Marcar Quantidades:</div><div id="dynamic-qty-container"></div></div>
-            <div class="card">
-                <div class="card-title">💰 Fechamento da OS</div>
-                <div class="form-group">
-                    <label>Situação Inicial:</label>
-                    <select id="os-status" style="border: 2px solid #ff9500; font-weight:600;"><option value="confirmed">📦 Peças no balcão (Vermelho)</option><option value="pending">📅 Apenas Reserva (Laranja)</option></select>
-                </div>
-                <div class="form-group">
-                    <label>Status de Pagamento:</label>
-                    <select id="os-payment" style="border: 2px solid #34c759; font-weight:600;"><option value="entrega">🔴 Pagar na Entrega</option><option value="pago">🟢 Já Pago</option></select>
-                </div>
-                <div class="form-group">
-                    <label>Status de Produção Interna:</label>
-                    <select id="os-production" style="border: 2px solid #007aff; font-weight:600;"><option value="recebido">📦 Recebido / Aguardando</option><option value="bancada">🔥 Na Bancada de Afiação</option><option value="pronto">🟢 Pronto para Retirada</option></select>
-                </div>
-                <div class="form-group"><label>Valor Total (R$):</label><input type="number" id="os-value" step="0.01" placeholder="R$ 0,00" required></div>
-                <div class="form-group"><label>Data da Entrega:</label><input type="date" id="os-date" required onchange="calculateLiveTotal()"></div>
-                <div class="form-group"><label>Horário da Entrega:</label><select id="os-time" required onchange="calculateLiveTotal()"></select></div>
-            </div>
-            <button type="submit" class="btn-main">💾 Salvar Ordem de Serviço</button>
-        </form>
-        
-        <div id="action-panel" class="action-panel">
-            <p style="color:#34c759; font-weight:700; margin: 0 0 12px 0; font-size:15px;">🎉 OS Registrada com Sucesso!</p>
-            <a id="wa-share-link" class="btn-panel btn-wa" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center;">💬 Enviar OS para o Cliente</a>
-            <button class="btn-panel btn-prt" onclick="triggerPrint()">🖨️ Imprimir Via da Loja</button>
-            <button class="btn-panel btn-new" onclick="resetOSForm()">↩️ Novo Agendamento</button>
-        </div>
-    </div>
+    <section id="nova" class="hidden">
+      <form class="card" onsubmit="salvarOS(event)">
+        <h3 class="title">📝 Nova Ordem de Serviço</h3>
 
-    <div id="tab-clientes" class="tab-content">
-        <div class="card">
-            <div class="card-title">🔍 Histórico por Nome ou Telefone</div>
-            <div class="form-group" style="margin: 0;"><input type="text" id="search-query" placeholder="Digite o nome ou telefone..." oninput="searchCustomerHistory()"></div>
-        </div>
-        <div id="customer-history-results"></div>
-    </div>
+        <label>Nome do cliente</label>
+        <input id="nome" required>
 
-    <div id="tab-ajustes" class="tab-content">
-        <div class="card" style="background: #f6fff8; border: 1px solid #34c759;">
-            <div class="card-title" style="color: #34c759;">🌐 Conexão de Nuvem</div>
-            <p id="cloud-status-text" style="font-size: 13px; font-weight: 700; margin: 0;">Modo Local Ativo</p>
+        <label>Telefone / WhatsApp</label>
+        <input id="telefone" inputmode="tel" required>
+
+        <div class="row">
+          <div>
+            <label>Data da entrega</label>
+            <input type="date" id="dataEntrega" required>
+          </div>
+          <div>
+            <label>Horário</label>
+            <select id="horaEntrega" required></select>
+          </div>
         </div>
-        <div class="card">
-            <div class="card-title">🛠️ Tabela de Preços dos Serviços</div>
-            <div class="setting-item-list" id="setting-services-list"></div>
-            <div class="form-group" style="margin-top: 10px;">
-                <input type="text" id="new-service-name" placeholder="Ex: 🛠️ Espátula" style="margin-bottom: 6px;">
-                <div class="inline-form">
-                    <input type="number" id="new-service-price" step="0.01" placeholder="Preço Unitário R$">
-                    <button type="button" class="btn-sec" onclick="addService()">+ Inserir</button>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-title">🛡️ Central de Cópias de Segurança (Backup)</div>
-            <button class="btn-sec" style="width:100%; background:#007aff; margin-bottom:10px;" onclick="exportDatabaseText()">📥 Gerar Código de Backup</button>
-            <textarea id="backup-box" placeholder="Insira o código aqui para restaurar dados..."></textarea>
-            <button class="btn-main" style="margin-top:8px; padding:10px; font-size:13px;" onclick="importDatabaseText()">📤 Restaurar Banco de Dados</button>
-        </div>
-        <div class="card"><div class="card-title">🖼️ Logo da Oficina</div><div class="form-group"><input type="file" id="logo-input" accept="image/*" onchange="uploadLogo(event)" style="border:none; padding:0;"></div><button class="btn-mini-del" style="background:#86868b; margin-top:5px;" onclick="clearLogo()">Remover Logo</button></div>
-        <div class="card"><div class="card-title">💬 Template do WhatsApp</div><div class="form-group"><textarea id="wa-template-input" oninput="saveWATemplate()"></textarea></div></div>
-        <button class="btn-panel btn-new" style="background: #86868b; margin-bottom: 12px; color: white;" onclick="executeLogout()">🔒 Fechar Caixa Manualmente</button>
-        <div class="card" style="border: 1px solid #ff3b30;">
-            <div class="card-title" style="color: #ff3b30;">⚠️ Reset de Fábrica</div>
-            <button class="btn-mini-del" style="width: 100%; padding: 10px;" onclick="clearFullDatabase()">Zerar Todos os Dados</button>
-        </div>
-    </div>
-</div>
+
+        <label>Alicates de cutícula</label>
+        <input type="number" id="qtdAlicates" min="0" value="0" oninput="calcularTotal()">
+
+        <label>Facas</label>
+        <input type="number" id="qtdFacas" min="0" value="0" oninput="calcularTotal()">
+
+        <label>Tesouras</label>
+        <input type="number" id="qtdTesouras" min="0" value="0" oninput="calcularTotal()">
+
+        <label>Molas</label>
+        <input type="number" id="qtdMolas" min="0" value="0" oninput="calcularTotal()">
+
+        <label>Espátulas</label>
+        <input type="number" id="qtdEspatulas" min="0" value="0" oninput="calcularTotal()">
+
+        <label>Outros serviços</label>
+        <input type="number" id="qtdOutros" min="0" value="0" oninput="calcularTotal()">
+
+        <label>Observação</label>
+        <textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, alicate Staleks..."></textarea>
+
+        <label>Status de produção</label>
+        <select id="status">
+          <option value="Recebido">📦 Recebido / aguardando</option>
+          <option value="Na bancada">🔥 Na bancada</option>
+          <option value="Pronto">🟢 Pronto para retirada</option>
+          <option value="Retirado">✅ Retirado</option>
+        </select>
+
+        <label>Pagamento</label>
+        <select id="pagamento">
+          <option value="Pagar na retirada">🔴 Pagar na retirada</option>
+          <option value="Pago">🟢 Pago</option>
+        </select>
+
+        <label>Valor total</label>
+        <input type="number" id="valorTotal" step="0.01" required>
+
+        <button class="btn" type="submit">💾 Salvar OS na nuvem</button>
+      </form>
+    </section>
+
+    <section id="clientes" class="hidden">
+      <div class="card">
+        <h3 class="title">🔎 Clientes</h3>
+        <label>Pesquisar por nome ou telefone</label>
+        <input id="buscaCliente" oninput="renderClientes()">
+      </div>
+      <div id="clientesLista"></div>
+    </section>
+
+    <section id="ajustes" class="hidden">
+      <div class="card">
+        <h3 class="title">⚙️ Ajustes</h3>
+        <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
+        <p class="small">Este app salva as OS na coleção <b>ordens_afia</b> do Firestore.</p>
+      </div>
+    </section>
+  </div>
 
 <script>
-    // Configurações do Firebase
-    const firebaseConfig = {
-        apiKey: "SUA_API_KEY",
-        authDomain: "SEU_AUTH_DOMAIN",
-        projectId: "SEU_PROJECT_ID",
-        storageBucket: "SEU_STORAGE_BUCKET",
-        messagingSenderId: "SEU_SENDER_ID",
-        appId: "SEU_APP_ID"
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
+    authDomain: "afia-37aa8.firebaseapp.com",
+    databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
+    projectId: "afia-37aa8",
+    storageBucket: "afia-37aa8.firebasestorage.app",
+    messagingSenderId: "961300018208",
+    appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
+  };
+
+  let db = null;
+  let ordens = [];
+  const colecao = "ordens_afia";
+
+  const precos = {
+    alicates: 10,
+    facas: 12,
+    tesouras: 15,
+    molas: 5,
+    espatulas: 7,
+    outros: 10
+  };
+
+  function hojeISO() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  function dataBR(iso) {
+    if (!iso) return "";
+    const p = iso.split("-");
+    return p[2] + "/" + p[1] + "/" + p[0];
+  }
+
+  function dinheiro(v) {
+    return "R$ " + Number(v || 0).toFixed(2).replace(".", ",");
+  }
+
+  function iniciar() {
+    document.getElementById("agendaData").value = hojeISO();
+    document.getElementById("dataEntrega").value = hojeISO();
+
+    const horarios = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","14:30","15:00","15:30","16:00","16:30"];
+    horarios.forEach(h => {
+      const opt = document.createElement("option");
+      opt.value = h;
+      opt.textContent = h;
+      document.getElementById("horaEntrega").appendChild(opt);
+    });
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+
+      document.getElementById("cloudStatus").innerHTML = '<span class="ok">🟢 Conectado na nuvem Firebase</span>';
+      document.getElementById("ajusteStatus").innerHTML = '<span class="ok">Conectado na nuvem Firebase</span>';
+
+      db.collection(colecao).orderBy("criadoEm", "desc").onSnapshot(snapshot => {
+        ordens = [];
+        snapshot.forEach(doc => {
+          ordens.push({ id: doc.id, ...doc.data() });
+        });
+        renderAgenda();
+        renderClientes();
+      }, erro => {
+        document.getElementById("cloudStatus").innerHTML = '<span class="bad">🔴 Erro no Firebase: ' + erro.message + '</span>';
+        document.getElementById("ajusteStatus").innerHTML = '<span class="bad">' + erro.message + '</span>';
+      });
+    } catch (erro) {
+      document.getElementById("cloudStatus").innerHTML = '<span class="bad">🔴 Erro ao conectar: ' + erro.message + '</span>';
+      document.getElementById("ajusteStatus").innerHTML = '<span class="bad">' + erro.message + '</span>';
+    }
+  }
+
+  function showTab(tab) {
+    ["agenda", "nova", "clientes", "ajustes"].forEach(id => document.getElementById(id).classList.add("hidden"));
+    ["btnAgenda", "btnNova", "btnClientes", "btnAjustes"].forEach(id => document.getElementById(id).classList.remove("active"));
+
+    document.getElementById(tab).classList.remove("hidden");
+
+    if (tab === "agenda") document.getElementById("btnAgenda").classList.add("active");
+    if (tab === "nova") document.getElementById("btnNova").classList.add("active");
+    if (tab === "clientes") document.getElementById("btnClientes").classList.add("active");
+    if (tab === "ajustes") document.getElementById("btnAjustes").classList.add("active");
+  }
+
+  function calcularTotal() {
+    const total =
+      (Number(document.getElementById("qtdAlicates").value) || 0) * precos.alicates +
+      (Number(document.getElementById("qtdFacas").value) || 0) * precos.facas +
+      (Number(document.getElementById("qtdTesouras").value) || 0) * precos.tesouras +
+      (Number(document.getElementById("qtdMolas").value) || 0) * precos.molas +
+      (Number(document.getElementById("qtdEspatulas").value) || 0) * precos.espatulas +
+      (Number(document.getElementById("qtdOutros").value) || 0) * precos.outros;
+
+    document.getElementById("valorTotal").value = total.toFixed(2);
+  }
+
+  async function salvarOS(event) {
+    event.preventDefault();
+
+    if (!db) {
+      alert("Firebase não está conectado. Veja a aba Ajustes.");
+      return;
+    }
+
+    const itens = {
+      "Alicates": Number(document.getElementById("qtdAlicates").value) || 0,
+      "Facas": Number(document.getElementById("qtdFacas").value) || 0,
+      "Tesouras": Number(document.getElementById("qtdTesouras").value) || 0,
+      "Molas": Number(document.getElementById("qtdMolas").value) || 0,
+      "Espátulas": Number(document.getElementById("qtdEspatulas").value) || 0,
+      "Outros": Number(document.getElementById("qtdOutros").value) || 0
     };
 
-    let isCloudActive = false;
-    let db = null;
-    let cachedCloudOS = [];
-    let currentOffice = "";
-    let currentRole = "";
+    const pecas = Object.values(itens).reduce((soma, qtd) => soma + qtd, 0);
 
-    if (firebaseConfig.apiKey !== "SUA_API_KEY") {
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            isCloudActive = true;
-            document.getElementById('cloud-status-text').innerText = "🟢 Conectado na Nuvem Google (Firestore)";
-            document.getElementById('cloud-status-text').style.color = "#34c759";
-        } catch(e) { console.error("Erro Firebase:", e); }
+    if (pecas === 0) {
+      alert("Marque pelo menos 1 serviço.");
+      return;
     }
 
-    function showUAlert(title, message) {
-        document.getElementById('u-modal-title').innerText = title;
-        document.getElementById('u-modal-msg').innerText = message;
-        document.getElementById('universal-apple-modal').style.display = 'flex';
+    const os = {
+      nome: document.getElementById("nome").value.trim(),
+      telefone: document.getElementById("telefone").value.trim(),
+      data: document.getElementById("dataEntrega").value,
+      hora: document.getElementById("horaEntrega").value,
+      itens: itens,
+      pecas: pecas,
+      observacao: document.getElementById("observacao").value.trim(),
+      status: document.getElementById("status").value,
+      pagamento: document.getElementById("pagamento").value,
+      valor: Number(document.getElementById("valorTotal").value || 0),
+      criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+      await db.collection(colecao).add(os);
+
+      let tel = os.telefone.replace(/\D/g, "");
+      if (!tel.startsWith("55")) tel = "55" + tel;
+
+      const itensTexto = Object.entries(itens)
+        .filter(([nome, qtd]) => qtd > 0)
+        .map(([nome, qtd]) => nome + ": " + qtd)
+        .join("%0A");
+
+      const mensagem =
+        "*AFIA - ORDEM DE SERVIÇO*%0A%0A" +
+        "Olá, *" + os.nome + "*!%0A" +
+        "Sua ordem de serviço foi registrada.%0A%0A" +
+        "📅 Entrega: " + dataBR(os.data) + "%0A" +
+        "⏰ Horário: " + os.hora + "%0A%0A" +
+        "*Serviços:*%0A" + itensTexto + "%0A%0A" +
+        "💰 Total: " + dinheiro(os.valor) + "%0A" +
+        "📌 Pagamento: " + os.pagamento;
+
+      window.open("https://wa.me/" + tel + "?text=" + mensagem, "_blank");
+
+      event.target.reset();
+      document.getElementById("dataEntrega").value = hojeISO();
+      showTab("agenda");
+    } catch (erro) {
+      alert("Erro ao salvar no Firebase: " + erro.message);
     }
-    function closeUniversalModal() { document.getElementById('universal-apple-modal').style.display = 'none'; }
-    function clearFullDatabase() { document.getElementById('reset-confirm-modal').style.display = 'flex'; }
-    function closeResetModal() { document.getElementById('reset-confirm-modal').style.display = 'none'; }
-    function executeFullReset() { localStorage.clear(); window.location.reload(); }
+  }
 
-    const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00"];
-    const horariosTarde = ["14:30", "15:00", "15:30", "16:00", "16:30"];
-    const todosHorarios = [...horariosManha, ...horariosTarde];
-    
-    const defaultServices = [
-        {name: "✂️ Alicates de Cutícula", price: 10.00},
-        {name: "🔪 Facas", price: 12.00},
-        {name: "✂️ Tesouras", price: 15.00},
-        {name: "🌀 Molas Extras", price: 5.00},
-        {name: "🛠️ Espátulas", price: 7.00},
-        {name: "📦 Outros Serviços", price: 10.00}
-    ];
-    const defaultTemplate = `*AFIA - COMPROVANTE DIGITAL*\n\nOlá, *{nome}*!\nSua Ordem de Serviço foi gerada com sucesso.\n\n📅 *Previsão de Entrega:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo do Pedido:*\n{itens}\n\n💰 *Valor Total:* R$ {valor} ({pg})\n\n_Obrigado pela preferência!_`;
+  function renderAgenda() {
+    const data = document.getElementById("agendaData").value;
+    const lista = ordens
+      .filter(os => os.data === data)
+      .sort((a, b) => String(a.hora || "").localeCompare(String(b.hora || "")));
 
-    const localTime = new Date();
-    const todayStr = `${localTime.getFullYear()}-${String(localTime.getMonth() + 1).padStart(2, '0')}-${String(localTime.getDate()).padStart(2, '0')}`;
+    document.getElementById("statPedidos").textContent = lista.length;
+    document.getElementById("statPecas").textContent = lista.reduce((soma, os) => soma + Number(os.pecas || 0), 0);
+    document.getElementById("statValor").textContent = dinheiro(lista.reduce((soma, os) => soma + Number(os.valor || 0), 0));
 
-    function checkDailySession() {
-        const savedSessionDate = localStorage.getItem('afia_session_date');
-        if (savedSessionDate === todayStr) {
-            currentOffice = localStorage.getItem('afia_office_code');
-            currentRole = localStorage.getItem('afia_user_role');
-            activateScreen('screen-app');
-            applyRolePermissions();
-            onDateChange();
-            return true;
-        } else {
-            executeLogout();
-            return false;
-        }
-    }
+    const box = document.getElementById("agendaLista");
+    box.innerHTML = "";
 
-    function executeLogin(e) {
-        e.preventDefault();
-        currentOffice = document.getElementById('login-office').value.trim().toLowerCase();
-        currentRole = document.getElementById('login-role').value;
-        const pin = document.getElementById('login-pin').value;
-        if (!currentOffice || !pin) return;
-        localStorage.setItem('afia_session_date', todayStr);
-        localStorage.setItem('afia_office_code', currentOffice);
-        localStorage.setItem('afia_user_role', currentRole);
-        activateScreen('screen-app');
-        applyRolePermissions();
-        onDateChange();
-    }
-
-    function executeLogout() {
-        localStorage.removeItem('afia_session_date'); localStorage.removeItem('afia_office_code'); localStorage.removeItem('afia_user_role');
-        currentOffice = ""; currentRole = ""; activateScreen('screen-login');
-    }
-
-    function applyRolePermissions() {
-        if (currentRole === 'dono') {
-            document.getElementById('btn-ajustes').style.display = "block";
-            document.getElementById('owner-stat-money-card').style.display = "block";
-        } else {
-            document.getElementById('btn-ajustes').style.display = "none";
-            document.getElementById('owner-stat-money-card').style.display = "none";
-            switchTab('nova-os');
-        }
+    if (lista.length === 0) {
+      box.innerHTML = '<div class="card small">Nenhuma OS para essa data.</div>';
+      return;
     }
 
-    function activateScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+    lista.forEach(os => {
+      const itens = Object.entries(os.itens || {})
+        .filter(([nome, qtd]) => qtd > 0)
+        .map(([nome, qtd]) => nome + ": " + qtd)
+        .join(" • ");
+
+      const div = document.createElement("div");
+      div.className = "card os-card";
+      div.innerHTML = `
+        <p><b>${os.hora} - ${os.nome}</b></p>
+        <p>📞 ${os.telefone}</p>
+        <p>${itens}</p>
+        <p>💰 ${dinheiro(os.valor)} | ${os.pagamento}</p>
+        <p>📌 Status: <b>${os.status}</b></p>
+        ${os.observacao ? `<p>📝 ${os.observacao}</p>` : ""}
+        <button class="btn btn-blue" onclick="marcarPronto('${os.id}')">Marcar como pronto</button>
+        <button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar OS</button>
+      `;
+      box.appendChild(div);
+    });
+  }
+
+  function renderClientes() {
+    const busca = document.getElementById("buscaCliente").value.toLowerCase().trim();
+    const lista = ordens.filter(os =>
+      !busca ||
+      String(os.nome || "").toLowerCase().includes(busca) ||
+      String(os.telefone || "").includes(busca)
+    );
+
+    const box = document.getElementById("clientesLista");
+    box.innerHTML = "";
+
+    if (lista.length === 0) {
+      box.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
+      return;
     }
 
-    function switchTab(tabName) {
-        if(currentRole !== 'dono' && tabName === 'ajustes') return;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        document.getElementById(`btn-${tabName}`).classList.add('active');
-        document.getElementById(`tab-${tabName}`).classList.add('active');
-        if(tabName === 'agenda') renderAgenda();
+    lista.forEach(os => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        <p><b>${os.nome}</b></p>
+        <p>📞 ${os.telefone}</p>
+        <p>📅 ${dataBR(os.data)} às ${os.hora}</p>
+        <p>💰 ${dinheiro(os.valor)} | ${os.status}</p>
+      `;
+      box.appendChild(div);
+    });
+  }
+
+  async function marcarPronto(id) {
+    await db.collection(colecao).doc(id).update({ status: "Pronto" });
+  }
+
+  async function apagarOS(id) {
+    if (confirm("Deseja apagar esta OS?")) {
+      await db.collection(colecao).doc(id).delete();
     }
+  }
 
-    function getOSListLocal() { return JSON.parse(localStorage.getItem('afia_os_db') || '[]').filter(os => os.officeCode === currentOffice); }
-    function setOSListLocal(list) {
-        let oldRaw = JSON.parse(localStorage.getItem('afia_os_db') || '[]');
-        let foreignData = oldRaw.filter(os => os.officeCode !== currentOffice);
-        localStorage.setItem('afia_os_db', JSON.stringify([...foreignData, ...list]));
-    }
-    function getClientsMap() { return JSON.parse(localStorage.getItem('afia_clients_map') || '{}'); }
-    function setClientsMap(map) { localStorage.setItem('afia_clients_map', JSON.stringify(map)); }
-    function getServices() { let raw = JSON.parse(localStorage.getItem('afia_services')); if (!raw || raw.length === 0 || typeof raw[0] === 'string') return defaultServices; return raw; }
-    function setServices(srv) { localStorage.setItem('afia_services', JSON.stringify(srv)); }
-    function formatDisplayDate(dateStr) { if(!dateStr) return ''; const [a, m, d] = dateStr.split('-'); return `${d}/${m}/${a}`; }
-    function getToolsCountFromOS(os) { return parseInt(os.totalTools !== undefined ? os.totalTools : (os.tools || 0)); }
-
-    function autocompleteClient() {
-        const phone = document.getElementById('os-phone').value;
-        const clients = getClientsMap(); if (clients[phone]) document.getElementById('os-name').value = clients[phone];
-    }
-
-    function calculateLiveTotal() {
-        const services = getServices(); let calculatedValue = 0;
-        services.forEach((service, index) => {
-            const inputField = document.getElementById(`qty-${index}`);
-            calculatedValue += (inputField ? (parseInt(inputField.value) || 0) : 0) * (parseFloat(service.price) || 0);
-        });
-        document.getElementById('os-value').value = calculatedValue.toFixed(2);
-        const targetDate = document.getElementById('agenda-date').value;
-        if (!isCloudActive) updateTopStats(getOSListLocal().filter(os => os.date === targetDate));
-    }
-
-    function renderDynamicFormServices() {
-        const services = getServices(); const container = document.getElementById('dynamic-qty-container'); if(!container) return;
-        container.innerHTML = "";
-        services.forEach((service, index) => {
-            const div = document.createElement('div'); div.className = "qty-row";
-            div.innerHTML = `<div class="qty-label">${service.name}<span class="qty-price-hint">R$ ${parseFloat(service.price).toFixed(2)}</span></div><input type="number" id="qty-${index}" class="qty-input" min="0" placeholder="0" value="" oninput="calculateLiveTotal()">`;
-            container.appendChild(div);
-        });
-    }
-
-    function renderSettingsServices() {
-        const services = getServices(); const container = document.getElementById('setting-services-list'); if(!container) return;
-        container.innerHTML = "";
-        services.forEach((service, index) => {
-            const div = document.createElement('div'); div.className = "setting-item-row";
-            div.innerHTML = `<span>${service.name} (R$ ${parseFloat(service.price).toFixed(2)})</span><button class="btn-mini-del" onclick="removeService(${index})">Remover</button>`;
-            container.appendChild(div);
-        });
-    }
-
-    function addService() {
-        const nameInput = document.getElementById('new-service-name'); const priceInput = document.getElementById('new-service-price');
-        if(nameInput.value.trim() === "" || !priceInput.value) return;
-        const services = getServices(); services.push({name: nameInput.value.trim(), price: parseFloat(priceInput.value)}); setServices(services);
-        nameInput.value = ""; priceInput.value = ""; renderDynamicFormServices(); renderSettingsServices();
-    }
-
-    function removeService(index) { const services = getServices(); services.splice(index, 1); setServices(services); renderDynamicFormServices(); renderSettingsServices(); }
-    function saveWATemplate() { localStorage.setItem('afia_wa_template', document.getElementById('wa-template-input').value); }
-    function uploadLogo(e) { const file = e.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onloadend = function() { localStorage.setItem('afia_logo', reader.result); loadLogo(); }; reader.readAsDataURL(file); }
-    function clearLogo() { localStorage.removeItem('afia_logo'); loadLogo(); }
-    function loadLogo() { const data = localStorage.getItem('afia_logo'); const appHeader = document.getElementById('main-app-header'); const printHeader = document.getElementById('pt-header-logo'); if(data) { appHeader.innerHTML = `<img src="${data}"><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `<img src="${data}"><div>VIA DA LOJA</div>`; } else { appHeader.innerHTML = `<h1>AFIA</h1><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `AFIA - VIA DA LOJA`; } }
-
-    function updateTopStats(osDoDia) {
-        const orderElem = document.getElementById('stat-orders'); const piecesElem = document.getElementById('stat-pieces'); const moneyElem = document.getElementById('stat-money');
-        if(orderElem) orderElem.innerText = osDoDia.length;
-        let totalPecas = 0; let totalDinheiro = 0;
-        osDoDia.forEach(os => { totalPecas += getToolsCountFromOS(os); totalDinheiro += parseFloat(os.value || 0); });
-        if(piecesElem) piecesElem.innerText = totalPecas; if(moneyElem) moneyElem.innerText = `R$ ${totalDinheiro.toFixed(2)}`;
-    }
-
-    async function changeProductionStatus(id, fireId, newStatus) {
-        if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).update({ production: newStatus }); } 
-        else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if (os) { os.production = newStatus; setOSListLocal(list); renderAgenda(); } }
-        showUAlert("⚙️ Produção", "Status interno atualizado com sucesso!");
-    }
-
-    async function saveOS(e) {
-        e.preventDefault();
-        document.getElementById('os-form').style.display = 'none';
-        document.getElementById('action-panel').classList.add('active');
-
-        try {
-            const phone = document.getElementById('os-phone').value; const name = document.getElementById('os-name').value;
-            const value = parseFloat(document.getElementById('os-value').value || 0).toFixed(2);
-            const date = document.getElementById('os-date').value; const time = document.getElementById('os-time').value;
-            const status = document.getElementById('os-status').value; const payment = document.getElementById('os-payment').value;
-            const production = document.getElementById('os-production').value;
-
-            const services = getServices(); const osItems = {}; let totalTools = 0; let totalGeralItens = 0;  
-
-            services.forEach((service, index) => {
-                const inputField = document.getElementById(`qty-${index}`); const qty = inputField ? (parseInt(inputField.value) || 0) : 0;
-                if (qty > 0) { 
-                    osItems[service.name] = qty; totalGeralItens += qty;
-                    const nomeLower = service.name.toLowerCase();
-                    if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) { totalTools += qty; }
-                }
-            });
-
-            if (totalGeralItens === 0) { showUAlert("⚠️ Erro", "Escolha a quantidade de pelo menos 1 serviço."); resetOSForm(); return; }
-
-            let fullList = [];
-            if (isCloudActive) {
-                const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).where("date", "==", date).get();
-                snap.forEach(doc => fullList.push(doc.data()));
-            } else { fullList = getOSListLocal().filter(os => os.date === date); }
-
-            const ocupacaoAtual = {}; todosHorarios.forEach(h => ocupacaoAtual[h] = 0);
-            fullList.forEach(os => {
-                if (os.allocations) {
-                    for (let h in os.allocations) { if(ocupacaoAtual[h] !== undefined) ocupacaoAtual[h] += parseInt(os.allocations[h] || 0); }
-                } else { if(ocupacaoAtual[os.time] !== undefined) ocupacaoAtual[os.time] += getToolsCountFromOS(os); }
-            });
-
-            let timeIndex = todosHorarios.indexOf(time); let allocations = {}; let remaining = totalTools;
-            if (remaining > 0 && timeIndex !== -1) {
-                for (let i = timeIndex; i >= 0; i--) {
-                    let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
-                    if (vagasLivres > 0) { let toTake = Math.min(vagasLivres, remaining); allocations[h] = toTake; remaining -= toTake; if (remaining === 0) break; }
-                }
-                if (remaining > 0) {
-                    for (let i = timeIndex + 1; i < todosHorarios.length; i++) {
-                        let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
-                        if (vagasLivres > 0) { allocations[h] = (allocations[h] || 0) + Math.min(vagasLivres, remaining); remaining -= Math.min(vagasLivres, remaining); if (remaining === 0) break; }
-                    }
-                }
-                if (remaining > 0) { showUAlert("⚠️ Sem Vagas", `Não há vagas suficientes perto das ${time}h.`); resetOSForm(); return; }
-            }
-
-            osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools, allocations, status, payment, production };
-
-            if (isCloudActive) { await db.collection("ordens").add(osRecente); } 
-            else { let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); }
-
-            const clients = getClientsMap(); clients[phone] = name; setClientsMap(clients);
-
-            document.getElementById('pt-date').innerText = formatDisplayDate(date);
-            document.getElementById('pt-time').innerText = time; document.getElementById('pt-name').innerText = name;
-            document.getElementById('pt-phone').innerText = phone; document.getElementById('pt-total').innerText = value;
-            document.getElementById('pt-pay-status').innerText = (payment === 'pago') ? 'JÁ PAGO' : 'PAGAR NA RETIRADA';
-            let txtDetails = ""; for (const [item, qty] of Object.entries(osItems)) { txtDetails += `• ${item}: ${qty}<br>`; }
-            document.getElementById('pt-details').innerHTML = txtDetails;
-
-            let cleanPhone = phone.replace(/\D/g, ''); if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
-            let template = localStorage.getItem('afia_wa_template') || defaultTemplate;
-            if (status === 'pending') {
-                template = `*AFIA - HORÁRIO RESERVADO*\n\nOlá, *{nome}*!\nSeu horário foi guardado na nuvem.\n\n📅 *Dia Combinado:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo:*\n{itens}\n\n💰 *Valor Estimado:* R$ {valor} ({pg})`;
-            }
-            let itemText = ""; for (const [item, qty] of Object.entries(osItems)) { itemText += `\n- ${item}: ${qty}`; }
-            let payLabel = (payment === 'pago') ? 'Já Pago' : 'Pagar na Entrega';
-            let msg = template.replace(/{nome}/g, name).replace(/{data}/g, formatDisplayDate(date)).replace(/{horario}/g, time).replace(/{valor}/g, value).replace(/{itens}/g, itemText.trim()).replace(/{pg}/g, payLabel);
-            
-            document.getElementById('wa-share-link').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
-
-            if (!isCloudActive) renderAgenda();
-        } catch (err) { console.error(err); }
-    }
-
-    function triggerPrint() { window.print(); }
-    function resetOSForm() { osRecente = null; document.getElementById('os-form').reset(); document.getElementById('os-date').value = todayStr; document.getElementById('os-form').style.display = 'block'; document.getElementById('action-panel').classList.remove('active'); renderDynamicFormServices(); switchTab('agenda'); }
-    function renderAgenda() { buildAgendaDOM(getOSListLocal().filter(os => os.date === document.getElementById('agenda-date').value)); }
-
-    function buildAgendaDOM(osDoDia) {
-        updateTopStats(osDoDia); const tableBody = document.getElementById('agenda-table-body'); if (!tableBody) return;
-        tableBody.innerHTML = "";
-        
-        const ocupacaoConfirmada = {}; const ocupacaoPendente = {}; todosHorarios.forEach(h => { ocupacaoConfirmada[h] = 0; ocupacaoPendente[h] = 0; });
-        let caixaPago = 0; let caixaReceber = 0; let totalPecasDoDia = 0;
-
-        osDoDia.forEach(os => {
-            if (os.payment === 'pago') { caixaPago += parseFloat(os.value || 0); } else { caixaReceber += parseFloat(os.value || 0); }
-            const isPending = os.status === 'pending';
-            if (os.allocations) {
-                for (let h in os.allocations) { 
-                    if (isPending) ocupacaoPendente[h] += parseInt(os.allocations[h] || 0); else ocupacaoConfirmada[h] += parseInt(os.allocations[h] || 0);
-                    totalPecasDoDia += parseInt(os.allocations[h] || 0);
-                }
-            } else {
-                let t = getToolsCountFromOS(os); if (isPending) ocupacaoPendente[os.time] += t; else ocupacaoConfirmada[os.time] += t; totalPecasDoDia += t;
-            }
-        });
-
-        const capacidadeMaxima = todosHorarios.length * 5; let capColor = (totalPecasDoDia >= capacidadeMaxima) ? '#ff3b30' : '#007aff';
-        let financialHTML = "";
-        if (currentRole === 'dono') {
-            financialHTML = `
-                <div style="flex:1; background:#e8f5e9; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:#2e7d32;">💰 Em Caixa<br>R$ ${caixaPago.toFixed(2)}</div>
-                <div style="flex:1; background:#ffebee; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:#c62828;">⏳ A Receber<br>R$ ${caixaReceber.toFixed(2)}</div>
-            `;
-        }
-
-        const finSummaryDiv = document.getElementById('financial-day-summary');
-        if (finSummaryDiv) {
-            finSummaryDiv.innerHTML = `${financialHTML}<div style="flex:1; background:#f2f2f7; border: 1px solid ${capColor}; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:${capColor};">📊 Carga do Dia<br>${totalPecasDoDia} / ${capacidadeMaxima} pçs</div>`;
-        }
-
-        function criarLinha(h) {
-            const tr = document.createElement('tr'); tr.innerHTML = `<td class="time-col">${h}</td>`;
-            const tdSlots = document.createElement('td'); const slotContainer = document.createElement('div'); slotContainer.className = "slots-col";
-            let c = ocupacaoConfirmada[h] || 0; let p = ocupacaoPendente[h] || 0;
-            for (let i = 0; i < 5; i++) {
-                const sq = document.createElement('div'); sq.className = "square";
-                if (i < c) sq.classList.add('occupied'); else if (i < (c + p)) sq.classList.add('pending');
-                slotContainer.appendChild(sq);
-            }
-            tdSlots.appendChild(slotContainer); tr.appendChild(tdSlots); tableBody.appendChild(tr);
-        }
-
-        horariosManha.forEach(h => criarLinha(h));
-        const iv = document.createElement('tr'); iv.className = "interval-row"; iv.innerHTML = `<td colspan="2">☕ ALMOÇO / INTERVALO (13:30 às 14:30)</td>`; tableBody.appendChild(iv);
-        horariosTarde.forEach(h => criarLinha(h));
-
-        const listDiv = document.getElementById('day-os-list'); listDiv.innerHTML = "";
-        if(osDoDia.length === 0) { listDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum serviço registrado para hoje.</div>"; return; }
-        
-        osDoDia.sort((a,b) => a.time.localeCompare(b.time));
-        osDoDia.forEach(os => {
-            const fId = os.fireId ? `'${os.fireId}'` : 'null';
-            let actBtn = "";
-            if (os.status === 'pending') actBtn += `<button class="btn-sec" style="background:#ff9500; margin-top:8px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSArrival(${os.id}, ${fId})">📥 Confirmar Chegada</button>`;
-            if (os.payment === 'entrega' && currentRole === 'dono') actBtn += `<button class="btn-sec" style="background:#34c759; margin-top:6px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSPayment(${os.id}, ${fId})">💵 Receber Dinheiro</button>`;
-            
-            let clPhone = os.phone.replace(/\D/g, ''); if (!clPhone.startsWith('55')) clPhone = '55' + clPhone;
-            let payTxt = (os.payment === 'pago') ? 'JÁ ESTÁ PAGO' : `Valor a pagar: R$ ${os.value}`;
-            let rdyMsg = `*AFIA - SEUS ALICATES FICARAM PRONTOS!* ✂️🔥\n\nOlá, *${os.name}*!\nPassando para avisar que o seu serviço já foi finalizado com o nosso padrão máximo de qualidade e já está disponível para retirada no balcão.\n\n💰 *${payTxt}*\n\n_Estamos te aguardando!_`;
-            let readyHref = `https://wa.me/${clPhone}?text=${encodeURIComponent(rdyMsg)}`;
-
-            actBtn += `
-                <div style="margin-top:6px; display:flex; gap:4px;">
-                    <select style="font-size:11px; padding:4px; border-radius:6px;" onchange="changeProductionStatus(${os.id}, ${fId}, this.value)">
-                        <option value="recebido" ${os.production==='recebido'?'selected':''}>📦 Recebido</option>
-                        <option value="bancada" ${os.production==='bancada'?'selected':''}>🔥 Na Bancada</option>
-                        <option value="pronto" ${os.production==='pronto'?'selected':''}>🟢 Pronto</option>
-                    </select>
-                    <a class="btn-sec" style="background:#007aff; flex:1; padding:4px; font-size:11px; border-radius:6px; text-decoration:none; display:flex; align-items:center; justify-content:center; color:white; font-weight:600;" href="${readyHref}" target="_blank">⚡ WhatsApp: PRONTO</a>
-                </div>
-            `;
-
-            const card = document.createElement('div'); card.className = "os-card";
-            card.innerHTML = `<span class="time-tag">${os.time}h</span><span style="font-size:11px; font-weight:700; margin-left:10px;">${os.status==='pending'?'⏳':'📦'} | ${os.payment==='pago'?'🟢 PAGO':'🔴 DEVE'}</span><button class="btn-del" onclick="deleteOS(${os.id}, ${fId})">Apagar</button><p style="margin-top:8px;"><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças da Agenda:</strong> ${getToolsCountFromOS(os)} pçs | <strong>Valor:</strong> R$ ${os.value}</p>${actBtn}`;
-            listDiv.appendChild(card);
-        });
-    }
-
-    async function deleteOS(id, fireId) {
-        showAppleConfirm("⚠️ Apagar OS", "Deseja remover este atendimento permanentemente?", async function() {
-            if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).delete(); } 
-            else { let list = getOSListLocal(); list = list.filter(os => os.id !== id); setOSListLocal(list); renderAgenda(); }
-        });
-    }
-
-    async function trackClientOrder() {
-        const phone = document.getElementById('track-client-phone').value.trim(); const resultDiv = document.getElementById('public-tracking-result'); if (!phone || !resultDiv) return;
-        let fullList = []; if (isCloudActive) { const snap = await db.collection("ordens").where("phone", "==", phone).get(); snap.forEach(doc => fullList.push(doc.data())); } else { fullList = JSON.parse(localStorage.getItem('afia_os_db') || '[]').filter(os => os.phone === phone); }
-        if (fullList.length === 0) { resultDiv.innerHTML = "<div style='color:#ff3b30; font-size:12px; font-weight:700; text-align:center;'>Nenhum pedido encontrado.</div>"; return; }
-        fullList.sort((a,b) => b.id - a.id); const activeOS = fullList[0]; const prod = activeOS.production || 'recebido';
-        let step1 = 'done', step2 = '', step3 = ''; if (prod === 'bancada') { step2 = 'current'; step1 = 'done'; } if (prod === 'prto' || prod === 'pronto') { step1 = 'done'; step2 = 'done'; step3 = 'done'; } if (prod === 'recebido') { step1 = 'current'; }
-        resultDiv.innerHTML = `<div style="background:#fff; border:1px solid #d2d2d7; border-radius:10px; padding:10px; margin-top:5px;"><p style="font-size:12px; margin:0;"><strong>Cliente:</strong> ${activeOS.name}</p><p style="font-size:12px; margin:3px 0;"><strong>Retirada:</strong> ${formatDisplayDate(activeOS.date)} às ${activeOS.time}h</p><div class="track-timeline"><div class="track-step ${step1}"><div class="track-dot">1</div>Recebido</div><div class="track-step ${step2}"><div class="track-dot">2</div>Na Bancada</div><div class="track-step ${step3}"><div class="track-dot">3</div>Pronto!</div></div></div>`;
-    }
-
-    async function searchCustomerHistory() {
-        const query = document.getElementById('search-query').value.trim().toLowerCase(); const resultsDiv = document.getElementById('customer-history-results'); resultsDiv.innerHTML = ""; if(query === "") return;
-        let fullList = []; if (isCloudActive) { const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).get(); snap.forEach(doc => fullList.push(doc.data())); } else { fullList = getOSListLocal(); }
-        const filtered = fullList.filter(os => (os.phone && os.phone.includes(query)) || (os.name && os.name.toLowerCase().includes(query)));
-        if(filtered.length === 0) { resultsDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum registro.</div>"; return; }
-        filtered.sort((a,b) => b.id - a.id);
-        filtered.forEach(os => {
-            const card = document.createElement('div'); card.className = "os-card";
-            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name} (${os.phone})</p><p><strong>Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Preço:</strong> R$ ${os.value} | <strong>Status:</strong> ${os.payment==='pago'?'🟢 Pago':'🔴 Na entrega'}</p>`;
-            resultsDiv.appendChild(card);
-        });
-    }
-
-    function exportDatabaseText() {
-        const out = { os: localStorage.getItem('afia_os_db'), clients: localStorage.getItem('afia_clients_map'), services: localStorage.getItem('afia_services'), template: localStorage.getItem('afia_wa_template'), logo: localStorage.getItem('afia_logo') };
-        document.getElementById('backup-box').value = btoa(unescape(encodeURIComponent(JSON.stringify(out))));
-        showUAlert("🛡️ Cópia de Segurança", "Código gerado com sucesso na caixa de texto!");
-    }
-    function importDatabaseText() {
-        try {
-            const dec = JSON.parse(decodeURIComponent(escape(atob(document.getElementById('backup-box').value.trim()))));
-            if(dec.os) localStorage.setItem('afia_os_db', dec.os); if(dec.clients) localStorage.setItem('afia_clients_map', dec.clients); if(dec.services) localStorage.setItem('afia_services', dec.services); if(dec.template) localStorage.setItem('afia_wa_template', dec.template); if(dec.logo) localStorage.setItem('afia_logo', dec.logo);
-            showUAlert("🎉 Sucesso", "Banco de dados local restaurado!"); window.location.reload();
-        } catch(e) { showUAlert("❌ Erro", "Código de backup inválido!"); }
-    }
-
-    const selectTimeForm = document.getElementById('os-time');
-    if (selectTimeForm && selectTimeForm.options.length === 0) { todosHorarios.forEach(h => { let opt = document.createElement('option'); opt.value = h; opt.innerText = h; selectTimeForm.appendChild(opt); }); }
-    if(!localStorage.getItem('afia_wa_template')) localStorage.setItem('afia_wa_template', defaultTemplate);
-    document.getElementById('wa-template-input').value = localStorage.getItem('afia_wa_template');
-    
-    document.getElementById('agenda-date').value = todayStr; document.getElementById('os-date').value = todayStr;
-
-    loadLogo(); renderDynamicFormServices(); renderSettingsServices(); checkDailySession();
+  iniciar();
 </script>
 </body>
 </html>
