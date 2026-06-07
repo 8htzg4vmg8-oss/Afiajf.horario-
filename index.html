@@ -20,7 +20,7 @@
         .container {
             width: 100%;
             max-width: 480px;
-            margin: 0 auto;
+            margin: 0 -auto;
             box-sizing: border-box;
         }
         
@@ -205,7 +205,8 @@
             <tbody id="agenda-table-body"></tbody>
         </table>
         
-        <div id="owner-financial-summary" style="margin-top: 12px; display: flex; gap: 8px;"></div>
+        <div id="financial-day-summary" style="margin-top: 12px; display: flex; gap: 8px;"></div>
+        
         <h3 style="font-size: 14px; font-weight: 700; margin: 15px 0 8px 2px;">Ordens do Dia</h3>
         <div id="day-os-list"></div>
     </div>
@@ -323,7 +324,6 @@
     const horariosTarde = ["14:30", "15:00", "15:30", "16:00", "16:30"];
     const todosHorarios = [...horariosManha, ...horariosTarde];
     
-    // TABELA DE PREÇOS INTEGRADA POR PADRÃO
     const defaultServices = [
         {name: "✂️ Alicates de Cutícula", price: 10.00},
         {name: "🔪 Facas", price: 12.00},
@@ -335,7 +335,6 @@
 
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // TRAVA DE SEGURANÇA DIÁRIA: Verifica se a sessão expirou à meia-noite
     function checkDailySession() {
         const savedSessionDate = localStorage.getItem('afia_session_date');
         if (savedSessionDate === todayStr) {
@@ -358,7 +357,6 @@
 
         if (!currentOffice || !pin) return;
 
-        // Grava sessão inteligente para o dia inteiro
         localStorage.setItem('afia_session_date', todayStr);
         localStorage.setItem('afia_office_code', currentOffice);
         localStorage.setItem('afia_user_role', currentRole);
@@ -376,7 +374,6 @@
         activateScreen('screen-login');
     }
 
-    // CONTROLE DE NÍVEIS DE ACESSO (DONO VS FUNCIONÁRIO)
     function applyRolePermissions() {
         const isDono = (currentRole === 'dono');
         if (isDono) {
@@ -385,7 +382,7 @@
         } else {
             document.getElementById('btn-ajustes').style.display = "none";
             document.getElementById('owner-stat-money-card').style.display = "none";
-            switchTab('nova-os'); // Força funcionário a sair de abas restritas
+            switchTab('nova-os');
         }
     }
 
@@ -403,7 +400,6 @@
         if(tabName === 'agenda') renderAgenda();
     }
 
-    // BASE DE DADOS MULTI-TENANT (FILTRA PELO CÓDIGO DA MATRIZ DA OFICINA)
     function getOSListLocal() { 
         let raw = JSON.parse(localStorage.getItem('afia_os_db') || '[]');
         return raw.filter(os => os.officeCode === currentOffice);
@@ -420,7 +416,6 @@
     function getServices() { return JSON.parse(localStorage.getItem('afia_services') || JSON.stringify(defaultServices)); }
     function setServices(srv) { localStorage.setItem('afia_services', JSON.stringify(srv)); }
 
-    // SISTEMA DE PREÇOS AUTOMÁTICO DE BALCÃO
     function calculateLiveTotal() {
         const services = getServices();
         let calculatedValue = 0;
@@ -474,7 +469,6 @@
         renderDynamicFormServices(); renderSettingsServices();
     }
 
-    // ATUALIZAÇÃO DO STATUS DE PRODUÇÃO EM TEMPO REAL
     async function changeProductionStatus(id, fireId, newStatus) {
         if (isCloudActive && fireId) {
             await db.collection("ordens").doc(fireId).update({ production: newStatus });
@@ -485,7 +479,6 @@
         alert(`⚙️ Status de produção alterado para: ${newStatus.toUpperCase()}`);
     }
 
-    // PORTAL DE RASTREAMENTO PÚBLICO (CLIENTE CONSULTA DA PONTA)
     async function trackClientOrder() {
         const phone = document.getElementById('track-client-phone').value.trim();
         const resultDiv = document.getElementById('public-tracking-result');
@@ -501,12 +494,12 @@
         }
 
         if (fullList.length === 0) {
-            resultDiv.innerHTML = "<div style='color:#ff3b30; font-size:12px; font-weight:700; text-align:center;'>Nenhum pedido encontrado para este número.</div>";
+            resultDiv.innerHTML = "<div style='color:#ff3b30; font-size:12px; font-weight:700; text-align:center;'>Nenhum pedido encontrado.</div>";
             return;
         }
 
         fullList.sort((a,b) => b.id - a.id);
-        const activeOS = fullList[0]; // Pega a ordem mais recente
+        const activeOS = fullList[0];
 
         const prod = activeOS.production || 'recebido';
         let step1 = 'done', step2 = '', step3 = '';
@@ -608,7 +601,6 @@
 
         const clients = getClientsMap(); clients[phone] = name; setClientsMap(clients);
 
-        // Preenche via para impressão
         document.getElementById('pt-date').innerText = formatDisplayDate(date);
         document.getElementById('pt-time').innerText = time; document.getElementById('pt-name').innerText = name;
         document.getElementById('pt-phone').innerText = phone; document.getElementById('pt-total').innerText = value;
@@ -635,35 +627,56 @@
 
     function renderAgenda() { buildAgendaDOM(getOSListLocal().filter(os => os.date === document.getElementById('agenda-date').value)); }
 
+    // ================= CORREÇÃO DO MOTOR VISUAL + CONTADOR DE CARGA =================
     function buildAgendaDOM(osDoDia) {
         updateTopStats(osDoDia);
         const tableBody = document.getElementById('agenda-table-body'); tableBody.innerHTML = "";
-        const ocupacaoConf = {}; const ocupacaoPend = {};
-        todosHorarios.forEach(h => { ocupacaoConf[h] = 0; ocupacaoPend[h] = 0; });
+        
+        // CORRIGIDO: Nomes batendo perfeitamente com a função criarLinha()
+        const ocupacaoConfirmada = {}; const ocupacaoPendente = {};
+        todosHorarios.forEach(h => { ocupacaoConfirmada[h] = 0; ocupacaoPendente[h] = 0; });
+        
         let caixaPago = 0; let caixaReceber = 0;
+        let totalPecasDoDia = 0;
 
         osDoDia.forEach(os => {
             if (os.payment === 'pago') { caixaPago += parseFloat(os.value || 0); } else { caixaReceber += parseFloat(os.value || 0); }
             const isPending = os.status === 'pending';
+            
             if (os.allocations) {
-                for (let h in os.allocations) { if (isPending) ocupacaoPend[h] += os.allocations[h]; else ocupacaoConf[h] += os.allocations[h]; }
+                for (let h in os.allocations) { 
+                    if (isPending) ocupacaoPendente[h] += os.allocations[h]; else ocupacaoConfirmada[h] += os.allocations[h];
+                    totalPecasDoDia += os.allocations[h];
+                }
             } else {
-                let t = getToolsCountFromOS(os); if (isPending) ocupacaoPend[os.time] += t; else ocupacaoConf[os.time] += t;
+                let t = getToolsCountFromOS(os); 
+                if (isPending) ocupacaoPendente[os.time] += t; else ocupacaoConfirmada[os.time] += t;
+                totalPecasDoDia += t;
             }
         });
 
-        // Visão restrita do Financeiro ao Proprietário
+        // 65 ou 70 capacidade com base nos horários cadastrados (14 slots x 5 vagas = 70)
+        const capacidadeMaxima = todosHorarios.length * 5; 
+        let capColor = (totalPecasDoDia >= capacidadeMaxima) ? '#ff3b30' : '#007aff';
+
+        let financialHTML = "";
         if (currentRole === 'dono') {
-            document.getElementById('owner-financial-summary').innerHTML = `
+            financialHTML = `
                 <div style="flex:1; background:#e8f5e9; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:#2e7d32;">💰 Em Caixa<br>R$ ${caixaPago.toFixed(2)}</div>
                 <div style="flex:1; background:#ffebee; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:#c62828;">⏳ A Receber<br>R$ ${caixaReceber.toFixed(2)}</div>
             `;
-        } else { document.getElementById('owner-financial-summary').innerHTML = ""; }
+        }
+
+        // ADIÇÃO DO CONTADOR GLOBAL SOLICITADO
+        document.getElementById('financial-day-summary').innerHTML = `
+            ${financialHTML}
+            <div style="flex:1; background:#f2f2f7; border: 1px solid ${capColor}; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:${capColor};">📊 Carga do Dia<br>${totalPecasDoDia} / ${capacidadeMaxima} pçs</div>
+        `;
 
         function criarLinha(h) {
             const tr = document.createElement('tr'); tr.innerHTML = `<td class="time-col">${h}</td>`;
             const tdSlots = document.createElement('td'); const slotContainer = document.createElement('div'); slotContainer.className = "slots-col";
-            let c = ocupacaoConf[h] || 0; let p = ocupacaoPend[h] || 0;
+            let c = ocupacaoConfirmada[h] || 0; let p = ocupacaoPendente[h] || 0;
             for (let i = 0; i < 5; i++) {
                 const sq = document.createElement('div'); sq.className = "square";
                 if (i < c) sq.classList.add('occupied'); else if (i < (c + p)) sq.classList.add('pending');
@@ -683,10 +696,9 @@
         osDoDia.forEach(os => {
             const fId = os.fireId ? `'${os.fireId}'` : 'null';
             let actBtn = "";
-            if (os.status === 'pending') actBtn += `<button class="btn-sec" style="background:#ff9500; margin-top:6px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSArrival(${os.id}, ${fId})">📥 Confirmar Chegada</button>`;
+            if (os.status === 'pending') actBtn += `<button class="btn-sec" style="background:#ff9500; margin-top:8px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSArrival(${os.id}, ${fId})">📥 Confirmar Chegada</button>`;
             if (os.payment === 'entrega' && currentRole === 'dono') actBtn += `<button class="btn-sec" style="background:#34c759; margin-top:6px; padding:6px; font-size:11px; width:100%; border-radius:6px;" onclick="confirmOSPayment(${os.id}, ${fId})">💵 Receber Dinheiro</button>`;
             
-            // MULTI-OPÇÕES DE PRODUÇÃO INTERNA
             actBtn += `
                 <div style="margin-top:6px; display:flex; gap:4px;">
                     <select style="font-size:11px; padding:4px; border-radius:6px;" onchange="changeProductionStatus(${os.id}, ${fId}, this.value)">
@@ -694,7 +706,7 @@
                         <option value="bancada" ${os.production==='bancada'?'selected':''}>🔥 Na Bancada</option>
                         <option value="pronto" ${os.production==='pronto'?'selected':''}>🟢 Pronto</option>
                     </select>
-                    <button class="btn-sec" style="background:#007aff; flex:1; padding:4px; font-size:11px; border-radius:6px;" onclick="triggerReadyWhatsApp('${os.phone}', '${os.name}', '${os.payment}', '${os.value}')">⚡ Avisar Pronto</button>
+                    <button class="btn-sec" style="background:#007aff; flex:1; padding:4px; font-size:11px; border-radius:6px;" onclick="triggerReadyWhatsApp('${os.phone}', '${os.name}', '${os.payment}', '${os.value}')">⚡ WhatsApp: PRONTO</button>
                 </div>
             `;
 
@@ -745,7 +757,6 @@
     }
     function clearFullDatabase() { if(confirm("🚨 LIMPAR DISPOSITIVO?")) { localStorage.clear(); window.location.reload(); } }
 
-    // INITIALIZATION RUN
     if(!localStorage.getItem('afia_wa_template')) localStorage.setItem('afia_wa_template', defaultTemplate);
     document.getElementById('wa-template-input').value = localStorage.getItem('afia_wa_template');
     
