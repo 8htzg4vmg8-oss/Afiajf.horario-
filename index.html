@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f5f7;
+            background-color: #f2f2f7;
             margin: 0;
             padding: 12px;
             -webkit-tap-highlight-color: transparent;
@@ -20,51 +20,62 @@
             box-sizing: border-box;
         }
         
-        /* CABEÇALHO DO VÍDEO */
+        /* CABEÇALHO COM LOGO DINÂMICA */
         .main-header {
             text-align: center;
-            margin: 15px 0 20px 0;
+            margin: 10px 0 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .main-header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             color: #1d1d1f;
         }
         .main-header p {
-            margin: 4px 0 0 0;
+            margin: 3px 0 0 0;
             font-size: 11px;
             font-weight: 700;
             color: #86868b;
             letter-spacing: 0.5px;
         }
+        .main-header img {
+            max-height: 70px;
+            max-width: 180px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
 
-        /* MENU DE ABAS */
+        /* MENU DE ABAS (4 ABAS AGORA) */
         .tabs {
             display: flex;
             background: #e5e5ea;
             padding: 2px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            gap: 2px;
         }
         .tab-btn {
             flex: 1;
             background: none;
             border: none;
-            padding: 12px 8px;
-            font-size: 14px;
+            padding: 10px 4px;
+            font-size: 12px;
             font-weight: 600;
             color: #48484a;
             cursor: pointer;
-            border-radius: 10px;
-            transition: background 0.2s, color 0.2s;
+            border-radius: 8px;
             -webkit-appearance: none;
+            white-space: nowrap;
         }
         .tab-btn.active {
             background: #ffffff;
             color: #1d1d1f;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
         .tab-content {
             display: none;
@@ -73,26 +84,25 @@
             display: block;
         }
 
-        /* CONTADORES DO TOPO (IGUAL AO VÍDEO) */
+        /* CONTADORES DO TOPO */
         .stats-row {
             display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
         .stat-card {
             flex: 1;
             background: #ffffff;
-            border: 1px solid #e5e5ea;
-            border-radius: 14px;
-            padding: 14px 10px;
+            border-radius: 12px;
+            padding: 12px 8px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
         .stat-num {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: #1d1d1f;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
         .stat-label {
             font-size: 11px;
@@ -100,28 +110,26 @@
             color: #86868b;
         }
 
-        /* CARDS DO FORMULÁRIO (ESTILO DO VÍDEO) */
+        /* CARDS */
         .card {
             background: #ffffff;
-            border: 1px solid #e5e5ea;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
         .card-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            color: #1d1d1f;
-            margin: 0 0 14px 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            color: #007aff;
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* CAMPOS DE ENTRADA */
+        /* INPUTS */
         .form-group {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
         .form-group:last-child {
             margin-bottom: 0;
@@ -131,13 +139,13 @@
             font-size: 13px;
             font-weight: 600;
             color: #1d1d1f;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
-        input[type="text"], input[type="tel"], input[type="number"], select, input[type="date"] {
+        input[type="text"], input[type="tel"], input[type="number"], select, input[type="date"], textarea {
             width: 100%;
-            font-size: 16px; /* Evita zoom automático no iPhone */
-            padding: 12px;
-            border-radius: 10px;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 8px;
             border: 1px solid #d2d2d7;
             background: #ffffff;
             color: #1d1d1f;
@@ -145,17 +153,14 @@
             -webkit-appearance: none;
             font-family: inherit;
         }
-        input:focus, select:focus {
-            outline: none;
-            border-color: #007aff;
-        }
+        textarea { resize: none; height: 110px; font-size: 14px; }
 
-        /* LINHAS DE QUANTIDADE (IGUAL AO VÍDEO) */
+        /* LISTA DE ITENS DINÂMICOS */
         .qty-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #f5f5f7;
         }
         .qty-row:last-child {
@@ -166,60 +171,93 @@
             font-size: 14px;
             font-weight: 600;
             color: #1d1d1f;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .qty-input {
-            width: 70px !important;
+            width: 65px !important;
             text-align: center;
-            padding: 8px !important;
+            padding: 6px !important;
         }
 
-        /* BOTÃO PRINCIPAL VERDE DO WHATSAPP */
+        /* GERENCIADOR DE AJUSTES */
+        .setting-item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .setting-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f5f5f7;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .btn-mini-del {
+            background: #ff3b30;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .inline-form {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* BOTÕES */
         .btn-main {
             background-color: #34c759;
             color: #ffffff;
             border: none;
-            padding: 16px;
-            font-size: 16px;
+            padding: 14px;
+            font-size: 15px;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 10px;
             width: 100%;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2);
+            margin-top: 15px;
             -webkit-appearance: none;
         }
+        .btn-sec {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-        /* TABELA DA AGENDA ATUALIZADA */
+        /* AGENDA & TABELA */
         table {
             width: 100%;
             border-collapse: collapse;
             background: #ffffff;
-            border-radius: 14px;
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #e5e5ea;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
         th, td {
-            padding: 12px 6px;
+            padding: 10px 4px;
             text-align: center;
             border-bottom: 1px solid #e5e5ea;
         }
         th {
             background: #f5f5f7;
-            font-size: 12px;
+            font-size: 11px;
             color: #86868b;
             font-weight: 600;
         }
         .time-col {
             font-weight: 700;
             color: #1d1d1f;
-            font-size: 16px;
+            font-size: 15px;
             width: 25%;
         }
         .slots-col {
@@ -228,10 +266,10 @@
             align-items: center;
         }
         .square {
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border: 2px solid #d2d2d7;
-            border-radius: 8px;
+            border-radius: 6px;
             background-color: #fff;
         }
         .square.occupied {
@@ -242,32 +280,29 @@
             background-color: #f5f5f7;
             font-weight: 600;
             color: #86868b;
-            font-size: 12px;
-            padding: 10px;
+            font-size: 11px;
         }
 
-        /* PAINEL DE SUCESSO PÓS-SALVAMENTO */
+        /* PAINEL DE AÇÕES DE SUCESSO */
         .action-panel {
             display: none;
             background: #ffffff;
-            border: 1px solid #e5e5ea;
-            border-radius: 16px;
-            padding: 16px;
-            margin-top: 15px;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 12px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .action-panel.active { display: block; }
         .btn-panel {
             display: block;
             width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 10px;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
             border: none;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
-            cursor: pointer;
             color: white;
             -webkit-appearance: none;
         }
@@ -275,35 +310,32 @@
         .btn-prt { background-color: #007aff; }
         .btn-new { background-color: #86868b; }
 
-        /* CARDS DA LISTA DE OS */
         .os-card {
             background: #ffffff;
-            border: 1px solid #e5e5ea;
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
             position: relative;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
         .time-tag {
             background: #007aff;
             color: white;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
             font-weight: 700;
             display: inline-block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
-        .os-card p { margin: 4px 0; font-size: 14px; }
+        .os-card p { margin: 3px 0; font-size: 13px; }
         .btn-del {
-            position: absolute; top: 14px; right: 14px;
+            position: absolute; top: 12px; right: 12px;
             background: #ff3b30; color: white; border: none;
-            padding: 5px 10px; font-size: 12px; border-radius: 6px;
+            padding: 4px 8px; font-size: 11px; border-radius: 5px;
             -webkit-appearance: none;
         }
 
-        /* FORMATO DE IMPRESSÃO DA IMPRESSORA TERMO */
         #print-ticket { display: none; }
         @media print {
             body { background: white; padding: 0; margin: 0; }
@@ -315,7 +347,8 @@
                 color: #000;
                 line-height: 1.4;
             }
-            .prt-header { text-align: center; font-size: 16px; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 6px; margin-bottom: 10px; }
+            .prt-header { text-align: center; font-size: 16px; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 6px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; }
+            .prt-header img { max-height: 50px; margin-bottom: 5px; }
             .prt-line { font-size: 13px; margin: 5px 0; }
             .prt-footer { margin-top: 20px; text-align: center; font-size: 11px; border-top: 1px dashed #000; padding-top: 6px; }
         }
@@ -324,7 +357,7 @@
 <body>
 
 <div id="print-ticket">
-    <div class="prt-header">AFIA - VIA DA LOJA</div>
+    <div class="prt-header" id="pt-header-logo">AFIA - VIA DA LOJA</div>
     <div class="prt-line"><strong>ENTREGA:</strong> <span id="pt-date"></span> às <span id="pt-time"></span></div>
     <div class="prt-line">----------------------------------------</div>
     <div class="prt-line"><strong>CLIENTE:</strong> <span id="pt-name"></span></div>
@@ -333,19 +366,20 @@
     <div class="prt-line" id="pt-details"></div>
     <div class="prt-line">----------------------------------------</div>
     <div class="prt-line"><strong>VALOR TOTAL:</strong> R$ <span id="pt-total"></span></div>
-    <div class="prt-footer">Obrigado pela preferência!</div>
+    <div class="prt-footer">Controle Interno de Oficina</div>
 </div>
 
 <div class="container">
-    <div class="main-header">
+    <div class="main-header" id="main-app-header">
         <h1>AFIA</h1>
         <p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>
     </div>
 
     <div class="tabs">
-        <button id="btn-agenda" class="tab-btn active" onclick="switchTab('agenda')">📅 Agenda</button>
-        <button id="btn-nova-os" class="tab-btn" onclick="switchTab('nova-os')">📝 Nova OS</button>
+        <button id="btn-agenda" class="tab-btn" onclick="switchTab('agenda')">📅 Agenda</button>
+        <button id="btn-nova-os" class="tab-btn active" onclick="switchTab('nova-os')">📝 Nova OS</button>
         <button id="btn-clientes" class="tab-btn" onclick="switchTab('clientes')">🔍 Clientes</button>
+        <button id="btn-ajustes" class="tab-btn" onclick="switchTab('ajustes')">⚙️ Ajustes</button>
     </div>
 
     <div class="stats-row">
@@ -359,102 +393,87 @@
         </div>
     </div>
 
-    <div id="tab-agenda" class="tab-content active">
-        <div class="card" style="padding: 12px;">
-            <div class="form-group" style="margin: 0; display: flex; justify-content: space-between; align-items: center; flex-direction: row;">
-                <label style="margin: 0;">Data da Agenda:</label>
-                <input type="date" id="agenda-date" onchange="renderAgenda()" style="width: auto; padding: 6px 10px;">
+    <div id="tab-agenda" class="tab-content">
+        <div class="card" style="padding: 10px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="margin: 0; font-weight: 600; font-size: 13px;">Data da Agenda:</label>
+                <input type="date" id="agenda-date" onchange="renderAgenda()" style="width: auto; padding: 5px 8px; font-size: 14px;">
             </div>
         </div>
-
         <table>
-            <thead>
-                <tr>
-                    <th>HORÁRIO</th>
-                    <th>VAGAS OCUPADAS</th>
-                </tr>
-            </thead>
+            <thead><tr><th>HORÁRIO</th><th>VAGAS OCUPADAS</th></tr></thead>
             <tbody id="agenda-table-body"></tbody>
         </table>
-
-        <h3 style="font-size: 15px; font-weight: 700; margin: 20px 0 10px 4px;">Ordens de Serviço do Dia</h3>
+        <h3 style="font-size: 14px; font-weight: 700; margin: 15px 0 8px 2px;">Ordens do Dia</h3>
         <div id="day-os-list"></div>
     </div>
 
-    <div id="tab-nova-os" class="tab-content">
+    <div id="tab-nova-os" class="tab-content active">
         <form id="os-form" onsubmit="saveOS(event)">
-            
             <div class="card">
                 <div class="card-title">🔍 Busca Rápida (Telefone)</div>
-                <div class="form-group">
-                    <input type="tel" id="os-phone" placeholder="Digite para buscar cadastro..." required oninput="autocompleteClient()">
-                </div>
-                <div class="form-group">
-                    <label>Nome do Cliente:</label>
-                    <input type="text" id="os-name" placeholder="Nome Completo" required>
-                </div>
+                <div class="form-group"><input type="tel" id="os-phone" placeholder="Digite o telefone..." required oninput="autocompleteClient()"></div>
+                <div class="form-group"><label>Nome do Cliente:</label><input type="text" id="os-name" placeholder="Nome Completo" required></div>
             </div>
 
             <div class="card">
-                <div class="card-title">🛠️ Marcar Quantidades:</div>
-                
-                <div class="qty-row">
-                    <div class="qty-label">✂️ Alicates de Cutícula</div>
-                    <input type="number" id="qty-alicates" class="qty-input" min="0" value="0" oninput="calculateLiveTotal()">
-                </div>
-                <div class="qty-row">
-                    <div class="qty-label">🔪 Facas</div>
-                    <input type="number" id="qty-facas" class="qty-input" min="0" value="0" oninput="calculateLiveTotal()">
-                </div>
-                <div class="qty-row">
-                    <div class="qty-label">✂️ Tesouras</div>
-                    <input type="number" id="qty-tesouras" class="qty-input" min="0" value="0" oninput="calculateLiveTotal()">
-                </div>
-                <div class="qty-row">
-                    <div class="qty-label">🌀 Molas Extras</div>
-                    <input type="number" id="qty-molas" class="qty-input" min="0" value="0" oninput="calculateLiveTotal()">
-                </div>
-                <div class="qty-row">
-                    <div class="qty-label">📦 Outros Serviços</div>
-                    <input type="number" id="qty-outros" class="qty-input" min="0" value="0" oninput="calculateLiveTotal()">
-                </div>
+                <div class="card-title">✂️ Marcar Quantidades:</div>
+                <div id="dynamic-qty-container"></div>
             </div>
 
             <div class="card">
-                <div class="card-title">📅 Dados de Entrega e Fechamento</div>
-                <div class="form-group">
-                    <label>Valor Total do Serviço (R$):</label>
-                    <input type="number" id="os-value" step="0.01" placeholder="R$ 0,00" required>
-                </div>
-                <div class="form-group">
-                    <label>Data da Entrega:</label>
-                    <input type="date" id="os-date" required onchange="calculateLiveTotal()">
-                </div>
-                <div class="form-group">
-                    <label>Horário da Entrega:</label>
-                    <select id="os-time" required onchange="calculateLiveTotal()"></select>
-                </div>
+                <div class="card-title">💰 Dados de Fechamento e Entrega</div>
+                <div class="form-group"><label>Valor Total do Serviço (R$):</label><input type="number" id="os-value" step="0.01" placeholder="R$ 0,00" required></div>
+                <div class="form-group"><label>Data da Entrega:</label><input type="date" id="os-date" required onchange="calculateLiveTotal()"></div>
+                <div class="form-group"><label>Horário da Entrega:</label><select id="os-time" required onchange="calculateLiveTotal()"></select></div>
             </div>
-
-            <button type="submit" class="btn-main">📱 Salvar e Avançar</button>
+            <button type="submit" class="btn-main">💾 Salvar Ordem de Serviço</button>
         </form>
 
         <div id="action-panel" class="action-panel">
-            <p style="color:#34c759; font-weight:700; margin: 0 0 10px 0; font-size: 16px;">🎉 Agendamento Registrado!</p>
+            <p style="color:#34c759; font-weight:700; margin: 0 0 12px 0; font-size: 15px;">🎉 OS Salva com Sucesso!</p>
             <button class="btn-panel btn-wa" onclick="triggerWhatsApp()">💬 Enviar via WhatsApp</button>
             <button class="btn-panel btn-prt" onclick="triggerPrint()">🖨️ Imprimir Via da Loja</button>
-            <button class="btn-panel btn-new" onclick="resetOSForm()">↩️ Novo Atendimento</button>
+            <button class="btn-panel btn-new" onclick="resetOSForm()">↩️ Novo Agendamento</button>
         </div>
     </div>
 
     <div id="tab-clientes" class="tab-content">
         <div class="card">
-            <div class="card-title">🔍 Histórico de Clientes</div>
-            <div class="form-group" style="margin: 0;">
-                <input type="tel" id="search-phone" placeholder="Digite o telefone para buscar..." oninput="searchCustomerHistory()">
-            </div>
+            <div class="card-title">🔍 Histórico por Cliente</div>
+            <div class="form-group" style="margin: 0;"><input type="tel" id="search-phone" placeholder="Digite o telefone..." oninput="searchCustomerHistory()"></div>
         </div>
         <div id="customer-history-results"></div>
+    </div>
+
+    <div id="tab-ajustes" class="tab-content">
+        <div class="card">
+            <div class="card-title">🖼️ Logo do Sistema</div>
+            <div class="form-group">
+                <input type="file" id="logo-input" accept="image/*" onchange="uploadLogo(event)" style="border:none; padding:0;">
+            </div>
+            <button class="btn-mini-del" style="background:#86868b; margin-top:5px;" onclick="clearLogo()">Remover Logo Atual</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🛠️ Gerenciar Serviços da OS</div>
+            <div class="setting-item-list" id="setting-services-list"></div>
+            <div class="inline-form">
+                <input type="text" id="new-service-name" placeholder="Ex: ✂️ Alicate de Unha">
+                <button type="button" class="btn-sec" onclick="addService()">+ Adicionar</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">💬 Template de Mensagem do WhatsApp</div>
+            <div class="form-group">
+                <textarea id="wa-template-input" oninput="saveWATemplate()"></textarea>
+                <p style="font-size:11px; color:#86868b; margin:6px 0 0 0; line-height:1.3;">
+                    Use as tags obrigatórias:<br>
+                    <strong>{nome}</strong>, <strong>{data}</strong>, <strong>{horario}</strong>, <strong>{valor}</strong>, <strong>{itens}</strong>
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -463,7 +482,9 @@
     const horariosTarde = ["14:30", "15:00", "15:30", "16:00", "16:30"];
     const todosHorarios = [...horariosManha, ...horariosTarde];
 
-    // Data Local de Hoje
+    const defaultServices = ["✂️ Alicates de Cutícula", "🔪 Facas", "✂️ Tesouras", "🌀 Molas Extras", "📦 Outros Serviços"];
+    const defaultTemplate = `*AFIA - ALTA CUTELARIA*\n\nOlá, *{nome}*!\nSua Ordem de Serviço foi gerada com sucesso.\n\n📅 *Previsão de Entrega:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo do Pedido:*\n{itens}\n\n💰 *Valor Total:* R$ {valor}\n\n_Obrigado pela preferência!_`;
+
     const agora = new Date();
     const dataHoje = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-${String(agora.getDate()).padStart(2, '0')}`;
 
@@ -472,7 +493,7 @@
 
     let osRecente = null;
 
-    // Popular Lista de Horários no Formulário
+    // Inicialização de Horários do Dropdown
     const selectTime = document.getElementById('os-time');
     todosHorarios.forEach(h => {
         let opt = document.createElement('option');
@@ -483,17 +504,18 @@
     function switchTab(tabName) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        
         document.getElementById(`btn-${tabName}`).classList.add('active');
         document.getElementById(`tab-${tabName}`).classList.add('active');
-        
-        renderAgenda();
+        if(tabName === 'agenda') renderAgenda();
     }
 
+    // DB Helpers
     function getOSList() { return JSON.parse(localStorage.getItem('afia_os_db') || '[]'); }
     function setOSList(list) { localStorage.setItem('afia_os_db', JSON.stringify(list)); }
     function getClientsMap() { return JSON.parse(localStorage.getItem('afia_clients_map') || '{}'); }
     function setClientsMap(map) { localStorage.setItem('afia_clients_map', JSON.stringify(map)); }
+    function getServices() { return JSON.parse(localStorage.getItem('afia_services') || JSON.stringify(defaultServices)); }
+    function setServices(srv) { localStorage.setItem('afia_services', JSON.stringify(srv)); }
 
     function formatDisplayDate(dateStr) {
         if(!dateStr) return '';
@@ -504,28 +526,100 @@
     function autocompleteClient() {
         const phone = document.getElementById('os-phone').value;
         const clients = getClientsMap();
-        if (clients[phone]) {
-            document.getElementById('os-name').value = clients[phone];
+        if (clients[phone]) document.getElementById('os-name').value = clients[phone];
+    }
+
+    // Gerenciamento Dinâmico de Serviços e Inputs
+    function renderDynamicFormServices() {
+        const services = getServices();
+        const container = document.getElementById('dynamic-qty-container');
+        container.innerHTML = "";
+        services.forEach((service, index) => {
+            const div = document.createElement('div');
+            div.className = "qty-row";
+            div.innerHTML = `<div class="qty-label">${service}</div><input type="number" id="qty-${index}" class="qty-input" min="0" value="0" oninput="calculateLiveTotal()">`;
+            container.appendChild(div);
+        });
+    }
+
+    function renderSettingsServices() {
+        const services = getServices();
+        const container = document.getElementById('setting-services-list');
+        container.innerHTML = "";
+        services.forEach((service, index) => {
+            const div = document.createElement('div');
+            div.className = "setting-item-row";
+            div.innerHTML = `<span>${service}</span><button class="btn-mini-del" onclick="removeService(${index})">Remover</button>`;
+            container.appendChild(div);
+        });
+    }
+
+    function addService() {
+        const nameInput = document.getElementById('new-service-name');
+        if(nameInput.value.trim() === "") return;
+        const services = getServices();
+        services.push(nameInput.value.trim());
+        setServices(services);
+        nameInput.value = "";
+        renderDynamicFormServices();
+        renderSettingsServices();
+    }
+
+    function removeService(index) {
+        const services = getServices();
+        services.splice(index, 1);
+        setServices(services);
+        renderDynamicFormServices();
+        renderSettingsServices();
+    }
+
+    // Gerenciamento de WhatsApp Template
+    function saveWATemplate() {
+        const txt = document.getElementById('wa-template-input').value;
+        localStorage.setItem('afia_wa_template', txt);
+    }
+
+    // Gerenciamento de Logo em Base64
+    function uploadLogo(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            localStorage.setItem('afia_logo', reader.result);
+            loadLogo();
+        }
+        reader.readAsDataURL(file);
+    }
+    function clearLogo() {
+        localStorage.removeItem('afia_logo');
+        loadLogo();
+    }
+    function loadLogo() {
+        const logoData = localStorage.getItem('afia_logo');
+        const appHeader = document.getElementById('main-app-header');
+        const printHeader = document.getElementById('pt-header-logo');
+        if(logoData) {
+            appHeader.innerHTML = `<img src="${logoData}"><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`;
+            printHeader.innerHTML = `<img src="${logoData}"><div>VIA DA LOJA</div>`;
+        } else {
+            appHeader.innerHTML = `<h1>AFIA</h1><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`;
+            printHeader.innerHTML = `AFIA - VIA DA LOJA`;
         }
     }
 
-    // Atualiza os números nos Cards de Estatísticas do topo em tempo real
+    // Estatísticas do Topo
     function updateTopStats(dateStr) {
         const osList = getOSList();
         const osDoDia = osList.filter(os => os.date === dateStr);
-        
-        const totalAtendimentos = osDoDia.length;
-        const totalPecas = osDoDia.reduce((sum, os) => sum + (os.totalTools || 0), 0);
-        
-        document.getElementById('stat-orders').innerText = totalAtendimentos;
-        document.getElementById('stat-pieces').innerText = totalPecas;
+        document.getElementById('stat-orders').innerText = osDoDia.length;
+        document.getElementById('stat-pieces').innerText = osDoDia.reduce((sum, os) => sum + (os.totalTools || 0), 0);
     }
 
     function calculateLiveTotal() {
-        const targetDate = document.getElementById('agenda-date').value;
-        updateTopStats(targetDate);
+        updateTopStats(document.getElementById('agenda-date').value);
     }
 
+    // Salvar Ordem de Serviço Inteligente
     function saveOS(e) {
         e.preventDefault();
         const phone = document.getElementById('os-phone').value;
@@ -534,32 +628,34 @@
         const date = document.getElementById('os-date').value;
         const time = document.getElementById('os-time').value;
 
-        const alicates = parseInt(document.getElementById('qty-alicates').value || 0);
-        const facas = parseInt(document.getElementById('qty-facas').value || 0);
-        const tesouras = parseInt(document.getElementById('qty-tesouras').value || 0);
-        const molas = parseInt(document.getElementById('qty-molas').value || 0);
-        const outros = parseInt(document.getElementById('qty-outros').value || 0);
+        const services = getServices();
+        const osItems = {};
+        let totalTools = 0;
 
-        const totalTools = alicates + facas + tesouras + molas + outros;
+        services.forEach((service, index) => {
+            const qty = parseInt(document.getElementById(`qty-${index}`).value || 0);
+            if (qty > 0) {
+                osItems[service] = qty;
+                totalTools += qty;
+            }
+        });
 
         if (totalTools === 0) {
-            alert("⚠️ Selecione pelo menos 1 ferramenta antes de salvar.");
+            alert("⚠️ Escolha a quantidade de pelo menos 1 serviço.");
             return;
         }
 
         const osList = getOSList();
-
-        // Validar limite de 5 vagas por horário
         const jaOcupadas = osList
             .filter(os => os.date === date && os.time === time)
             .reduce((sum, os) => sum + os.totalTools, 0);
 
         if (jaOcupadas + totalTools > 5) {
-            alert(`⚠️ HORÁRIO BLOQUEADO!\n\nEsse horário já tem ${jaOcupadas} ferramentas agendadas.\nRestam apenas ${5 - jaOcupadas} vaga(s). Você tentou colocar ${totalTools}.`);
+            alert(`⚠️ HORÁRIO SEM VAGAS!\n\nEste horário já possui ${jaOcupadas} ferramentas.\nRestam apenas ${5 - jaOcupadas} vagas.`);
             return;
         }
 
-        osRecente = { id: Date.now(), phone, name, value, date, time, alicates, facas, tesouras, molas, outros, totalTools };
+        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools };
         osList.push(osRecente);
         setOSList(osList);
 
@@ -567,7 +663,7 @@
         clients[phone] = name;
         setClientsMap(clients);
 
-        // Prepara Comprovante de Impressão Termo
+        // Preenche ticket de Impressão
         document.getElementById('pt-date').innerText = formatDisplayDate(date);
         document.getElementById('pt-time').innerText = time;
         document.getElementById('pt-name').innerText = name;
@@ -575,17 +671,13 @@
         document.getElementById('pt-total').innerText = value;
 
         let txtDetails = "";
-        if(alicates > 0) txtDetails += `• Alicates: ${alicates}<br>`;
-        if(facas > 0) txtDetails += `• Facas: ${facas}<br>`;
-        if(tesouras > 0) txtDetails += `• Tesouras: ${tesouras}<br>`;
-        if(molas > 0) txtDetails += `• Molas Extras: ${molas}<br>`;
-        if(outros > 0) txtDetails += `• Outros Itens: ${outros}<br>`;
+        for (const [item, qty] of Object.entries(osItems)) {
+            txtDetails += `• ${item}: ${qty}<br>`;
+        }
         document.getElementById('pt-details').innerHTML = txtDetails;
 
-        // Esconde formulário e ativa painel de ações finais
         document.getElementById('os-form').style.display = 'none';
         document.getElementById('action-panel').classList.add('active');
-        
         updateTopStats(document.getElementById('agenda-date').value);
     }
 
@@ -594,15 +686,19 @@
         let cleanPhone = osRecente.phone.replace(/\D/g, '');
         if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
         
-        let msg = `*AFIA - ALTA CUTELARIA*\n\nOlá, *${osRecente.name}*!\nSeu agendamento foi realizado com sucesso.\n\n📅 *Data de Entrega:* ${formatDisplayDate(osRecente.date)}\n⏰ *Horário:* ${osRecente.time}h\n\n*Resumo das Ferramentas:*`;
-        if(osRecente.alicates > 0) msg += `\n- Alicates de Cutícula: ${osRecente.alicates}`;
-        if(osRecente.facas > 0) msg += `\n- Facas: ${osRecente.facas}`;
-        if(osRecente.tesouras > 0) msg += `\n- Tesouras: ${osRecente.tesouras}`;
-        if(osRecente.molas > 0) msg += `\n- Molas Extras: ${osRecente.molas}`;
-        if(osRecente.outros > 0) msg += `\n- Outros Serviços: ${osRecente.outros}`;
+        let template = localStorage.getItem('afia_wa_template') || defaultTemplate;
+        let itemText = "";
+        for (const [item, qty] of Object.entries(osRecente.items)) {
+            itemText += `\n- ${item}: ${qty}`;
+        }
         
-        msg += `\n\n💰 *Valor Total:* R$ ${osRecente.value}\n\n_Agradecemos a preferência!_`;
-        
+        let msg = template
+            .replace(/{nome}/g, osRecente.name)
+            .replace(/{data}/g, formatDisplayDate(osRecente.date))
+            .replace(/{horario}/g, osRecente.time)
+            .replace(/{valor}/g, osRecente.value)
+            .replace(/{itens}/g, itemText.trim());
+            
         window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
@@ -614,11 +710,12 @@
         document.getElementById('os-date').value = dataHoje;
         document.getElementById('os-form').style.display = 'block';
         document.getElementById('action-panel').classList.remove('active');
+        renderDynamicFormServices();
         switchTab('agenda');
     }
 
     function deleteOS(id) {
-        if(confirm("Deseja apagar esta OS? As vagas da agenda serão liberadas.")) {
+        if(confirm("Deseja apagar esta OS? As vagas correspondentes serão liberadas.")) {
             let osList = getOSList();
             osList = osList.filter(os => os.id !== id);
             setOSList(osList);
@@ -629,7 +726,6 @@
     function renderAgenda() {
         const targetDate = document.getElementById('agenda-date').value;
         updateTopStats(targetDate);
-        
         const osList = getOSList();
         const tableBody = document.getElementById('agenda-table-body');
         tableBody.innerHTML = "";
@@ -639,64 +735,45 @@
         
         const osDoDia = osList.filter(os => os.date === targetDate);
         osDoDia.forEach(os => {
-            if(ocupacaoPorHorario[os.time] !== undefined) {
-                ocupacaoPorHorario[os.time] += os.totalTools;
-            }
+            if(ocupacaoPorHorario[os.time] !== undefined) ocupacaoPorHorario[os.time] += os.totalTools;
         });
 
         function criarLinha(h) {
             const tr = document.createElement('tr');
-            const tdTime = document.createElement('td');
-            tdTime.className = "time-col";
-            tdTime.innerText = h;
-
+            tr.innerHTML = `<td class="time-col">${h}</td>`;
             const tdSlots = document.createElement('td');
             const slotContainer = document.createElement('div');
             slotContainer.className = "slots-col";
-
             const totalOcupado = ocupacaoPorHorario[h];
-
             for (let i = 0; i < 5; i++) {
                 const square = document.createElement('div');
                 square.className = "square";
                 if (i < totalOcupado) square.classList.add('occupied');
                 slotContainer.appendChild(square);
             }
-
             tdSlots.appendChild(slotContainer);
-            tr.appendChild(tdTime);
             tr.appendChild(tdSlots);
             tableBody.appendChild(tr);
         }
 
         horariosManha.forEach(h => criarLinha(h));
-
         const intervalRow = document.createElement('tr');
         intervalRow.className = "interval-row";
         intervalRow.innerHTML = `<td colspan="2">☕ ALMOÇO / INTERVALO (13:30 às 14:30)</td>`;
         tableBody.appendChild(intervalRow);
-
         horariosTarde.forEach(h => criarLinha(h));
 
         const listDiv = document.getElementById('day-os-list');
         listDiv.innerHTML = "";
-        
         if(osDoDia.length === 0) {
-            listDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhuma ferramenta agendada para hoje.</div>";
+            listDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum serviço para esta data.</div>";
             return;
         }
-
         osDoDia.sort((a,b) => a.time.localeCompare(b.time));
-
         osDoDia.forEach(os => {
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `
-                <span class="time-tag">${os.time}h</span>
-                <button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button>
-                <p><strong>Cliente:</strong> ${os.name}</p>
-                <p><strong>Itens:</strong> ${os.totalTools} ferramenta(s) | <strong>Valor:</strong> R$ ${os.value}</p>
-            `;
+            card.innerHTML = `<span class="time-tag">${os.time}h</span><button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças:</strong> ${os.totalTools} | <strong>Total:</strong> R$ ${os.value}</p>`;
             listDiv.appendChild(card);
         });
     }
@@ -705,32 +782,30 @@
         const phone = document.getElementById('search-phone').value;
         const resultsDiv = document.getElementById('customer-history-results');
         resultsDiv.innerHTML = "";
-
         if(phone.trim() === "") return;
-
         const osList = getOSList();
         const historico = osList.filter(os => os.phone.includes(phone));
-
         if(historico.length === 0) {
             resultsDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum registro encontrado.</div>";
             return;
         }
-
         historico.sort((a,b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
-
         historico.forEach(os => {
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `
-                <span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span>
-                <p><strong>Cliente:</strong> ${os.name}</p>
-                <p><strong>Total de Peças:</strong> ${os.totalTools} | <strong>Total Pago:</strong> R$ ${os.value}</p>
-            `;
+            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Total Peças:</strong> ${os.totalTools} | <strong>Valor:</strong> R$ ${os.value}</p>`;
             resultsDiv.appendChild(card);
         });
     }
 
-    renderAgenda();
+    // Inicialização Geral do App
+    if(!localStorage.getItem('afia_wa_template')) localStorage.setItem('afia_wa_template', defaultTemplate);
+    document.getElementById('wa-template-input').value = localStorage.getItem('afia_wa_template');
+    
+    loadLogo();
+    renderDynamicFormServices();
+    renderSettingsServices();
+    updateTopStats(dataHoje);
 </script>
 </body>
 </html>
