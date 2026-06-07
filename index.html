@@ -284,12 +284,22 @@ function buscarClientePorTelefone(){
   }
 }
 
+
+function removerCamposUndefined(obj){
+  Object.keys(obj).forEach(k => {
+    if(obj[k] === undefined) obj[k] = "";
+    if(obj[k] && typeof obj[k] === "object" && !Array.isArray(obj[k]) && !(obj[k].toDate)) {
+      removerCamposUndefined(obj[k]);
+    }
+  });
+  return obj;
+}
+
 async function salvarOS(e){
   e.preventDefault();
   let itens={}, pecas=0;
   config.servicos.forEach((s,i)=>{let q=Number(document.getElementById("svc_"+i).value)||0;if(q>0){itens[s.nome]=q;pecas+=q}});
   if(!pecas){alert("Marque pelo menos 1 serviço.");return}
-  const pecasAgenda = calcularPecasAgenda(itens);
   const os={
     nome:document.getElementById("nome").value.trim(),
     telefone:document.getElementById("telefone").value.trim(),
@@ -297,8 +307,6 @@ async function salvarOS(e){
     hora:document.getElementById("horaEntrega").value,
     itens:itens,
     pecas:pecas,
-    pecasAgenda:pecasAgenda,
-    situacao:document.getElementById("situacao").value || "confirmado",
     observacao:document.getElementById("observacao").value.trim(),
     status:document.getElementById("status").value || "Recebido",
     pagamento:document.getElementById("pagamento").value || "Pagar na retirada",
