@@ -64,36 +64,36 @@ textarea{min-height:80px}
 <div class="container">
   <div class="header">
     <h1>AFIA</h1>
-    <p>ORDEM DE SERVIÇO • AGENDA • CLIENTES</p>
+    <p>ORDEM DE SERVIÃO â¢ AGENDA â¢ CLIENTES</p>
   </div>
 
   <section id="loginScreen" class="card">
-    <h3 class="title">🔐 Login</h3>
-    <label>Usuário</label><input id="loginUser" placeholder="Ex: dono">
+    <h3 class="title">ð Login</h3>
+    <label>UsuÃ¡rio</label><input id="loginUser" placeholder="Ex: dono">
     <label>Senha</label><input id="loginPass" type="password" placeholder="Senha">
     <button class="btn" onclick="login()">Entrar</button>
-    <p class="small">Padrão inicial: usuário <b>dono</b> e senha <b>1234</b>. Depois você pode trocar em Ajustes.</p>
+    <p class="small">PadrÃ£o inicial: usuÃ¡rio <b>dono</b> e senha <b>1234</b>. Depois vocÃª pode trocar em Ajustes.</p>
   </section>
 
   <main id="appScreen" class="hidden">
     <div class="card"><div id="cloudStatus">Conectando ao Firebase...</div></div>
 
     <div class="tabs">
-      <button id="btnAgenda" class="active" onclick="showTab('agenda')">📅 Agenda</button>
-      <button id="btnNova" onclick="showTab('nova')">📝 Nova OS</button>
-      <button id="btnClientes" onclick="showTab('clientes')">🔎 Clientes</button>
-      <button id="btnAjustes" onclick="showTab('ajustes')">⚙️ Ajustes</button>
+      <button id="btnAgenda" class="active" onclick="showTab('agenda')">ð Agenda</button>
+      <button id="btnNova" onclick="showTab('nova')">ð Nova OS</button>
+      <button id="btnClientes" onclick="showTab('clientes')">ð Clientes</button>
+      <button id="btnAjustes" onclick="showTab('ajustes')">âï¸ Ajustes</button>
     </div>
 
     <div class="stats">
       <div class="stat"><b id="statPedidos">0</b>Pedidos</div>
-      <div class="stat"><b id="statPecas">0</b>Peças</div>
+      <div class="stat"><b id="statPecas">0</b>PeÃ§as</div>
       <div class="stat"><b id="statValor">R$ 0,00</b>Faturamento</div>
     </div>
 
     <section id="agenda">
       <div class="card">
-        <h3 class="title">📅 Agenda</h3>
+        <h3 class="title">ð Agenda</h3>
         <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda()">
         <div id="agendaGrid" style="margin-top:12px"></div>
       </div>
@@ -103,34 +103,34 @@ textarea{min-height:80px}
 
     <section id="nova" class="hidden">
       <form class="card" onsubmit="salvarOS(event)">
-        <h3 class="title">📝 Nova OS</h3>
+        <h3 class="title">ð Nova OS</h3>
         <label>Telefone / WhatsApp</label><input id="telefone" inputmode="tel" required oninput="buscarClientePorTelefone()" placeholder="Digite o telefone primeiro">
-        <label>Nome do cliente</label><input id="nome" required placeholder="Preenche automático se já for cliente">
+        <label>Nome do cliente</label><input id="nome" required placeholder="Preenche automÃ¡tico se jÃ¡ for cliente">
         <div class="row">
           <div><label>Data da entrega</label><input type="date" id="dataEntrega" required></div>
-          <div><label>Horário</label><select id="horaEntrega" required></select></div>
+          <div><label>HorÃ¡rio</label><select id="horaEntrega" required></select></div>
         </div>
         <div class="card" style="box-shadow:none;border:1px solid #eee;padding:10px;margin-top:12px">
-          <h3 class="title">✂️ Serviços</h3>
+          <h3 class="title">âï¸ ServiÃ§os</h3>
           <div id="servicosOS"></div>
         </div>
-        <label>Observação</label><textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
-        <label>Situação da OS</label>
+        <label>ObservaÃ§Ã£o</label><textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
+        <label>SituaÃ§Ã£o da OS</label>
         <select id="situacao">
-          <option value="confirmado">📦 Cliente deixou o serviço / balcão</option>
-          <option value="agendado">📅 Apenas agendamento / ainda vai trazer</option>
+          <option value="confirmado">ð¦ Cliente deixou o serviÃ§o / balcÃ£o</option>
+          <option value="agendado">ð Apenas agendamento / ainda vai trazer</option>
         </select>
 
-        <label>Status de produção</label>
+        <label>Status de produÃ§Ã£o</label>
         <select id="status"><option>Recebido</option><option>Na bancada</option><option>Pronto</option><option>Retirado</option></select>
         <label>Pagamento</label>
         <select id="pagamento"><option>Pagar na retirada</option><option>Pago</option></select>
         <label>Valor total</label><input id="valorTotal" type="number" step="0.01" required>
-        <button class="btn" type="submit">💾 Salvar OS</button>
+        <button class="btn" type="submit">ð¾ Salvar OS</button>
       </form>
 
       <div id="posSalvarPanel" class="card hidden">
-        <h3 class="title">✅ OS salva com sucesso</h3>
+        <h3 class="title">â OS salva com sucesso</h3>
         <p id="posSalvarResumo" class="small"></p>
         <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar via da cliente no WhatsApp</button>
         <button class="btn btn-blue" onclick="imprimirUltimaOS()">Baixar / imprimir minha via</button>
@@ -141,7 +141,7 @@ textarea{min-height:80px}
 
     <section id="clientes" class="hidden">
       <div class="card">
-        <h3 class="title">🔎 Clientes</h3>
+        <h3 class="title">ð Clientes</h3>
         <label>Pesquisar</label><input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
       </div>
       <div id="clientesLista"></div>
@@ -149,29 +149,29 @@ textarea{min-height:80px}
 
     <section id="ajustes" class="hidden">
       <div class="card">
-        <h3 class="title">⚙️ Ajustes</h3>
+        <h3 class="title">âï¸ Ajustes</h3>
         <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
         <button class="btn btn-gray" onclick="logout()">Sair</button>
       </div>
 
       <div class="card">
-        <h3 class="title">🛠️ Serviços e preços</h3>
+        <h3 class="title">ð ï¸ ServiÃ§os e preÃ§os</h3>
         <div id="servicosEdit"></div>
-        <label>Novo serviço</label><input id="novoServico" placeholder="Ex: Alicates de cutícula">
-        <label>Preço unitário</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
-        <button class="btn btn-blue" onclick="adicionarServico()">Adicionar serviço</button>
+        <label>Novo serviÃ§o</label><input id="novoServico" placeholder="Ex: Alicates de cutÃ­cula">
+        <label>PreÃ§o unitÃ¡rio</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
+        <button class="btn btn-blue" onclick="adicionarServico()">Adicionar serviÃ§o</button>
       </div>
 
       <div class="card">
-        <h3 class="title">💬 Mensagem do WhatsApp</h3>
+        <h3 class="title">ð¬ Mensagem do WhatsApp</h3>
         <p class="small">Use: {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
         <textarea id="templateMsg"></textarea>
         <button class="btn btn-blue" onclick="salvarTemplate()">Salvar mensagem</button>
       </div>
 
       <div class="card">
-        <h3 class="title">🔐 Trocar login</h3>
-        <label>Usuário</label><input id="setUser">
+        <h3 class="title">ð Trocar login</h3>
+        <label>UsuÃ¡rio</label><input id="setUser">
         <label>Senha</label><input id="setPass" type="password">
         <button class="btn btn-blue" onclick="salvarLoginConfig()">Salvar login</button>
       </div>
@@ -195,14 +195,28 @@ const COL_ORDENS="ordens_afia_v2";
 const DOC_CONFIG="config/afia";
 const horarios=["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","14:30","15:00","15:30","16:00","16:30"];
 const defaultServices=[
-  {nome:"Alicates de cutícula", preco:15},
+  {nome:"Alicates de cutÃ­cula", preco:15},
   {nome:"Facas", preco:12},
   {nome:"Tesouras", preco:15},
   {nome:"Molas", preco:5},
-  {nome:"Espátulas", preco:7},
-  {nome:"Outros serviços", preco:10}
+  {nome:"EspÃ¡tulas", preco:7},
+  {nome:"Outros serviÃ§os", preco:10}
 ];
-const defaultTemplate="*AFIA - ORDEM DE SERVIÇO*\\n\\nOlá, *{nome}*!\\nSua OS foi registrada.\\n\\n📅 Entrega: {data}\\n⏰ Horário: {hora}\\n\\n*Serviços:*\\n{itens}\\n\\n💰 Total: {valor}\\n📌 Pagamento: {pagamento}\\n\\nObrigado pela preferência!";
+const defaultTemplate=`*AFIA - ORDEM DE SERVIÃO*
+
+OlÃ¡, *{nome}*!
+Sua ordem de serviÃ§o foi registrada.
+
+ð Entrega: {data}
+â° HorÃ¡rio: {hora}
+
+*ServiÃ§os:*
+{itens}
+
+ð° Total: {valor}
+ð Pagamento: {pagamento}
+
+Obrigado pela preferÃªncia!`;
 
 function hoje(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function dataBR(x){if(!x)return"";let p=x.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
@@ -216,14 +230,14 @@ async function iniciar(){
   horarios.forEach(h=>{let o=document.createElement("option");o.value=h;o.textContent=h;horaEntrega.appendChild(o)});
   try{
     firebase.initializeApp(firebaseConfig); db=firebase.firestore();
-    cloudStatus.innerHTML='<span class="ok">🟢 Conectado na nuvem Firebase</span>'; ajusteStatus.innerHTML='<span class="ok">Conectado</span>';
+    cloudStatus.innerHTML='<span class="ok">ð¢ Conectado na nuvem Firebase</span>'; ajusteStatus.innerHTML='<span class="ok">Conectado</span>';
     await carregarConfig();
     if(sessionOK()) abrirApp(); else loginScreen.classList.remove("hidden");
     db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot(s=>{
       ordens=[]; s.forEach(d=>ordens.push({id:d.id,...d.data()}));
       renderAgenda(); renderClientes();
-    },e=>cloudStatus.innerHTML='<span class="bad">🔴 '+e.message+'</span>');
-  }catch(e){cloudStatus.innerHTML='<span class="bad">🔴 Erro: '+e.message+'</span>'; ajusteStatus.textContent=e.message}
+    },e=>cloudStatus.innerHTML='<span class="bad">ð´ '+e.message+'</span>');
+  }catch(e){cloudStatus.innerHTML='<span class="bad">ð´ Erro: '+e.message+'</span>'; ajusteStatus.textContent=e.message}
 }
 
 async function carregarConfig(){
@@ -234,6 +248,7 @@ async function carregarConfig(){
   }
   if(!config.servicos) config.servicos=defaultServices;
   if(!config.template) config.template=defaultTemplate;
+  config.template = normalizarTemplateWhatsApp(config.template);
   templateMsg.value=config.template;
   setUser.value=config.user||"dono";
   setPass.value=config.pass||"1234";
@@ -244,7 +259,7 @@ function login(){
   const l=getLogin();
   if(loginUser.value.trim()===l.u && loginPass.value===l.p){
     localStorage.setItem("afia_login_date",hoje()); abrirApp();
-  }else alert("Usuário ou senha incorretos.");
+  }else alert("UsuÃ¡rio ou senha incorretos.");
 }
 function abrirApp(){loginScreen.classList.add("hidden");appScreen.classList.remove("hidden")}
 function logout(){localStorage.removeItem("afia_login_date");location.reload()}
@@ -351,7 +366,7 @@ function calcularAlocacoes(data, horaBase, qtd, situacao){
   }
 
   if(restante > 0){
-    throw new Error("Não há vagas suficientes nesse dia para essa quantidade de ferramentas.");
+    throw new Error("NÃ£o hÃ¡ vagas suficientes nesse dia para essa quantidade de ferramentas.");
   }
 
   return aloc;
@@ -361,7 +376,7 @@ async function salvarOS(e){
   e.preventDefault();
   let itens={}, pecas=0;
   config.servicos.forEach((s,i)=>{let q=Number(document.getElementById("svc_"+i).value)||0;if(q>0){itens[s.nome]=q;pecas+=q}});
-  if(!pecas){alert("Marque pelo menos 1 serviço.");return}
+  if(!pecas){alert("Marque pelo menos 1 serviÃ§o.");return}
   const os={
     nome:document.getElementById("nome").value.trim(),
     telefone:document.getElementById("telefone").value.trim(),
@@ -393,7 +408,7 @@ function mostrarAcoesDepoisDeSalvar(os){
   const panel = document.getElementById("posSalvarPanel");
   const resumo = document.getElementById("posSalvarResumo");
   if(resumo){
-    resumo.innerHTML = `<b>${os.nome}</b><br>Entrega: ${dataBR(os.data)} às ${os.hora}<br>Total: ${moeda(os.valor)}`;
+    resumo.innerHTML = `<b>${os.nome}</b><br>Entrega: ${dataBR(os.data)} Ã s ${os.hora}<br>Total: ${moeda(os.valor)}`;
   }
   if(panel) panel.classList.remove("hidden");
 }
@@ -435,11 +450,22 @@ function getPecasAgenda(os){
   if(os.pecasAgenda !== undefined) return Number(os.pecasAgenda || 0);
   return calcularPecasAgenda(os.itens || {});
 }
+
+function normalizarTemplateWhatsApp(t){
+  return String(t || defaultTemplate)
+    .replace(/\\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n");
+}
+
 function enviarWhatsApp(os){
   let tel=os.telefone.replace(/\D/g,""); if(!tel.startsWith("55"))tel="55"+tel;
-  let msg=(config.template||defaultTemplate)
-    .replaceAll("{nome}",os.nome).replaceAll("{data}",dataBR(os.data)).replaceAll("{hora}",os.hora)
-    .replaceAll("{itens}",itensTexto(os,"\n")).replaceAll("{valor}",moeda(os.valor)).replaceAll("{pagamento}",os.pagamento);
+  let msg = normalizarTemplateWhatsApp(config.template || defaultTemplate)
+    .replaceAll("{nome}",os.nome)
+    .replaceAll("{data}",dataBR(os.data))
+    .replaceAll("{hora}",os.hora)
+    .replaceAll("{itens}",itensTexto(os,"\n"))
+    .replaceAll("{valor}",moeda(os.valor))
+    .replaceAll("{pagamento}",os.pagamento);
   window.open("https://wa.me/"+tel+"?text="+encodeURIComponent(msg),"_blank");
 }
 function prepararImpressao(os){
@@ -467,10 +493,10 @@ function renderAgenda(){
   agendaLista.innerHTML=dia.length?"":'<div class="card small">Nenhuma OS para esta data.</div>';
   dia.forEach(os=>{
     let d=document.createElement("div"); d.className="card os-card";
-    const sitTxt = (os.situacao === "agendado") ? "📅 Agendado / ainda vai trazer" : "📦 Serviço no balcão";
+    const sitTxt = (os.situacao === "agendado") ? "ð Agendado / ainda vai trazer" : "ð¦ ServiÃ§o no balcÃ£o";
     const btnChegada = (os.situacao === "agendado") ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada e deixar vermelho</button>` : "";
-    const dist = os.alocacoes ? Object.entries(os.alocacoes).map(([h,q]) => `${h}: ${q}`).join(" • ") : `${os.hora}: ${getPecasAgenda(os)}`;
-    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>📞 ${os.telefone}</p><p>${itensTexto(os," • ")}</p><p>💰 ${moeda(os.valor)} | ${os.pagamento}</p><p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas||0)}</b></p><p class="small">Distribuição: ${dist}</p><p>Situação: <b>${sitTxt}</b></p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>📝 ${os.observacao}</p>`:""}${btnChegada}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
+    const dist = os.alocacoes ? Object.entries(os.alocacoes).map(([h,q]) => `${h}: ${q}`).join(" â¢ ") : `${os.hora}: ${getPecasAgenda(os)}`;
+    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>ð ${os.telefone}</p><p>${itensTexto(os," â¢ ")}</p><p>ð° ${moeda(os.valor)} | ${os.pagamento}</p><p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas||0)}</b></p><p class="small">DistribuiÃ§Ã£o: ${dist}</p><p>SituaÃ§Ã£o: <b>${sitTxt}</b></p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>ð ${os.observacao}</p>`:""}${btnChegada}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
     agendaLista.appendChild(d);
   });
 }
@@ -490,10 +516,10 @@ function renderGrid(dia){
   });
 
   let totalConfirmado=0, totalAgendado=0;
-  let html='<table class="agenda-table"><tr><th>Horário</th><th>Vagas ocupadas</th></tr>';
+  let html='<table class="agenda-table"><tr><th>HorÃ¡rio</th><th>Vagas ocupadas</th></tr>';
 
   horarios.forEach(h=>{
-    if(h==="14:30") html+='<tr class="interval"><td colspan="2">☕ ALMOÇO / INTERVALO (13:30 às 14:30)</td></tr>';
+    if(h==="14:30") html+='<tr class="interval"><td colspan="2">â ALMOÃO / INTERVALO (13:30 Ã s 14:30)</td></tr>';
 
     let red = Math.min(confirmado[h]||0, 5);
     let orange = Math.min(agendado[h]||0, Math.max(0, 5-red));
@@ -510,7 +536,7 @@ function renderGrid(dia){
     html+='</div></td></tr>';
   });
 
-  html+=`<tr><td><b>TOTAL</b></td><td><b>${totalConfirmado} Vermelhas • ${totalAgendado} Laranjas</b></td></tr></table>`;
+  html+=`<tr><td><b>TOTAL</b></td><td><b>${totalConfirmado} Vermelhas â¢ ${totalAgendado} Laranjas</b></td></tr></table>`;
   agendaGrid.innerHTML=html;
 }
 
@@ -558,20 +584,20 @@ function renderClientes(){
     c.ordens.sort((a,b) => String(b.data).localeCompare(String(a.data)));
     const ultima = c.ordens[0];
     const historico = c.ordens.map(os => {
-      return `<p class="small">• ${dataBR(os.data)} às ${os.hora} — ${Number(os.pecas || 0)} peças — ${moeda(os.valor)} — ${os.status}</p>`;
+      return `<p class="small">â¢ ${dataBR(os.data)} Ã s ${os.hora} â ${Number(os.pecas || 0)} peÃ§as â ${moeda(os.valor)} â ${os.status}</p>`;
     }).join("");
 
     let d = document.createElement("div");
     d.className = "card";
     d.innerHTML = `
       <p><b>${c.nome}</b></p>
-      <p>📞 ${c.telefone}</p>
-      <p>📌 Veio na loja: <b>${c.visitas}</b> vez(es)</p>
-      <p>✂️ Total de peças/serviços: <b>${c.pecas}</b></p>
-      <p>💰 Total gasto: <b>${moeda(c.valor)}</b></p>
-      <p>🗓️ Última visita: <b>${ultima ? dataBR(ultima.data) : "-"}</b></p>
+      <p>ð ${c.telefone}</p>
+      <p>ð Veio na loja: <b>${c.visitas}</b> vez(es)</p>
+      <p>âï¸ Total de peÃ§as/serviÃ§os: <b>${c.pecas}</b></p>
+      <p>ð° Total gasto: <b>${moeda(c.valor)}</b></p>
+      <p>ðï¸ Ãltima visita: <b>${ultima ? dataBR(ultima.data) : "-"}</b></p>
       <hr>
-      <p><b>Histórico:</b></p>
+      <p><b>HistÃ³rico:</b></p>
       ${historico}
     `;
     clientesLista.appendChild(d);
@@ -594,8 +620,8 @@ function renderServicosEdit(){
 }
 async function salvarConfig(){await db.doc(DOC_CONFIG).set(config,{merge:true});renderServicosOS();renderServicosEdit()}
 async function adicionarServico(){if(!novoServico.value||!novoPreco.value)return;config.servicos.push({nome:novoServico.value.trim(),preco:Number(novoPreco.value)});novoServico.value="";novoPreco.value="";await salvarConfig()}
-async function removerServico(i){if(confirm("Excluir este serviço da OS?")){config.servicos.splice(i,1);await salvarConfig()}}
-async function salvarTemplate(){config.template=templateMsg.value;await salvarConfig();alert("Mensagem salva.")}
+async function removerServico(i){if(confirm("Excluir este serviÃ§o da OS?")){config.servicos.splice(i,1);await salvarConfig()}}
+async function salvarTemplate(){config.template=normalizarTemplateWhatsApp(templateMsg.value);templateMsg.value=config.template;await salvarConfig();alert("Mensagem salva.")}
 async function salvarLoginConfig(){config.user=setUser.value.trim()||"dono";config.pass=setPass.value||"1234";await salvarConfig();alert("Login salvo.")}
 
 iniciar();
