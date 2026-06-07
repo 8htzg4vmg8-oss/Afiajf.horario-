@@ -329,7 +329,6 @@
     ];
     const defaultTemplate = `*AFIA - COMPROVANTE DIGITAL*\n\nOlá, *{nome}*!\nSua Ordem de Serviço foi gerada com sucesso.\n\n📅 *Previsão de Entrega:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo do Pedido:*\n{itens}\n\n💰 *Valor Total:* R$ {valor} ({pg})\n\n_Obrigado pela preferência!_`;
 
-    // DATA LOCAL EXPLICITA PROTEGIDA CONTRA FUSO HORÁRIO UTC
     const localTime = new Date();
     const todayStr = `${localTime.getFullYear()}-${String(localTime.getMonth() + 1).padStart(2, '0')}-${String(localTime.getDate()).padStart(2, '0')}`;
 
@@ -413,13 +412,10 @@
     function getClientsMap() { return JSON.parse(localStorage.getItem('afia_clients_map') || '{}'); }
     function setClientsMap(map) { localStorage.setItem('afia_clients_map', JSON.stringify(map)); }
     
-    // MIGRATÓRIO DE BANCO: Trata serviços velhos salvos como strings simples para o formato estruturado
     function getServices() { 
         let raw = JSON.parse(localStorage.getItem('afia_services'));
         if (!raw || raw.length === 0) return defaultServices;
-        if (typeof raw[0] === 'string') {
-            return defaultServices;
-        }
+        if (typeof raw[0] === 'string') return defaultServices;
         return raw;
     }
     function setServices(srv) { localStorage.setItem('afia_services', JSON.stringify(srv)); }
@@ -577,7 +573,7 @@
         else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if(os){os.payment = 'pago'; setOSListLocal(list); renderAgenda();} }
     }
 
-    // ================= SALVAMENTO DE OS COM FILTRO INVISÍVEL DE CARGA =================
+    // ================= ENGENHARIA DE SALVAMENTO ULTRA PROTEGIDA =================
     async function saveOS(e) {
         e.preventDefault();
         const phone = document.getElementById('os-phone').value;
@@ -591,8 +587,8 @@
 
         const services = getServices(); 
         const osItems = {}; 
-        let totalTools = 0;       // Só o que ocupa tempo real de produção
-        let totalGeralItens = 0;  // Somatório geral das peças
+        let totalTools = 0;       
+        let totalGeralItens = 0;  
 
         services.forEach((service, index) => {
             const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
@@ -600,7 +596,7 @@
                 osItems[service.name] = qty; 
                 totalGeralItens += qty;
 
-                // FILTRO INTELIGENTE: Mola e Espátula entram na conta financeira mas ganham PESO ZERO na linha do tempo
+                // FILTRO INVISÍVEL DE CARGA: Mola e Espátula entram no financeiro mas pesam 0 nos quadradinhos
                 const nomeLower = service.name.toLowerCase();
                 if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) {
                     totalTools += qty;
@@ -636,27 +632,35 @@
                     if (vagasLivres > 0) { allocations[h] = (allocations[h] || 0) + Math.min(vagasLivres, remaining); remaining -= Math.min(vagasLivres, remaining); if (remaining === 0) break; }
                 }
             }
-            if (remaining > 0) { alert(`⚠️ SEM VAGAS SUFICIENTES perto das ${time}h para esta quantidade de peças estruturadas!`); return; }
+            if (remaining > 0) { alert(`⚠️ SEM VAGAS SUFICIENTES perto das ${time}h!`); return; }
         }
 
         osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status, payment: payment, production: production };
 
+        // 🟢 PASSO 1: GRAVAÇÃO DOS DADOS (NUVEM OU LOCAL)
         if (isCloudActive) { await db.collection("ordens").add(osRecente); } 
-        else { let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); renderAgenda(); }
+        else { let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); }
 
         const clients = getClientsMap(); clients[phone] = name; setClientsMap(clients);
 
-        // Imprime os dados na via física
-        document.getElementById('pt-date').innerText = formatDisplayDate(date);
-        document.getElementById('pt-time').innerText = time; document.getElementById('pt-name').innerText = name;
-        document.getElementById('pt-phone').innerText = phone; document.getElementById('pt-total').innerText = value;
-        document.getElementById('pt-pay-status').innerText = (payment === 'pago') ? 'JÁ PAGO' : 'PAGAR NA RETIRADA';
-        let txtDetails = ""; for (const [item, qty] of Object.entries(osItems)) { txtDetails += `• ${item}: ${qty}<br>`; }
-        document.getElementById('pt-details').innerHTML = txtDetails;
-
-        // CORREÇÃO DOS DOIS BOTÕES: Oculta o formulário de cadastro e sobe o painel de WhatsApp/Impressora
+        // 🟢 PASSO 2: EXIBIÇÃO IMEDIATA DA TELA DE SUCESSO (EVITA TELA ESTÁTICA)
         document.getElementById('os-form').style.display = 'none';
         document.getElementById('action-panel').classList.add('active');
+
+        // 🟢 PASSO 3: MONTAGEM DA VIA DE IMPRESSÃO (EM SEGURANÇA)
+        try {
+            document.getElementById('pt-date').innerText = formatDisplayDate(date);
+            document.getElementById('pt-time').innerText = time; document.getElementById('pt-name').innerText = name;
+            document.getElementById('pt-phone').innerText = phone; document.getElementById('pt-total').innerText = value;
+            document.getElementById('pt-pay-status').innerText = (payment === 'pago') ? 'JÁ PAGO' : 'PAGAR NA RETIRADA';
+            let txtDetails = ""; for (const [item, qty] of Object.entries(osItems)) { txtDetails += `• ${item}: ${qty}<br>`; }
+            document.getElementById('pt-details').innerHTML = txtDetails;
+        } catch(err) { console.error("Erro Ticket:", err); }
+
+        // 🟢 PASSO 4: RECALCULAR AGENDA EM SEGUNDO PLANO (NÃO TRAVA O BOTÃO)
+        try {
+            if (!isCloudActive) renderAgenda();
+        } catch(err) { console.error("Erro Agenda:", err); }
     }
 
     function triggerWhatsApp() {
@@ -788,10 +792,6 @@
             resultsDiv.appendChild(card);
         });
     }
-
-    // INICIALIZADORES DO ELEMENTO DE DATAS LOCAIS
-    document.getElementById('agenda-date').value = todayStr;
-    document.getElementById('os-date').value = todayStr;
 
     const selectTimeForm = document.getElementById('os-time');
     if (selectTimeForm && selectTimeForm.options.length === 0) {
