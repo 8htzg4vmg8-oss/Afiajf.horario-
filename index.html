@@ -20,7 +20,7 @@
         .container {
             width: 100%;
             max-width: 480px;
-            margin: 0 -auto;
+            margin: 0 auto;
             box-sizing: border-box;
         }
         
@@ -238,7 +238,7 @@
                     <label>Status de Produção Interna:</label>
                     <select id="os-production" style="border: 2px solid #007aff; font-weight:600;"><option value="recebido">📦 Recebido / Aguardando</option><option value="bancada">🔥 Na Bancada de Afiação</option><option value="pronto">🟢 Pronto para Retirada</option></select>
                 </div>
-                <div class="form-group"><label>Valor Total Sugerido (R$):</label><input type="number" id="os-value" step="0.01" placeholder="R$ 0,00" required></div>
+                <div class="form-group"><label>Valor Total (R$):</label><input type="number" id="os-value" step="0.01" placeholder="R$ 0,00" required></div>
                 <div class="form-group"><label>Data da Entrega:</label><input type="date" id="os-date" required onchange="calculateLiveTotal()"></div>
                 <div class="form-group"><label>Horário da Entrega:</label><select id="os-time" required onchange="calculateLiveTotal()"></select></div>
             </div>
@@ -266,7 +266,7 @@
             <p id="cloud-status-text" style="font-size: 13px; font-weight: 700; margin: 0;">Modo Local Ativo</p>
         </div>
         <div class="card">
-            <div class="card-title">🛠️ Configuração da Tabela de Preços</div>
+            <div class="card-title">🛠️ Tabela de Preços dos Serviços</div>
             <div class="setting-item-list" id="setting-services-list"></div>
             <div class="form-group" style="margin-top: 10px;">
                 <input type="text" id="new-service-name" placeholder="Ex: ✂️ Alicate de Unha" style="margin-bottom: 6px;">
@@ -342,6 +342,7 @@
             currentRole = localStorage.getItem('afia_user_role');
             activateScreen('screen-app');
             applyRolePermissions();
+            onDateChange();
             return true;
         } else {
             executeLogout();
@@ -467,6 +468,21 @@
     function removeService(index) {
         const services = getServices(); services.splice(index, 1); setServices(services);
         renderDynamicFormServices(); renderSettingsServices();
+    }
+
+    function saveWATemplate() { localStorage.setItem('afia_wa_template', document.getElementById('wa-template-input').value); }
+    function uploadLogo(e) { const file = e.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onloadend = function() { localStorage.setItem('afia_logo', reader.result); loadLogo(); }; reader.readAsDataURL(file); }
+    function clearLogo() { localStorage.removeItem('afia_logo'); loadLogo(); }
+    function loadLogo() { const data = localStorage.getItem('afia_logo'); const appHeader = document.getElementById('main-app-header'); const printHeader = document.getElementById('pt-header-logo'); if(data) { appHeader.innerHTML = `<img src="${data}"><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `<img src="${data}"><div>VIA DA LOJA</div>`; } else { appHeader.innerHTML = `<h1>AFIA</h1><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `AFIA - VIA DA LOJA`; } }
+
+    function getToolsCountFromOS(os) { return parseInt(os.totalTools || os.tools || 0); }
+
+    function updateTopStats(osDoDia) {
+        document.getElementById('stat-orders').innerText = osDoDia.length;
+        let totalPecas = 0; let totalDinheiro = 0;
+        osDoDia.forEach(os => { totalPecas += getToolsCountFromOS(os); totalDinheiro += parseFloat(os.value || 0); });
+        document.getElementById('stat-pieces').innerText = totalPecas;
+        document.getElementById('stat-money').innerText = `R$ ${totalDinheiro.toFixed(2)}`;
     }
 
     async function changeProductionStatus(id, fireId, newStatus) {
@@ -601,6 +617,7 @@
 
         const clients = getClientsMap(); clients[phone] = name; setClientsMap(clients);
 
+        // Preenche via para impressão
         document.getElementById('pt-date').innerText = formatDisplayDate(date);
         document.getElementById('pt-time').innerText = time; document.getElementById('pt-name').innerText = name;
         document.getElementById('pt-phone').innerText = phone; document.getElementById('pt-total').innerText = value;
@@ -627,12 +644,13 @@
 
     function renderAgenda() { buildAgendaDOM(getOSListLocal().filter(os => os.date === document.getElementById('agenda-date').value)); }
 
-    // ================= CORREÇÃO DO MOTOR VISUAL + CONTADOR DE CARGA =================
+    // ================= CORREÇÃO DEFINITIVA DO MOTOR VISUAL DA AGENDA =================
     function buildAgendaDOM(osDoDia) {
         updateTopStats(osDoDia);
-        const tableBody = document.getElementById('agenda-table-body'); tableBody.innerHTML = "";
+        const tableBody = document.getElementById('agenda-table-body'); 
+        if (!tableBody) return;
+        tableBody.innerHTML = "";
         
-        // CORRIGIDO: Nomes batendo perfeitamente com a função criarLinha()
         const ocupacaoConfirmada = {}; const ocupacaoPendente = {};
         todosHorarios.forEach(h => { ocupacaoConfirmada[h] = 0; ocupacaoPendente[h] = 0; });
         
@@ -655,7 +673,6 @@
             }
         });
 
-        // 65 ou 70 capacidade com base nos horários cadastrados (14 slots x 5 vagas = 70)
         const capacidadeMaxima = todosHorarios.length * 5; 
         let capColor = (totalPecasDoDia >= capacidadeMaxima) ? '#ff3b30' : '#007aff';
 
@@ -667,11 +684,14 @@
             `;
         }
 
-        // ADIÇÃO DO CONTADOR GLOBAL SOLICITADO
-        document.getElementById('financial-day-summary').innerHTML = `
-            ${financialHTML}
-            <div style="flex:1; background:#f2f2f7; border: 1px solid ${capColor}; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:${capColor};">📊 Carga do Dia<br>${totalPecasDoDia} / ${capacidadeMaxima} pçs</div>
-        `;
+        // ELEMENTO TOTALMENTE CORRIGIDO CONTRA QUEDAS DO MOTOR SCRIPT
+        const finSummaryDiv = document.getElementById('financial-day-summary');
+        if (finSummaryDiv) {
+            finSummaryDiv.innerHTML = `
+                ${financialHTML}
+                <div style="flex:1; background:#f2f2f7; border: 1px solid ${capColor}; padding:8px; border-radius:10px; text-align:center; font-size:12px; font-weight:700; color:${capColor};">📊 Carga do Dia<br>${totalPecasDoDia} / ${capacidadeMaxima} pçs</div>
+            `;
+        }
 
         function criarLinha(h) {
             const tr = document.createElement('tr'); tr.innerHTML = `<td class="time-col">${h}</td>`;
@@ -690,7 +710,7 @@
         horariosTarde.forEach(h => criarLinha(h));
 
         const listDiv = document.getElementById('day-os-list'); listDiv.innerHTML = "";
-        if(osDoDia.length === 0) { listDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum serviço.</div>"; return; }
+        if(osDoDia.length === 0) { listDiv.innerHTML = "<div class='card' style='color:#86868b; font-size:13px; text-align:center;'>Nenhum serviço registrado para hoje.</div>"; return; }
         
         osDoDia.sort((a,b) => a.time.localeCompare(b.time));
         osDoDia.forEach(os => {
@@ -736,6 +756,12 @@
             card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name} (${os.phone})</p><p><strong>Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Preço:</strong> R$ ${os.value} | <strong>Status:</strong> ${os.payment==='pago'?'🟢 Pago':'🔴 Na entrega'}</p>`;
             resultsDiv.appendChild(card);
         });
+    }
+
+    // POPULAÇÃO DOS HORÁRIOS EXECUTADA DE FORMA IMEDIATA E PROTEGIDA
+    const selectTimeForm = document.getElementById('os-time');
+    if (selectTimeForm && selectTimeForm.options.length === 0) {
+        todosHorarios.forEach(h => { let opt = document.createElement('option'); opt.value = h; opt.innerText = h; selectTimeForm.appendChild(opt); });
     }
 
     function saveWATemplate() { localStorage.setItem('afia_wa_template', document.getElementById('wa-template-input').value); }
