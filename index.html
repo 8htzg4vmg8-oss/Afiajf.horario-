@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-color=1.0, user-scalable=no">
     <title>AFIA - Sistema Comercial</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -41,14 +41,14 @@
         .main-header p { margin: 3px 0 0 0; font-size: 11px; font-weight: 700; color: #86868b; letter-spacing: 0.5px; }
         .main-header img { max-height: 70px; max-width: 180px; object-fit: contain; margin-bottom: 4px; }
 
-        /* ESTILO APPLE PARA ABAS */
+        /* ABAS APPLE */
         .tabs { display: flex; background: #e5e5ea; padding: 2px; border-radius: 10px; margin-bottom: 15px; gap: 2px; }
         .tab-btn { flex: 1; background: none; border: none; padding: 10px 2px; font-size: 11px; font-weight: 600; color: #48484a; cursor: pointer; border-radius: 8px; -webkit-appearance: none; white-space: nowrap; }
         .tab-btn.active { background: #ffffff; color: #1d1d1f; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* CARDS E CONTADORES */
+        /* CONTADORES */
         .stats-row { display: flex; gap: 8px; margin-bottom: 15px; }
         .stat-card { flex: 1; background: #ffffff; border-radius: 12px; padding: 10px 4px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
         .stat-num { font-size: 16px; font-weight: 700; color: #1d1d1f; margin-bottom: 1px; }
@@ -87,13 +87,13 @@
         .square.pending { background-color: #ff9500; border-color: #ff9500; }
         .interval-row td { background-color: #f5f5f7; font-weight: 600; color: #86868b; font-size: 11px; }
 
-        /* LAYOUT OS CARD */
+        /* CARDS DA LISTA DE ATENDIMENTOS */
         .os-card { background: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .time-tag { background: #007aff; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 4px; }
         .os-card p { margin: 3px 0; font-size: 13px; }
         .btn-del { position: absolute; top: 12px; right: 12px; background: #ff3b30; color: white; border: none; padding: 4px 8px; font-size: 11px; border-radius: 5px; -webkit-appearance: none; }
 
-        /* TIMELINE TRACKING COMPONENT */
+        /* RASTREAMENTO TIMELINE */
         .track-timeline { display: flex; justify-content: space-between; margin: 20px 0 10px 0; position: relative; }
         .track-timeline::before { content: ''; position: absolute; background: #d2d2d7; height: 4px; width: 100%; top: 14px; left: 0; z-index: 1; }
         .track-step { z-index: 2; text-align: center; font-size: 11px; font-weight: 600; color: #86868b; width: 33%; }
@@ -102,6 +102,13 @@
         .track-step.done { color: #1d1d1f; }
         .track-step.current .track-dot { background: #007aff; }
         .track-step.current { color: #007aff; }
+
+        .action-panel { display: none; background: #ffffff; border-radius: 12px; padding: 14px; margin-top: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .action-panel.active { display: block; }
+        .btn-panel { display: block; width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; color: white; -webkit-appearance: none; }
+        .btn-wa { background-color: #25d366; }
+        .btn-prt { background-color: #007aff; }
+        .btn-new { background-color: #86868b; }
 
         #print-ticket { display: none; }
         @media print {
@@ -160,9 +167,9 @@
 
     <div class="card" style="border: 1px solid #007aff; background: #f4f9ff;">
         <div class="card-title" style="color: #007aff;">🔍 Área do Cliente: Rastrear Pedido</div>
-        <p style="font-size:12px; color:#86868b; margin:0 0 10px 0;">Não é da oficina? Digite seu telefone para ver o status real dos seus alicates.</p>
+        <p style="font-size:12px; color:#86868b; margin:0 0 10px 0;">Digite o número do telefone para ver o status real dos seus alicates.</p>
         <div class="inline-form">
-            <input type="tel" id="track-client-phone" placeholder="Digite seu telefone...">
+            <input type="tel" id="track-client-phone" placeholder="Digite o telefone...">
             <button class="btn-sec" onclick="trackClientOrder()">Buscar</button>
         </div>
         <div id="public-tracking-result" style="margin-top: 10px;"></div>
@@ -289,7 +296,6 @@
 </div>
 
 <script>
-    // Configurações do Firebase
     const firebaseConfig = {
         apiKey: "SUA_API_KEY",
         authDomain: "SEU_AUTH_DOMAIN",
@@ -424,7 +430,8 @@
         const services = getServices();
         let calculatedValue = 0;
         services.forEach((service, index) => {
-            const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
+            const inputField = document.getElementById(`qty-${index}`);
+            const qty = inputField ? (parseInt(inputField.value) || 0) : 0;
             calculatedValue += qty * (parseFloat(service.price) || 0);
         });
         document.getElementById('os-value').value = calculatedValue.toFixed(2);
@@ -573,94 +580,111 @@
         else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if(os){os.payment = 'pago'; setOSListLocal(list); renderAgenda();} }
     }
 
-    // ================= ENGENHARIA DE SALVAMENTO ULTRA PROTEGIDA =================
+    // ================= MOTOR DE SALVAMENTO ULTRA CORRIGIDO (FAIL-SAFE) =================
     async function saveOS(e) {
         e.preventDefault();
-        const phone = document.getElementById('os-phone').value;
-        const name = document.getElementById('os-name').value;
-        const value = parseFloat(document.getElementById('os-value').value || 0).toFixed(2);
-        const date = document.getElementById('os-date').value;
-        const time = document.getElementById('os-time').value;
-        const status = document.getElementById('os-status').value;
-        const payment = document.getElementById('os-payment').value;
-        const production = document.getElementById('os-production').value;
-
-        const services = getServices(); 
-        const osItems = {}; 
-        let totalTools = 0;       
-        let totalGeralItens = 0;  
-
-        services.forEach((service, index) => {
-            const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
-            if (qty > 0) { 
-                osItems[service.name] = qty; 
-                totalGeralItens += qty;
-
-                // FILTRO INVISÍVEL DE CARGA: Mola e Espátula entram no financeiro mas pesam 0 nos quadradinhos
-                const nomeLower = service.name.toLowerCase();
-                if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) {
-                    totalTools += qty;
-                }
-            }
-        });
-
-        if (totalGeralItens === 0) { alert("⚠️ Escolha a quantidade de pelo menos 1 serviço."); return; }
-
-        let fullList = [];
-        if (isCloudActive) {
-            const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).where("date", "==", date).get();
-            snap.forEach(doc => fullList.push(doc.data()));
-        } else { fullList = getOSListLocal(); }
-
-        const ocupacaoAtual = {}; todosHorarios.forEach(h => ocupacaoAtual[h] = 0);
-        fullList.forEach(os => {
-            if (os.allocations) {
-                for (let h in os.allocations) { if(ocupacaoAtual[h] !== undefined) ocupacaoAtual[h] += os.allocations[h]; }
-            } else { if(ocupacaoAtual[os.time] !== undefined) ocupacaoAtual[os.time] += getToolsCountFromOS(os); }
-        });
-
-        let timeIndex = todosHorarios.indexOf(time); let allocations = {}; let remaining = totalTools;
         
-        if (remaining > 0) {
-            for (let i = timeIndex; i >= 0; i--) {
-                let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
-                if (vagasLivres > 0) { let toTake = Math.min(vagasLivres, remaining); allocations[h] = toTake; remaining -= toTake; if (remaining === 0) break; }
-            }
-            if (remaining > 0) {
-                for (let i = timeIndex + 1; i < todosHorarios.length; i++) {
-                    let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
-                    if (vagasLivres > 0) { allocations[h] = (allocations[h] || 0) + Math.min(vagasLivres, remaining); remaining -= Math.min(vagasLivres, remaining); if (remaining === 0) break; }
-                }
-            }
-            if (remaining > 0) { alert(`⚠️ SEM VAGAS SUFICIENTES perto das ${time}h!`); return; }
-        }
-
-        osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status, payment: payment, production: production };
-
-        // 🟢 PASSO 1: GRAVAÇÃO DOS DADOS (NUVEM OU LOCAL)
-        if (isCloudActive) { await db.collection("ordens").add(osRecente); } 
-        else { let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); }
-
-        const clients = getClientsMap(); clients[phone] = name; setClientsMap(clients);
-
-        // 🟢 PASSO 2: EXIBIÇÃO IMEDIATA DA TELA DE SUCESSO (EVITA TELA ESTÁTICA)
+        // PRIORIDADE 1: Destravar a interface de balcão imediatamente (Evita tela congelada)
         document.getElementById('os-form').style.display = 'none';
         document.getElementById('action-panel').classList.add('active');
 
-        // 🟢 PASSO 3: MONTAGEM DA VIA DE IMPRESSÃO (EM SEGURANÇA)
         try {
+            const phone = document.getElementById('os-phone').value;
+            const name = document.getElementById('os-name').value;
+            const value = parseFloat(document.getElementById('os-value').value || 0).toFixed(2);
+            const date = document.getElementById('os-date').value;
+            const time = document.getElementById('os-time').value;
+            const status = document.getElementById('os-status').value;
+            const payment = document.getElementById('os-payment').value;
+            const production = document.getElementById('os-production').value;
+
+            const services = getServices(); 
+            const osItems = {}; 
+            let totalTools = 0;       
+            let totalGeralItens = 0;  
+
+            services.forEach((service, index) => {
+                const inputField = document.getElementById(`qty-${index}`);
+                const qty = inputField ? (parseInt(inputField.value) || 0) : 0;
+                if (qty > 0) { 
+                    osItems[service.name] = qty; 
+                    totalGeralItens += qty;
+
+                    // A REGRA: Mola e Espátula entram na OS e preço, mas ganham PESO ZERO na agenda
+                    const nomeLower = service.name.toLowerCase();
+                    if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) {
+                        totalTools += qty;
+                    }
+                }
+            });
+
+            if (totalGeralItens === 0) { 
+                alert("⚠️ Escolha a quantidade de pelo menos 1 serviço."); 
+                resetOSForm();
+                return; 
+            }
+
+            // CORREÇÃO DOS VERMELHOS: Filtra rigorosamente por data no ambiente local
+            let fullList = [];
+            if (isCloudActive) {
+                const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).where("date", "==", date).get();
+                snap.forEach(doc => fullList.push(doc.data()));
+            } else { 
+                fullList = getOSListLocal().filter(os => os.date === date); 
+            }
+
+            const ocupacaoAtual = {}; todosHorarios.forEach(h => ocupacaoAtual[h] = 0);
+            fullList.forEach(os => {
+                if (os.allocations) {
+                    for (let h in os.allocations) { if(ocupacaoAtual[h] !== undefined) ocupacaoAtual[h] += parseInt(os.allocations[h] || 0); }
+                } else { if(ocupacaoAtual[os.time] !== undefined) ocupacaoAtual[os.time] += getToolsCountFromOS(os); }
+            });
+
+            let timeIndex = todosHorarios.indexOf(time); 
+            let allocations = {}; 
+            let remaining = totalTools;
+            
+            if (remaining > 0 && timeIndex !== -1) {
+                for (let i = timeIndex; i >= 0; i--) {
+                    let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
+                    if (vagasLivres > 0) { let toTake = Math.min(vagasLivres, remaining); allocations[h] = toTake; remaining -= toTake; if (remaining === 0) break; }
+                }
+                if (remaining > 0) {
+                    for (let i = timeIndex + 1; i < todosHorarios.length; i++) {
+                        let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
+                        if (vagasLivres > 0) { allocations[h] = (allocations[h] || 0) + Math.min(vagasLivres, remaining); remaining -= Math.min(vagasLivres, remaining); if (remaining === 0) break; }
+                    }
+                }
+                if (remaining > 0) { 
+                    alert(`⚠️ SEM VAGAS SEGUIDAS perto das ${time}h neste dia!`); 
+                    resetOSForm();
+                    return; 
+                }
+            }
+
+            osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status, payment: payment, production: production };
+
+            if (isCloudActive) { 
+                await db.collection("ordens").add(osRecente); 
+            } else { 
+                let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); 
+            }
+
+            const clients = getClientsMap(); clients[phone] = name; setClientsMap(clients);
+
+            // Popula os dados do bilhete impresso
             document.getElementById('pt-date').innerText = formatDisplayDate(date);
             document.getElementById('pt-time').innerText = time; document.getElementById('pt-name').innerText = name;
             document.getElementById('pt-phone').innerText = phone; document.getElementById('pt-total').innerText = value;
             document.getElementById('pt-pay-status').innerText = (payment === 'pago') ? 'JÁ PAGO' : 'PAGAR NA RETIRADA';
             let txtDetails = ""; for (const [item, qty] of Object.entries(osItems)) { txtDetails += `• ${item}: ${qty}<br>`; }
             document.getElementById('pt-details').innerHTML = txtDetails;
-        } catch(err) { console.error("Erro Ticket:", err); }
 
-        // 🟢 PASSO 4: RECALCULAR AGENDA EM SEGUNDO PLANO (NÃO TRAVA O BOTÃO)
-        try {
             if (!isCloudActive) renderAgenda();
-        } catch(err) { console.error("Erro Agenda:", err); }
+
+        } catch (err) {
+            console.error("Erro interno no salvamento gerenciado:", err);
+        }
     }
 
     function triggerWhatsApp() {
@@ -699,8 +723,8 @@
             
             if (os.allocations) {
                 for (let h in os.allocations) { 
-                    if (isPending) ocupacaoPendente[h] += os.allocations[h]; else ocupacaoConfirmada[h] += os.allocations[h];
-                    totalPecasDoDia += os.allocations[h];
+                    if (isPending) ocupacaoPendente[h] += parseInt(os.allocations[h] || 0); else ocupacaoConfirmada[h] += parseInt(os.allocations[h] || 0);
+                    totalPecasDoDia += parseInt(os.allocations[h] || 0);
                 }
             } else {
                 let t = getToolsCountFromOS(os); 
@@ -801,6 +825,9 @@
     if(!localStorage.getItem('afia_wa_template')) localStorage.setItem('afia_wa_template', defaultTemplate);
     document.getElementById('wa-template-input').value = localStorage.getItem('afia_wa_template');
     
+    document.getElementById('agenda-date').value = todayStr;
+    document.getElementById('os-date').value = todayStr;
+
     loadLogo();
     renderDynamicFormServices();
     renderSettingsServices();
