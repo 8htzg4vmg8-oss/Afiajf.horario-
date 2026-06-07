@@ -244,8 +244,9 @@
             </div>
             <button type="submit" class="btn-main">💾 Salvar Ordem de Serviço</button>
         </form>
+        
         <div id="action-panel" class="action-panel">
-            <p style="color:#34c759; font-weight:700; margin: 0 0 12px 0; font-size:15px;">🎉 OS Registrada!</p>
+            <p style="color:#34c759; font-weight:700; margin: 0 0 12px 0; font-size:15px;">🎉 OS Registrada com Sucesso!</p>
             <button class="btn-panel btn-wa" onclick="triggerWhatsApp()">💬 Enviar OS para o Cliente</button>
             <button class="btn-panel btn-prt" onclick="triggerPrint()">🖨️ Imprimir Via da Loja</button>
             <button class="btn-panel btn-new" onclick="resetOSForm()">↩️ Novo Agendamento</button>
@@ -266,10 +267,10 @@
             <p id="cloud-status-text" style="font-size: 13px; font-weight: 700; margin: 0;">Modo Local Ativo</p>
         </div>
         <div class="card">
-            <div class="card-title">🛠️ Tabela de Preços dos Serviços</div>
+            <div class="card-title">🛠Tree Tabela de Preços dos Serviços</div>
             <div class="setting-item-list" id="setting-services-list"></div>
             <div class="form-group" style="margin-top: 10px;">
-                <input type="text" id="new-service-name" placeholder="Ex: ✂️ Alicate de Unha" style="margin-bottom: 6px;">
+                <input type="text" id="new-service-name" placeholder="Ex: 🛠️ Espátula" style="margin-bottom: 6px;">
                 <div class="inline-form">
                     <input type="number" id="new-service-price" step="0.01" placeholder="Preço Unitário R$">
                     <button type="button" class="btn-sec" onclick="addService()">+ Inserir</button>
@@ -290,9 +291,7 @@
 </div>
 
 <script>
-    // =========================================================================
-    // 🔑 SUAS CONFIGURAÇÕES DO FIREBASE (COLE AS CHAVES DO SEU CONSOLE AQUI)
-    // =========================================================================
+    // Configurações do Firebase
     const firebaseConfig = {
         apiKey: "SUA_API_KEY",
         authDomain: "SEU_AUTH_DOMAIN",
@@ -301,12 +300,10 @@
         messagingSenderId: "SEU_SENDER_ID",
         appId: "SEU_APP_ID"
     };
-    // =========================================================================
 
     let isCloudActive = false;
     let db = null;
     let cachedCloudOS = [];
-    
     let currentOffice = "";
     let currentRole = "";
 
@@ -329,9 +326,10 @@
         {name: "🔪 Facas", price: 12.00},
         {name: "✂️ Tesouras", price: 15.00},
         {name: "🌀 Molas Extras", price: 5.00},
+        {name: "🛠️ Espátulas", price: 7.00},
         {name: "📦 Outros Serviços", price: 10.00}
     ];
-    const defaultTemplate = `*AFIA - COMPROVANTE DIGITAL*\n\nOlá, *{nome}*!\nSua Ordem de Serviço foi gerada com sucesso.\n\n📅 *Previsão de Entrega:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo do Pedido:*\n{itens}\n\n💰 *Valor Total:* R$ {valor} ({pg})\n\n_Acompanhe o andamento das suas ferramentas pelo nosso app!_`;
+    const defaultTemplate = `*AFIA - COMPROVANTE DIGITAL*\n\nOlá, *{nome}*!\nSua Ordem de Serviço foi gerada com sucesso.\n\n📅 *Previsão de Entrega:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo do Pedido:*\n{itens}\n\n💰 *Valor Total:* R$ {valor} ({pg})\n\n_Obrigado pela preferência!_`;
 
     const todayStr = new Date().toISOString().split('T')[0];
 
@@ -475,7 +473,7 @@
     function clearLogo() { localStorage.removeItem('afia_logo'); loadLogo(); }
     function loadLogo() { const data = localStorage.getItem('afia_logo'); const appHeader = document.getElementById('main-app-header'); const printHeader = document.getElementById('pt-header-logo'); if(data) { appHeader.innerHTML = `<img src="${data}"><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `<img src="${data}"><div>VIA DA LOJA</div>`; } else { appHeader.innerHTML = `<h1>AFIA</h1><p>ALTA CUTELARIA & AFIAÇÃO PROFISSIONAL</p>`; printHeader.innerHTML = `AFIA - VIA DA LOJA`; } }
 
-    function getToolsCountFromOS(os) { return parseInt(os.totalTools || os.tools || 0); }
+    function getToolsCountFromOS(os) { return parseInt(os.totalTools !== undefined ? os.totalTools : (os.tools || 0)); }
 
     function updateTopStats(osDoDia) {
         document.getElementById('stat-orders').innerText = osDoDia.length;
@@ -564,6 +562,7 @@
         else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if(os){os.payment = 'pago'; setOSListLocal(list); renderAgenda();} }
     }
 
+    // ================= SALVAMENTO DE OS INTEGRADO COM OS DOIS AJUSTES =================
     async function saveOS(e) {
         e.preventDefault();
         const phone = document.getElementById('os-phone').value;
@@ -575,13 +574,26 @@
         const payment = document.getElementById('os-payment').value;
         const production = document.getElementById('os-production').value;
 
-        const services = getServices(); const osItems = {}; let totalTools = 0;
+        const services = getServices(); 
+        const osItems = {}; 
+        let totalTools = 0;       // Só o que ocupa tempo (Alicates, Facas, Tesouras)
+        let totalGeralItens = 0;  // Validação geral do formulário
+
         services.forEach((service, index) => {
             const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
-            if (qty > 0) { osItems[service.name] = qty; totalTools += qty; }
+            if (qty > 0) { 
+                osItems[service.name] = qty; 
+                totalGeralItens += qty;
+
+                // AJUSTE 2: Mola e Espátula entram na OS e preço, mas NÃO somam em totalTools (peso 0 na agenda)
+                const nomeLower = service.name.toLowerCase();
+                if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) {
+                    totalTools += qty;
+                }
+            }
         });
 
-        if (totalTools === 0) { alert("⚠️ Escolha a quantidade de pelo menos 1 serviço."); return; }
+        if (totalGeralItens === 0) { alert("⚠️ Escolha a quantidade de pelo menos 1 serviço."); return; }
 
         let fullList = [];
         if (isCloudActive) {
@@ -597,20 +609,23 @@
         });
 
         let timeIndex = todosHorarios.indexOf(time); let allocations = {}; let remaining = totalTools;
-        for (let i = timeIndex; i >= 0; i--) {
-            let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
-            if (vagasLivres > 0) { let toTake = Math.min(vagasLivres, remaining); allocations[h] = toTake; remaining -= toTake; if (remaining === 0) break; }
-        }
+        
+        // Só roda a alocação de blocos se houver ferramentas pesadas (maior que 0)
         if (remaining > 0) {
-            for (let i = timeIndex + 1; i < todosHorarios.length; i++) {
+            for (let i = timeIndex; i >= 0; i--) {
                 let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
-                if (vagasLivres > 0) { allocations[h] = (allocations[h] || 0) + Math.min(vagasLivres, remaining); remaining -= Math.min(vagasLivres, remaining); if (remaining === 0) break; }
+                if (vagasLivres > 0) { let toTake = Math.min(vagasLivres, remaining); allocations[h] = toTake; remaining -= toTake; if (remaining === 0) break; }
             }
+            if (remaining > 0) {
+                for (let i = timeIndex + 1; i < todosHorarios.length; i++) {
+                    let h = todosHorarios[i]; let vagasLivres = 5 - ocupacaoAtual[h];
+                    if (vagasLivres > 0) { allocations[h] = (allocations[h] || 0) + Math.min(vagasLivres, remaining); remaining -= Math.min(vagasLivres, remaining); if (remaining === 0) break; }
+                }
+            }
+            if (remaining > 0) { alert(`⚠️ SEM VAGAS SUFICIENTES perto das ${time}h para esta quantidade de peças!`); return; }
         }
 
-        if (remaining > 0) { alert(`⚠️ SEM VAGAS SUFICIENTES perto das ${time}h!`); return; }
-
-        osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools, allocations, status, payment, production };
+        osRecente = { officeCode: currentOffice, id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status, payment: payment, production: production };
 
         if (isCloudActive) { await db.collection("ordens").add(osRecente); } 
         else { let localList = getOSListLocal(); localList.push(osRecente); setOSListLocal(localList); renderAgenda(); }
@@ -625,6 +640,7 @@
         let txtDetails = ""; for (const [item, qty] of Object.entries(osItems)) { txtDetails += `• ${item}: ${qty}<br>`; }
         document.getElementById('pt-details').innerHTML = txtDetails;
 
+        // AJUSTE 1: AS DUAS LINHAS DE TRANSIÇÃO VOLTARAM PARA O LUGAR CORRETO
         document.getElementById('os-form').style.display = 'none';
         document.getElementById('action-panel').classList.add('active');
     }
@@ -633,6 +649,9 @@
         if(!osRecente) return;
         let cleanPhone = osRecente.phone.replace(/\D/g, ''); if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
         let template = localStorage.getItem('afia_wa_template') || defaultTemplate;
+        if (osRecente.status === 'pending') {
+            template = `*AFIA - HORÁRIO RESERVADO*\n\nOlá, *{nome}*!\nSeu horário foi guardado na nuvem.\n\n📅 *Dia Combinado:* {data}\n⏰ *Horário:* {horario}h\n\n*Resumo:*\n{itens}\n\n💰 *Valor Estimado:* R$ {valor} ({pg})`;
+        }
         let itemText = ""; for (const [item, qty] of Object.entries(osRecente.items)) { itemText += `\n- ${item}: ${qty}`; }
         let payLabel = (osRecente.payment === 'pago') ? 'Já Pago' : 'Pagar na Entrega';
         let msg = template.replace(/{nome}/g, osRecente.name).replace(/{data}/g, formatDisplayDate(osRecente.date)).replace(/{horario}/g, osRecente.time).replace(/{valor}/g, osRecente.value).replace(/{itens}/g, itemText.trim()).replace(/{pg}/g, payLabel);
@@ -644,7 +663,6 @@
 
     function renderAgenda() { buildAgendaDOM(getOSListLocal().filter(os => os.date === document.getElementById('agenda-date').value)); }
 
-    // ================= CORREÇÃO DEFINITIVA DO MOTOR VISUAL DA AGENDA =================
     function buildAgendaDOM(osDoDia) {
         updateTopStats(osDoDia);
         const tableBody = document.getElementById('agenda-table-body'); 
@@ -684,7 +702,6 @@
             `;
         }
 
-        // ELEMENTO TOTALMENTE CORRIGIDO CONTRA QUEDAS DO MOTOR SCRIPT
         const finSummaryDiv = document.getElementById('financial-day-summary');
         if (finSummaryDiv) {
             finSummaryDiv.innerHTML = `
@@ -731,7 +748,7 @@
             `;
 
             const card = document.createElement('div'); card.className = "os-card";
-            card.innerHTML = `<span class="time-tag">${os.time}h</span><span style="font-size:11px; font-weight:700; margin-left:10px;">${os.status==='pending'?'⏳':'📦'} | ${os.payment==='pago'?'🟢 PAGO':'🔴 DEVE'}</span><button class="btn-del" onclick="deleteOS(${os.id}, ${fId})">Apagar</button><p style="margin-top:8px;"><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Valor:</strong> R$ ${os.value}</p>${actBtn}`;
+            card.innerHTML = `<span class="time-tag">${os.time}h</span><span style="font-size:11px; font-weight:700; margin-left:10px;">${os.status==='pending'?'⏳':'📦'} | ${os.payment==='pago'?'🟢 PAGO':'🔴 DEVE'}</span><button class="btn-del" onclick="deleteOS(${os.id}, ${fId})">Apagar</button><p style="margin-top:8px;"><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças da Agenda:</strong> ${getToolsCountFromOS(os)} pçs | <strong>Valor:</strong> R$ ${os.value}</p>${actBtn}`;
             listDiv.appendChild(card);
         });
     }
@@ -758,7 +775,6 @@
         });
     }
 
-    // POPULAÇÃO DOS HORÁRIOS EXECUTADA DE FORMA IMEDIATA E PROTEGIDA
     const selectTimeForm = document.getElementById('os-time');
     if (selectTimeForm && selectTimeForm.options.length === 0) {
         todosHorarios.forEach(h => { let opt = document.createElement('option'); opt.value = h; opt.innerText = h; selectTimeForm.appendChild(opt); });
