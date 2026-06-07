@@ -43,7 +43,7 @@ textarea{min-height:80px}
 .time{font-weight:900;width:72px}
 .slots{display:flex;justify-content:center;gap:7px}
 .slot{width:34px;height:34px;border:3px solid #8e8e93;border-radius:9px;background:#fff}
-.slot.on{background:#ff3b30;border-color:#ff3b30}
+.slot.on{background:#ff3b30;border-color:#ff3b30}.slot.pending{background:#ff9500;border-color:#ff9500}
 .interval td{background:#f1f1f4;color:#777;font-weight:900}
 .os-card{border-left:5px solid #007aff}
 .os-card p{margin:5px 0;font-size:14px}
@@ -104,8 +104,8 @@ textarea{min-height:80px}
     <section id="nova" class="hidden">
       <form class="card" onsubmit="salvarOS(event)">
         <h3 class="title">📝 Nova OS</h3>
-        <label>Nome do cliente</label><input id="nome" required>
-        <label>Telefone / WhatsApp</label><input id="telefone" inputmode="tel" required>
+        <label>Telefone / WhatsApp</label><input id="telefone" inputmode="tel" required oninput="buscarClientePorTelefone()" placeholder="Digite o telefone primeiro">
+        <label>Nome do cliente</label><input id="nome" required placeholder="Preenche automático se já for cliente">
         <div class="row">
           <div><label>Data da entrega</label><input type="date" id="dataEntrega" required></div>
           <div><label>Horário</label><select id="horaEntrega" required></select></div>
@@ -115,6 +115,12 @@ textarea{min-height:80px}
           <div id="servicosOS"></div>
         </div>
         <label>Observação</label><textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
+        <label>Situação da OS</label>
+        <select id="situacao">
+          <option value="confirmado">📦 Cliente deixou o serviço / balcão</option>
+          <option value="agendado">📅 Apenas agendamento / ainda vai trazer</option>
+        </select>
+
         <label>Status de produção</label>
         <select id="status"><option>Recebido</option><option>Na bancada</option><option>Pronto</option><option>Retirado</option></select>
         <label>Pagamento</label>
@@ -255,12 +261,50 @@ function calcularTotal(){
   config.servicos.forEach((s,i)=>{total+=(Number(document.getElementById("svc_"+i)?.value)||0)*Number(s.preco||0)});
   valorTotal.value=total.toFixed(2);
 }
+
+function limparTelefone(t){
+  return String(t || "").replace(/\D/g,"");
+}
+
+function buscarClientePorTelefone(){
+  const telDigitado = limparTelefone(document.getElementById("telefone").value);
+  if(telDigitado.length < 4) return;
+
+  const cliente = ordens.find(o => {
+    const telSalvo = limparTelefone(o.telefone);
+    return telSalvo && (
+      telSalvo === telDigitado ||
+      telSalvo.endsWith(telDigitado) ||
+      telDigitado.endsWith(telSalvo)
+    );
+  });
+
+  if(cliente && cliente.nome){
+    document.getElementById("nome").value = cliente.nome;
+  }
+}
+
 async function salvarOS(e){
   e.preventDefault();
   let itens={}, pecas=0;
   config.servicos.forEach((s,i)=>{let q=Number(document.getElementById("svc_"+i).value)||0;if(q>0){itens[s.nome]=q;pecas+=q}});
   if(!pecas){alert("Marque pelo menos 1 serviço.");return}
-  const os={nome:nome.value.trim(),telefone:telefone.value.trim(),data:dataEntrega.value,hora:horaEntrega.value,itens,pecas,observacao:observacao.value.trim(),status:status.value,pagamento:pagamento.value,valor:Number(valorTotal.value||0),criadoEm:firebase.firestore.FieldValue.serverTimestamp()};
+  const pecasAgenda = calcularPecasAgenda(itens);
+  const os={
+    nome:document.getElementById("nome").value.trim(),
+    telefone:document.getElementById("telefone").value.trim(),
+    data:document.getElementById("dataEntrega").value,
+    hora:document.getElementById("horaEntrega").value,
+    itens:itens,
+    pecas:pecas,
+    pecasAgenda:pecasAgenda,
+    situacao:document.getElementById("situacao").value || "confirmado",
+    observacao:document.getElementById("observacao").value.trim(),
+    status:document.getElementById("status").value || "Recebido",
+    pagamento:document.getElementById("pagamento").value || "Pagar na retirada",
+    valor:Number(String(document.getElementById("valorTotal").value||0).replace(",", ".")),
+    criadoEm:firebase.firestore.FieldValue.serverTimestamp()
+  };
   try{
     const ref=await db.collection(COL_ORDENS).add(os);
     os.id=ref.id;
@@ -270,6 +314,24 @@ async function salvarOS(e){
   }catch(err){alert("Erro ao salvar: "+err.message)}
 }
 function itensTexto(os, sep="\n"){return Object.entries(os.itens||{}).map(([n,q])=>`${n}: ${q}`).join(sep)}
+
+function contaNaAgenda(nomeServico){
+  const n = String(nomeServico || "").toLowerCase();
+  return n.includes("alicate") || n.includes("faca") || n.includes("tesoura");
+}
+
+function calcularPecasAgenda(itens){
+  let total = 0;
+  Object.entries(itens || {}).forEach(([nome, qtd]) => {
+    if(contaNaAgenda(nome)) total += Number(qtd || 0);
+  });
+  return total;
+}
+
+function getPecasAgenda(os){
+  if(os.pecasAgenda !== undefined) return Number(os.pecasAgenda || 0);
+  return calcularPecasAgenda(os.itens || {});
+}
 function enviarWhatsApp(os){
   let tel=os.telefone.replace(/\D/g,""); if(!tel.startsWith("55"))tel="55"+tel;
   let msg=(config.template||defaultTemplate)
@@ -296,38 +358,127 @@ function renderAgenda(){
   let data=agendaData.value;
   let dia=ordens.filter(o=>o.data===data).sort((a,b)=>String(a.hora).localeCompare(String(b.hora)));
   statPedidos.textContent=dia.length;
-  statPecas.textContent=dia.reduce((s,o)=>s+Number(o.pecas||0),0);
+  statPecas.textContent=dia.reduce((s,o)=>s+getPecasAgenda(o),0);
   statValor.textContent=moeda(dia.reduce((s,o)=>s+Number(o.valor||0),0));
   renderGrid(dia);
   agendaLista.innerHTML=dia.length?"":'<div class="card small">Nenhuma OS para esta data.</div>';
   dia.forEach(os=>{
     let d=document.createElement("div"); d.className="card os-card";
-    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>📞 ${os.telefone}</p><p>${itensTexto(os," • ")}</p><p>💰 ${moeda(os.valor)} | ${os.pagamento}</p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>📝 ${os.observacao}</p>`:""}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
+    const sitTxt = (os.situacao === "agendado") ? "📅 Agendado / ainda vai trazer" : "📦 Serviço no balcão";
+    const btnChegada = (os.situacao === "agendado") ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada e deixar vermelho</button>` : "";
+    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>📞 ${os.telefone}</p><p>${itensTexto(os," • ")}</p><p>💰 ${moeda(os.valor)} | ${os.pagamento}</p><p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas||0)}</b></p><p>Situação: <b>${sitTxt}</b></p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>📝 ${os.observacao}</p>`:""}${btnChegada}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
     agendaLista.appendChild(d);
   });
 }
 function renderGrid(dia){
-  let ocup={}; horarios.forEach(h=>ocup[h]=0);
-  dia.forEach(o=>{if(ocup[o.hora]!==undefined)ocup[o.hora]+=Number(o.pecas||0)});
-  let total=0, html='<table class="agenda-table"><tr><th>Horário</th><th>Vagas ocupadas</th></tr>';
+  let confirmado={}, agendado={};
+  horarios.forEach(h=>{confirmado[h]=0; agendado[h]=0;});
+
+  dia.forEach(o=>{
+    if(confirmado[o.hora] !== undefined){
+      const q = getPecasAgenda(o);
+      if(o.situacao === "agendado") agendado[o.hora] += q;
+      else confirmado[o.hora] += q;
+    }
+  });
+
+  let totalConfirmado=0, totalAgendado=0;
+  let html='<table class="agenda-table"><tr><th>Horário</th><th>Vagas ocupadas</th></tr>';
+
   horarios.forEach(h=>{
-    if(h==="14:30")html+='<tr class="interval"><td colspan="2">☕ ALMOÇO / INTERVALO (13:30 às 14:30)</td></tr>';
-    let q=Math.min(ocup[h]||0,5); total+=ocup[h]||0;
+    if(h==="14:30") html+='<tr class="interval"><td colspan="2">☕ ALMOÇO / INTERVALO (13:30 às 14:30)</td></tr>';
+
+    let red = Math.min(confirmado[h]||0, 5);
+    let orange = Math.min(agendado[h]||0, Math.max(0, 5-red));
+    totalConfirmado += confirmado[h]||0;
+    totalAgendado += agendado[h]||0;
+
     html+=`<tr><td class="time">${h}</td><td><div class="slots">`;
-    for(let i=0;i<5;i++)html+=`<div class="slot ${i<q?'on':''}"></div>`;
+    for(let i=0;i<5;i++){
+      let cls = "";
+      if(i < red) cls = "on";
+      else if(i < red + orange) cls = "pending";
+      html+=`<div class="slot ${cls}"></div>`;
+    }
     html+='</div></td></tr>';
   });
-  html+=`<tr><td><b>TOTAL</b></td><td><b>${total} Ocupadas</b></td></tr></table>`;
+
+  html+=`<tr><td><b>TOTAL</b></td><td><b>${totalConfirmado} Vermelhas • ${totalAgendado} Laranjas</b></td></tr></table>`;
   agendaGrid.innerHTML=html;
 }
+
 function renderClientes(){
   let q=buscaCliente.value.toLowerCase().trim();
-  let lista=ordens.filter(o=>!q||String(o.nome).toLowerCase().includes(q)||String(o.telefone).includes(q));
-  clientesLista.innerHTML=lista.length?"":'<div class="card small">Nenhum cliente encontrado.</div>';
-  lista.forEach(os=>{let d=document.createElement("div");d.className="card";d.innerHTML=`<p><b>${os.nome}</b></p><p>📞 ${os.telefone}</p><p>📅 ${dataBR(os.data)} às ${os.hora}</p><p>${moeda(os.valor)} | ${os.status}</p>`;clientesLista.appendChild(d)});
+
+  let mapa = {};
+  ordens.forEach(os => {
+    const tel = limparTelefone(os.telefone);
+    const chave = tel || String(os.nome || "").toLowerCase();
+    if(!mapa[chave]){
+      mapa[chave] = {
+        nome: os.nome || "",
+        telefone: os.telefone || "",
+        visitas: 0,
+        pecas: 0,
+        valor: 0,
+        ordens: []
+      };
+    }
+    mapa[chave].visitas += 1;
+    mapa[chave].pecas += Number(os.pecas || 0);
+    mapa[chave].valor += Number(os.valor || 0);
+    mapa[chave].ordens.push(os);
+    if(os.nome) mapa[chave].nome = os.nome;
+    if(os.telefone) mapa[chave].telefone = os.telefone;
+  });
+
+  let clientes = Object.values(mapa).filter(c =>
+    !q ||
+    String(c.nome).toLowerCase().includes(q) ||
+    String(c.telefone).includes(q) ||
+    limparTelefone(c.telefone).includes(limparTelefone(q))
+  );
+
+  clientes.sort((a,b) => String(a.nome).localeCompare(String(b.nome)));
+
+  clientesLista.innerHTML = "";
+  if(clientes.length === 0){
+    clientesLista.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
+    return;
+  }
+
+  clientes.forEach(c => {
+    c.ordens.sort((a,b) => String(b.data).localeCompare(String(a.data)));
+    const ultima = c.ordens[0];
+    const historico = c.ordens.map(os => {
+      return `<p class="small">• ${dataBR(os.data)} às ${os.hora} — ${Number(os.pecas || 0)} peças — ${moeda(os.valor)} — ${os.status}</p>`;
+    }).join("");
+
+    let d = document.createElement("div");
+    d.className = "card";
+    d.innerHTML = `
+      <p><b>${c.nome}</b></p>
+      <p>📞 ${c.telefone}</p>
+      <p>📌 Veio na loja: <b>${c.visitas}</b> vez(es)</p>
+      <p>✂️ Total de peças/serviços: <b>${c.pecas}</b></p>
+      <p>💰 Total gasto: <b>${moeda(c.valor)}</b></p>
+      <p>🗓️ Última visita: <b>${ultima ? dataBR(ultima.data) : "-"}</b></p>
+      <hr>
+      <p><b>Histórico:</b></p>
+      ${historico}
+    `;
+    clientesLista.appendChild(d);
+  });
 }
+
 function reenviar(id){let os=ordens.find(o=>o.id===id);if(os)enviarWhatsApp(os)}
 function imprimir(id){let os=ordens.find(o=>o.id===id);if(os){prepararImpressao(os);window.print()}}
+async function confirmarChegada(id){
+  await db.collection(COL_ORDENS).doc(id).update({
+    situacao:"confirmado",
+    status:"Recebido"
+  });
+}
 async function apagarOS(id){if(confirm("Apagar esta OS?"))await db.collection(COL_ORDENS).doc(id).delete()}
 
 function renderServicosEdit(){
