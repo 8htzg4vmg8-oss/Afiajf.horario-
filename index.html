@@ -523,6 +523,7 @@
         if (clients[phone]) document.getElementById('os-name').value = clients[phone];
     }
 
+    // CORREÇÃO AQUI: Troca de value="0" para placeholder="0" e value vacio.
     function renderDynamicFormServices() {
         const services = getServices();
         const container = document.getElementById('dynamic-qty-container');
@@ -530,7 +531,7 @@
         services.forEach((service, index) => {
             const div = document.createElement('div');
             div.className = "qty-row";
-            div.innerHTML = `<div class="qty-label">${service}</div><input type="number" id="qty-${index}" class="qty-input" min="0" value="0" oninput="calculateLiveTotal()">`;
+            div.innerHTML = `<div class="qty-label">${service}</div><input type="number" id="qty-${index}" class="qty-input" min="0" placeholder="0" value="" oninput="calculateLiveTotal()">`;
             container.appendChild(div);
         });
     }
@@ -598,16 +599,16 @@
         }
     }
 
-    // ENGINE CORRIGIDA: Trata de forma unificada dados antigos (tools) e novos (totalTools)
-    function getToolsCountFromOS(os) {
-        return parseInt(os.totalTools || os.tools || 0);
-    }
-
     function updateTopStats(dateStr) {
         const osList = getOSList();
         const osDoDia = osList.filter(os => os.date === dateStr);
         document.getElementById('stat-orders').innerText = osDoDia.length;
-        document.getElementById('stat-pieces').innerText = osDoDia.reduce((sum, os) => sum + getToolsCountFromOS(os), 0);
+        
+        let totalPecas = 0;
+        osDoDia.forEach(os => {
+            totalPecas += parseInt(os.totalTools || os.tools || 0);
+        });
+        document.getElementById('stat-pieces').innerText = totalPecas;
     }
 
     function calculateLiveTotal() {
@@ -627,7 +628,8 @@
         let totalTools = 0;
 
         services.forEach((service, index) => {
-            const qty = parseInt(document.getElementById(`qty-${index}`).value || 0);
+            // Tratamento contra strings vazias na soma
+            const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
             if (qty > 0) {
                 osItems[service] = qty;
                 totalTools += qty;
@@ -641,18 +643,60 @@
 
         const osList = getOSList();
         
-        // Validação Inteligente Unificada (Lê o passado e o presente sem bugar)
-        const jaOcupadas = osList
-            .filter(os => os.date === date && os.time === time)
-            .reduce((sum, os) => sum + getToolsCountFromOS(os), 0);
+        const ocupacaoAtual = {};
+        todosHorarios.forEach(h => ocupacaoAtual[h] = 0);
+        
+        osList.filter(os => os.date === date).forEach(os => {
+            if (os.allocations) {
+                for (let h in os.allocations) {
+                    if(ocupacaoAtual[h] !== undefined) ocupacaoAtual[h] += os.allocations[h];
+                }
+            } else {
+                if(ocupacaoAtual[os.time] !== undefined) ocupacaoAtual[os.time] += parseInt(os.totalTools || os.tools || 0);
+            }
+        });
 
-        if (jaOcupadas + totalTools > 5) {
-            const vagasRestantes = 5 - jaOcupadas;
-            alert(`⚠️ HORÁRIO SEM VAGAS SUFICIENTES!\n\nEste horário (${time}) já possui ${jaOcupadas} ferramentas agendadas.\n\nRestam apenas ${vagasRestantes < 0 ? 0 : vagasRestantes} vaga(s) e você está tentando colocar ${totalTools}. Agende menos peças ou mude o horário!`);
-            return;
+        let timeIndex = todosHorarios.indexOf(time);
+        let allocations = {};
+
+        let testAlloc = {};
+        let testRemaining = totalTools;
+        for (let i = timeIndex; i >= 0; i--) {
+            let h = todosHorarios[i];
+            let vagasLivres = 5 - ocupacaoAtual[h];
+            if (vagasLivres > 0) {
+                let toTake = Math.min(vagasLivres, testRemaining);
+                testAlloc[h] = toTake;
+                testRemaining -= toTake;
+                if (testRemaining === 0) break;
+            }
         }
 
-        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools };
+        if (testRemaining === 0) {
+            allocations = testAlloc;
+        } else {
+            testAlloc = {};
+            testRemaining = totalTools;
+            for (let i = timeIndex; i < todosHorarios.length; i++) {
+                let h = todosHorarios[i];
+                let vagasLivres = 5 - ocupacaoAtual[h];
+                if (vagasLivres > 0) {
+                    let toTake = Math.min(vagasLivres, testRemaining);
+                    testAlloc[h] = toTake;
+                    testRemaining -= toTake;
+                    if (testRemaining === 0) break;
+                }
+            }
+            
+            if (testRemaining === 0) {
+                allocations = testAlloc;
+            } else {
+                alert(`⚠️ AGENDA TOTALMENTE SEM ESPAÇO!\n\nNão há ${totalTools} vagas disponíveis seguidas perto das ${time}h neste dia.`);
+                return;
+            }
+        }
+
+        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations };
         osList.push(osRecente);
         setOSList(osList);
 
@@ -731,8 +775,12 @@
         
         const osDoDia = osList.filter(os => os.date === targetDate);
         osDoDia.forEach(os => {
-            if(ocupacaoPorHorario[os.time] !== undefined) {
-                ocupacaoPorHorario[os.time] += getToolsCountFromOS(os);
+            if (os.allocations) {
+                for (let h in os.allocations) {
+                    if (ocupacaoPorHorario[h] !== undefined) ocupacaoPorHorario[h] += os.allocations[h];
+                }
+            } else {
+                if (ocupacaoPorHorario[os.time] !== undefined) ocupacaoPorHorario[os.time] += parseInt(os.totalTools || os.tools || 0);
             }
         });
 
@@ -769,9 +817,10 @@
         }
         osDoDia.sort((a,b) => a.time.localeCompare(b.time));
         osDoDia.forEach(os => {
+            let totalExibir = parseInt(os.totalTools || os.tools || 0);
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `<span class="time-tag">${os.time}h</span><button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Total:</strong> R$ ${os.value}</p>`;
+            card.innerHTML = `<span class="time-tag">${os.time}h</span><button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças:</strong> ${totalExibir} ferramenta(s) | <strong>Total:</strong> R$ ${os.value}</p>`;
             listDiv.appendChild(card);
         });
     }
@@ -789,17 +838,18 @@
         }
         historico.sort((a,b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
         historico.forEach(os => {
+            let totalExibir = parseInt(os.totalTools || os.tools || 0);
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Total Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Valor:</strong> R$ ${os.value}</p>`;
+            card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Total Peças:</strong> ${totalExibir} | <strong>Valor:</strong> R$ ${os.value}</p>`;
             resultsDiv.appendChild(card);
         });
     }
 
     function clearFullDatabase() {
-        if(confirm("🚨 ATENÇÃO!\n\nIsso apagará permanentemente todos os seus testes e agendamentos anteriores. Deseja continuar?")) {
+        if(confirm("🚨 RESET TOTAL!\n\nIsso apagará permanentemente os seus testes anteriores para limpar os conflitos de memória do iPhone. Deseja zerar?")) {
             localStorage.clear();
-            alert("Banco de dados resetado! O aplicativo será recarregado limpo.");
+            alert("Banco de dados resetado com sucesso! O sistema vai reiniciar limpo.");
             window.location.reload();
         }
     }
