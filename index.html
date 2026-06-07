@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-color=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AFIA - Sistema Comercial</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -87,7 +87,7 @@
         .square.pending { background-color: #ff9500; border-color: #ff9500; }
         .interval-row td { background-color: #f5f5f7; font-weight: 600; color: #86868b; font-size: 11px; }
 
-        /* CARDS DA LISTA DE ATENDIMENTOS */
+        /* OS CARD */
         .os-card { background: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .time-tag { background: #007aff; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 4px; }
         .os-card p { margin: 3px 0; font-size: 13px; }
@@ -136,6 +136,16 @@
     <div class="prt-line"><strong>PAGAMENTO:</strong> <span id="pt-pay-status"></span></div>
     <div class="prt-line"><strong>VALOR TOTAL:</strong> R$ <span id="pt-total"></span></div>
     <div class="prt-footer">Controle Interno de Oficina</div>
+</div>
+
+<div id="custom-apple-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#ffffff; border-radius:14px; width:270px; text-align:center; font-family: -apple-system, sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow:hidden;">
+        <div style="padding:20px 16px;">
+            <div id="modal-title" style="font-weight:600; font-size:17px; margin-bottom:5px; color:#000000;"></div>
+            <div id="modal-message" style="font-size:13px; color:#000000; line-height:1.4;"></div>
+        </div>
+        <div id="modal-buttons" style="display:flex; border-top:1px solid #d2d2d7;"></div>
+    </div>
 </div>
 
 <div id="screen-login" class="container screen active">
@@ -291,11 +301,15 @@
         <div class="card"><div class="card-title">🖼️ Logo da Oficina</div><div class="form-group"><input type="file" id="logo-input" accept="image/*" onchange="uploadLogo(event)" style="border:none; padding:0;"></div><button class="btn-mini-del" style="background:#86868b; margin-top:5px;" onclick="clearLogo()">Remover Logo</button></div>
         <div class="card"><div class="card-title">💬 Template do WhatsApp</div><div class="form-group"><textarea id="wa-template-input" oninput="saveWATemplate()"></textarea></div></div>
         <button class="btn-panel btn-new" style="background: #86868b; margin-bottom: 12px; color: white;" onclick="executeLogout()">🔒 Fechar Caixa Manualmente</button>
-        <div class="card" style="border: 1px solid #ff3b30;"><div class="card-title" style="color: #ff3b30;">⚠️ Reset de Fábrica</div><button class="btn-mini-del" style="width: 100%; padding: 10px;" onclick="clearFullDatabase()">Zerar Memória do Dispositivo</button></div>
+        <div class="card" style="border: 1px solid #ff3b30;">
+            <div class="card-title" style="color: #ff3b30;">⚠️ Reset de Fábrica</div>
+            <button class="btn-mini-del" style="width: 100%; padding: 10px;" onclick="clearFullDatabase()">Zerar Todos os Dados</button>
+        </div>
     </div>
 </div>
 
 <script>
+    // Configurações do Firebase
     const firebaseConfig = {
         apiKey: "SUA_API_KEY",
         authDomain: "SEU_AUTH_DOMAIN",
@@ -319,6 +333,34 @@
             document.getElementById('cloud-status-text').innerText = "🟢 Conectado na Nuvem Google (Firestore)";
             document.getElementById('cloud-status-text').style.color = "#34c759";
         } catch(e) { console.error("Erro Firebase:", e); }
+    }
+
+    // ENGENHARIA APPLE MODAL (SUBSTITUI OS ERROS DE POPUP DO IPHONE)
+    function showAppleAlert(title, message) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-message').innerText = message;
+        const btnContainer = document.getElementById('modal-buttons');
+        btnContainer.innerHTML = `<button onclick="closeAppleModal()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#007aff; font-weight:600; cursor:pointer;-webkit-appearance:none;">OK</button>`;
+        document.getElementById('custom-apple-modal').style.display = 'flex';
+    }
+
+    function showAppleConfirm(title, message, onConfirm) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-message').innerText = message;
+        const btnContainer = document.getElementById('modal-buttons');
+        btnContainer.innerHTML = `
+            <button onclick="closeAppleModal()" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#007aff; border-right:1px solid #d2d2d7; cursor:pointer;-webkit-appearance:none;">Cancelar</button>
+            <button id="modal-confirm-btn" style="flex:1; background:none; border:none; padding:12px; font-size:17px; color:#ff3b30; font-weight:600; cursor:pointer;-webkit-appearance:none;">Zerar</button>
+        `;
+        document.getElementById('modal-confirm-btn').onclick = function() {
+            closeAppleModal();
+            onConfirm();
+        };
+        document.getElementById('custom-apple-modal').style.display = 'flex';
+    }
+
+    function closeAppleModal() {
+        document.getElementById('custom-apple-modal').style.display = 'none';
     }
 
     const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00"];
@@ -508,7 +550,7 @@
             let list = getOSListLocal(); let os = list.find(o => o.id === id);
             if (os) { os.production = newStatus; setOSListLocal(list); renderAgenda(); }
         }
-        alert(`⚙️ Status de produção alterado para: ${newStatus.toUpperCase()}`);
+        showAppleAlert("⚙️ Produção", `Status alterado para: ${newStatus.toUpperCase()}`);
     }
 
     async function trackClientOrder() {
@@ -573,18 +615,20 @@
     async function confirmOSArrival(id, fireId) {
         if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).update({ status: 'confirmed' }); } 
         else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if(os){os.status = 'confirmed'; setOSListLocal(list); renderAgenda();} }
+        showAppleAlert("📥 Balcão", "Peças confirmadas como entregues!");
     }
 
     async function confirmOSPayment(id, fireId) {
         if (isCloudActive && fireId) { await db.collection("ordens").doc(fireId).update({ payment: 'pago' }); } 
         else { let list = getOSListLocal(); let os = list.find(o => o.id === id); if(os){os.payment = 'pago'; setOSListLocal(list); renderAgenda();} }
+        showAppleAlert("💵 Caixa", "Pagamento registrado com sucesso!");
     }
 
-    // ================= MOTOR DE SALVAMENTO ULTRA CORRIGIDO (FAIL-SAFE) =================
+    // ================= MOTOR DE SALVAMENTO BLINDADO CONTRA DATA CRUZADA =================
     async function saveOS(e) {
         e.preventDefault();
         
-        // PRIORIDADE 1: Destravar a interface de balcão imediatamente (Evita tela congelada)
+        // PRIORIDADE MÁXIMA: Transiciona a tela sem travar
         document.getElementById('os-form').style.display = 'none';
         document.getElementById('action-panel').classList.add('active');
 
@@ -610,7 +654,7 @@
                     osItems[service.name] = qty; 
                     totalGeralItens += qty;
 
-                    // A REGRA: Mola e Espátula entram na OS e preço, mas ganham PESO ZERO na agenda
+                    // FILTRO DE CARGA: Mola e Espátula entram na OS e preço, mas pesam 0 na agenda
                     const nomeLower = service.name.toLowerCase();
                     if (!nomeLower.includes("mola") && !nomeLower.includes("espátula") && !nomeLower.includes("espatula")) {
                         totalTools += qty;
@@ -619,12 +663,12 @@
             });
 
             if (totalGeralItens === 0) { 
-                alert("⚠️ Escolha a quantidade de pelo menos 1 serviço."); 
+                showAppleAlert("⚠️ Formutário Vazio", "Escolha a quantidade de pelo menos 1 serviço."); 
                 resetOSForm();
                 return; 
             }
 
-            // CORREÇÃO DOS VERMELHOS: Filtra rigorosamente por data no ambiente local
+            // SEGURANÇA TOTAL: Isola rigidamente para calcular ocupação apenas da data selecionada
             let fullList = [];
             if (isCloudActive) {
                 const snap = await db.collection("ordens").where("officeCode", "==", currentOffice).where("date", "==", date).get();
@@ -656,7 +700,7 @@
                     }
                 }
                 if (remaining > 0) { 
-                    alert(`⚠️ SEM VAGAS SEGUIDAS perto das ${time}h neste dia!`); 
+                    showAppleAlert("⚠️ Sem Vagas", `Não há 5 vagas seguidas livres perto das ${time}h neste dia.`); 
                     resetOSForm();
                     return; 
                 }
@@ -683,10 +727,11 @@
             if (!isCloudActive) renderAgenda();
 
         } catch (err) {
-            console.error("Erro interno no salvamento gerenciado:", err);
+            console.error("Erro interno controlado:", err);
         }
     }
 
+    // RESOLVE O BUG DO WHATSAPP NO IPHONE (Muda de window.open para direct deep-link injection)
     function triggerWhatsApp() {
         if(!osRecente) return;
         let cleanPhone = osRecente.phone.replace(/\D/g, ''); if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
@@ -697,7 +742,17 @@
         let itemText = ""; for (const [item, qty] of Object.entries(osRecente.items)) { itemText += `\n- ${item}: ${qty}`; }
         let payLabel = (osRecente.payment === 'pago') ? 'Já Pago' : 'Pagar na Entrega';
         let msg = template.replace(/{nome}/g, osRecente.name).replace(/{data}/g, formatDisplayDate(osRecente.date)).replace(/{horario}/g, osRecente.time).replace(/{valor}/g, osRecente.value).replace(/{itens}/g, itemText.trim()).replace(/{pg}/g, payLabel);
-        window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+        
+        // Abre o app nativo do WhatsApp de forma direta sem sofrer block da Apple
+        window.location.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+    }
+
+    function triggerReadyWhatsApp(phone, name, payment, value) {
+        let cleanPhone = phone.replace(/\D/g, ''); if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
+        let payText = (payment === 'pago') ? 'JÁ ESTÁ PAGO' : `Valor a pagar: R$ ${value}`;
+        let msg = `*AFIA - SEUS ALICATES FICARAM PRONTOS!* ✂️🔥\n\nOlá, *${name}*!\nPassando para avisar que o seu serviço já foi finalizado com o nosso padrão máximo de qualidade e já está disponível para retirada no balcão.\n\n💰 *${payText}*\n\n_Estamos te aguardando!_`;
+        
+        window.location.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
     }
 
     function triggerPrint() { window.print(); }
@@ -705,6 +760,7 @@
 
     function renderAgenda() { buildAgendaDOM(getOSListLocal().filter(os => os.date === document.getElementById('agenda-date').value)); }
 
+    // FILTRAGEM DE HISTÓRICO ISOLADO POR DATA CORRIGIDO
     function buildAgendaDOM(osDoDia) {
         updateTopStats(osDoDia);
         const tableBody = document.getElementById('agenda-table-body'); 
@@ -815,6 +871,31 @@
             card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name} (${os.phone})</p><p><strong>Peças:</strong> ${getToolsCountFromOS(os)} | <strong>Preço:</strong> R$ ${os.value} | <strong>Status:</strong> ${os.payment==='pago'?'🟢 Pago':'🔴 Na entrega'}</p>`;
             resultsDiv.appendChild(card);
         });
+    }
+
+    // RESOLVE O BLOQUEIO DO BOTÃO DE RESET (Muda para Modal Nativo Apple)
+    function clearFullDatabase() {
+        showAppleConfirm(
+            "🚨 Reset de Fábrica", 
+            "Isso apagará permanentemente todos os testes velhos armazenados na memória local do iPhone. Deseja zerar?", 
+            function() {
+                localStorage.clear();
+                window.location.reload();
+            }
+        );
+    }
+
+    function exportDatabaseText() {
+        const out = { os: localStorage.getItem('afia_os_db'), clients: localStorage.getItem('afia_clients_map'), services: localStorage.getItem('afia_services'), template: localStorage.getItem('afia_wa_template'), logo: localStorage.getItem('afia_logo') };
+        document.getElementById('backup-box').value = btoa(unescape(encodeURIComponent(JSON.stringify(out))));
+        showAppleAlert("🛡️ Cópia de Segurança", "Código gerado com sucesso na caixa de texto!");
+    }
+    function importDatabaseText() {
+        try {
+            const dec = JSON.parse(decodeURIComponent(escape(atob(document.getElementById('backup-box').value.trim()))));
+            if(dec.os) localStorage.setItem('afia_os_db', dec.os); if(dec.clients) localStorage.setItem('afia_clients_map', dec.clients); if(dec.services) localStorage.setItem('afia_services', dec.services); if(dec.template) localStorage.setItem('afia_wa_template', dec.template); if(dec.logo) localStorage.setItem('afia_logo', dec.logo);
+            showAppleAlert("🎉 Sucesso", "Banco de dados local restaurado!"); window.location.reload();
+        } catch(e) { showAppleAlert("❌ Erro", "Código de backup inválido!"); }
     }
 
     const selectTimeForm = document.getElementById('os-time');
