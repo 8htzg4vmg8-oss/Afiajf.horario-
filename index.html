@@ -1,125 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AFIA - Ordem de Serviço</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AFIA - Sistema de OS</title>
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 14px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: #f2f2f7;
-      color: #1d1d1f;
-    }
-    .container { max-width: 520px; margin: 0 auto; }
-    .header { text-align: center; margin: 18px 0; }
-    .header h1 { margin: 0; font-size: 34px; letter-spacing: 2px; }
-    .header p { margin: 6px 0 0; font-size: 12px; color: #777; font-weight: 700; letter-spacing: 1px; }
-    .cloud {
-      background: #fff;
-      border-radius: 14px;
-      padding: 13px;
-      margin-bottom: 12px;
-      font-weight: 700;
-      text-align: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    }
-    .ok { color: #20a34a; }
-    .bad { color: #ff3b30; }
-    .tabs {
-      display: flex;
-      gap: 5px;
-      background: #e5e5ea;
-      padding: 5px;
-      border-radius: 14px;
-      margin-bottom: 12px;
-    }
-    .tabs button {
-      flex: 1;
-      border: 0;
-      background: transparent;
-      padding: 11px 4px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 13px;
-      color: #333;
-    }
-    .tabs button.active { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,.12); }
-    .stats { display: flex; gap: 8px; margin-bottom: 12px; }
-    .stat {
-      flex: 1;
-      background: #fff;
-      padding: 13px 4px;
-      border-radius: 14px;
-      text-align: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,.05);
-      font-size: 12px;
-      color: #777;
-      font-weight: 700;
-    }
-    .stat b { display: block; color: #111; font-size: 22px; margin-bottom: 3px; }
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    }
-    .title {
-      margin: 0 0 12px;
-      color: #007aff;
-      font-size: 14px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-    label { display: block; font-size: 13px; font-weight: 700; margin: 10px 0 5px; }
-    input, select, textarea {
-      width: 100%;
-      border: 1px solid #d2d2d7;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 16px;
-      background: #fff;
-      font-family: inherit;
-    }
-    textarea { min-height: 70px; resize: vertical; }
-    .row { display: flex; gap: 8px; }
-    .row > div { flex: 1; }
-    .btn {
-      width: 100%;
-      border: 0;
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 12px;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 800;
-      background: #34c759;
-    }
-    .btn-blue { background: #007aff; }
-    .btn-red { background: #ff3b30; }
-    .hidden { display: none; }
-    .os-card { border-left: 5px solid #007aff; }
-    .os-card p { margin: 5px 0; font-size: 14px; }
-    .small { color: #777; font-size: 13px; }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f2f2f7;color:#1d1d1f}
+.container{max-width:540px;margin:0 auto}
+.header{text-align:center;margin:14px 0}
+.header h1{margin:0;font-size:34px;letter-spacing:2px}
+.header p{margin:5px 0 0;color:#777;font-size:12px;font-weight:800;letter-spacing:.8px}
+.card{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
+.title{color:#007aff;font-size:14px;font-weight:900;text-transform:uppercase;margin:0 0 12px}
+.tabs{display:flex;gap:5px;background:#e5e5ea;padding:5px;border-radius:14px;margin-bottom:12px}
+.tabs button{flex:1;border:0;background:transparent;border-radius:10px;padding:10px 2px;font-size:12px;font-weight:800}
+.tabs button.active{background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.12)}
+.stats{display:flex;gap:8px;margin-bottom:12px}
+.stat{flex:1;background:#fff;border-radius:14px;text-align:center;padding:12px 4px;font-size:12px;color:#777;font-weight:800}
+.stat b{display:block;color:#111;font-size:21px}
+.hidden{display:none}
+label{display:block;margin:10px 0 5px;font-size:13px;font-weight:800}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d2d2d7;border-radius:10px;font-size:16px;background:#fff;font-family:inherit}
+textarea{min-height:80px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.btn{width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;font-size:15px;font-weight:900;color:#fff;background:#34c759}
+.btn-blue{background:#007aff}.btn-red{background:#ff3b30}.btn-gray{background:#777}
+.small{font-size:12px;color:#777}
+.ok{color:#23a647;font-weight:900}.bad{color:#ff3b30;font-weight:900}
+.qty-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid #eee;padding:9px 0}
+.qty-row:last-child{border-bottom:0}
+.qty-name{flex:1;font-weight:800;font-size:14px}
+.qty-name span{display:block;color:#777;font-size:11px;font-weight:700}
+.qty-row input{width:74px;text-align:center;padding:8px}
+.agenda-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px;background:#fff}
+.agenda-table td,.agenda-table th{border:1px solid #e5e5ea;padding:8px;text-align:center}
+.agenda-table th{font-size:12px;color:#777;background:#f8f8fa}
+.time{font-weight:900;width:72px}
+.slots{display:flex;justify-content:center;gap:7px}
+.slot{width:34px;height:34px;border:3px solid #8e8e93;border-radius:9px;background:#fff}
+.slot.on{background:#ff3b30;border-color:#ff3b30}
+.interval td{background:#f1f1f4;color:#777;font-weight:900}
+.os-card{border-left:5px solid #007aff}
+.os-card p{margin:5px 0;font-size:14px}
+.service-edit{display:flex;gap:6px;align-items:center;border-bottom:1px solid #eee;padding:8px 0}
+.service-edit b{flex:1}
+.service-edit button{width:auto;margin:0;padding:8px 10px;border-radius:8px}
+#printArea{display:none}
+@media print{
+ body>*:not(#printArea){display:none!important}
+ #printArea{display:block!important;font-family:monospace;font-size:12px;width:58mm}
+ .print-line{margin:3px 0}
+}
+</style>
 </head>
-
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>AFIA</h1>
-      <p>ORDEM DE SERVIÇO • AGENDA • CLIENTES</p>
-    </div>
+<div id="printArea"></div>
 
-    <div class="cloud" id="cloudStatus">Conectando ao Firebase...</div>
+<div class="container">
+  <div class="header">
+    <h1>AFIA</h1>
+    <p>ORDEM DE SERVIÇO • AGENDA • CLIENTES</p>
+  </div>
+
+  <section id="loginScreen" class="card">
+    <h3 class="title">🔐 Login</h3>
+    <label>Usuário</label><input id="loginUser" placeholder="Ex: dono">
+    <label>Senha</label><input id="loginPass" type="password" placeholder="Senha">
+    <button class="btn" onclick="login()">Entrar</button>
+    <p class="small">Padrão inicial: usuário <b>dono</b> e senha <b>1234</b>. Depois você pode trocar em Ajustes.</p>
+  </section>
+
+  <main id="appScreen" class="hidden">
+    <div class="card"><div id="cloudStatus">Conectando ao Firebase...</div></div>
 
     <div class="tabs">
       <button id="btnAgenda" class="active" onclick="showTab('agenda')">📅 Agenda</button>
@@ -137,80 +94,40 @@
     <section id="agenda">
       <div class="card">
         <h3 class="title">📅 Agenda</h3>
-        <label>Data da agenda</label>
-        <input type="date" id="agendaData" onchange="renderAgenda()">
+        <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda()">
+        <div id="agendaGrid" style="margin-top:12px"></div>
       </div>
+      <h3 style="font-size:15px;margin:14px 0 8px">Ordens do dia</h3>
       <div id="agendaLista"></div>
     </section>
 
     <section id="nova" class="hidden">
       <form class="card" onsubmit="salvarOS(event)">
-        <h3 class="title">📝 Nova Ordem de Serviço</h3>
-
-        <label>Nome do cliente</label>
-        <input id="nome" required>
-
-        <label>Telefone / WhatsApp</label>
-        <input id="telefone" inputmode="tel" required>
-
+        <h3 class="title">📝 Nova OS</h3>
+        <label>Nome do cliente</label><input id="nome" required>
+        <label>Telefone / WhatsApp</label><input id="telefone" inputmode="tel" required>
         <div class="row">
-          <div>
-            <label>Data da entrega</label>
-            <input type="date" id="dataEntrega" required>
-          </div>
-          <div>
-            <label>Horário</label>
-            <select id="horaEntrega" required></select>
-          </div>
+          <div><label>Data da entrega</label><input type="date" id="dataEntrega" required></div>
+          <div><label>Horário</label><select id="horaEntrega" required></select></div>
         </div>
-
-        <label>Alicates de cutícula</label>
-        <input type="number" id="qtdAlicates" min="0" value="0" oninput="calcularTotal()">
-
-        <label>Facas</label>
-        <input type="number" id="qtdFacas" min="0" value="0" oninput="calcularTotal()">
-
-        <label>Tesouras</label>
-        <input type="number" id="qtdTesouras" min="0" value="0" oninput="calcularTotal()">
-
-        <label>Molas</label>
-        <input type="number" id="qtdMolas" min="0" value="0" oninput="calcularTotal()">
-
-        <label>Espátulas</label>
-        <input type="number" id="qtdEspatulas" min="0" value="0" oninput="calcularTotal()">
-
-        <label>Outros serviços</label>
-        <input type="number" id="qtdOutros" min="0" value="0" oninput="calcularTotal()">
-
-        <label>Observação</label>
-        <textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, alicate Staleks..."></textarea>
-
+        <div class="card" style="box-shadow:none;border:1px solid #eee;padding:10px;margin-top:12px">
+          <h3 class="title">✂️ Serviços</h3>
+          <div id="servicosOS"></div>
+        </div>
+        <label>Observação</label><textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
         <label>Status de produção</label>
-        <select id="status">
-          <option value="Recebido">📦 Recebido / aguardando</option>
-          <option value="Na bancada">🔥 Na bancada</option>
-          <option value="Pronto">🟢 Pronto para retirada</option>
-          <option value="Retirado">✅ Retirado</option>
-        </select>
-
+        <select id="status"><option>Recebido</option><option>Na bancada</option><option>Pronto</option><option>Retirado</option></select>
         <label>Pagamento</label>
-        <select id="pagamento">
-          <option value="Pagar na retirada">🔴 Pagar na retirada</option>
-          <option value="Pago">🟢 Pago</option>
-        </select>
-
-        <label>Valor total</label>
-        <input type="number" id="valorTotal" step="0.01" required>
-
-        <button class="btn" type="submit">💾 Salvar OS na nuvem</button>
+        <select id="pagamento"><option>Pagar na retirada</option><option>Pago</option></select>
+        <label>Valor total</label><input id="valorTotal" type="number" step="0.01" required>
+        <button class="btn" type="submit">💾 Salvar OS</button>
       </form>
     </section>
 
     <section id="clientes" class="hidden">
       <div class="card">
         <h3 class="title">🔎 Clientes</h3>
-        <label>Pesquisar por nome ou telefone</label>
-        <input id="buscaCliente" oninput="renderClientes()">
+        <label>Pesquisar</label><input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
       </div>
       <div id="clientesLista"></div>
     </section>
@@ -219,259 +136,211 @@
       <div class="card">
         <h3 class="title">⚙️ Ajustes</h3>
         <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
-        <p class="small">Este app salva as OS na coleção <b>ordens_afia</b> do Firestore.</p>
+        <button class="btn btn-gray" onclick="logout()">Sair</button>
+      </div>
+
+      <div class="card">
+        <h3 class="title">🛠️ Serviços e preços</h3>
+        <div id="servicosEdit"></div>
+        <label>Novo serviço</label><input id="novoServico" placeholder="Ex: Alicates de cutícula">
+        <label>Preço unitário</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
+        <button class="btn btn-blue" onclick="adicionarServico()">Adicionar serviço</button>
+      </div>
+
+      <div class="card">
+        <h3 class="title">💬 Mensagem do WhatsApp</h3>
+        <p class="small">Use: {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
+        <textarea id="templateMsg"></textarea>
+        <button class="btn btn-blue" onclick="salvarTemplate()">Salvar mensagem</button>
+      </div>
+
+      <div class="card">
+        <h3 class="title">🔐 Trocar login</h3>
+        <label>Usuário</label><input id="setUser">
+        <label>Senha</label><input id="setPass" type="password">
+        <button class="btn btn-blue" onclick="salvarLoginConfig()">Salvar login</button>
       </div>
     </section>
-  </div>
+  </main>
+</div>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
-    authDomain: "afia-37aa8.firebaseapp.com",
-    databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
-    projectId: "afia-37aa8",
-    storageBucket: "afia-37aa8.firebasestorage.app",
-    messagingSenderId: "961300018208",
-    appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
+  authDomain: "afia-37aa8.firebaseapp.com",
+  databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
+  projectId: "afia-37aa8",
+  storageBucket: "afia-37aa8.firebasestorage.app",
+  messagingSenderId: "961300018208",
+  appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
+};
 
-  let db = null;
-  let ordens = [];
-  const colecao = "ordens_afia";
+let db=null, ordens=[], config={};
+const COL_ORDENS="ordens_afia_v2";
+const DOC_CONFIG="config/afia";
+const horarios=["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","14:30","15:00","15:30","16:00","16:30"];
+const defaultServices=[
+  {nome:"Alicates de cutícula", preco:15},
+  {nome:"Facas", preco:12},
+  {nome:"Tesouras", preco:15},
+  {nome:"Molas", preco:5},
+  {nome:"Espátulas", preco:7},
+  {nome:"Outros serviços", preco:10}
+];
+const defaultTemplate="*AFIA - ORDEM DE SERVIÇO*\\n\\nOlá, *{nome}*!\\nSua OS foi registrada.\\n\\n📅 Entrega: {data}\\n⏰ Horário: {hora}\\n\\n*Serviços:*\\n{itens}\\n\\n💰 Total: {valor}\\n📌 Pagamento: {pagamento}\\n\\nObrigado pela preferência!";
 
-  const precos = {
-    alicates: 10,
-    facas: 12,
-    tesouras: 15,
-    molas: 5,
-    espatulas: 7,
-    outros: 10
-  };
+function hoje(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function dataBR(x){if(!x)return"";let p=x.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
+function moeda(v){return "R$ "+Number(v||0).toFixed(2).replace(".",",")}
+function sessionOK(){return localStorage.getItem("afia_login_date")===hoje()}
+function getLogin(){return {u:config.user||"dono",p:config.pass||"1234"}}
 
-  function hojeISO() {
-    const d = new Date();
-    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+async function iniciar(){
+  document.getElementById("agendaData").value=hoje();
+  document.getElementById("dataEntrega").value=hoje();
+  horarios.forEach(h=>{let o=document.createElement("option");o.value=h;o.textContent=h;horaEntrega.appendChild(o)});
+  try{
+    firebase.initializeApp(firebaseConfig); db=firebase.firestore();
+    cloudStatus.innerHTML='<span class="ok">🟢 Conectado na nuvem Firebase</span>'; ajusteStatus.innerHTML='<span class="ok">Conectado</span>';
+    await carregarConfig();
+    if(sessionOK()) abrirApp(); else loginScreen.classList.remove("hidden");
+    db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot(s=>{
+      ordens=[]; s.forEach(d=>ordens.push({id:d.id,...d.data()}));
+      renderAgenda(); renderClientes();
+    },e=>cloudStatus.innerHTML='<span class="bad">🔴 '+e.message+'</span>');
+  }catch(e){cloudStatus.innerHTML='<span class="bad">🔴 Erro: '+e.message+'</span>'; ajusteStatus.textContent=e.message}
+}
+
+async function carregarConfig(){
+  const snap=await db.doc(DOC_CONFIG).get();
+  if(snap.exists){config=snap.data()}else{
+    config={servicos:defaultServices, template:defaultTemplate, user:"dono", pass:"1234"};
+    await db.doc(DOC_CONFIG).set(config);
   }
+  if(!config.servicos) config.servicos=defaultServices;
+  if(!config.template) config.template=defaultTemplate;
+  templateMsg.value=config.template;
+  setUser.value=config.user||"dono";
+  setPass.value=config.pass||"1234";
+  renderServicosOS(); renderServicosEdit();
+}
 
-  function dataBR(iso) {
-    if (!iso) return "";
-    const p = iso.split("-");
-    return p[2] + "/" + p[1] + "/" + p[0];
-  }
+function login(){
+  const l=getLogin();
+  if(loginUser.value.trim()===l.u && loginPass.value===l.p){
+    localStorage.setItem("afia_login_date",hoje()); abrirApp();
+  }else alert("Usuário ou senha incorretos.");
+}
+function abrirApp(){loginScreen.classList.add("hidden");appScreen.classList.remove("hidden")}
+function logout(){localStorage.removeItem("afia_login_date");location.reload()}
 
-  function dinheiro(v) {
-    return "R$ " + Number(v || 0).toFixed(2).replace(".", ",");
-  }
+function showTab(t){
+  ["agenda","nova","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+  ["btnAgenda","btnNova","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
+  document.getElementById(t).classList.remove("hidden");
+  if(t==="agenda")btnAgenda.classList.add("active");
+  if(t==="nova")btnNova.classList.add("active");
+  if(t==="clientes")btnClientes.classList.add("active");
+  if(t==="ajustes")btnAjustes.classList.add("active");
+}
 
-  function iniciar() {
-    document.getElementById("agendaData").value = hojeISO();
-    document.getElementById("dataEntrega").value = hojeISO();
+function renderServicosOS(){
+  servicosOS.innerHTML="";
+  config.servicos.forEach((s,i)=>{
+    servicosOS.innerHTML+=`<div class="qty-row"><div class="qty-name">${s.nome}<span>${moeda(s.preco)} cada</span></div><input type="number" min="0" value="0" id="svc_${i}" oninput="calcularTotal()"></div>`;
+  });
+}
+function calcularTotal(){
+  let total=0;
+  config.servicos.forEach((s,i)=>{total+=(Number(document.getElementById("svc_"+i)?.value)||0)*Number(s.preco||0)});
+  valorTotal.value=total.toFixed(2);
+}
+async function salvarOS(e){
+  e.preventDefault();
+  let itens={}, pecas=0;
+  config.servicos.forEach((s,i)=>{let q=Number(document.getElementById("svc_"+i).value)||0;if(q>0){itens[s.nome]=q;pecas+=q}});
+  if(!pecas){alert("Marque pelo menos 1 serviço.");return}
+  const os={nome:nome.value.trim(),telefone:telefone.value.trim(),data:dataEntrega.value,hora:horaEntrega.value,itens,pecas,observacao:observacao.value.trim(),status:status.value,pagamento:pagamento.value,valor:Number(valorTotal.value||0),criadoEm:firebase.firestore.FieldValue.serverTimestamp()};
+  try{
+    const ref=await db.collection(COL_ORDENS).add(os);
+    os.id=ref.id;
+    prepararImpressao(os);
+    enviarWhatsApp(os);
+    e.target.reset(); dataEntrega.value=hoje(); renderServicosOS(); showTab("agenda");
+  }catch(err){alert("Erro ao salvar: "+err.message)}
+}
+function itensTexto(os, sep="\n"){return Object.entries(os.itens||{}).map(([n,q])=>`${n}: ${q}`).join(sep)}
+function enviarWhatsApp(os){
+  let tel=os.telefone.replace(/\D/g,""); if(!tel.startsWith("55"))tel="55"+tel;
+  let msg=(config.template||defaultTemplate)
+    .replaceAll("{nome}",os.nome).replaceAll("{data}",dataBR(os.data)).replaceAll("{hora}",os.hora)
+    .replaceAll("{itens}",itensTexto(os,"\n")).replaceAll("{valor}",moeda(os.valor)).replaceAll("{pagamento}",os.pagamento);
+  window.open("https://wa.me/"+tel+"?text="+encodeURIComponent(msg),"_blank");
+}
+function prepararImpressao(os){
+  printArea.innerHTML=`<div style="text-align:center;font-weight:bold">AFIA - VIA DA LOJA</div>
+  <div class="print-line">OS: ${os.id||""}</div>
+  <div class="print-line">Cliente: ${os.nome}</div>
+  <div class="print-line">Tel: ${os.telefone}</div>
+  <div class="print-line">Entrega: ${dataBR(os.data)} ${os.hora}</div>
+  <div class="print-line">--------------------------</div>
+  <div class="print-line">${itensTexto(os,"<br>")}</div>
+  <div class="print-line">--------------------------</div>
+  <div class="print-line">Total: ${moeda(os.valor)}</div>
+  <div class="print-line">${os.pagamento}</div>
+  <div class="print-line">${os.observacao||""}</div>`;
+  setTimeout(()=>{ if(confirm("Imprimir via da loja agora?")) window.print(); },500);
+}
 
-    const horarios = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","14:30","15:00","15:30","16:00","16:30"];
-    horarios.forEach(h => {
-      const opt = document.createElement("option");
-      opt.value = h;
-      opt.textContent = h;
-      document.getElementById("horaEntrega").appendChild(opt);
-    });
+function renderAgenda(){
+  let data=agendaData.value;
+  let dia=ordens.filter(o=>o.data===data).sort((a,b)=>String(a.hora).localeCompare(String(b.hora)));
+  statPedidos.textContent=dia.length;
+  statPecas.textContent=dia.reduce((s,o)=>s+Number(o.pecas||0),0);
+  statValor.textContent=moeda(dia.reduce((s,o)=>s+Number(o.valor||0),0));
+  renderGrid(dia);
+  agendaLista.innerHTML=dia.length?"":'<div class="card small">Nenhuma OS para esta data.</div>';
+  dia.forEach(os=>{
+    let d=document.createElement("div"); d.className="card os-card";
+    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>📞 ${os.telefone}</p><p>${itensTexto(os," • ")}</p><p>💰 ${moeda(os.valor)} | ${os.pagamento}</p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>📝 ${os.observacao}</p>`:""}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
+    agendaLista.appendChild(d);
+  });
+}
+function renderGrid(dia){
+  let ocup={}; horarios.forEach(h=>ocup[h]=0);
+  dia.forEach(o=>{if(ocup[o.hora]!==undefined)ocup[o.hora]+=Number(o.pecas||0)});
+  let total=0, html='<table class="agenda-table"><tr><th>Horário</th><th>Vagas ocupadas</th></tr>';
+  horarios.forEach(h=>{
+    if(h==="14:30")html+='<tr class="interval"><td colspan="2">☕ ALMOÇO / INTERVALO (13:30 às 14:30)</td></tr>';
+    let q=Math.min(ocup[h]||0,5); total+=ocup[h]||0;
+    html+=`<tr><td class="time">${h}</td><td><div class="slots">`;
+    for(let i=0;i<5;i++)html+=`<div class="slot ${i<q?'on':''}"></div>`;
+    html+='</div></td></tr>';
+  });
+  html+=`<tr><td><b>TOTAL</b></td><td><b>${total} Ocupadas</b></td></tr></table>`;
+  agendaGrid.innerHTML=html;
+}
+function renderClientes(){
+  let q=buscaCliente.value.toLowerCase().trim();
+  let lista=ordens.filter(o=>!q||String(o.nome).toLowerCase().includes(q)||String(o.telefone).includes(q));
+  clientesLista.innerHTML=lista.length?"":'<div class="card small">Nenhum cliente encontrado.</div>';
+  lista.forEach(os=>{let d=document.createElement("div");d.className="card";d.innerHTML=`<p><b>${os.nome}</b></p><p>📞 ${os.telefone}</p><p>📅 ${dataBR(os.data)} às ${os.hora}</p><p>${moeda(os.valor)} | ${os.status}</p>`;clientesLista.appendChild(d)});
+}
+function reenviar(id){let os=ordens.find(o=>o.id===id);if(os)enviarWhatsApp(os)}
+function imprimir(id){let os=ordens.find(o=>o.id===id);if(os){prepararImpressao(os);window.print()}}
+async function apagarOS(id){if(confirm("Apagar esta OS?"))await db.collection(COL_ORDENS).doc(id).delete()}
 
-    try {
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.firestore();
+function renderServicosEdit(){
+  servicosEdit.innerHTML="";
+  config.servicos.forEach((s,i)=>{servicosEdit.innerHTML+=`<div class="service-edit"><b>${s.nome}</b><span>${moeda(s.preco)}</span><button class="btn btn-red" onclick="removerServico(${i})">Excluir</button></div>`});
+}
+async function salvarConfig(){await db.doc(DOC_CONFIG).set(config,{merge:true});renderServicosOS();renderServicosEdit()}
+async function adicionarServico(){if(!novoServico.value||!novoPreco.value)return;config.servicos.push({nome:novoServico.value.trim(),preco:Number(novoPreco.value)});novoServico.value="";novoPreco.value="";await salvarConfig()}
+async function removerServico(i){if(confirm("Excluir este serviço da OS?")){config.servicos.splice(i,1);await salvarConfig()}}
+async function salvarTemplate(){config.template=templateMsg.value;await salvarConfig();alert("Mensagem salva.")}
+async function salvarLoginConfig(){config.user=setUser.value.trim()||"dono";config.pass=setPass.value||"1234";await salvarConfig();alert("Login salvo.")}
 
-      document.getElementById("cloudStatus").innerHTML = '<span class="ok">🟢 Conectado na nuvem Firebase</span>';
-      document.getElementById("ajusteStatus").innerHTML = '<span class="ok">Conectado na nuvem Firebase</span>';
-
-      db.collection(colecao).orderBy("criadoEm", "desc").onSnapshot(snapshot => {
-        ordens = [];
-        snapshot.forEach(doc => {
-          ordens.push({ id: doc.id, ...doc.data() });
-        });
-        renderAgenda();
-        renderClientes();
-      }, erro => {
-        document.getElementById("cloudStatus").innerHTML = '<span class="bad">🔴 Erro no Firebase: ' + erro.message + '</span>';
-        document.getElementById("ajusteStatus").innerHTML = '<span class="bad">' + erro.message + '</span>';
-      });
-    } catch (erro) {
-      document.getElementById("cloudStatus").innerHTML = '<span class="bad">🔴 Erro ao conectar: ' + erro.message + '</span>';
-      document.getElementById("ajusteStatus").innerHTML = '<span class="bad">' + erro.message + '</span>';
-    }
-  }
-
-  function showTab(tab) {
-    ["agenda", "nova", "clientes", "ajustes"].forEach(id => document.getElementById(id).classList.add("hidden"));
-    ["btnAgenda", "btnNova", "btnClientes", "btnAjustes"].forEach(id => document.getElementById(id).classList.remove("active"));
-
-    document.getElementById(tab).classList.remove("hidden");
-
-    if (tab === "agenda") document.getElementById("btnAgenda").classList.add("active");
-    if (tab === "nova") document.getElementById("btnNova").classList.add("active");
-    if (tab === "clientes") document.getElementById("btnClientes").classList.add("active");
-    if (tab === "ajustes") document.getElementById("btnAjustes").classList.add("active");
-  }
-
-  function calcularTotal() {
-    const total =
-      (Number(document.getElementById("qtdAlicates").value) || 0) * precos.alicates +
-      (Number(document.getElementById("qtdFacas").value) || 0) * precos.facas +
-      (Number(document.getElementById("qtdTesouras").value) || 0) * precos.tesouras +
-      (Number(document.getElementById("qtdMolas").value) || 0) * precos.molas +
-      (Number(document.getElementById("qtdEspatulas").value) || 0) * precos.espatulas +
-      (Number(document.getElementById("qtdOutros").value) || 0) * precos.outros;
-
-    document.getElementById("valorTotal").value = total.toFixed(2);
-  }
-
-  async function salvarOS(event) {
-    event.preventDefault();
-
-    if (!db) {
-      alert("Firebase não está conectado. Veja a aba Ajustes.");
-      return;
-    }
-
-    const itens = {
-      "Alicates": Number(document.getElementById("qtdAlicates").value) || 0,
-      "Facas": Number(document.getElementById("qtdFacas").value) || 0,
-      "Tesouras": Number(document.getElementById("qtdTesouras").value) || 0,
-      "Molas": Number(document.getElementById("qtdMolas").value) || 0,
-      "Espátulas": Number(document.getElementById("qtdEspatulas").value) || 0,
-      "Outros": Number(document.getElementById("qtdOutros").value) || 0
-    };
-
-    const pecas = Object.values(itens).reduce((soma, qtd) => soma + qtd, 0);
-
-    if (pecas === 0) {
-      alert("Marque pelo menos 1 serviço.");
-      return;
-    }
-
-    const os = {
-      nome: document.getElementById("nome").value.trim(),
-      telefone: document.getElementById("telefone").value.trim(),
-      data: document.getElementById("dataEntrega").value,
-      hora: document.getElementById("horaEntrega").value,
-      itens: itens,
-      pecas: pecas,
-      observacao: document.getElementById("observacao").value.trim(),
-      status: document.getElementById("status").value,
-      pagamento: document.getElementById("pagamento").value,
-      valor: Number(document.getElementById("valorTotal").value || 0),
-      criadoEm: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    try {
-      await db.collection(colecao).add(os);
-
-      let tel = os.telefone.replace(/\D/g, "");
-      if (!tel.startsWith("55")) tel = "55" + tel;
-
-      const itensTexto = Object.entries(itens)
-        .filter(([nome, qtd]) => qtd > 0)
-        .map(([nome, qtd]) => nome + ": " + qtd)
-        .join("%0A");
-
-      const mensagem =
-        "*AFIA - ORDEM DE SERVIÇO*%0A%0A" +
-        "Olá, *" + os.nome + "*!%0A" +
-        "Sua ordem de serviço foi registrada.%0A%0A" +
-        "📅 Entrega: " + dataBR(os.data) + "%0A" +
-        "⏰ Horário: " + os.hora + "%0A%0A" +
-        "*Serviços:*%0A" + itensTexto + "%0A%0A" +
-        "💰 Total: " + dinheiro(os.valor) + "%0A" +
-        "📌 Pagamento: " + os.pagamento;
-
-      window.open("https://wa.me/" + tel + "?text=" + mensagem, "_blank");
-
-      event.target.reset();
-      document.getElementById("dataEntrega").value = hojeISO();
-      showTab("agenda");
-    } catch (erro) {
-      alert("Erro ao salvar no Firebase: " + erro.message);
-    }
-  }
-
-  function renderAgenda() {
-    const data = document.getElementById("agendaData").value;
-    const lista = ordens
-      .filter(os => os.data === data)
-      .sort((a, b) => String(a.hora || "").localeCompare(String(b.hora || "")));
-
-    document.getElementById("statPedidos").textContent = lista.length;
-    document.getElementById("statPecas").textContent = lista.reduce((soma, os) => soma + Number(os.pecas || 0), 0);
-    document.getElementById("statValor").textContent = dinheiro(lista.reduce((soma, os) => soma + Number(os.valor || 0), 0));
-
-    const box = document.getElementById("agendaLista");
-    box.innerHTML = "";
-
-    if (lista.length === 0) {
-      box.innerHTML = '<div class="card small">Nenhuma OS para essa data.</div>';
-      return;
-    }
-
-    lista.forEach(os => {
-      const itens = Object.entries(os.itens || {})
-        .filter(([nome, qtd]) => qtd > 0)
-        .map(([nome, qtd]) => nome + ": " + qtd)
-        .join(" • ");
-
-      const div = document.createElement("div");
-      div.className = "card os-card";
-      div.innerHTML = `
-        <p><b>${os.hora} - ${os.nome}</b></p>
-        <p>📞 ${os.telefone}</p>
-        <p>${itens}</p>
-        <p>💰 ${dinheiro(os.valor)} | ${os.pagamento}</p>
-        <p>📌 Status: <b>${os.status}</b></p>
-        ${os.observacao ? `<p>📝 ${os.observacao}</p>` : ""}
-        <button class="btn btn-blue" onclick="marcarPronto('${os.id}')">Marcar como pronto</button>
-        <button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar OS</button>
-      `;
-      box.appendChild(div);
-    });
-  }
-
-  function renderClientes() {
-    const busca = document.getElementById("buscaCliente").value.toLowerCase().trim();
-    const lista = ordens.filter(os =>
-      !busca ||
-      String(os.nome || "").toLowerCase().includes(busca) ||
-      String(os.telefone || "").includes(busca)
-    );
-
-    const box = document.getElementById("clientesLista");
-    box.innerHTML = "";
-
-    if (lista.length === 0) {
-      box.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
-      return;
-    }
-
-    lista.forEach(os => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <p><b>${os.nome}</b></p>
-        <p>📞 ${os.telefone}</p>
-        <p>📅 ${dataBR(os.data)} às ${os.hora}</p>
-        <p>💰 ${dinheiro(os.valor)} | ${os.status}</p>
-      `;
-      box.appendChild(div);
-    });
-  }
-
-  async function marcarPronto(id) {
-    await db.collection(colecao).doc(id).update({ status: "Pronto" });
-  }
-
-  async function apagarOS(id) {
-    if (confirm("Deseja apagar esta OS?")) {
-      await db.collection(colecao).doc(id).delete();
-    }
-  }
-
-  iniciar();
+iniciar();
 </script>
 </body>
 </html>
