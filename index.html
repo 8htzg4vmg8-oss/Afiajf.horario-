@@ -267,6 +267,11 @@
             background-color: #ff3b30;
             border-color: #ff3b30;
         }
+        /* COR DA RESERVA LARANJA DO APP */
+        .square.pending {
+            background-color: #ff9500;
+            border-color: #ff9500;
+        }
         .interval-row td {
             background-color: #f5f5f7;
             font-weight: 600;
@@ -413,6 +418,13 @@
 
             <div class="card">
                 <div class="card-title">💰 Dados de Fechamento e Entrega</div>
+                <div class="form-group">
+                    <label>Situação Inicial do Atendimento:</label>
+                    <select id="os-status" style="border: 2px solid #ff9500; font-weight: 600;">
+                        <option value="confirmed">📦 Peças já estão no balcão (Firme/Vermelho)</option>
+                        <option value="pending">📅 Apenas Reservou Horário (Reserva/Laranja)</option>
+                    </select>
+                </div>
                 <div class="form-group"><label>Valor Total do Serviço (R$):</label><input type="number" id="os-value" step="0.01" placeholder="R$ 0,00" required></div>
                 <div class="form-group"><label>Data da Entrega:</label><input type="date" id="os-date" required onchange="calculateLiveTotal()"></div>
                 <div class="form-group"><label>Horário da Entrega:</label><select id="os-time" required onchange="calculateLiveTotal()"></select></div>
@@ -523,7 +535,6 @@
         if (clients[phone]) document.getElementById('os-name').value = clients[phone];
     }
 
-    // CORREÇÃO AQUI: Troca de value="0" para placeholder="0" e value vacio.
     function renderDynamicFormServices() {
         const services = getServices();
         const container = document.getElementById('dynamic-qty-container');
@@ -599,6 +610,10 @@
         }
     }
 
+    function getToolsCountFromOS(os) {
+        return parseInt(os.totalTools || os.tools || 0);
+    }
+
     function updateTopStats(dateStr) {
         const osList = getOSList();
         const osDoDia = osList.filter(os => os.date === dateStr);
@@ -606,13 +621,25 @@
         
         let totalPecas = 0;
         osDoDia.forEach(os => {
-            totalPecas += parseInt(os.totalTools || os.tools || 0);
+            totalPecas += getToolsCountFromOS(os);
         });
         document.getElementById('stat-pieces').innerText = totalPecas;
     }
 
     function calculateLiveTotal() {
         updateTopStats(document.getElementById('agenda-date').value);
+    }
+
+    // AÇÃO RÁPIDA DE BALCÃO: Transforma a Reserva em Atendimento Real (Muda Laranja para Vermelho)
+    function confirmOSArrival(id) {
+        let osList = getOSList();
+        let os = osList.find(item => item.id === id);
+        if (os) {
+            os.status = 'confirmed';
+            setOSList(osList);
+            alert(`📦 Sucesso! As peças da(o) cliente ${os.name} foram recebidas no balcão. A agenda mudou para Vermelho.`);
+            renderAgenda();
+        }
     }
 
     function saveOS(e) {
@@ -622,13 +649,13 @@
         const value = parseFloat(document.getElementById('os-value').value || 0).toFixed(2);
         const date = document.getElementById('os-date').value;
         const time = document.getElementById('os-time').value;
+        const status = document.getElementById('os-status').value; // 'confirmed' ou 'pending'
 
         const services = getServices();
         const osItems = {};
         let totalTools = 0;
 
         services.forEach((service, index) => {
-            // Tratamento contra strings vazias na soma
             const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
             if (qty > 0) {
                 osItems[service] = qty;
@@ -652,51 +679,44 @@
                     if(ocupacaoAtual[h] !== undefined) ocupacaoAtual[h] += os.allocations[h];
                 }
             } else {
-                if(ocupacaoAtual[os.time] !== undefined) ocupacaoAtual[os.time] += parseInt(os.totalTools || os.tools || 0);
+                if(ocupacaoAtual[os.time] !== undefined) ocupacaoAtual[os.time] += getToolsCountFromOS(os);
             }
         });
 
         let timeIndex = todosHorarios.indexOf(time);
         let allocations = {};
+        let remaining = totalTools;
 
-        let testAlloc = {};
-        let testRemaining = totalTools;
         for (let i = timeIndex; i >= 0; i--) {
             let h = todosHorarios[i];
             let vagasLivres = 5 - ocupacaoAtual[h];
             if (vagasLivres > 0) {
-                let toTake = Math.min(vagasLivres, testRemaining);
-                testAlloc[h] = toTake;
-                testRemaining -= toTake;
-                if (testRemaining === 0) break;
+                let toTake = Math.min(vagasLivres, remaining);
+                allocations[h] = toTake;
+                remaining -= toTake;
+                if (remaining === 0) break;
             }
         }
 
-        if (testRemaining === 0) {
-            allocations = testAlloc;
-        } else {
-            testAlloc = {};
-            testRemaining = totalTools;
-            for (let i = timeIndex; i < todosHorarios.length; i++) {
+        if (remaining > 0) {
+            for (let i = timeIndex + 1; i < todosHorarios.length; i++) {
                 let h = todosHorarios[i];
                 let vagasLivres = 5 - ocupacaoAtual[h];
                 if (vagasLivres > 0) {
-                    let toTake = Math.min(vagasLivres, testRemaining);
-                    testAlloc[h] = toTake;
-                    testRemaining -= toTake;
-                    if (testRemaining === 0) break;
+                    let toTake = Math.min(vagasLivres, remaining);
+                    allocations[h] = (allocations[h] || 0) + toTake;
+                    remaining -= toTake;
+                    if (remaining === 0) break;
                 }
-            }
-            
-            if (testRemaining === 0) {
-                allocations = testAlloc;
-            } else {
-                alert(`⚠️ AGENDA TOTALMENTE SEM ESPAÇO!\n\nNão há ${totalTools} vagas disponíveis seguidas perto das ${time}h neste dia.`);
-                return;
             }
         }
 
-        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations };
+        if (remaining > 0) {
+            alert(`⚠️ AGENDA TOTALMENTE SEM VAGAS!\n\nNão há ${totalTools} vagas disponíveis próximas às ${time}h neste dia.`);
+            return;
+        }
+
+        osRecente = { id: Date.now(), phone, name, value, date, time, items: osItems, totalTools: totalTools, allocations: allocations, status: status };
         osList.push(osRecente);
         setOSList(osList);
 
@@ -727,6 +747,12 @@
         if (!cleanPhone.startsWith('55')) cleanPhone = '55' + cleanPhone;
         
         let template = localStorage.getItem('afia_wa_template') || defaultTemplate;
+        
+        // Altera o texto de envio dinamicamente caso seja uma reserva pendente
+        if (osRecente.status === 'pending') {
+            template = `*AFIA - HORÁRIO RESERVADO*\n\nOlá, *{nome}*!\nSeu horário para trazer as ferramentas foi guardado no sistema.\n\n📅 *Dia Combinado:* {data}\n⏰ *Horário da Reserva:* {horario}h\n\n*Resumo da Reserva:*\n{itens}\n\n💰 *Valor Estimado:* R$ {valor}\n\n_Estamos te aguardando! Obrigado._`;
+        }
+        
         let itemText = "";
         for (const [item, qty] of Object.entries(osRecente.items)) {
             itemText += `\n- ${item}: ${qty}`;
@@ -770,17 +796,32 @@
         const tableBody = document.getElementById('agenda-table-body');
         tableBody.innerHTML = "";
 
-        const ocupacaoPorHorario = {};
-        todosHorarios.forEach(h => ocupacaoPorHorario[h] = 0);
+        // Rastreamento separado para construir a cor dos blocos de forma combinada
+        const ocupacaoConfirmada = {};
+        const ocupacaoPendente = {};
+        todosHorarios.forEach(h => {
+            ocupacaoConfirmada[h] = 0;
+            ocupacaoPendente[h] = 0;
+        });
         
         const osDoDia = osList.filter(os => os.date === targetDate);
         osDoDia.forEach(os => {
+            const status = os.status || 'confirmed';
             if (os.allocations) {
                 for (let h in os.allocations) {
-                    if (ocupacaoPorHorario[h] !== undefined) ocupacaoPorHorario[h] += os.allocations[h];
+                    if (status === 'pending') {
+                        ocupacaoPendente[h] += os.allocations[h];
+                    } else {
+                        ocupacaoConfirmada[h] += os.allocations[h];
+                    }
                 }
             } else {
-                if (ocupacaoPorHorario[os.time] !== undefined) ocupacaoPorHorario[os.time] += parseInt(os.totalTools || os.tools || 0);
+                let total = getToolsCountFromOS(os);
+                if (status === 'pending') {
+                    ocupacaoPendente[os.time] += total;
+                } else {
+                    ocupacaoConfirmada[os.time] += total;
+                }
             }
         });
 
@@ -790,11 +831,18 @@
             const tdSlots = document.createElement('td');
             const slotContainer = document.createElement('div');
             slotContainer.className = "slots-col";
-            const totalOcupado = ocupacaoPorHorario[h];
+            
+            const totalConf = ocupacaoConfirmada[h] || 0;
+            const totalPend = ocupacaoPendente[h] || 0;
+
             for (let i = 0; i < 5; i++) {
                 const square = document.createElement('div');
                 square.className = "square";
-                if (i < totalOcupado) square.classList.add('occupied');
+                if (i < totalConf) {
+                    square.classList.add('occupied'); // Fica Vermelho
+                } else if (i < (totalConf + totalPend)) {
+                    square.classList.add('pending'); // Fica Laranja
+                }
                 slotContainer.appendChild(square);
             }
             tdSlots.appendChild(slotContainer);
@@ -817,10 +865,26 @@
         }
         osDoDia.sort((a,b) => a.time.localeCompare(b.time));
         osDoDia.forEach(os => {
-            let totalExibir = parseInt(os.totalTools || os.tools || 0);
+            let totalExibir = getToolsCountFromOS(os);
+            const statusLabel = (os.status === 'pending') ? '⏳ Reserva Pendente' : '📦 Confirmado na Oficina';
+            const statusColor = (os.status === 'pending') ? '#ff9500' : '#34c759';
+            
+            // Cria o botão de confirmação laranja caso esteja pendente
+            let actionBtn = "";
+            if (os.status === 'pending') {
+                actionBtn = `<button class="btn-sec" style="background:#ff9500; margin-top:8px; padding:8px; font-size:12px; width:100%; border-radius:8px;" onclick="confirmOSArrival(${os.id})">📥 Confirmar Chegada das Peças (Mudar para Vermelho)</button>`;
+            }
+
             const card = document.createElement('div');
             card.className = "os-card";
-            card.innerHTML = `<span class="time-tag">${os.time}h</span><button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Peças:</strong> ${totalExibir} ferramenta(s) | <strong>Total:</strong> R$ ${os.value}</p>`;
+            card.innerHTML = `
+                <span class="time-tag">${os.time}h</span>
+                <span style="font-size:11px; font-weight:700; color:${statusColor}; float:right;">${statusLabel}</span>
+                <button class="btn-del" onclick="deleteOS(${os.id})">Apagar</button>
+                <p style="margin-top:8px;"><strong>Cliente:</strong> ${os.name}</p>
+                <p><strong>Peças:</strong> ${totalExibir} ferramenta(s) | <strong>Total:</strong> R$ ${os.value}</p>
+                ${actionBtn}
+            `;
             listDiv.appendChild(card);
         });
     }
@@ -838,7 +902,7 @@
         }
         historico.sort((a,b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
         historico.forEach(os => {
-            let totalExibir = parseInt(os.totalTools || os.tools || 0);
+            let totalExibir = getToolsCountFromOS(os);
             const card = document.createElement('div');
             card.className = "os-card";
             card.innerHTML = `<span class="time-tag" style="background:#34c759;">${formatDisplayDate(os.date)} - ${os.time}h</span><p><strong>Cliente:</strong> ${os.name}</p><p><strong>Total Peças:</strong> ${totalExibir} | <strong>Valor:</strong> R$ ${os.value}</p>`;
