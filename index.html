@@ -15,6 +15,7 @@ body{margin:0;padding:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe U
 .header{text-align:center;margin:14px 0}
 .header h1{margin:0;font-size:34px;letter-spacing:2px}
 .header p{margin:5px 0 0;color:#777;font-size:12px;font-weight:800;letter-spacing:.8px}
+.version{font-size:10px!important;color:#999!important;font-weight:700!important;letter-spacing:0!important}
 .card{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
 .title{color:#007aff;font-size:14px;font-weight:900;text-transform:uppercase;margin:0 0 12px}
 .tabs{display:flex;gap:5px;background:#e5e5ea;padding:5px;border-radius:14px;margin-bottom:12px}
@@ -58,571 +59,978 @@ textarea{min-height:80px}
 }
 </style>
 </head>
+
 <body>
 <div id="printArea"></div>
 
 <div class="container">
-  <div class="header">
-    <h1>AFIA</h1>
-    <p>ORDEM DE SERVIÃO â¢ AGENDA â¢ CLIENTES</p>
+ <div class="header">
+  <h1>AFIA</h1>
+  <p>ORDEM DE SERVICO - AGENDA - CLIENTES</p>
+  <p class="version">VERSAO CORRIGIDA 5.0 - SEM ACENTOS</p>
+ </div>
+
+ <section id="loginScreen" class="card">
+  <h3 class="title">Login</h3>
+  <label>Usuario</label><input id="loginUser" placeholder="Ex: dono">
+  <label>Senha</label><input id="loginPass" type="password" placeholder="Senha">
+  <button class="btn" onclick="login()">Entrar</button>
+  <p class="small">Padrao inicial: usuario <b>dono</b> e senha <b>1234</b>. Depois voce pode trocar em Ajustes.</p>
+ </section>
+
+ <main id="appScreen" class="hidden">
+  <div class="card"><div id="cloudStatus">Conectando ao Firebase...</div></div>
+
+  <div class="tabs">
+   <button id="btnAgenda" class="active" onclick="showTab('agenda')">Agenda</button>
+   <button id="btnNova" onclick="showTab('nova')">Nova OS</button>
+   <button id="btnClientes" onclick="showTab('clientes')">Clientes</button>
+   <button id="btnAjustes" onclick="showTab('ajustes')">Ajustes</button>
   </div>
 
-  <section id="loginScreen" class="card">
-    <h3 class="title">ð Login</h3>
-    <label>UsuÃ¡rio</label><input id="loginUser" placeholder="Ex: dono">
-    <label>Senha</label><input id="loginPass" type="password" placeholder="Senha">
-    <button class="btn" onclick="login()">Entrar</button>
-    <p class="small">PadrÃ£o inicial: usuÃ¡rio <b>dono</b> e senha <b>1234</b>. Depois vocÃª pode trocar em Ajustes.</p>
+  <div class="stats">
+   <div class="stat"><b id="statPedidos">0</b>Pedidos</div>
+   <div class="stat"><b id="statPecas">0</b>Servicos</div>
+   <div class="stat"><b id="statValor">R$ 0,00</b>Faturamento</div>
+  </div>
+
+  <section id="agenda">
+   <div class="card">
+    <h3 class="title">Agenda</h3>
+    <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda()">
+    <div id="agendaGrid" style="margin-top:12px"></div>
+   </div>
+   <h3 style="font-size:15px;margin:14px 0 8px">Ordens do dia</h3>
+   <div id="agendaLista"></div>
   </section>
 
-  <main id="appScreen" class="hidden">
-    <div class="card"><div id="cloudStatus">Conectando ao Firebase...</div></div>
+  <section id="nova" class="hidden">
+   <form class="card" onsubmit="salvarOS(event)">
+    <h3 class="title">Nova OS</h3>
 
-    <div class="tabs">
-      <button id="btnAgenda" class="active" onclick="showTab('agenda')">ð Agenda</button>
-      <button id="btnNova" onclick="showTab('nova')">ð Nova OS</button>
-      <button id="btnClientes" onclick="showTab('clientes')">ð Clientes</button>
-      <button id="btnAjustes" onclick="showTab('ajustes')">âï¸ Ajustes</button>
+    <label>Telefone / WhatsApp</label>
+    <input id="telefone" inputmode="tel" required oninput="buscarClientePorTelefone()" placeholder="Digite o telefone primeiro">
+
+    <label>Nome do cliente</label>
+    <input id="nome" required placeholder="Preenche automatico se ja for cliente">
+
+    <div class="row">
+     <div><label>Data da entrega</label><input type="date" id="dataEntrega" required></div>
+     <div><label>Horario</label><select id="horaEntrega" required></select></div>
     </div>
 
-    <div class="stats">
-      <div class="stat"><b id="statPedidos">0</b>Pedidos</div>
-      <div class="stat"><b id="statPecas">0</b>PeÃ§as</div>
-      <div class="stat"><b id="statValor">R$ 0,00</b>Faturamento</div>
+    <div class="card" style="box-shadow:none;border:1px solid #eee;padding:10px;margin-top:12px">
+     <h3 class="title">Servicos</h3>
+     <div id="servicosOS"></div>
     </div>
 
-    <section id="agenda">
-      <div class="card">
-        <h3 class="title">ð Agenda</h3>
-        <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda()">
-        <div id="agendaGrid" style="margin-top:12px"></div>
-      </div>
-      <h3 style="font-size:15px;margin:14px 0 8px">Ordens do dia</h3>
-      <div id="agendaLista"></div>
-    </section>
+    <label>Observacao</label>
+    <textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
 
-    <section id="nova" class="hidden">
-      <form class="card" onsubmit="salvarOS(event)">
-        <h3 class="title">ð Nova OS</h3>
-        <label>Telefone / WhatsApp</label><input id="telefone" inputmode="tel" required oninput="buscarClientePorTelefone()" placeholder="Digite o telefone primeiro">
-        <label>Nome do cliente</label><input id="nome" required placeholder="Preenche automÃ¡tico se jÃ¡ for cliente">
-        <div class="row">
-          <div><label>Data da entrega</label><input type="date" id="dataEntrega" required></div>
-          <div><label>HorÃ¡rio</label><select id="horaEntrega" required></select></div>
-        </div>
-        <div class="card" style="box-shadow:none;border:1px solid #eee;padding:10px;margin-top:12px">
-          <h3 class="title">âï¸ ServiÃ§os</h3>
-          <div id="servicosOS"></div>
-        </div>
-        <label>ObservaÃ§Ã£o</label><textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
-        <label>SituaÃ§Ã£o da OS</label>
-        <select id="situacao">
-          <option value="confirmado">ð¦ Cliente deixou o serviÃ§o / balcÃ£o</option>
-          <option value="agendado">ð Apenas agendamento / ainda vai trazer</option>
-        </select>
+    <label>Situacao da OS</label>
+    <select id="situacao">
+     <option value="confirmado">Cliente deixou o servico / balcao</option>
+     <option value="agendado">Apenas agendamento / ainda vai trazer</option>
+    </select>
 
-        <label>Status de produÃ§Ã£o</label>
-        <select id="status"><option>Recebido</option><option>Na bancada</option><option>Pronto</option><option>Retirado</option></select>
-        <label>Pagamento</label>
-        <select id="pagamento"><option>Pagar na retirada</option><option>Pago</option></select>
-        <label>Valor total</label><input id="valorTotal" type="number" step="0.01" required>
-        <button class="btn" type="submit">ð¾ Salvar OS</button>
-      </form>
+    <label>Status de producao</label>
+    <select id="status">
+     <option>Recebido</option>
+     <option>Na bancada</option>
+     <option>Pronto</option>
+     <option>Retirado</option>
+    </select>
 
-      <div id="posSalvarPanel" class="card hidden">
-        <h3 class="title">â OS salva com sucesso</h3>
-        <p id="posSalvarResumo" class="small"></p>
-        <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar via da cliente no WhatsApp</button>
-        <button class="btn btn-blue" onclick="imprimirUltimaOS()">Baixar / imprimir minha via</button>
-        <button class="btn" onclick="novaOSDepoisDeSalvar()">Fazer nova OS</button>
-        <button class="btn btn-gray" onclick="showTab('agenda')">Ver agenda</button>
-      </div>
-    </section>
+    <label>Pagamento</label>
+    <select id="pagamento">
+     <option>Pagar na retirada</option>
+     <option>Pago</option>
+    </select>
 
-    <section id="clientes" class="hidden">
-      <div class="card">
-        <h3 class="title">ð Clientes</h3>
-        <label>Pesquisar</label><input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
-      </div>
-      <div id="clientesLista"></div>
-    </section>
+    <label>Valor total</label>
+    <input id="valorTotal" type="number" step="0.01" required>
 
-    <section id="ajustes" class="hidden">
-      <div class="card">
-        <h3 class="title">âï¸ Ajustes</h3>
-        <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
-        <button class="btn btn-gray" onclick="logout()">Sair</button>
-      </div>
+    <button class="btn" type="submit">Salvar OS</button>
+   </form>
 
-      <div class="card">
-        <h3 class="title">ð ï¸ ServiÃ§os e preÃ§os</h3>
-        <div id="servicosEdit"></div>
-        <label>Novo serviÃ§o</label><input id="novoServico" placeholder="Ex: Alicates de cutÃ­cula">
-        <label>PreÃ§o unitÃ¡rio</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
-        <button class="btn btn-blue" onclick="adicionarServico()">Adicionar serviÃ§o</button>
-      </div>
+   <div id="posSalvarPanel" class="card hidden">
+    <h3 class="title">OS salva com sucesso</h3>
+    <p id="posSalvarResumo" class="small"></p>
+    <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar via da cliente no WhatsApp</button>
+    <button class="btn btn-blue" onclick="imprimirUltimaOS()">Baixar / imprimir minha via</button>
+    <button class="btn" onclick="novaOSDepoisDeSalvar()">Fazer nova OS</button>
+    <button class="btn btn-gray" onclick="showTab('agenda')">Ver agenda</button>
+   </div>
+  </section>
 
-      <div class="card">
-        <h3 class="title">ð¬ Mensagem do WhatsApp</h3>
-        <p class="small">Use: {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
-        <textarea id="templateMsg"></textarea>
-        <button class="btn btn-blue" onclick="salvarTemplate()">Salvar mensagem</button>
-      </div>
+  <section id="clientes" class="hidden">
+   <div class="card">
+    <h3 class="title">Clientes</h3>
+    <label>Pesquisar</label><input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
+   </div>
+   <div id="clientesLista"></div>
+  </section>
 
-      <div class="card">
-        <h3 class="title">ð Trocar login</h3>
-        <label>UsuÃ¡rio</label><input id="setUser">
-        <label>Senha</label><input id="setPass" type="password">
-        <button class="btn btn-blue" onclick="salvarLoginConfig()">Salvar login</button>
-      </div>
-    </section>
-  </main>
+  <section id="ajustes" class="hidden">
+   <div class="card">
+    <h3 class="title">Ajustes</h3>
+    <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
+    <button class="btn btn-gray" onclick="logout()">Sair</button>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Servicos e precos</h3>
+    <div id="servicosEdit"></div>
+    <label>Novo servico</label><input id="novoServico" placeholder="Ex: Alicates de cuticula">
+    <label>Preco unitario</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
+    <button class="btn btn-blue" onclick="adicionarServico()">Adicionar servico</button>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Mensagem do WhatsApp</h3>
+    <p class="small">Use: {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
+    <textarea id="templateMsg"></textarea>
+    <button class="btn btn-blue" onclick="salvarTemplate()">Salvar mensagem</button>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Trocar login</h3>
+    <label>Usuario</label><input id="setUser">
+    <label>Senha</label><input id="setPass" type="password">
+    <button class="btn btn-blue" onclick="salvarLoginConfig()">Salvar login</button>
+   </div>
+  </section>
+ </main>
 </div>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
-  authDomain: "afia-37aa8.firebaseapp.com",
-  databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
-  projectId: "afia-37aa8",
-  storageBucket: "afia-37aa8.firebasestorage.app",
-  messagingSenderId: "961300018208",
-  appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
+ apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
+ authDomain: "afia-37aa8.firebaseapp.com",
+ databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
+ projectId: "afia-37aa8",
+ storageBucket: "afia-37aa8.firebasestorage.app",
+ messagingSenderId: "961300018208",
+ appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
 };
 
-let db=null, ordens=[], config={}, ultimaOSSalva=null;
-const COL_ORDENS="ordens_afia_v2";
-const DOC_CONFIG="config/afia";
-const horarios=["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","14:30","15:00","15:30","16:00","16:30"];
-const defaultServices=[
-  {nome:"Alicates de cutÃ­cula", preco:15},
-  {nome:"Facas", preco:12},
-  {nome:"Tesouras", preco:15},
-  {nome:"Molas", preco:5},
-  {nome:"EspÃ¡tulas", preco:7},
-  {nome:"Outros serviÃ§os", preco:10}
+let db = null;
+let ordens = [];
+let config = {};
+let ultimaOSSalva = null;
+
+const COL_ORDENS = "ordens_afia_v2";
+const DOC_CONFIG = "config/afia";
+
+const horarios = [
+ "09:00","09:30","10:00","10:30","11:00","11:30",
+ "12:00","12:30","13:00","14:30","15:00","15:30","16:00","16:30"
 ];
-const defaultTemplate=`*AFIA - ORDEM DE SERVIÃO*
 
-OlÃ¡, *{nome}*!
-Sua ordem de serviÃ§o foi registrada.
+const defaultServices = [
+ {nome:"Alicates de cuticula", preco:15},
+ {nome:"Facas", preco:12},
+ {nome:"Tesouras", preco:15},
+ {nome:"Molas", preco:5},
+ {nome:"Espatulas", preco:7},
+ {nome:"Outros servicos", preco:10}
+];
 
-ð Entrega: {data}
-â° HorÃ¡rio: {hora}
+const defaultTemplate =
+`*AFIA - ORDEM DE SERVICO*
 
-*ServiÃ§os:*
+Ola, *{nome}*!
+Sua ordem de servico foi registrada.
+
+Entrega: {data}
+Horario: {hora}
+
+*Servicos:*
 {itens}
 
-ð° Total: {valor}
-ð Pagamento: {pagamento}
+Total: {valor}
+Pagamento: {pagamento}
 
-Obrigado pela preferÃªncia!`;
+Obrigado pela preferencia!`;
 
-function hoje(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function dataBR(x){if(!x)return"";let p=x.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
-function moeda(v){return "R$ "+Number(v||0).toFixed(2).replace(".",",")}
-function sessionOK(){return localStorage.getItem("afia_login_date")===hoje()}
-function getLogin(){return {u:config.user||"dono",p:config.pass||"1234"}}
-
-async function iniciar(){
-  document.getElementById("agendaData").value=hoje();
-  document.getElementById("dataEntrega").value=hoje();
-  horarios.forEach(h=>{let o=document.createElement("option");o.value=h;o.textContent=h;horaEntrega.appendChild(o)});
-  try{
-    firebase.initializeApp(firebaseConfig); db=firebase.firestore();
-    cloudStatus.innerHTML='<span class="ok">ð¢ Conectado na nuvem Firebase</span>'; ajusteStatus.innerHTML='<span class="ok">Conectado</span>';
-    await carregarConfig();
-    if(sessionOK()) abrirApp(); else loginScreen.classList.remove("hidden");
-    db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot(s=>{
-      ordens=[]; s.forEach(d=>ordens.push({id:d.id,...d.data()}));
-      renderAgenda(); renderClientes();
-    },e=>cloudStatus.innerHTML='<span class="bad">ð´ '+e.message+'</span>');
-  }catch(e){cloudStatus.innerHTML='<span class="bad">ð´ Erro: '+e.message+'</span>'; ajusteStatus.textContent=e.message}
+function hoje(){
+ const d = new Date();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
 
-async function carregarConfig(){
-  const snap=await db.doc(DOC_CONFIG).get();
-  if(snap.exists){config=snap.data()}else{
-    config={servicos:defaultServices, template:defaultTemplate, user:"dono", pass:"1234"};
-    await db.doc(DOC_CONFIG).set(config);
-  }
-  if(!config.servicos) config.servicos=defaultServices;
-  if(!config.template) config.template=defaultTemplate;
-  config.template = normalizarTemplateWhatsApp(config.template);
-  templateMsg.value=config.template;
-  setUser.value=config.user||"dono";
-  setPass.value=config.pass||"1234";
-  renderServicosOS(); renderServicosEdit();
+function dataBR(x){
+ if(!x) return "";
+ const p = String(x).split("-");
+ if(p.length !== 3) return x;
+ return p[2]+"/"+p[1]+"/"+p[0];
 }
 
-function login(){
-  const l=getLogin();
-  if(loginUser.value.trim()===l.u && loginPass.value===l.p){
-    localStorage.setItem("afia_login_date",hoje()); abrirApp();
-  }else alert("UsuÃ¡rio ou senha incorretos.");
-}
-function abrirApp(){loginScreen.classList.add("hidden");appScreen.classList.remove("hidden")}
-function logout(){localStorage.removeItem("afia_login_date");location.reload()}
-
-function showTab(t){
-  ["agenda","nova","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
-  ["btnAgenda","btnNova","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
-  document.getElementById(t).classList.remove("hidden");
-  if(t==="agenda")btnAgenda.classList.add("active");
-  if(t==="nova")btnNova.classList.add("active");
-  if(t==="clientes")btnClientes.classList.add("active");
-  if(t==="ajustes")btnAjustes.classList.add("active");
+function moeda(v){
+ return "R$ "+Number(v || 0).toFixed(2).replace(".",",");
 }
 
-function renderServicosOS(){
-  servicosOS.innerHTML="";
-  config.servicos.forEach((s,i)=>{
-    servicosOS.innerHTML+=`<div class="qty-row"><div class="qty-name">${s.nome}<span>${moeda(s.preco)} cada</span></div><input type="number" min="0" value="0" id="svc_${i}" oninput="calcularTotal()"></div>`;
-  });
+function sessionOK(){
+ return localStorage.getItem("afia_login_date") === hoje();
 }
-function calcularTotal(){
-  let total=0;
-  config.servicos.forEach((s,i)=>{total+=(Number(document.getElementById("svc_"+i)?.value)||0)*Number(s.preco||0)});
-  valorTotal.value=total.toFixed(2);
+
+function getLogin(){
+ return {u:config.user || "dono", p:config.pass || "1234"};
+}
+
+function limparTexto(txt){
+ let s = String(txt || "");
+
+ try{
+   if(/[\u00C3\u00C2\u00E2]/.test(s)){
+     s = decodeURIComponent(escape(s));
+   }
+ }catch(e){}
+
+ try{
+   s = s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+ }catch(e){}
+
+ s = s
+   .replaceAll("\u2022","-")
+   .replaceAll("\u00B7","-")
+   .replaceAll("\u2013","-")
+   .replaceAll("\u2014","-")
+   .replaceAll("\u201C",'"')
+   .replaceAll("\u201D",'"')
+   .replaceAll("\u2019","'")
+   .replaceAll("`","'");
+
+ s = s.replace(/[^\x09\x0A\x0D\x20-\x7E]/g,"");
+
+ return s;
 }
 
 function limparTelefone(t){
-  return String(t || "").replace(/\D/g,"");
+ return String(t || "").replace(/\D/g,"");
 }
 
-function buscarClientePorTelefone(){
-  const telDigitado = limparTelefone(document.getElementById("telefone").value);
-  if(telDigitado.length < 4) return;
-
-  const cliente = ordens.find(o => {
-    const telSalvo = limparTelefone(o.telefone);
-    return telSalvo && (
-      telSalvo === telDigitado ||
-      telSalvo.endsWith(telDigitado) ||
-      telDigitado.endsWith(telSalvo)
-    );
-  });
-
-  if(cliente && cliente.nome){
-    document.getElementById("nome").value = cliente.nome;
-  }
-}
-
-
-function removerCamposUndefined(obj){
-  Object.keys(obj).forEach(k => {
-    if(obj[k] === undefined) obj[k] = "";
-    if(obj[k] && typeof obj[k] === "object" && !Array.isArray(obj[k]) && !(obj[k].toDate)) {
-      removerCamposUndefined(obj[k]);
-    }
-  });
-  return obj;
-}
-
-
-function ocupacaoDoDia(data, ignorarId){
-  let confirmado={}, agendado={};
-  horarios.forEach(h=>{confirmado[h]=0; agendado[h]=0;});
-  ordens.filter(o=>o.data===data && o.id!==ignorarId).forEach(o=>{
-    const alvo = (o.situacao === "agendado") ? agendado : confirmado;
-    if(o.alocacoes){
-      Object.entries(o.alocacoes).forEach(([h,q])=>{
-        if(alvo[h] !== undefined) alvo[h] += Number(q||0);
-      });
-    }else if(alvo[o.hora] !== undefined){
-      alvo[o.hora] += getPecasAgenda(o);
-    }
-  });
-  return {confirmado, agendado};
-}
-
-function calcularAlocacoes(data, horaBase, qtd, situacao){
-  let aloc = {};
-  let restante = Number(qtd || 0);
-  if(restante <= 0) return aloc;
-
-  const ocup = ocupacaoDoDia(data);
-  const mapa = (situacao === "agendado") ? ocup.agendado : ocup.confirmado;
-
-  const idx = horarios.indexOf(horaBase);
-  if(idx < 0) return aloc;
-
-  let ordem = [idx];
-  for(let dist=1; dist<horarios.length; dist++){
-    if(idx - dist >= 0) ordem.push(idx - dist);
-    if(idx + dist < horarios.length) ordem.push(idx + dist);
-  }
-
-  for(const i of ordem){
-    const h = horarios[i];
-    const usado = Number(mapa[h] || 0);
-    const livre = Math.max(0, 5 - usado);
-    if(livre > 0){
-      const pega = Math.min(livre, restante);
-      aloc[h] = (aloc[h] || 0) + pega;
-      restante -= pega;
-      if(restante <= 0) break;
-    }
-  }
-
-  if(restante > 0){
-    throw new Error("NÃ£o hÃ¡ vagas suficientes nesse dia para essa quantidade de ferramentas.");
-  }
-
-  return aloc;
-}
-
-async function salvarOS(e){
-  e.preventDefault();
-  let itens={}, pecas=0;
-  config.servicos.forEach((s,i)=>{let q=Number(document.getElementById("svc_"+i).value)||0;if(q>0){itens[s.nome]=q;pecas+=q}});
-  if(!pecas){alert("Marque pelo menos 1 serviÃ§o.");return}
-  const os={
-    nome:document.getElementById("nome").value.trim(),
-    telefone:document.getElementById("telefone").value.trim(),
-    data:document.getElementById("dataEntrega").value,
-    hora:document.getElementById("horaEntrega").value,
-    itens:itens,
-    pecas:pecas,
-    observacao:document.getElementById("observacao").value.trim(),
-    status:document.getElementById("status").value || "Recebido",
-    pagamento:document.getElementById("pagamento").value || "Pagar na retirada",
-    valor:Number(String(document.getElementById("valorTotal").value||0).replace(",", ".")),
-    criadoEm:firebase.firestore.FieldValue.serverTimestamp()
-  };
-  try{
-    const ref=await db.collection(COL_ORDENS).add(os);
-    os.id=ref.id;
-    ultimaOSSalva = os;
-    prepararImpressao(os);
-    mostrarAcoesDepoisDeSalvar(os);
-    e.target.reset();
-    document.getElementById("dataEntrega").value=hoje();
-    renderServicosOS();
-  }catch(err){alert("Erro ao salvar: "+err.message)}
-}
-
-function mostrarAcoesDepoisDeSalvar(os){
-  const form = document.querySelector("#nova form");
-  if(form) form.classList.add("hidden");
-  const panel = document.getElementById("posSalvarPanel");
-  const resumo = document.getElementById("posSalvarResumo");
-  if(resumo){
-    resumo.innerHTML = `<b>${os.nome}</b><br>Entrega: ${dataBR(os.data)} Ã s ${os.hora}<br>Total: ${moeda(os.valor)}`;
-  }
-  if(panel) panel.classList.remove("hidden");
-}
-
-function enviarUltimaOS(){
-  if(ultimaOSSalva) enviarWhatsApp(ultimaOSSalva);
-}
-
-function imprimirUltimaOS(){
-  if(ultimaOSSalva){
-    prepararImpressao(ultimaOSSalva);
-    window.print();
-  }
-}
-
-function novaOSDepoisDeSalvar(){
-  const form = document.querySelector("#nova form");
-  const panel = document.getElementById("posSalvarPanel");
-  if(panel) panel.classList.add("hidden");
-  if(form) form.classList.remove("hidden");
-}
-
-function itensTexto(os, sep="\n"){return Object.entries(os.itens||{}).map(([n,q])=>`${n}: ${q}`).join(sep)}
-
-function contaNaAgenda(nomeServico){
-  const n = String(nomeServico || "").toLowerCase();
-  return n.includes("alicate") || n.includes("faca") || n.includes("tesoura");
-}
-
-function calcularPecasAgenda(itens){
-  let total = 0;
-  Object.entries(itens || {}).forEach(([nome, qtd]) => {
-    if(contaNaAgenda(nome)) total += Number(qtd || 0);
-  });
-  return total;
-}
-
-function getPecasAgenda(os){
-  if(os.pecasAgenda !== undefined) return Number(os.pecasAgenda || 0);
-  return calcularPecasAgenda(os.itens || {});
+function normalizarServicos(servicos){
+ const lista = Array.isArray(servicos) && servicos.length ? servicos : defaultServices;
+ return lista.map(s => ({
+   nome: limparTexto(s.nome || "Servico"),
+   preco: Number(s.preco || 0)
+ }));
 }
 
 function normalizarTemplateWhatsApp(t){
-  return String(t || defaultTemplate)
-    .replace(/\\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n");
+ return limparTexto(String(t || defaultTemplate)
+   .replace(/\\n/g,"\n")
+   .replace(/\n{3,}/g,"\n\n"));
+}
+
+async function iniciar(){
+ document.getElementById("agendaData").value = hoje();
+ document.getElementById("dataEntrega").value = hoje();
+
+ horarios.forEach(h=>{
+   const o = document.createElement("option");
+   o.value = h;
+   o.textContent = h;
+   horaEntrega.appendChild(o);
+ });
+
+ try{
+   firebase.initializeApp(firebaseConfig);
+   db = firebase.firestore();
+
+   cloudStatus.innerHTML = '<span class="ok">Conectado na nuvem Firebase - versao 5.0</span>';
+   ajusteStatus.innerHTML = '<span class="ok">Conectado</span>';
+
+   await carregarConfig();
+
+   if(sessionOK()){
+     abrirApp();
+   }else{
+     loginScreen.classList.remove("hidden");
+   }
+
+   db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot(s=>{
+     ordens = [];
+     s.forEach(d=>ordens.push({id:d.id, ...d.data()}));
+     renderAgenda();
+     renderClientes();
+   },e=>{
+     cloudStatus.innerHTML = '<span class="bad">'+limparTexto(e.message)+'</span>';
+   });
+
+ }catch(e){
+   cloudStatus.innerHTML = '<span class="bad">Erro: '+limparTexto(e.message)+'</span>';
+   ajusteStatus.textContent = limparTexto(e.message);
+ }
+}
+
+async function carregarConfig(){
+ const snap = await db.doc(DOC_CONFIG).get();
+
+ if(snap.exists){
+   config = snap.data();
+ }else{
+   config = {servicos:defaultServices, template:defaultTemplate, user:"dono", pass:"1234"};
+ }
+
+ if(!config.servicos) config.servicos = defaultServices;
+ if(!config.template) config.template = defaultTemplate;
+
+ config.servicos = normalizarServicos(config.servicos);
+ config.template = normalizarTemplateWhatsApp(config.template);
+ config.user = limparTexto(config.user || "dono");
+ config.pass = String(config.pass || "1234");
+
+ await db.doc(DOC_CONFIG).set(config,{merge:true});
+
+ templateMsg.value = config.template;
+ setUser.value = config.user || "dono";
+ setPass.value = config.pass || "1234";
+
+ renderServicosOS();
+ renderServicosEdit();
+}
+
+function login(){
+ const l = getLogin();
+
+ if(loginUser.value.trim() === l.u && loginPass.value === l.p){
+   localStorage.setItem("afia_login_date", hoje());
+   abrirApp();
+ }else{
+   alert("Usuario ou senha incorretos.");
+ }
+}
+
+function abrirApp(){
+ loginScreen.classList.add("hidden");
+ appScreen.classList.remove("hidden");
+}
+
+function logout(){
+ localStorage.removeItem("afia_login_date");
+ location.reload();
+}
+
+function showTab(t){
+ ["agenda","nova","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+ ["btnAgenda","btnNova","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
+
+ document.getElementById(t).classList.remove("hidden");
+
+ if(t === "agenda") btnAgenda.classList.add("active");
+ if(t === "nova") btnNova.classList.add("active");
+ if(t === "clientes") btnClientes.classList.add("active");
+ if(t === "ajustes") btnAjustes.classList.add("active");
+}
+
+function renderServicosOS(){
+ servicosOS.innerHTML = "";
+
+ config.servicos.forEach((s,i)=>{
+   servicosOS.innerHTML += `
+    <div class="qty-row">
+     <div class="qty-name">${limparTexto(s.nome)}<span>${moeda(s.preco)} cada</span></div>
+     <input type="number" min="0" value="0" id="svc_${i}" oninput="calcularTotal()">
+    </div>`;
+ });
+}
+
+function calcularTotal(){
+ let total = 0;
+
+ config.servicos.forEach((s,i)=>{
+   const q = Number(document.getElementById("svc_"+i)?.value) || 0;
+   total += q * Number(s.preco || 0);
+ });
+
+ valorTotal.value = total.toFixed(2);
+}
+
+function buscarClientePorTelefone(){
+ const telDigitado = limparTelefone(telefone.value);
+
+ if(telDigitado.length < 4) return;
+
+ const cliente = ordens.find(o=>{
+   const telSalvo = limparTelefone(o.telefone);
+   return telSalvo && (
+     telSalvo === telDigitado ||
+     telSalvo.endsWith(telDigitado) ||
+     telDigitado.endsWith(telSalvo)
+   );
+ });
+
+ if(cliente && cliente.nome){
+   nome.value = limparTexto(cliente.nome);
+ }
+}
+
+function calcularTotalServicos(itens){
+ let total = 0;
+
+ Object.entries(itens || {}).forEach(([nome,qtd])=>{
+   total += Number(qtd || 0);
+ });
+
+ return total;
+}
+
+function getPecasAgenda(os){
+ const somaItens = calcularTotalServicos(os.itens || {});
+ if(somaItens > 0) return somaItens;
+ return Number(os.pecas || os.pecasAgenda || 0);
+}
+
+function mapaVazio(){
+ const m = {};
+ horarios.forEach(h=>m[h] = 0);
+ return m;
+}
+
+function somarAlocacao(aloc){
+ return Object.values(aloc || {}).reduce((s,q)=>s + Number(q || 0), 0);
+}
+
+function ordemPrioridade(horaBase){
+ const idx = horarios.indexOf(horaBase);
+
+ if(idx < 0) return [];
+
+ const ordem = [];
+
+ ordem.push(idx);
+
+ for(let i = idx - 1; i >= 0; i--){
+   ordem.push(i);
+ }
+
+ for(let i = idx + 1; i < horarios.length; i++){
+   ordem.push(i);
+ }
+
+ return ordem;
+}
+
+function calcularAlocacaoNoMapa(mapaOcupado, horaBase, quantidade){
+ const aloc = {};
+ let restante = Number(quantidade || 0);
+
+ if(restante <= 0) return aloc;
+
+ const ordem = ordemPrioridade(horaBase);
+
+ if(!ordem.length){
+   throw new Error("Horario invalido.");
+ }
+
+ for(const i of ordem){
+   const h = horarios[i];
+   const usado = Number(mapaOcupado[h] || 0);
+   const livre = Math.max(0, 5 - usado);
+
+   if(livre > 0){
+     const pega = Math.min(livre, restante);
+
+     aloc[h] = (aloc[h] || 0) + pega;
+     mapaOcupado[h] = usado + pega;
+
+     restante -= pega;
+
+     if(restante <= 0) break;
+   }
+ }
+
+ if(restante > 0){
+   throw new Error("Nao ha vagas suficientes nesse dia para essa quantidade de servicos.");
+ }
+
+ return aloc;
+}
+
+function ordenarOrdensDoDia(lista){
+ return [...lista].sort((a,b)=>{
+   const ha = String(a.hora || "");
+   const hb = String(b.hora || "");
+
+   if(ha !== hb) return ha.localeCompare(hb);
+
+   const ta = a.criadoEm && a.criadoEm.seconds ? a.criadoEm.seconds : 0;
+   const tb = b.criadoEm && b.criadoEm.seconds ? b.criadoEm.seconds : 0;
+
+   return ta - tb;
+ });
+}
+
+function calcularDistribuicoesDoDia(dia, ignorarId){
+ const confirmado = mapaVazio();
+ const agendado = mapaVazio();
+ const ocupadoTotal = mapaVazio();
+ const distPorId = {};
+ const semVaga = [];
+
+ const lista = ordenarOrdensDoDia(dia).filter(o => !ignorarId || o.id !== ignorarId);
+
+ lista.forEach((o,idx)=>{
+   const chave = o.id || ("semid_"+idx);
+   const qtd = getPecasAgenda(o);
+   const situacao = o.situacao === "agendado" ? "agendado" : "confirmado";
+   const mapaCor = situacao === "agendado" ? agendado : confirmado;
+
+   let aloc = {};
+
+   if(qtd > 0){
+     try{
+       aloc = calcularAlocacaoNoMapa(ocupadoTotal, o.hora, qtd);
+     }catch(e){
+       semVaga.push(o);
+       aloc = {};
+     }
+   }
+
+   Object.entries(aloc).forEach(([h,q])=>{
+     if(mapaCor[h] !== undefined){
+       mapaCor[h] += Number(q || 0);
+     }
+   });
+
+   distPorId[chave] = aloc;
+ });
+
+ return {confirmado, agendado, ocupadoTotal, distPorId, semVaga};
+}
+
+function ocupacaoTotalDoDia(data, ignorarId){
+ const dia = ordens.filter(o=>o.data === data);
+ return calcularDistribuicoesDoDia(dia, ignorarId).ocupadoTotal;
+}
+
+function calcularAlocacoes(data, horaBase, quantidade, ignorarId){
+ const mapa = {...ocupacaoTotalDoDia(data, ignorarId)};
+ return calcularAlocacaoNoMapa(mapa, horaBase, quantidade);
+}
+
+async function salvarOS(e){
+ e.preventDefault();
+
+ let itens = {};
+ let totalServicos = 0;
+
+ config.servicos.forEach((s,i)=>{
+   const campo = document.getElementById("svc_"+i);
+   const q = Number(campo ? campo.value : 0) || 0;
+
+   if(q > 0){
+     const nomeServico = limparTexto(s.nome);
+     itens[nomeServico] = q;
+     totalServicos += q;
+   }
+ });
+
+ if(totalServicos <= 0){
+   alert("Marque pelo menos 1 servico.");
+   return;
+ }
+
+ const data = dataEntrega.value;
+ const hora = horaEntrega.value;
+ const situacaoOS = situacao.value || "confirmado";
+
+ let alocacoes = {};
+
+ try{
+   alocacoes = calcularAlocacoes(data, hora, totalServicos);
+ }catch(err){
+   alert(limparTexto(err.message));
+   return;
+ }
+
+ const os = {
+   nome: limparTexto(nome.value.trim()),
+   telefone: limparTexto(telefone.value.trim()),
+   data: data,
+   hora: hora,
+   itens: itens,
+   pecas: totalServicos,
+   pecasAgenda: totalServicos,
+   alocacoes: alocacoes,
+   situacao: situacaoOS,
+   observacao: limparTexto(observacao.value.trim()),
+   status: limparTexto(status.value || "Recebido"),
+   pagamento: limparTexto(pagamento.value || "Pagar na retirada"),
+   valor: Number(String(valorTotal.value || 0).replace(",", ".")),
+   criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+ };
+
+ try{
+   const ref = await db.collection(COL_ORDENS).add(os);
+   os.id = ref.id;
+   ultimaOSSalva = os;
+
+   mostrarAcoesDepoisDeSalvar(os);
+
+   e.target.reset();
+   dataEntrega.value = hoje();
+   renderServicosOS();
+
+ }catch(err){
+   alert("Erro ao salvar: " + limparTexto(err.message));
+ }
+}
+
+function mostrarAcoesDepoisDeSalvar(os){
+ const form = document.querySelector("#nova form");
+ const panel = document.getElementById("posSalvarPanel");
+ const resumo = document.getElementById("posSalvarResumo");
+
+ if(form) form.classList.add("hidden");
+
+ if(resumo){
+   const dist = Object.entries(os.alocacoes || {}).map(([h,q])=>h+": "+q).join(" | ");
+   resumo.innerHTML = `
+    <b>${limparTexto(os.nome)}</b><br>
+    Entrega: ${dataBR(os.data)} as ${os.hora}<br>
+    Servicos: ${Number(os.pecas || 0)}<br>
+    Distribuicao: ${dist}<br>
+    Total: ${moeda(os.valor)}
+   `;
+ }
+
+ if(panel) panel.classList.remove("hidden");
+}
+
+function enviarUltimaOS(){
+ if(ultimaOSSalva) enviarWhatsApp(ultimaOSSalva);
+}
+
+function imprimirUltimaOS(){
+ if(ultimaOSSalva){
+   prepararImpressao(ultimaOSSalva);
+   window.print();
+ }
+}
+
+function novaOSDepoisDeSalvar(){
+ const form = document.querySelector("#nova form");
+ const panel = document.getElementById("posSalvarPanel");
+
+ if(panel) panel.classList.add("hidden");
+ if(form) form.classList.remove("hidden");
+}
+
+function itensTexto(os, sep){
+ sep = sep === undefined ? "\n" : sep;
+
+ return Object.entries(os.itens || {})
+   .map(([n,q])=>limparTexto(n)+": "+Number(q || 0))
+   .join(sep);
 }
 
 function enviarWhatsApp(os){
-  let tel=os.telefone.replace(/\D/g,""); if(!tel.startsWith("55"))tel="55"+tel;
-  let msg = normalizarTemplateWhatsApp(config.template || defaultTemplate)
-    .replaceAll("{nome}",os.nome)
-    .replaceAll("{data}",dataBR(os.data))
-    .replaceAll("{hora}",os.hora)
-    .replaceAll("{itens}",itensTexto(os,"\n"))
-    .replaceAll("{valor}",moeda(os.valor))
-    .replaceAll("{pagamento}",os.pagamento);
-  window.open("https://wa.me/"+tel+"?text="+encodeURIComponent(msg),"_blank");
+ let tel = limparTelefone(os.telefone);
+
+ if(!tel.startsWith("55")){
+   tel = "55" + tel;
+ }
+
+ let msg = normalizarTemplateWhatsApp(config.template || defaultTemplate)
+   .replaceAll("{nome}", limparTexto(os.nome))
+   .replaceAll("{data}", dataBR(os.data))
+   .replaceAll("{hora}", os.hora)
+   .replaceAll("{itens}", itensTexto(os,"\n"))
+   .replaceAll("{valor}", moeda(os.valor))
+   .replaceAll("{pagamento}", limparTexto(os.pagamento));
+
+ window.open("https://wa.me/"+tel+"?text="+encodeURIComponent(msg), "_blank");
 }
+
 function prepararImpressao(os){
-  printArea.innerHTML=`<div style="text-align:center;font-weight:bold">AFIA - VIA DA LOJA</div>
-  <div class="print-line">OS: ${os.id||""}</div>
-  <div class="print-line">Cliente: ${os.nome}</div>
-  <div class="print-line">Tel: ${os.telefone}</div>
+ printArea.innerHTML = `
+  <div style="text-align:center;font-weight:bold">AFIA - VIA DA LOJA</div>
+  <div class="print-line">OS: ${os.id || ""}</div>
+  <div class="print-line">Cliente: ${limparTexto(os.nome)}</div>
+  <div class="print-line">Tel: ${limparTexto(os.telefone)}</div>
   <div class="print-line">Entrega: ${dataBR(os.data)} ${os.hora}</div>
   <div class="print-line">--------------------------</div>
   <div class="print-line">${itensTexto(os,"<br>")}</div>
   <div class="print-line">--------------------------</div>
   <div class="print-line">Total: ${moeda(os.valor)}</div>
-  <div class="print-line">${os.pagamento}</div>
-  <div class="print-line">${os.observacao||""}</div>`;
-  setTimeout(()=>{ if(confirm("Imprimir via da loja agora?")) window.print(); },500);
+  <div class="print-line">${limparTexto(os.pagamento)}</div>
+  <div class="print-line">${limparTexto(os.observacao || "")}</div>
+ `;
 }
 
 function renderAgenda(){
-  let data=agendaData.value;
-  let dia=ordens.filter(o=>o.data===data).sort((a,b)=>String(a.hora).localeCompare(String(b.hora)));
-  statPedidos.textContent=dia.length;
-  statPecas.textContent=dia.reduce((s,o)=>s+getPecasAgenda(o),0);
-  statValor.textContent=moeda(dia.reduce((s,o)=>s+Number(o.valor||0),0));
-  renderGrid(dia);
-  agendaLista.innerHTML=dia.length?"":'<div class="card small">Nenhuma OS para esta data.</div>';
-  dia.forEach(os=>{
-    let d=document.createElement("div"); d.className="card os-card";
-    const sitTxt = (os.situacao === "agendado") ? "ð Agendado / ainda vai trazer" : "ð¦ ServiÃ§o no balcÃ£o";
-    const btnChegada = (os.situacao === "agendado") ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada e deixar vermelho</button>` : "";
-    const dist = os.alocacoes ? Object.entries(os.alocacoes).map(([h,q]) => `${h}: ${q}`).join(" â¢ ") : `${os.hora}: ${getPecasAgenda(os)}`;
-    d.innerHTML=`<p><b>${os.hora} - ${os.nome}</b></p><p>ð ${os.telefone}</p><p>${itensTexto(os," â¢ ")}</p><p>ð° ${moeda(os.valor)} | ${os.pagamento}</p><p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas||0)}</b></p><p class="small">DistribuiÃ§Ã£o: ${dist}</p><p>SituaÃ§Ã£o: <b>${sitTxt}</b></p><p>Status: <b>${os.status}</b></p>${os.observacao?`<p>ð ${os.observacao}</p>`:""}${btnChegada}<button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button><button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button><button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>`;
-    agendaLista.appendChild(d);
-  });
+ const data = agendaData.value;
+ const dia = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
+ const calcDia = calcularDistribuicoesDoDia(dia);
+
+ statPedidos.textContent = dia.length;
+ statPecas.textContent = dia.reduce((s,o)=>s + getPecasAgenda(o), 0);
+ statValor.textContent = moeda(dia.reduce((s,o)=>s + Number(o.valor || 0), 0));
+
+ renderGrid(calcDia);
+
+ agendaLista.innerHTML = dia.length ? "" : '<div class="card small">Nenhuma OS para esta data.</div>';
+
+ if(calcDia.semVaga.length){
+   const alerta = document.createElement("div");
+   alerta.className = "card";
+   alerta.innerHTML = '<p class="bad"><b>Atencao:</b> existe OS sem vaga suficiente neste dia.</p>';
+   agendaLista.appendChild(alerta);
+ }
+
+ dia.forEach((os,idx)=>{
+   const chave = os.id || ("semid_"+idx);
+   const d = document.createElement("div");
+   d.className = "card os-card";
+
+   const sitTxt = os.situacao === "agendado" ? "Agendado / ainda vai trazer" : "Servico no balcao";
+   const btnChegada = os.situacao === "agendado"
+     ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada e deixar vermelho</button>`
+     : "";
+
+   const distObj = calcDia.distPorId[chave] || {};
+   const dist = Object.keys(distObj).length
+     ? Object.entries(distObj).map(([h,q])=>h+": "+q).join(" | ")
+     : "Sem distribuicao";
+
+   d.innerHTML = `
+    <p><b>${os.hora} - ${limparTexto(os.nome)}</b></p>
+    <p>${limparTexto(os.telefone)}</p>
+    <p>${itensTexto(os," | ")}</p>
+    <p>${moeda(os.valor)} | ${limparTexto(os.pagamento)}</p>
+    <p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas || getPecasAgenda(os) || 0)}</b></p>
+    <p class="small">Distribuicao: ${dist}</p>
+    <p>Situacao: <b>${sitTxt}</b></p>
+    <p>Status: <b>${limparTexto(os.status)}</b></p>
+    ${os.observacao ? `<p>${limparTexto(os.observacao)}</p>` : ""}
+    ${btnChegada}
+    <button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button>
+    <button class="btn btn-blue" onclick="imprimir('${os.id}')">Imprimir via loja</button>
+    <button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>
+   `;
+
+   agendaLista.appendChild(d);
+ });
 }
-function renderGrid(dia){
-  let confirmado={}, agendado={};
-  horarios.forEach(h=>{confirmado[h]=0; agendado[h]=0;});
 
-  dia.forEach(o=>{
-    const alvo = (o.situacao === "agendado") ? agendado : confirmado;
-    if(o.alocacoes){
-      Object.entries(o.alocacoes).forEach(([h,q])=>{
-        if(alvo[h] !== undefined) alvo[h] += Number(q || 0);
-      });
-    }else if(alvo[o.hora] !== undefined){
-      alvo[o.hora] += getPecasAgenda(o);
-    }
-  });
+function renderGrid(calcDia){
+ const confirmado = calcDia.confirmado;
+ const agendado = calcDia.agendado;
 
-  let totalConfirmado=0, totalAgendado=0;
-  let html='<table class="agenda-table"><tr><th>HorÃ¡rio</th><th>Vagas ocupadas</th></tr>';
+ let totalConfirmado = 0;
+ let totalAgendado = 0;
 
-  horarios.forEach(h=>{
-    if(h==="14:30") html+='<tr class="interval"><td colspan="2">â ALMOÃO / INTERVALO (13:30 Ã s 14:30)</td></tr>';
+ let html = '<table class="agenda-table"><tr><th>Horario</th><th>Vagas ocupadas</th></tr>';
 
-    let red = Math.min(confirmado[h]||0, 5);
-    let orange = Math.min(agendado[h]||0, Math.max(0, 5-red));
-    totalConfirmado += confirmado[h]||0;
-    totalAgendado += agendado[h]||0;
+ horarios.forEach(h=>{
+   if(h === "14:30"){
+     html += '<tr class="interval"><td colspan="2">ALMOCO / INTERVALO (13:30 as 14:30)</td></tr>';
+   }
 
-    html+=`<tr><td class="time">${h}</td><td><div class="slots">`;
-    for(let i=0;i<5;i++){
-      let cls = "";
-      if(i < red) cls = "on";
-      else if(i < red + orange) cls = "pending";
-      html+=`<div class="slot ${cls}"></div>`;
-    }
-    html+='</div></td></tr>';
-  });
+   const red = Math.min(confirmado[h] || 0, 5);
+   const orange = Math.min(agendado[h] || 0, Math.max(0, 5 - red));
 
-  html+=`<tr><td><b>TOTAL</b></td><td><b>${totalConfirmado} Vermelhas â¢ ${totalAgendado} Laranjas</b></td></tr></table>`;
-  agendaGrid.innerHTML=html;
+   totalConfirmado += confirmado[h] || 0;
+   totalAgendado += agendado[h] || 0;
+
+   html += `<tr><td class="time">${h}</td><td><div class="slots">`;
+
+   for(let i=0;i<5;i++){
+     let cls = "";
+
+     if(i < red){
+       cls = "on";
+     }else if(i < red + orange){
+       cls = "pending";
+     }
+
+     html += `<div class="slot ${cls}"></div>`;
+   }
+
+   html += '</div></td></tr>';
+ });
+
+ html += `<tr><td><b>TOTAL</b></td><td><b>${totalConfirmado} vermelhas - ${totalAgendado} laranjas</b></td></tr></table>`;
+
+ agendaGrid.innerHTML = html;
 }
 
 function renderClientes(){
-  let q=buscaCliente.value.toLowerCase().trim();
+ const q = limparTexto(buscaCliente.value).toLowerCase().trim();
+ const mapa = {};
 
-  let mapa = {};
-  ordens.forEach(os => {
-    const tel = limparTelefone(os.telefone);
-    const chave = tel || String(os.nome || "").toLowerCase();
-    if(!mapa[chave]){
-      mapa[chave] = {
-        nome: os.nome || "",
-        telefone: os.telefone || "",
-        visitas: 0,
-        pecas: 0,
-        valor: 0,
-        ordens: []
-      };
-    }
-    mapa[chave].visitas += 1;
-    mapa[chave].pecas += Number(os.pecas || 0);
-    mapa[chave].valor += Number(os.valor || 0);
-    mapa[chave].ordens.push(os);
-    if(os.nome) mapa[chave].nome = os.nome;
-    if(os.telefone) mapa[chave].telefone = os.telefone;
-  });
+ ordens.forEach(os=>{
+   const tel = limparTelefone(os.telefone);
+   const chave = tel || limparTexto(os.nome).toLowerCase();
 
-  let clientes = Object.values(mapa).filter(c =>
-    !q ||
-    String(c.nome).toLowerCase().includes(q) ||
-    String(c.telefone).includes(q) ||
-    limparTelefone(c.telefone).includes(limparTelefone(q))
-  );
+   if(!mapa[chave]){
+     mapa[chave] = {
+       nome: limparTexto(os.nome),
+       telefone: limparTexto(os.telefone),
+       visitas: 0,
+       pecas: 0,
+       valor: 0,
+       ordens: []
+     };
+   }
 
-  clientes.sort((a,b) => String(a.nome).localeCompare(String(b.nome)));
+   mapa[chave].visitas += 1;
+   mapa[chave].pecas += getPecasAgenda(os);
+   mapa[chave].valor += Number(os.valor || 0);
+   mapa[chave].ordens.push(os);
 
-  clientesLista.innerHTML = "";
-  if(clientes.length === 0){
-    clientesLista.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
-    return;
-  }
+   if(os.nome) mapa[chave].nome = limparTexto(os.nome);
+   if(os.telefone) mapa[chave].telefone = limparTexto(os.telefone);
+ });
 
-  clientes.forEach(c => {
-    c.ordens.sort((a,b) => String(b.data).localeCompare(String(a.data)));
-    const ultima = c.ordens[0];
-    const historico = c.ordens.map(os => {
-      return `<p class="small">â¢ ${dataBR(os.data)} Ã s ${os.hora} â ${Number(os.pecas || 0)} peÃ§as â ${moeda(os.valor)} â ${os.status}</p>`;
-    }).join("");
+ const clientes = Object.values(mapa).filter(c =>
+   !q ||
+   c.nome.toLowerCase().includes(q) ||
+   c.telefone.includes(q) ||
+   limparTelefone(c.telefone).includes(limparTelefone(q))
+ );
 
-    let d = document.createElement("div");
-    d.className = "card";
-    d.innerHTML = `
-      <p><b>${c.nome}</b></p>
-      <p>ð ${c.telefone}</p>
-      <p>ð Veio na loja: <b>${c.visitas}</b> vez(es)</p>
-      <p>âï¸ Total de peÃ§as/serviÃ§os: <b>${c.pecas}</b></p>
-      <p>ð° Total gasto: <b>${moeda(c.valor)}</b></p>
-      <p>ðï¸ Ãltima visita: <b>${ultima ? dataBR(ultima.data) : "-"}</b></p>
-      <hr>
-      <p><b>HistÃ³rico:</b></p>
-      ${historico}
-    `;
-    clientesLista.appendChild(d);
-  });
+ clientes.sort((a,b)=>a.nome.localeCompare(b.nome));
+
+ clientesLista.innerHTML = "";
+
+ if(clientes.length === 0){
+   clientesLista.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
+   return;
+ }
+
+ clientes.forEach(c=>{
+   c.ordens.sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+
+   const ultima = c.ordens[0];
+
+   const historico = c.ordens.map(os=>{
+     return `<p class="small">${dataBR(os.data)} as ${os.hora} - ${getPecasAgenda(os)} servicos - ${moeda(os.valor)} - ${limparTexto(os.status)}</p>`;
+   }).join("");
+
+   const d = document.createElement("div");
+   d.className = "card";
+
+   d.innerHTML = `
+    <p><b>${c.nome}</b></p>
+    <p>${c.telefone}</p>
+    <p>Veio na loja: <b>${c.visitas}</b> vez(es)</p>
+    <p>Total de servicos: <b>${c.pecas}</b></p>
+    <p>Total gasto: <b>${moeda(c.valor)}</b></p>
+    <p>Ultima visita: <b>${ultima ? dataBR(ultima.data) : "-"}</b></p>
+    <hr>
+    <p><b>Historico:</b></p>
+    ${historico}
+   `;
+
+   clientesLista.appendChild(d);
+ });
 }
 
-function reenviar(id){let os=ordens.find(o=>o.id===id);if(os)enviarWhatsApp(os)}
-function imprimir(id){let os=ordens.find(o=>o.id===id);if(os){prepararImpressao(os);window.print()}}
+function reenviar(id){
+ const os = ordens.find(o=>o.id === id);
+ if(os) enviarWhatsApp(os);
+}
+
+function imprimir(id){
+ const os = ordens.find(o=>o.id === id);
+ if(os){
+   prepararImpressao(os);
+   window.print();
+ }
+}
+
 async function confirmarChegada(id){
-  await db.collection(COL_ORDENS).doc(id).update({
-    situacao:"confirmado",
-    status:"Recebido"
-  });
+ const os = ordens.find(o=>o.id === id);
+
+ if(!os) return;
+
+ const qtd = getPecasAgenda(os);
+ let alocacoes = {};
+
+ try{
+   alocacoes = calcularAlocacoes(os.data, os.hora, qtd, id);
+ }catch(err){
+   alert(limparTexto(err.message));
+   return;
+ }
+
+ await db.collection(COL_ORDENS).doc(id).update({
+   situacao:"confirmado",
+   status:"Recebido",
+   pecas:qtd,
+   pecasAgenda:qtd,
+   alocacoes:alocacoes
+ });
 }
-async function apagarOS(id){if(confirm("Apagar esta OS?"))await db.collection(COL_ORDENS).doc(id).delete()}
+
+async function apagarOS(id){
+ if(confirm("Apagar esta OS?")){
+   await db.collection(COL_ORDENS).doc(id).delete();
+ }
+}
 
 function renderServicosEdit(){
-  servicosEdit.innerHTML="";
-  config.servicos.forEach((s,i)=>{servicosEdit.innerHTML+=`<div class="service-edit"><b>${s.nome}</b><span>${moeda(s.preco)}</span><button class="btn btn-red" onclick="removerServico(${i})">Excluir</button></div>`});
+ servicosEdit.innerHTML = "";
+
+ config.servicos.forEach((s,i)=>{
+   servicosEdit.innerHTML += `
+    <div class="service-edit">
+     <b>${limparTexto(s.nome)}</b>
+     <span>${moeda(s.preco)}</span>
+     <button class="btn btn-red" onclick="removerServico(${i})">Excluir</button>
+    </div>`;
+ });
 }
-async function salvarConfig(){await db.doc(DOC_CONFIG).set(config,{merge:true});renderServicosOS();renderServicosEdit()}
-async function adicionarServico(){if(!novoServico.value||!novoPreco.value)return;config.servicos.push({nome:novoServico.value.trim(),preco:Number(novoPreco.value)});novoServico.value="";novoPreco.value="";await salvarConfig()}
-async function removerServico(i){if(confirm("Excluir este serviÃ§o da OS?")){config.servicos.splice(i,1);await salvarConfig()}}
-async function salvarTemplate(){config.template=normalizarTemplateWhatsApp(templateMsg.value);templateMsg.value=config.template;await salvarConfig();alert("Mensagem salva.")}
-async function salvarLoginConfig(){config.user=setUser.value.trim()||"dono";config.pass=setPass.value||"1234";await salvarConfig();alert("Login salvo.")}
+
+async function salvarConfig(){
+ config.servicos = normalizarServicos(config.servicos);
+ config.template = normalizarTemplateWhatsApp(config.template);
+ config.user = limparTexto(config.user || "dono");
+ config.pass = String(config.pass || "1234");
+
+ await db.doc(DOC_CONFIG).set(config,{merge:true});
+
+ renderServicosOS();
+ renderServicosEdit();
+}
+
+async function adicionarServico(){
+ if(!novoServico.value || !novoPreco.value) return;
+
+ config.servicos.push({
+   nome: limparTexto(novoServico.value.trim()),
+   preco: Number(novoPreco.value)
+ });
+
+ novoServico.value = "";
+ novoPreco.value = "";
+
+ await salvarConfig();
+}
+
+async function removerServico(i){
+ if(confirm("Excluir este servico da OS?")){
+   config.servicos.splice(i,1);
+   await salvarConfig();
+ }
+}
+
+async function salvarTemplate(){
+ config.template = normalizarTemplateWhatsApp(templateMsg.value);
+ templateMsg.value = config.template;
+ await salvarConfig();
+ alert("Mensagem salva.");
+}
+
+async function salvarLoginConfig(){
+ config.user = limparTexto(setUser.value.trim() || "dono");
+ config.pass = String(setPass.value || "1234");
+ await salvarConfig();
+ alert("Login salvo.");
+}
 
 iniciar();
 </script>
