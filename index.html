@@ -7,6 +7,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
 <style>
 *{box-sizing:border-box}
@@ -51,6 +52,670 @@ textarea{min-height:80px}
 .service-edit{display:flex;gap:6px;align-items:center;border-bottom:1px solid #eee;padding:8px 0}
 .service-edit b{flex:1}
 .service-edit button{width:auto;margin:0;padding:8px 10px;border-radius:8px}
+
+.finance-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.finance-box{background:#f8f8fa;border-radius:12px;padding:10px;text-align:center}
+.finance-box span{display:block;font-size:11px;color:#777;font-weight:800}
+.finance-box b{display:block;font-size:18px;color:#111;margin-top:3px}
+.finance-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.finance-table th,.finance-table td{border-bottom:1px solid #eee;padding:7px 4px;text-align:left}
+.finance-table th{color:#777;font-size:11px}
+.finance-table td:last-child,.finance-table th:last-child{text-align:right}
+.connection-box{font-size:12px;font-weight:900;margin-top:6px;padding:8px;border-radius:10px;background:#f8f8fa}
+.connection-online{color:#23a647}
+.connection-offline{color:#ff3b30}
+.pending-box{background:#fff8e6;border:1px solid #ffd37a;border-radius:12px;padding:10px;margin-top:10px;font-size:12px}
+.os-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.os-actions .btn{margin-top:0;padding:11px 6px;font-size:13px}
+.quick-services .qty-row{gap:10px}
+.qty-controls{display:flex;align-items:center;gap:6px}
+.qty-btn{width:36px;height:36px;border:0;border-radius:10px;font-size:20px;font-weight:900;color:#fff;background:#007aff}
+.qty-btn.minus{background:#777}
+.qty-controls input{width:58px;text-align:center;padding:8px}
+.more-options{display:none;margin-top:10px;border-top:1px solid #eee;padding-top:10px}
+.more-options.open{display:block}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.quick-actions .btn{margin-top:0}
+.compact-line{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.compact-line b{font-size:16px}
+.compact-muted{font-size:12px;color:#777;font-weight:800}
+
+
+
+/* V13 - Layout clean premium */
+body{
+ background:linear-gradient(180deg,#f8f9fc 0%,#eef1f7 100%);
+ padding:10px;
+ color:#1c1d20;
+}
+.container{max-width:560px}
+.header{
+ text-align:left;
+ margin:6px 2px 12px;
+ padding:8px 4px 2px;
+}
+.header h1{
+ font-size:30px;
+ letter-spacing:4px;
+ font-weight:950;
+ line-height:1;
+}
+.header p{
+ margin-top:4px;
+ color:#6b7280;
+ font-size:11px;
+ letter-spacing:1.2px;
+}
+.version{
+ font-size:9px!important;
+ color:#a1a1aa!important;
+ letter-spacing:.3px!important;
+}
+.card{
+ border-radius:20px;
+ padding:14px;
+ margin-bottom:10px;
+ box-shadow:0 8px 26px rgba(31,41,55,.055);
+ border:1px solid rgba(229,231,235,.9);
+}
+.status-card{
+ padding:10px 12px;
+ box-shadow:none;
+ background:rgba(255,255,255,.72);
+}
+.status-card #cloudStatus{
+ font-size:12px;
+}
+.connection-box{
+ margin-top:6px;
+ padding:6px 8px;
+ border-radius:999px;
+ background:#f3f4f6;
+ font-size:11px;
+}
+.tabs{
+ position:sticky;
+ top:0;
+ z-index:20;
+ overflow-x:auto;
+ -webkit-overflow-scrolling:touch;
+ display:flex;
+ gap:7px;
+ background:rgba(242,244,248,.92);
+ backdrop-filter:blur(14px);
+ padding:6px;
+ border-radius:18px;
+ margin-bottom:10px;
+ box-shadow:0 6px 18px rgba(31,41,55,.06);
+}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{
+ flex:0 0 auto;
+ min-width:86px;
+ padding:10px 10px;
+ border-radius:14px;
+ color:#4b5563;
+ font-size:12px;
+}
+.tabs button.active{
+ background:#111827;
+ color:#fff;
+ box-shadow:0 4px 12px rgba(17,24,39,.18);
+}
+.stats{
+ gap:7px;
+ margin-bottom:10px;
+}
+.stat{
+ padding:10px 4px;
+ border:1px solid rgba(229,231,235,.85);
+ box-shadow:0 5px 15px rgba(31,41,55,.035);
+}
+.stat b{
+ font-size:18px;
+}
+.title{
+ color:#111827;
+ font-size:13px;
+ letter-spacing:.6px;
+ margin-bottom:10px;
+}
+label{
+ margin:9px 0 4px;
+ color:#374151;
+ font-size:12px;
+}
+input,select,textarea{
+ border:1px solid #e5e7eb;
+ border-radius:14px;
+ background:#fafafa;
+ padding:12px;
+}
+input:focus,select:focus,textarea:focus{
+ outline:0;
+ border-color:#007aff;
+ background:#fff;
+ box-shadow:0 0 0 3px rgba(0,122,255,.10);
+}
+.btn{
+ border-radius:15px;
+ padding:13px;
+ box-shadow:0 4px 12px rgba(31,41,55,.08);
+}
+.btn-blue{background:#111827}
+.btn-gray{background:#6b7280}
+.btn-red{background:#ef4444}
+.qty-row{
+ background:#f9fafb;
+ border:1px solid #eef0f3;
+ border-bottom:1px solid #eef0f3;
+ border-radius:16px;
+ padding:10px;
+ margin-bottom:8px;
+}
+.qty-row:last-child{border-bottom:1px solid #eef0f3}
+.qty-name{
+ font-size:14px;
+}
+.qty-name span{
+ color:#8a8f98;
+ font-size:10.5px;
+ margin-top:2px;
+}
+.qty-btn{
+ background:#111827;
+ border-radius:12px;
+ box-shadow:none;
+}
+.qty-btn.minus{
+ background:#e5e7eb;
+ color:#111827;
+}
+.qty-controls input{
+ background:#fff;
+ font-weight:900;
+ border-radius:12px;
+}
+.more-options{
+ border-top:0;
+ background:#f9fafb;
+ border-radius:16px;
+ padding:12px;
+}
+.agenda-table{
+ border-radius:16px;
+ overflow:hidden;
+}
+.agenda-table th{
+ background:#f3f4f6;
+ color:#6b7280;
+}
+.agenda-table td,.agenda-table th{
+ border-color:#eceff3;
+}
+.slot{
+ width:30px;
+ height:30px;
+ border-width:2px;
+ border-radius:9px;
+}
+.os-card{
+ border-left:0;
+ border:1px solid #e5e7eb;
+ padding:13px;
+}
+.os-card p{
+ font-size:13px;
+ line-height:1.32;
+}
+.compact-line b{
+ font-size:15px;
+}
+.compact-muted{
+ color:#6b7280;
+ font-size:11.5px;
+}
+.os-actions{
+ gap:7px;
+}
+.os-actions .btn{
+ padding:10px 6px;
+ border-radius:13px;
+ font-size:12.5px;
+}
+.quick-actions{
+ gap:8px;
+}
+.quick-actions .btn{
+ border-radius:14px;
+}
+.finance-box{
+ background:#f9fafb;
+ border:1px solid #eef0f3;
+ border-radius:16px;
+}
+.finance-box b{
+ font-size:16px;
+}
+.finance-table th,.finance-table td{
+ padding:9px 4px;
+}
+.service-edit{
+ background:#f9fafb;
+ border:1px solid #eef0f3;
+ border-bottom:1px solid #eef0f3;
+ border-radius:14px;
+ margin-bottom:8px;
+ padding:9px;
+}
+.pending-box{
+ border-radius:16px;
+}
+@media(max-width:380px){
+ .tabs button{min-width:78px;font-size:11px}
+ .slot{width:27px;height:27px}
+ .row{gap:6px}
+}
+
+
+/* V13.2 - Menu inferior clean */
+body{
+ padding-bottom:92px;
+}
+.header{
+ text-align:center;
+ margin:8px 0 14px;
+ padding:8px 0 0;
+}
+.header h1{
+ font-size:36px;
+ letter-spacing:5px;
+ font-weight:950;
+}
+.status-card{
+ display:none!important;
+}
+.tabs{
+ position:fixed;
+ left:10px;
+ right:10px;
+ bottom:10px;
+ top:auto;
+ z-index:999;
+ max-width:560px;
+ margin:0 auto;
+ height:74px;
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:0;
+ background:rgba(255,255,255,.94);
+ backdrop-filter:blur(18px);
+ -webkit-backdrop-filter:blur(18px);
+ border:1px solid rgba(229,231,235,.95);
+ border-radius:24px;
+ padding:7px 6px 6px;
+ box-shadow:0 -8px 30px rgba(17,24,39,.13);
+ overflow:visible;
+}
+.tabs button{
+ min-width:0;
+ width:100%;
+ height:61px;
+ padding:3px 2px 0;
+ border-radius:17px;
+ color:#71717a;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:4px;
+ font-size:11px;
+ line-height:1;
+ position:relative;
+ background:transparent;
+}
+.tabs button.active{
+ background:transparent;
+ color:#111827;
+ box-shadow:none;
+}
+.tabs button.active:after{
+ content:"";
+ position:absolute;
+ bottom:2px;
+ width:28px;
+ height:4px;
+ border-radius:999px;
+ background:#16a34a;
+}
+.nav-icon{
+ width:27px;
+ height:27px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+}
+.nav-icon svg{
+ width:27px;
+ height:27px;
+ fill:none;
+ stroke:currentColor;
+ stroke-width:2.2;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+}
+.tabs button.active .nav-icon svg{
+ stroke:#000;
+}
+.tabs button span:last-child{
+ font-weight:800;
+ letter-spacing:.1px;
+}
+.connection-box{
+ display:block;
+}
+@media(max-width:380px){
+ .tabs{
+  left:8px;
+  right:8px;
+  height:72px;
+  border-radius:22px;
+ }
+ .tabs button{
+  font-size:10px;
+ }
+ .nav-icon,.nav-icon svg{
+  width:25px;
+  height:25px;
+ }
+}
+
+
+/* V13.3 - Menu superior com icones */
+body{
+ padding-bottom:10px;
+}
+.tabs{
+ position:sticky;
+ top:6px;
+ bottom:auto;
+ left:auto;
+ right:auto;
+ max-width:none;
+ margin:0 0 12px 0;
+ height:74px;
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:0;
+ background:rgba(255,255,255,.94);
+ backdrop-filter:blur(18px);
+ -webkit-backdrop-filter:blur(18px);
+ border:1px solid rgba(229,231,235,.95);
+ border-radius:24px;
+ padding:7px 6px 6px;
+ box-shadow:0 8px 24px rgba(17,24,39,.08);
+ overflow:visible;
+}
+.tabs button{
+ min-width:0;
+ width:100%;
+ height:61px;
+ padding:3px 2px 0;
+ border-radius:17px;
+ color:#71717a;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:4px;
+ font-size:11px;
+ line-height:1;
+ position:relative;
+ background:transparent;
+}
+.tabs button.active{
+ background:transparent;
+ color:#111827;
+ box-shadow:none;
+}
+.tabs button.active:after{
+ content:"";
+ position:absolute;
+ bottom:2px;
+ width:28px;
+ height:4px;
+ border-radius:999px;
+ background:#16a34a;
+}
+.nav-icon{
+ width:27px;
+ height:27px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+}
+.nav-icon svg{
+ width:27px;
+ height:27px;
+ fill:none;
+ stroke:currentColor;
+ stroke-width:2.2;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+}
+.tabs button.active .nav-icon svg{
+ stroke:#000;
+}
+@media(max-width:380px){
+ .tabs{
+  height:72px;
+  border-radius:22px;
+ }
+ .tabs button{
+  font-size:10px;
+ }
+ .nav-icon,.nav-icon svg{
+  width:25px;
+  height:25px;
+ }
+}
+
+
+/* V14 - Visual App Premium */
+body{
+ background:
+  radial-gradient(circle at top left, rgba(22,163,74,.08), transparent 34%),
+  linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
+}
+.container{
+ max-width:570px;
+}
+.header{
+ margin:5px 0 8px;
+}
+.header h1{
+ font-size:38px;
+ letter-spacing:6px;
+ background:linear-gradient(90deg,#111827,#404650);
+ -webkit-background-clip:text;
+ background-clip:text;
+ color:transparent;
+}
+.tabs{
+ top:4px;
+ height:78px;
+ padding:8px 7px 7px;
+ border-radius:26px;
+ box-shadow:0 12px 30px rgba(15,23,42,.09);
+}
+.tabs button{
+ border-radius:18px;
+}
+.tabs button.active{
+ color:#000;
+}
+.tabs button.active .nav-icon{
+ background:#111827;
+ color:#fff;
+ border-radius:15px;
+ box-shadow:0 8px 16px rgba(17,24,39,.15);
+}
+.tabs button.active .nav-icon svg{
+ stroke:#fff;
+}
+.tabs button.active:after{
+ background:#16a34a;
+ bottom:-1px;
+ height:4px;
+}
+.nav-icon{
+ width:31px;
+ height:31px;
+ transition:.15s ease;
+}
+.nav-icon svg{
+ width:25px;
+ height:25px;
+}
+.screen-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+ margin:12px 2px 10px;
+}
+.screen-head h2{
+ margin:0;
+ font-size:22px;
+ line-height:1;
+ letter-spacing:-.4px;
+}
+.screen-head p{
+ margin:5px 0 0;
+ color:#6b7280;
+ font-size:12px;
+ font-weight:700;
+}
+.mini-action{
+ border:0;
+ border-radius:999px;
+ padding:10px 14px;
+ background:#111827;
+ color:#fff;
+ font-size:13px;
+ font-weight:900;
+ box-shadow:0 8px 20px rgba(17,24,39,.16);
+}
+body.tab-nova #screenActionBtn,
+body.tab-financeiro #screenActionBtn,
+body.tab-clientes #screenActionBtn,
+body.tab-ajustes #screenActionBtn{
+ display:none;
+}
+body.tab-nova .stats,
+body.tab-clientes .stats,
+body.tab-ajustes .stats{
+ display:none;
+}
+.stats{
+ background:rgba(255,255,255,.65);
+ padding:5px;
+ border-radius:22px;
+ border:1px solid rgba(229,231,235,.9);
+}
+.stat{
+ background:#fff;
+ border:0;
+}
+.card{
+ box-shadow:0 10px 30px rgba(15,23,42,.055);
+}
+.title{
+ color:#111827;
+}
+#agenda>.card:first-child{
+ padding-top:12px;
+}
+#agendaLista .os-card{
+ transition:.12s ease;
+}
+#agendaLista .os-card:active{
+ transform:scale(.99);
+}
+.compact-line{
+ border-bottom:1px solid #f0f2f5;
+ padding-bottom:8px;
+ margin-bottom:8px;
+}
+.fab-new-os{
+ position:fixed;
+ right:22px;
+ bottom:22px;
+ width:58px;
+ height:58px;
+ border:0;
+ border-radius:21px;
+ background:#111827;
+ color:#fff;
+ font-size:34px;
+ line-height:58px;
+ font-weight:700;
+ box-shadow:0 14px 30px rgba(17,24,39,.26);
+ z-index:998;
+}
+body:not(.tab-agenda) .fab-new-os{
+ display:none;
+}
+#toast{
+ position:fixed;
+ left:18px;
+ right:18px;
+ bottom:24px;
+ z-index:2000;
+ background:#111827;
+ color:#fff;
+ padding:13px 16px;
+ border-radius:16px;
+ box-shadow:0 16px 34px rgba(15,23,42,.25);
+ font-size:14px;
+ font-weight:800;
+ text-align:center;
+ opacity:0;
+ transform:translateY(20px);
+ pointer-events:none;
+ transition:.22s ease;
+}
+#toast.show{
+ opacity:1;
+ transform:translateY(0);
+}
+#toast.ok{background:#111827}
+#toast.good{background:#16a34a}
+#toast.bad{background:#ef4444}
+input,select,textarea{
+ font-size:16px;
+}
+.quick-services{
+ background:#fff!important;
+}
+.qty-row{
+ background:linear-gradient(180deg,#fff,#fafafa);
+}
+.qty-btn{
+ width:38px;
+ height:38px;
+}
+.os-actions .btn,
+.quick-actions .btn{
+ box-shadow:none;
+}
+@media(max-width:380px){
+ .screen-head h2{font-size:20px}
+ .screen-head p{font-size:11px}
+ .mini-action{padding:9px 12px}
+ .fab-new-os{right:16px;bottom:16px;width:54px;height:54px;line-height:54px}
+}
+
 #printArea{display:none}
 @media print{
  body>*:not(#printArea){display:none!important}
@@ -61,31 +726,52 @@ textarea{min-height:80px}
 </head>
 
 <body>
+<div id="toast"></div>
 <div id="printArea"></div>
 
 <div class="container">
  <div class="header">
   <h1>AFIA</h1>
-  <p>ORDEM DE SERVICO - AGENDA - CLIENTES</p>
-  <p class="version">VERSAO CORRIGIDA 6.0 - IMPRESSAO MELHORADA</p>
  </div>
 
  <section id="loginScreen" class="card">
   <h3 class="title">Login</h3>
-  <label>Usuario</label><input id="loginUser" placeholder="Ex: dono">
-  <label>Senha</label><input id="loginPass" type="password" placeholder="Senha">
+  <label>E-mail do Firebase</label><input id="loginUser" type="email" autocomplete="username" placeholder="seuemail@gmail.com">
+  <label>Senha</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Senha do Firebase">
   <button class="btn" onclick="login()">Entrar</button>
-  <p class="small">Padrao inicial: usuario <b>dono</b> e senha <b>1234</b>. Depois voce pode trocar em Ajustes.</p>
+  <p class="small">Agora o acesso usa Firebase Authentication. Entre com o e-mail e senha cadastrados no Firebase.</p>
  </section>
 
  <main id="appScreen" class="hidden">
-  <div class="card"><div id="cloudStatus">Conectando ao Firebase...</div></div>
-
   <div class="tabs">
-   <button id="btnAgenda" class="active" onclick="showTab('agenda')">Agenda</button>
-   <button id="btnNova" onclick="showTab('nova')">Nova OS</button>
-   <button id="btnClientes" onclick="showTab('clientes')">Clientes</button>
-   <button id="btnAjustes" onclick="showTab('ajustes')">Ajustes</button>
+   <button id="btnAgenda" class="active" onclick="showTab('agenda')" aria-label="Agenda">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"></rect><line x1="8" y1="3.5" x2="8" y2="7"></line><line x1="16" y1="3.5" x2="16" y2="7"></line><line x1="4" y1="10" x2="20" y2="10"></line></svg></span>
+    <span>Agenda</span>
+   </button>
+   <button id="btnNova" onclick="showTab('nova')" aria-label="Nova OS">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="16" y2="13"></line><line x1="12.5" y1="9.5" x2="12.5" y2="16.5"></line></svg></span>
+    <span>OS</span>
+   </button>
+   <button id="btnFinanceiro" onclick="showTab('financeiro')" aria-label="Financeiro">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="3"></rect><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="11" y2="13"></line><line x1="14" y1="13" x2="16" y2="13"></line></svg></span>
+    <span>Fin.</span>
+   </button>
+   <button id="btnClientes" onclick="showTab('clientes')" aria-label="Clientes">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M5 21c1.2-4.2 12.8-4.2 14 0"></path></svg></span>
+    <span>Clientes</span>
+   </button>
+   <button id="btnAjustes" onclick="showTab('ajustes')" aria-label="Ajustes">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.8-1L14.4 3h-4.8l-.3 3.1a8 8 0 0 0-1.8 1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.8 1l.3 3.1h4.8l.3-3.1a8 8 0 0 0 1.8-1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1z"></path></svg></span>
+    <span>Ajustes</span>
+   </button>
+  </div>
+
+  <div class="screen-head">
+   <div>
+    <h2 id="screenTitle">Agenda</h2>
+    <p id="screenSubtitle">Acompanhe os servicos do dia</p>
+   </div>
+   <button id="screenActionBtn" class="mini-action" onclick="showTab('nova')">+ OS</button>
   </div>
 
   <div class="stats">
@@ -98,10 +784,21 @@ textarea{min-height:80px}
    <div class="card">
     <h3 class="title">Agenda</h3>
     <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda()">
+    <label>Pesquisar OS</label><input id="buscaAgenda" oninput="renderAgenda()" placeholder="Numero da OS, nome ou telefone">
+
+    <label>Filtro de status</label>
+    <select id="filtroStatusAgenda" onchange="renderAgenda()">
+     <option value="todos">Todos</option>
+     <option value="pendentes">Pendentes / nao retirados</option>
+     <option value="pronto">Pronto</option>
+     <option value="retirado">Retirado</option>
+    </select>
+
     <div id="agendaGrid" style="margin-top:12px"></div>
    </div>
    <h3 style="font-size:15px;margin:14px 0 8px">Ordens do dia</h3>
    <div id="agendaLista"></div>
+   <button class="fab-new-os" onclick="showTab('nova')" aria-label="Nova OS">+</button>
   </section>
 
   <section id="nova" class="hidden">
@@ -115,51 +812,117 @@ textarea{min-height:80px}
     <input id="nome" required placeholder="Preenche automatico se ja for cliente">
 
     <div class="row">
-     <div><label>Data da entrega</label><input type="date" id="dataEntrega" required></div>
+     <div><label>Data da entrega</label><input type="date" id="dataEntrega" required onchange="atualizarHorarioSugerido()"></div>
      <div><label>Horario</label><select id="horaEntrega" required></select></div>
     </div>
 
-    <div class="card" style="box-shadow:none;border:1px solid #eee;padding:10px;margin-top:12px">
+    <div class="card quick-services" style="box-shadow:none;border:1px solid #eee;padding:10px;margin-top:12px">
      <h3 class="title">Servicos</h3>
      <div id="servicosOS"></div>
     </div>
 
-    <label>Observacao</label>
-    <textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
-
-    <label>Situacao da OS</label>
-    <select id="situacao">
-     <option value="confirmado">Cliente deixou o servico / balcao</option>
-     <option value="agendado">Apenas agendamento / ainda vai trazer</option>
-    </select>
-
-    <label>Status de producao</label>
-    <select id="status">
-     <option>Recebido</option>
-     <option>Na bancada</option>
-     <option>Pronto</option>
-     <option>Retirado</option>
-    </select>
-
-    <label>Pagamento</label>
-    <select id="pagamento">
-     <option>Pagar na retirada</option>
-     <option>Pago</option>
-    </select>
-
     <label>Valor total</label>
     <input id="valorTotal" type="number" step="0.01" required>
+
+    <button class="btn btn-gray" type="button" onclick="toggleMaisOpcoes()">Mais opcoes</button>
+
+    <div id="maisOpcoesOS" class="more-options">
+     <label>Observacao</label>
+     <textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
+
+     <label>Situacao da OS</label>
+     <select id="situacao">
+      <option value="confirmado">Cliente deixou o servico / balcao</option>
+      <option value="agendado">Apenas agendamento / ainda vai trazer</option>
+     </select>
+
+     <label>Status de producao</label>
+     <select id="status">
+      <option>Recebido</option>
+      <option>Na bancada</option>
+      <option>Pronto</option>
+      <option>Retirado</option>
+     </select>
+
+     <label>Pagamento</label>
+     <select id="pagamento">
+      <option>Pagar na retirada</option>
+      <option>Pago</option>
+     </select>
+    </div>
 
     <button class="btn" type="submit">Salvar OS</button>
    </form>
 
    <div id="posSalvarPanel" class="card hidden">
-    <h3 class="title">OS salva com sucesso</h3>
+    <h3 class="title">OS salva</h3>
     <p id="posSalvarResumo" class="small"></p>
-    <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar via da cliente no WhatsApp</button>
-    <button class="btn btn-blue" onclick="imprimirUltimaOS()">Abrir minha via para imprimir/PDF</button>
-    <button class="btn" onclick="novaOSDepoisDeSalvar()">Fazer nova OS</button>
-    <button class="btn btn-gray" onclick="showTab('agenda')">Ver agenda</button>
+    <div class="quick-actions">
+     <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar cliente</button>
+     <button class="btn btn-blue" onclick="imprimirUltimaOS()">Via loja</button>
+     <button class="btn" onclick="novaOSDepoisDeSalvar()">Nova OS</button>
+     <button class="btn btn-gray" onclick="showTab('agenda')">Agenda</button>
+    </div>
+   </div>
+  </section>
+
+
+  <section id="financeiro" class="hidden">
+   <div class="card">
+    <h3 class="title">Gestao financeira</h3>
+
+    <label>Mes</label>
+    <input type="month" id="finMes" onchange="renderFinanceiro()">
+
+    <div id="financeiroResumo"></div>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Fechamento do dia</h3>
+    <div id="financeiroHoje"></div>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Fechamento por dia no mes</h3>
+    <div id="financeiroDias"></div>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Despesas</h3>
+
+    <div class="row">
+     <div><label>Data</label><input type="date" id="dataDespesa"></div>
+     <div>
+      <label>Categoria</label>
+      <select id="categoriaDespesa">
+       <option>Material</option>
+       <option>Aluguel</option>
+       <option>Conta</option>
+       <option>Marketing</option>
+       <option>Equipamento</option>
+       <option>Outros</option>
+      </select>
+     </div>
+    </div>
+
+    <label>Descricao</label>
+    <input id="descDespesa" placeholder="Ex: compra de molas, embalagem, gasolina">
+
+    <label>Valor</label>
+    <input id="valorDespesa" type="number" step="0.01" placeholder="Ex: 50">
+
+    <button class="btn btn-blue" onclick="salvarDespesa()">Adicionar despesa</button>
+
+    <div id="despesasLista" style="margin-top:12px"></div>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Relatorio</h3>
+    <p class="small">Gera um resumo do mes para voce copiar, salvar ou enviar para seu contador.</p>
+    <button class="btn btn-blue" onclick="copiarRelatorioFinanceiro()">Copiar resumo do mes</button>
+    <button class="btn btn-blue" onclick="baixarRelatorioFinanceiroTXT()">Baixar resumo TXT</button>
+    <button class="btn btn-blue" onclick="exportarFinanceiroCSV()">Baixar planilha CSV</button>
+    <button class="btn" onclick="fecharMesFinanceiro()">Fechar mes e zerar OS</button>
    </div>
   </section>
 
@@ -174,12 +937,17 @@ textarea{min-height:80px}
   <section id="ajustes" class="hidden">
    <div class="card">
     <h3 class="title">Ajustes</h3>
+    <p class="small"><b>Versao:</b> VERSAO 14.0 - VISUAL APP PREMIUM</p>
     <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
+    <div id="cloudStatus" class="small">Conectando ao Firebase...</div>
+    <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
+    <div id="offlinePendentesStatus" class="small"></div>
     <button class="btn btn-gray" onclick="logout()">Sair</button>
    </div>
 
    <div class="card">
     <h3 class="title">Servicos e precos</h3>
+    <p class="small">Use o botao Contar/Nao contar para escolher quais servicos ocupam quadradinho na agenda.</p>
     <div id="servicosEdit"></div>
     <label>Novo servico</label><input id="novoServico" placeholder="Ex: Alicates de cuticula">
     <label>Preco unitario</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
@@ -188,16 +956,37 @@ textarea{min-height:80px}
 
    <div class="card">
     <h3 class="title">Mensagem do WhatsApp</h3>
-    <p class="small">Use: {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
+    <p class="small">Mensagem enviada quando a OS e criada.</p>
+    <p class="small">Use: {numero}, {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
     <textarea id="templateMsg"></textarea>
-    <button class="btn btn-blue" onclick="salvarTemplate()">Salvar mensagem</button>
+    <button class="btn btn-blue" onclick="salvarTemplate()">Salvar mensagem da OS</button>
+
+    <hr>
+
+    <p class="small"><b>Mensagem de servico pronto</b></p>
+    <textarea id="templateProntoMsg"></textarea>
+    <button class="btn btn-blue" onclick="salvarTemplatePronto()">Salvar mensagem de pronto</button>
    </div>
 
    <div class="card">
-    <h3 class="title">Trocar login</h3>
-    <label>Usuario</label><input id="setUser">
-    <label>Senha</label><input id="setPass" type="password">
-    <button class="btn btn-blue" onclick="salvarLoginConfig()">Salvar login</button>
+    <h3 class="title">Numeracao da OS</h3>
+    <p class="small">A OS comeca no numero <b>1</b> e continua subindo. Ela <b>nao zera automaticamente</b>.</p>
+    <p class="small">No fechamento do mes, voce pode zerar manualmente para a proxima OS voltar para <b>1</b>.</p>
+    <p class="small">Proxima OS: <b id="proximoNumeroOS">-</b></p>
+
+    <label>Definir proxima OS</label>
+    <input id="setProximoNumero" type="number" min="1" placeholder="Ex: 1">
+
+    <button class="btn btn-blue" onclick="salvarProximoNumeroOS()">Salvar proximo numero</button>
+    <button class="btn btn-red" onclick="zerarNumeracaoOS()">Zerar OS e voltar para 1</button>
+
+    <p class="small">Isso nao apaga ordens antigas. Apenas faz a proxima OS voltar para o numero escolhido.</p>
+   </div>
+
+   <div class="card">
+    <h3 class="title">Seguranca Firebase</h3>
+    <p class="small">Login atual: <b id="emailLogado">-</b></p>
+    <p class="small">Para trocar senha ou criar outro usuario, use o painel do Firebase em Authentication &gt; Users.</p>
    </div>
   </section>
  </main>
@@ -215,12 +1004,22 @@ const firebaseConfig = {
 };
 
 let db = null;
+let auth = null;
+let unsubscribeOrdens = null;
+let unsubscribeDespesas = null;
+let offlinePersistenceOk = false;
 let ordens = [];
+let despesas = [];
 let config = {};
 let ultimaOSSalva = null;
 
 const COL_ORDENS = "ordens_afia_v2";
+const COL_DESPESAS = "despesas_afia_v1";
+const COL_FECHAMENTOS = "fechamentos_afia_v1";
 const DOC_CONFIG = "config/afia";
+const LOCAL_OS_PENDENTES = "afia_os_pendentes_v1";
+const DOC_CONTADOR_OS = "contadores/ordens";
+const OS_INICIO = 1;
 
 const horarios = [
  "09:00","09:30","10:00","10:30","11:00","11:30",
@@ -228,22 +1027,39 @@ const horarios = [
 ];
 
 const defaultServices = [
- {nome:"Alicates de cuticula", preco:15},
- {nome:"Facas", preco:12},
- {nome:"Tesouras", preco:15},
- {nome:"Molas", preco:5},
- {nome:"Espatulas", preco:7},
- {nome:"Outros servicos", preco:10}
+ {nome:"Alicates de cuticula", preco:15, contaAgenda:true},
+ {nome:"Facas", preco:12, contaAgenda:true},
+ {nome:"Tesouras", preco:15, contaAgenda:true},
+ {nome:"Alicate novo", preco:0, contaAgenda:false},
+ {nome:"Molas", preco:5, contaAgenda:false},
+ {nome:"Espatulas", preco:7, contaAgenda:false},
+ {nome:"Outros servicos", preco:10, contaAgenda:false}
 ];
 
 const defaultTemplate =
 `*AFIA - ORDEM DE SERVICO*
+OS: *{numero}*
 
 Ola, *{nome}*!
 Sua ordem de servico foi registrada.
 
 Entrega: {data}
 Horario: {hora}
+
+*Servicos:*
+{itens}
+
+Total: {valor}
+Pagamento: {pagamento}
+
+Obrigado pela preferencia!`;
+
+const defaultTemplatePronto =
+`*AFIA - SERVICO PRONTO*
+OS: *{numero}*
+
+Ola, *{nome}*!
+Seu servico ficou pronto e ja pode ser retirado.
 
 *Servicos:*
 {itens}
@@ -269,12 +1085,9 @@ function moeda(v){
  return "R$ "+Number(v || 0).toFixed(2).replace(".",",");
 }
 
-function sessionOK(){
- return localStorage.getItem("afia_login_date") === hoje();
-}
-
-function getLogin(){
- return {u:config.user || "dono", p:config.pass || "1234"};
+function emailUsuarioAtual(){
+ const u = auth ? auth.currentUser : null;
+ return u && u.email ? u.email : "";
 }
 
 function limparTexto(txt){
@@ -309,12 +1122,33 @@ function limparTelefone(t){
  return String(t || "").replace(/\D/g,"");
 }
 
+function inferirContaAgenda(nome){
+ const n = limparTexto(nome).toLowerCase();
+
+ if(n.includes("mola") || n.includes("espatu") || n.includes("alicate novo")){
+   return false;
+ }
+
+ if(n.includes("alicate") || n.includes("tesoura") || n.includes("faca")){
+   return true;
+ }
+
+ return false;
+}
+
 function normalizarServicos(servicos){
  const lista = Array.isArray(servicos) && servicos.length ? servicos : defaultServices;
- return lista.map(s => ({
-   nome: limparTexto(s.nome || "Servico"),
-   preco: Number(s.preco || 0)
- }));
+
+ return lista.map(s => {
+   const nome = limparTexto(s.nome || "Servico");
+   const temCampoAgenda = Object.prototype.hasOwnProperty.call(s, "contaAgenda");
+
+   return {
+     nome: nome,
+     preco: Number(s.preco || 0),
+     contaAgenda: temCampoAgenda ? Boolean(s.contaAgenda) : inferirContaAgenda(nome)
+   };
+ });
 }
 
 function normalizarTemplateWhatsApp(t){
@@ -326,6 +1160,8 @@ function normalizarTemplateWhatsApp(t){
 async function iniciar(){
  document.getElementById("agendaData").value = hoje();
  document.getElementById("dataEntrega").value = hoje();
+ if(document.getElementById("dataDespesa")) dataDespesa.value = hoje();
+ if(document.getElementById("finMes")) finMes.value = hoje().slice(0,7);
 
  horarios.forEach(h=>{
    const o = document.createElement("option");
@@ -338,24 +1174,40 @@ async function iniciar(){
    firebase.initializeApp(firebaseConfig);
    db = firebase.firestore();
 
-   cloudStatus.innerHTML = '<span class="ok">Conectado na nuvem Firebase - versao 6.0</span>';
-   ajusteStatus.innerHTML = '<span class="ok">Conectado</span>';
-
-   await carregarConfig();
-
-   if(sessionOK()){
-     abrirApp();
-   }else{
-     loginScreen.classList.remove("hidden");
+   try{
+     await db.enablePersistence({synchronizeTabs:true});
+     offlinePersistenceOk = true;
+   }catch(persistError){
+     offlinePersistenceOk = false;
    }
 
-   db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot(s=>{
-     ordens = [];
-     s.forEach(d=>ordens.push({id:d.id, ...d.data()}));
-     renderAgenda();
-     renderClientes();
-   },e=>{
-     cloudStatus.innerHTML = '<span class="bad">'+limparTexto(e.message)+'</span>';
+   auth = firebase.auth();
+
+   atualizarStatusConexao();
+   window.addEventListener("online", ()=>{
+     atualizarStatusConexao();
+     sincronizarPendentesOffline();
+   });
+   window.addEventListener("offline", atualizarStatusConexao);
+
+   cloudStatus.innerHTML = '<span class="ok">Firebase conectado - layout clean premium ativo</span>';
+   ajusteStatus.innerHTML = '<span class="ok">Conectado</span>';
+
+   auth.onAuthStateChanged(async user=>{
+     if(user){
+       try{
+         await carregarConfig();
+         abrirApp();
+         iniciarEscutaOrdens();
+         iniciarEscutaDespesas();
+         atualizarStatusPendentesOffline();
+         sincronizarPendentesOffline();
+       }catch(e){
+         cloudStatus.innerHTML = '<span class="bad">Erro ao carregar dados: '+limparTexto(e.message)+'</span>';
+       }
+     }else{
+       fecharApp();
+     }
    });
 
  }catch(e){
@@ -364,62 +1216,307 @@ async function iniciar(){
  }
 }
 
+function iniciarEscutaOrdens(){
+ if(unsubscribeOrdens){
+   unsubscribeOrdens();
+   unsubscribeOrdens = null;
+ }
+
+ unsubscribeOrdens = db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot({includeMetadataChanges:true}, s=>{
+   atualizarStatusSnapshot(s);
+   ordens = [];
+   s.forEach(d=>ordens.push({id:d.id, ...d.data()}));
+   renderAgenda();
+   renderClientes();
+   renderFinanceiro();
+ },e=>{
+   cloudStatus.innerHTML = '<span class="bad">Erro ao ler agenda: '+limparTexto(e.message)+'</span>';
+ });
+}
+
+function iniciarEscutaDespesas(){
+ if(unsubscribeDespesas){
+   unsubscribeDespesas();
+   unsubscribeDespesas = null;
+ }
+
+ unsubscribeDespesas = db.collection(COL_DESPESAS).orderBy("data","desc").onSnapshot({includeMetadataChanges:true}, s=>{
+   despesas = [];
+   s.forEach(d=>despesas.push({id:d.id, ...d.data()}));
+   renderFinanceiro();
+ },e=>{
+   cloudStatus.innerHTML = '<span class="bad">Erro ao ler despesas: '+limparTexto(e.message)+'</span>';
+ });
+}
+
+function atualizarStatusConexao(){
+ if(!document.getElementById("connectionStatus")) return;
+
+ const online = navigator.onLine;
+
+ if(online){
+   const extra = offlinePersistenceOk ? "Cache offline ativo" : "Cache offline limitado";
+   connectionStatus.className = "connection-box connection-online";
+   connectionStatus.textContent = "Online - "+extra;
+ }else{
+   connectionStatus.className = "connection-box connection-offline";
+   connectionStatus.textContent = "Offline - voce pode consultar dados ja carregados. Nova OS fica pendente ate voltar internet.";
+ }
+
+ atualizarStatusPendentesOffline();
+}
+
+function atualizarStatusSnapshot(snap){
+ if(!document.getElementById("connectionStatus")) return;
+
+ const pendente = snap.metadata && snap.metadata.hasPendingWrites;
+ const cache = snap.metadata && snap.metadata.fromCache;
+
+ if(!navigator.onLine){
+   atualizarStatusConexao();
+   return;
+ }
+
+ if(pendente){
+   connectionStatus.className = "connection-box connection-offline";
+   connectionStatus.textContent = "Online - existem alteracoes aguardando sincronizar";
+ }else if(cache){
+   connectionStatus.className = "connection-box connection-offline";
+   connectionStatus.textContent = "Online - mostrando dados do cache";
+ }else{
+   connectionStatus.className = "connection-box connection-online";
+   connectionStatus.textContent = "Online - sincronizado com Firebase";
+ }
+}
+
+function obterPendentesOffline(){
+ try{
+   return JSON.parse(localStorage.getItem(LOCAL_OS_PENDENTES) || "[]");
+ }catch(e){
+   return [];
+ }
+}
+
+function salvarPendentesOffline(lista){
+ localStorage.setItem(LOCAL_OS_PENDENTES, JSON.stringify(lista || []));
+ atualizarStatusPendentesOffline();
+}
+
+function atualizarStatusPendentesOffline(){
+ if(!document.getElementById("offlinePendentesStatus")) return;
+
+ const qtd = obterPendentesOffline().length;
+
+ if(qtd > 0){
+   offlinePendentesStatus.innerHTML = '<div class="pending-box"><b>'+qtd+' OS pendente(s) offline.</b><br>Elas serao enviadas para o Firebase quando a internet voltar.<br><button class="btn btn-blue" onclick="sincronizarPendentesOffline()">Sincronizar agora</button></div>';
+ }else{
+   offlinePendentesStatus.innerHTML = "";
+ }
+}
+
+function salvarOSOffline(os){
+ const lista = obterPendentesOffline();
+
+ os.id = "offline_" + Date.now();
+ os.numeroOS = "PENDENTE";
+ os.criadoOfflineEm = new Date().toISOString();
+
+ lista.push(os);
+ salvarPendentesOffline(lista);
+
+ ultimaOSSalva = os;
+ mostrarAcoesDepoisDeSalvar(os);
+
+ alert("Sem internet. A OS ficou salva como pendente offline. O numero oficial sera gerado quando voltar a internet.");
+}
+
+async function salvarOSNoFirebase(os){
+ let novoId = "";
+ let numeroGerado = null;
+
+ await db.runTransaction(async transaction=>{
+   const novaRef = db.collection(COL_ORDENS).doc();
+   const numeroOS = await gerarNumeroOSDentroDaTransacao(transaction);
+
+   novoId = novaRef.id;
+   numeroGerado = numeroOS;
+
+   transaction.set(novaRef, {
+     ...os,
+     numeroOS: numeroOS,
+     criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+     sincronizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+   });
+ });
+
+ os.id = novoId;
+ os.numeroOS = numeroGerado;
+
+ return os;
+}
+
+async function sincronizarPendentesOffline(){
+ if(!navigator.onLine || !auth || !auth.currentUser) {
+   atualizarStatusPendentesOffline();
+   return;
+ }
+
+ let lista = obterPendentesOffline();
+
+ if(!lista.length){
+   atualizarStatusPendentesOffline();
+   return;
+ }
+
+ const restantes = [];
+
+ for(const osPendente of lista){
+   try{
+     const osLimpa = {...osPendente};
+     delete osLimpa.id;
+     delete osLimpa.numeroOS;
+
+     await salvarOSNoFirebase(osLimpa);
+   }catch(e){
+     restantes.push(osPendente);
+   }
+ }
+
+ salvarPendentesOffline(restantes);
+
+ if(lista.length && !restantes.length){
+   await renderNumeroOSAjustes();
+   alert("OS pendentes offline sincronizadas com sucesso.");
+ }
+}
+
+
 async function carregarConfig(){
  const snap = await db.doc(DOC_CONFIG).get();
 
  if(snap.exists){
    config = snap.data();
  }else{
-   config = {servicos:defaultServices, template:defaultTemplate, user:"dono", pass:"1234"};
+   config = {servicos:defaultServices, template:defaultTemplate};
  }
 
  if(!config.servicos) config.servicos = defaultServices;
  if(!config.template) config.template = defaultTemplate;
+ if(!config.templatePronto) config.templatePronto = defaultTemplatePronto;
 
  config.servicos = normalizarServicos(config.servicos);
  config.template = normalizarTemplateWhatsApp(config.template);
- config.user = limparTexto(config.user || "dono");
- config.pass = String(config.pass || "1234");
+ config.templatePronto = normalizarTemplateWhatsApp(config.templatePronto);
 
  await db.doc(DOC_CONFIG).set(config,{merge:true});
 
  templateMsg.value = config.template;
- setUser.value = config.user || "dono";
- setPass.value = config.pass || "1234";
+ if(document.getElementById("templateProntoMsg")){
+   templateProntoMsg.value = config.templatePronto;
+ }
 
  renderServicosOS();
  renderServicosEdit();
 }
 
-function login(){
- const l = getLogin();
+async function login(){
+ const email = loginUser.value.trim();
+ const senha = loginPass.value;
 
- if(loginUser.value.trim() === l.u && loginPass.value === l.p){
-   localStorage.setItem("afia_login_date", hoje());
-   abrirApp();
- }else{
-   alert("Usuario ou senha incorretos.");
+ if(!email || !senha){
+   alert("Digite o e-mail e a senha do Firebase.");
+   return;
+ }
+
+ try{
+   cloudStatus.innerHTML = '<span class="ok">Entrando...</span>';
+   await auth.signInWithEmailAndPassword(email, senha);
+   loginPass.value = "";
+ }catch(e){
+   cloudStatus.innerHTML = '<span class="bad">Falha no login</span>';
+   alert("Login incorreto ou usuario nao cadastrado no Firebase.");
  }
 }
 
 function abrirApp(){
  loginScreen.classList.add("hidden");
  appScreen.classList.remove("hidden");
+ setScreenInfo("agenda");
+ cloudStatus.innerHTML = '<span class="ok">Login seguro ativo: '+limparTexto(emailUsuarioAtual())+'</span>';
+ if(document.getElementById("emailLogado")){
+   emailLogado.textContent = limparTexto(emailUsuarioAtual());
+ }
 }
 
-function logout(){
- localStorage.removeItem("afia_login_date");
- location.reload();
+function fecharApp(){
+ if(unsubscribeOrdens){
+   unsubscribeOrdens();
+   unsubscribeOrdens = null;
+ }
+
+ if(unsubscribeDespesas){
+   unsubscribeDespesas();
+   unsubscribeDespesas = null;
+ }
+
+ ordens = [];
+ despesas = [];
+ loginScreen.classList.remove("hidden");
+ appScreen.classList.add("hidden");
+ cloudStatus.innerHTML = '<span class="ok">Firebase conectado - faca login</span>';
+}
+
+async function logout(){
+ try{
+   await auth.signOut();
+ }catch(e){
+   alert("Erro ao sair: "+limparTexto(e.message));
+ }
+}
+
+function setScreenInfo(t){
+ const titulos = {
+   agenda:["Agenda","Acompanhe os servicos do dia"],
+   nova:["Nova OS","Atendimento rapido no balcao"],
+   financeiro:["Financeiro","Resumo do dia e fechamento do mes"],
+   clientes:["Clientes","Historico e busca de clientes"],
+   ajustes:["Ajustes","Configuracoes do sistema"]
+ };
+
+ const info = titulos[t] || titulos.agenda;
+
+ if(document.getElementById("screenTitle")) screenTitle.textContent = info[0];
+ if(document.getElementById("screenSubtitle")) screenSubtitle.textContent = info[1];
+
+ document.body.classList.remove("tab-agenda","tab-nova","tab-financeiro","tab-clientes","tab-ajustes");
+ document.body.classList.add("tab-"+t);
+}
+
+function mostrarToast(msg, tipo){
+ const t = document.getElementById("toast");
+ if(!t) return;
+
+ t.textContent = msg;
+ t.className = "";
+ t.classList.add(tipo || "ok");
+ t.classList.add("show");
+
+ clearTimeout(window._afiaToastTimer);
+ window._afiaToastTimer = setTimeout(()=>{
+   t.classList.remove("show");
+ },2400);
 }
 
 function showTab(t){
- ["agenda","nova","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
- ["btnAgenda","btnNova","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
+ setScreenInfo(t);
+ ["agenda","nova","financeiro","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+ ["btnAgenda","btnNova","btnFinanceiro","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
 
  document.getElementById(t).classList.remove("hidden");
 
  if(t === "agenda") btnAgenda.classList.add("active");
- if(t === "nova") btnNova.classList.add("active");
+ if(t === "nova"){btnNova.classList.add("active"); atualizarHorarioSugerido();}
+ if(t === "financeiro"){btnFinanceiro.classList.add("active"); renderFinanceiro();}
  if(t === "clientes") btnClientes.classList.add("active");
  if(t === "ajustes") btnAjustes.classList.add("active");
 }
@@ -428,12 +1525,31 @@ function renderServicosOS(){
  servicosOS.innerHTML = "";
 
  config.servicos.forEach((s,i)=>{
+   const agendaTxt = s.contaAgenda ? "agenda" : "rapido";
+
    servicosOS.innerHTML += `
     <div class="qty-row">
-     <div class="qty-name">${limparTexto(s.nome)}<span>${moeda(s.preco)} cada</span></div>
-     <input type="number" min="0" value="0" id="svc_${i}" oninput="calcularTotal()">
+     <div class="qty-name">${limparTexto(s.nome)}<span>${moeda(s.preco)} cada - ${agendaTxt}</span></div>
+     <div class="qty-controls">
+      <button class="qty-btn minus" type="button" onclick="ajustarQtdServico(${i},-1)">-</button>
+      <input type="number" min="0" placeholder="0" inputmode="numeric" id="svc_${i}" onfocus="this.select()" onclick="this.select()" oninput="calcularTotal()">
+      <button class="qty-btn" type="button" onclick="ajustarQtdServico(${i},1)">+</button>
+     </div>
     </div>`;
  });
+}
+
+function ajustarQtdServico(i, delta){
+ const campo = document.getElementById("svc_"+i);
+ if(!campo) return;
+
+ let atual = Number(campo.value || 0);
+ atual += delta;
+
+ if(atual < 0) atual = 0;
+
+ campo.value = atual || "";
+ calcularTotal();
 }
 
 function calcularTotal(){
@@ -445,6 +1561,11 @@ function calcularTotal(){
  });
 
  valorTotal.value = total.toFixed(2);
+}
+
+function toggleMaisOpcoes(){
+ const el = document.getElementById("maisOpcoesOS");
+ if(el) el.classList.toggle("open");
 }
 
 function buscarClientePorTelefone(){
@@ -476,10 +1597,41 @@ function calcularTotalServicos(itens){
  return total;
 }
 
-function getPecasAgenda(os){
+function servicoContaNaAgenda(nomeServico){
+ const nomeLimpo = limparTexto(nomeServico);
+ const servico = (config.servicos || []).find(s => limparTexto(s.nome).toLowerCase() === nomeLimpo.toLowerCase());
+
+ if(servico){
+   return Boolean(servico.contaAgenda);
+ }
+
+ return inferirContaAgenda(nomeLimpo);
+}
+
+function calcularTotalAgendaServicos(itens){
+ let total = 0;
+
+ Object.entries(itens || {}).forEach(([nome,qtd])=>{
+   if(servicoContaNaAgenda(nome)){
+     total += Number(qtd || 0);
+   }
+ });
+
+ return total;
+}
+
+function getTotalServicosOS(os){
  const somaItens = calcularTotalServicos(os.itens || {});
  if(somaItens > 0) return somaItens;
- return Number(os.pecas || os.pecasAgenda || 0);
+ return Number(os.pecas || 0);
+}
+
+function getPecasAgenda(os){
+ if(os.pecasAgenda !== undefined){
+   return Number(os.pecasAgenda || 0);
+ }
+
+ return calcularTotalAgendaServicos(os.itens || {});
 }
 
 function mapaVazio(){
@@ -522,6 +1674,12 @@ function calcularAlocacaoNoMapa(mapaOcupado, horaBase, quantidade){
 
  if(!ordem.length){
    throw new Error("Horario invalido.");
+ }
+
+ const usadoNoHorarioEscolhido = Number(mapaOcupado[horaBase] || 0);
+
+ if(usadoNoHorarioEscolhido >= 5){
+   throw new Error("O horario escolhido ja esta cheio. Escolha outro horario com pelo menos 1 vaga livre.");
  }
 
  for(const i of ordem){
@@ -600,6 +1758,113 @@ function calcularDistribuicoesDoDia(dia, ignorarId){
  return {confirmado, agendado, ocupadoTotal, distPorId, semVaga};
 }
 
+
+function numeroTextoOS(os){
+ if(os && os.numeroOS){
+   return String(os.numeroOS);
+ }
+
+ if(os && os.id){
+   return "ANTIGA-" + String(os.id).slice(0,6);
+ }
+
+ return "-";
+}
+
+function proximoNumeroDepoisDe(ultimo){
+ ultimo = Number(ultimo || 0);
+
+ if(ultimo < 0){
+   ultimo = 0;
+ }
+
+ return ultimo + 1;
+}
+
+async function gerarNumeroOSDentroDaTransacao(transaction){
+ const refContador = db.doc(DOC_CONTADOR_OS);
+ const snap = await transaction.get(refContador);
+
+ let ultimo = 0;
+
+ if(snap.exists){
+   ultimo = Number(snap.data().ultimo || 0);
+ }
+
+ const proximo = proximoNumeroDepoisDe(ultimo);
+
+ transaction.set(refContador, {
+   ultimo: proximo,
+   atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+ }, {merge:true});
+
+ return proximo;
+}
+
+async function renderNumeroOSAjustes(){
+ if(!document.getElementById("proximoNumeroOS")) return;
+
+ try{
+   const snap = await db.doc(DOC_CONTADOR_OS).get();
+   let ultimo = 0;
+
+   if(snap.exists){
+     ultimo = Number(snap.data().ultimo || 0);
+   }
+
+   const proximo = proximoNumeroDepoisDe(ultimo);
+
+   proximoNumeroOS.textContent = String(proximo);
+   if(document.getElementById("setProximoNumero")){
+     setProximoNumero.value = proximo;
+   }
+ }catch(e){
+   proximoNumeroOS.textContent = "Erro";
+ }
+}
+
+async function salvarProximoNumeroOS(){
+ const n = Number(setProximoNumero.value || 0);
+
+ if(n < OS_INICIO){
+   alert("Digite um numero igual ou maior que "+OS_INICIO+".");
+   return;
+ }
+
+ try{
+   await db.doc(DOC_CONTADOR_OS).set({
+     ultimo: n - 1,
+     atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+   }, {merge:true});
+
+   await renderNumeroOSAjustes();
+
+   mostrarToast("Proxima OS definida como "+String(n)+".","good");
+ }catch(e){
+   alert("Erro ao salvar numeracao: "+limparTexto(e.message));
+ }
+}
+
+async function zerarNumeracaoOS(){
+ const ok = confirm("Zerar a numeracao da OS? A proxima OS criada sera a numero 1. As ordens antigas nao serao apagadas.");
+
+ if(!ok) return;
+
+ try{
+   await db.doc(DOC_CONTADOR_OS).set({
+     ultimo: 0,
+     zeradoEm: firebase.firestore.FieldValue.serverTimestamp(),
+     atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+   }, {merge:true});
+
+   await renderNumeroOSAjustes();
+
+   mostrarToast("Numeracao zerada. Proxima OS 1.","good");
+ }catch(e){
+   alert("Erro ao zerar numeracao: "+limparTexto(e.message));
+ }
+}
+
 function ocupacaoTotalDoDia(data, ignorarId){
  const dia = ordens.filter(o=>o.data === data);
  return calcularDistribuicoesDoDia(dia, ignorarId).ocupadoTotal;
@@ -608,6 +1873,33 @@ function ocupacaoTotalDoDia(data, ignorarId){
 function calcularAlocacoes(data, horaBase, quantidade, ignorarId){
  const mapa = {...ocupacaoTotalDoDia(data, ignorarId)};
  return calcularAlocacaoNoMapa(mapa, horaBase, quantidade);
+}
+
+function sugerirHorarioDisponivel(data){
+ const mapa = ocupacaoTotalDoDia(data);
+ const atual = horaEntrega ? horaEntrega.value : "";
+
+ if(atual && Number(mapa[atual] || 0) < 5){
+   return atual;
+ }
+
+ for(const h of horarios){
+   if(Number(mapa[h] || 0) < 5){
+     return h;
+   }
+ }
+
+ return horarios[0];
+}
+
+function atualizarHorarioSugerido(){
+ if(!document.getElementById("horaEntrega") || !document.getElementById("dataEntrega")) return;
+
+ const h = sugerirHorarioDisponivel(dataEntrega.value || hoje());
+
+ if(h){
+   horaEntrega.value = h;
+ }
 }
 
 async function salvarOS(e){
@@ -635,14 +1927,17 @@ async function salvarOS(e){
  const data = dataEntrega.value;
  const hora = horaEntrega.value;
  const situacaoOS = situacao.value || "confirmado";
+ const totalAgenda = calcularTotalAgendaServicos(itens);
 
  let alocacoes = {};
 
- try{
-   alocacoes = calcularAlocacoes(data, hora, totalServicos);
- }catch(err){
-   alert(limparTexto(err.message));
-   return;
+ if(totalAgenda > 0){
+   try{
+     alocacoes = calcularAlocacoes(data, hora, totalAgenda);
+   }catch(err){
+     alert(limparTexto(err.message));
+     return;
+   }
  }
 
  const os = {
@@ -652,7 +1947,7 @@ async function salvarOS(e){
    hora: hora,
    itens: itens,
    pecas: totalServicos,
-   pecasAgenda: totalServicos,
+   pecasAgenda: totalAgenda,
    alocacoes: alocacoes,
    situacao: situacaoOS,
    observacao: limparTexto(observacao.value.trim()),
@@ -663,18 +1958,31 @@ async function salvarOS(e){
  };
 
  try{
-   const ref = await db.collection(COL_ORDENS).add(os);
-   os.id = ref.id;
-   ultimaOSSalva = os;
+   if(!navigator.onLine){
+     salvarOSOffline(os);
+   }else{
+     const salva = await salvarOSNoFirebase(os);
+     ultimaOSSalva = salva;
 
-   mostrarAcoesDepoisDeSalvar(os);
+     await renderNumeroOSAjustes();
+     mostrarAcoesDepoisDeSalvar(salva);
+   }
 
    e.target.reset();
    dataEntrega.value = hoje();
+   if(document.getElementById("maisOpcoesOS")) maisOpcoesOS.classList.remove("open");
    renderServicosOS();
+   atualizarHorarioSugerido();
 
  }catch(err){
-   alert("Erro ao salvar: " + limparTexto(err.message));
+   if(!navigator.onLine){
+     salvarOSOffline(os);
+     e.target.reset();
+     dataEntrega.value = hoje();
+     renderServicosOS();
+   }else{
+     alert("Erro ao salvar: " + limparTexto(err.message));
+   }
  }
 }
 
@@ -688,15 +1996,14 @@ function mostrarAcoesDepoisDeSalvar(os){
  if(resumo){
    const dist = Object.entries(os.alocacoes || {}).map(([h,q])=>h+": "+q).join(" | ");
    resumo.innerHTML = `
-    <b>${limparTexto(os.nome)}</b><br>
-    Entrega: ${dataBR(os.data)} as ${os.hora}<br>
-    Servicos: ${Number(os.pecas || 0)}<br>
-    Distribuicao: ${dist}<br>
-    Total: ${moeda(os.valor)}
+    <b>OS ${numeroTextoOS(os)} - ${limparTexto(os.nome)}</b><br>
+    ${dataBR(os.data)} as ${os.hora} - ${Number(os.pecas || 0)} servicos - ${moeda(os.valor)}<br>
+    <span class="small">Agenda: ${getPecasAgenda(os)} | ${dist || "-"}</span>
    `;
  }
 
  if(panel) panel.classList.remove("hidden");
+ mostrarToast("OS "+numeroTextoOS(os)+" salva com sucesso","good");
 }
 
 function enviarUltimaOS(){
@@ -715,6 +2022,9 @@ function novaOSDepoisDeSalvar(){
 
  if(panel) panel.classList.add("hidden");
  if(form) form.classList.remove("hidden");
+ if(document.getElementById("maisOpcoesOS")) maisOpcoesOS.classList.remove("open");
+ atualizarHorarioSugerido();
+ setTimeout(()=>{ if(document.getElementById("telefone")) telefone.focus(); },100);
 }
 
 function itensTexto(os, sep){
@@ -725,22 +2035,104 @@ function itensTexto(os, sep){
    .join(sep);
 }
 
-function enviarWhatsApp(os){
- let tel = limparTelefone(os.telefone);
-
- if(!tel.startsWith("55")){
-   tel = "55" + tel;
- }
-
- let msg = normalizarTemplateWhatsApp(config.template || defaultTemplate)
+function montarMensagemWhatsApp(os, template){
+ return normalizarTemplateWhatsApp(template || defaultTemplate)
+   .replaceAll("{numero}", numeroTextoOS(os))
    .replaceAll("{nome}", limparTexto(os.nome))
    .replaceAll("{data}", dataBR(os.data))
    .replaceAll("{hora}", os.hora)
    .replaceAll("{itens}", itensTexto(os,"\n"))
    .replaceAll("{valor}", moeda(os.valor))
    .replaceAll("{pagamento}", limparTexto(os.pagamento));
+}
 
- window.open("https://wa.me/"+tel+"?text="+encodeURIComponent(msg), "_blank");
+function urlWhatsAppOS(os, mensagem){
+ let tel = limparTelefone(os.telefone);
+
+ if(!tel.startsWith("55")){
+   tel = "55" + tel;
+ }
+
+ return "https://wa.me/"+tel+"?text="+encodeURIComponent(mensagem);
+}
+
+function abrirWhatsAppOS(os, mensagem){
+ const url = urlWhatsAppOS(os, mensagem);
+ const janela = window.open(url, "_blank");
+
+ if(!janela){
+   alert("O navegador bloqueou o WhatsApp. Toque novamente ou permita pop-up para este site.");
+   return false;
+ }
+
+ return true;
+}
+
+function enviarWhatsApp(os){
+ const msg = montarMensagemWhatsApp(os, config.template || defaultTemplate);
+ abrirWhatsAppOS(os, msg);
+}
+
+async function avisarServicoPronto(id){
+ const os = ordens.find(o=>o.id === id);
+ if(!os) return;
+
+ const atualizado = {
+   ...os,
+   status:"Pronto",
+   avisoProntoEnviadoEm:new Date().toISOString()
+ };
+
+ const msg = montarMensagemWhatsApp(atualizado, config.templatePronto || defaultTemplatePronto);
+
+ // Abre o WhatsApp primeiro, no clique do usuario. Isso evita bloqueio no iPhone/Chrome.
+ const abriu = abrirWhatsAppOS(atualizado, msg);
+
+ try{
+   await db.collection(COL_ORDENS).doc(id).update({
+     status:"Pronto",
+     avisoProntoEnviadoEm:firebase.firestore.FieldValue.serverTimestamp()
+   });
+ }catch(e){
+   alert("O WhatsApp foi aberto, mas nao consegui marcar como pronto: "+limparTexto(e.message));
+   return;
+ }
+
+ if(!abriu){
+   return;
+ }
+}
+
+async function marcarComoPago(id){
+ const os = ordens.find(o=>o.id === id);
+ if(!os) return;
+
+ try{
+   await db.collection(COL_ORDENS).doc(id).update({
+     pagamento:"Pago",
+     pagoEm:firebase.firestore.FieldValue.serverTimestamp()
+   });
+
+   mostrarToast("OS "+numeroTextoOS(os)+" marcada como paga.","good");
+ }catch(e){
+   alert("Erro ao marcar como pago: "+limparTexto(e.message));
+ }
+}
+
+async function marcarComoRetirado(id){
+ const os = ordens.find(o=>o.id === id);
+ if(!os) return;
+
+ try{
+   await db.collection(COL_ORDENS).doc(id).update({
+     status:"Retirado",
+     retiradoEm:firebase.firestore.FieldValue.serverTimestamp()
+   });
+
+   mostrarToast("OS "+numeroTextoOS(os)+" marcada como retirada.","good");
+ }catch(e){
+   alert("Erro ao marcar como retirado: "+limparTexto(e.message));
+ }
 }
 
 function escaparHtml(txt){
@@ -765,8 +2157,9 @@ function htmlViaLoja(os){
   <div class="recibo">
    <div class="centro titulo">AFIA</div>
    <div class="centro subtitulo">VIA DA LOJA</div>
+   <div class="centro" style="font-size:28px;font-weight:900;margin:8px 0">OS ${escaparHtml(numeroTextoOS(os))}</div>
    <hr>
-   <div class="linha">OS: ${escaparHtml(os.id || "")}</div>
+   <div class="linha">Codigo interno: ${escaparHtml(os.id || "")}</div>
    <div class="linha">Cliente: ${escaparHtml(limparTexto(os.nome))}</div>
    <div class="linha">Telefone: ${escaparHtml(limparTexto(os.telefone))}</div>
    <div class="linha">Entrega: ${escaparHtml(dataBR(os.data))} ${escaparHtml(os.hora || "")}</div>
@@ -774,7 +2167,8 @@ function htmlViaLoja(os){
    <div class="linha"><b>Servicos</b></div>
    ${linhasItens}
    <hr>
-   <div class="linha">Total de servicos: <b>${Number(os.pecas || getPecasAgenda(os) || 0)}</b></div>
+   <div class="linha">Total de servicos: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b></div>
+   <div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div>
    <div class="linha">Distribuicao: ${escaparHtml(dist || "-")}</div>
    <div class="linha">Valor: <b>${escaparHtml(moeda(os.valor))}</b></div>
    <div class="linha">Pagamento: ${escaparHtml(limparTexto(os.pagamento))}</div>
@@ -837,7 +2231,8 @@ hr{border:0;border-top:1px dashed #999;margin:10px 0}
 function prepararImpressao(os){
  printArea.innerHTML = `
   <div style="text-align:center;font-weight:bold">AFIA - VIA DA LOJA</div>
-  <div class="print-line">OS: ${os.id || ""}</div>
+  <div class="print-line" style="text-align:center;font-size:20px;font-weight:bold">OS ${numeroTextoOS(os)}</div>
+  <div class="print-line">Codigo interno: ${os.id || ""}</div>
   <div class="print-line">Cliente: ${limparTexto(os.nome)}</div>
   <div class="print-line">Tel: ${limparTexto(os.telefone)}</div>
   <div class="print-line">Entrega: ${dataBR(os.data)} ${os.hora}</div>
@@ -852,16 +2247,42 @@ function prepararImpressao(os){
 
 function renderAgenda(){
  const data = agendaData.value;
- const dia = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
- const calcDia = calcularDistribuicoesDoDia(dia);
+ const diaCompleto = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
+ const calcDia = calcularDistribuicoesDoDia(diaCompleto);
 
- statPedidos.textContent = dia.length;
- statPecas.textContent = dia.reduce((s,o)=>s + getPecasAgenda(o), 0);
- statValor.textContent = moeda(dia.reduce((s,o)=>s + Number(o.valor || 0), 0));
+ statPedidos.textContent = diaCompleto.length;
+ statPecas.textContent = diaCompleto.reduce((s,o)=>s + getPecasAgenda(o), 0);
+ statValor.textContent = moeda(diaCompleto.reduce((s,o)=>s + Number(o.valor || 0), 0));
 
  renderGrid(calcDia);
 
- agendaLista.innerHTML = dia.length ? "" : '<div class="card small">Nenhuma OS para esta data.</div>';
+ const busca = document.getElementById("buscaAgenda") ? limparTexto(buscaAgenda.value).toLowerCase().trim() : "";
+ const filtroStatus = document.getElementById("filtroStatusAgenda") ? filtroStatusAgenda.value : "todos";
+
+ const dia = diaCompleto.filter(o=>{
+   const statusLimpo = limparTexto(o.status || "").toLowerCase();
+
+   let okStatus = true;
+
+   if(filtroStatus === "pendentes"){
+     okStatus = !statusLimpo.includes("retirado");
+   }else if(filtroStatus === "pronto"){
+     okStatus = statusLimpo.includes("pronto");
+   }else if(filtroStatus === "retirado"){
+     okStatus = statusLimpo.includes("retirado");
+   }
+
+   if(!okStatus) return false;
+
+   if(!busca) return true;
+
+   return numeroTextoOS(o).toLowerCase().includes(busca) ||
+          limparTexto(o.nome).toLowerCase().includes(busca) ||
+          limparTexto(o.telefone).toLowerCase().includes(busca) ||
+          limparTelefone(o.telefone).includes(limparTelefone(busca));
+ });
+
+ agendaLista.innerHTML = dia.length ? "" : '<div class="card small">Nenhuma OS encontrada para esta busca/data.</div>';
 
  if(calcDia.semVaga.length){
    const alerta = document.createElement("div");
@@ -886,19 +2307,35 @@ function renderAgenda(){
      : "Sem distribuicao";
 
    d.innerHTML = `
-    <p><b>${os.hora} - ${limparTexto(os.nome)}</b></p>
-    <p>${limparTexto(os.telefone)}</p>
+    <div class="compact-line">
+     <div>
+      <b>OS ${numeroTextoOS(os)} - ${os.hora}</b><br>
+      <span class="compact-muted">${limparTexto(os.nome)} - ${limparTexto(os.telefone)}</span>
+     </div>
+     <div style="text-align:right">
+      <b>${moeda(os.valor)}</b><br>
+      <span class="compact-muted">${limparTexto(os.status)}</span>
+     </div>
+    </div>
+
     <p>${itensTexto(os," | ")}</p>
-    <p>${moeda(os.valor)} | ${limparTexto(os.pagamento)}</p>
-    <p>Agenda: <b>${getPecasAgenda(os)}</b> vaga(s) | Total da OS: <b>${Number(os.pecas || getPecasAgenda(os) || 0)}</b></p>
-    <p class="small">Distribuicao: ${dist}</p>
-    <p>Situacao: <b>${sitTxt}</b></p>
-    <p>Status: <b>${limparTexto(os.status)}</b></p>
-    ${os.observacao ? `<p>${limparTexto(os.observacao)}</p>` : ""}
-    ${btnChegada}
-    <button class="btn btn-blue" onclick="reenviar('${os.id}')">Enviar WhatsApp</button>
-    <button class="btn btn-blue" onclick="imprimir('${os.id}')">Abrir via loja</button>
-    <button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>
+    <p class="small">Agenda: <b>${getPecasAgenda(os)}</b> | Total: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b> | ${limparTexto(os.pagamento)}</p>
+
+    <button class="btn btn-gray" type="button" onclick="this.nextElementSibling.classList.toggle('hidden')">Detalhes e acoes</button>
+    <div class="hidden">
+     <p class="small">Distribuicao: ${dist}</p>
+     <p>Situacao: <b>${sitTxt}</b></p>
+     ${os.observacao ? `<p>${limparTexto(os.observacao)}</p>` : ""}
+     ${btnChegada}
+     <div class="os-actions">
+      <button class="btn btn-blue" onclick="reenviar('${os.id}')">WhatsApp OS</button>
+      <button class="btn" onclick="avisarServicoPronto('${os.id}')">Avisar pronto</button>
+      <button class="btn btn-blue" onclick="marcarComoPago('${os.id}')">Marcar pago</button>
+      <button class="btn btn-gray" onclick="marcarComoRetirado('${os.id}')">Retirado</button>
+      <button class="btn btn-blue" onclick="imprimir('${os.id}')">Via loja</button>
+      <button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>
+     </div>
+    </div>
    `;
 
    agendaLista.appendChild(d);
@@ -947,6 +2384,340 @@ function renderGrid(calcDia){
  agendaGrid.innerHTML = html;
 }
 
+
+function pagamentoFoiRecebido(os){
+ const p = limparTexto(os.pagamento || "").toLowerCase();
+ return p.includes("pago");
+}
+
+function resumoFinanceiro(listaOS, listaDespesas){
+ const r = {
+   pedidos: listaOS.length,
+   servicos: 0,
+   faturamento: 0,
+   recebido: 0,
+   aReceber: 0,
+   despesas: 0,
+   saldo: 0
+ };
+
+ listaOS.forEach(os=>{
+   const valor = Number(os.valor || 0);
+   r.servicos += getTotalServicosOS(os);
+   r.faturamento += valor;
+
+   if(pagamentoFoiRecebido(os)){
+     r.recebido += valor;
+   }else{
+     r.aReceber += valor;
+   }
+ });
+
+ listaDespesas.forEach(d=>{
+   r.despesas += Number(d.valor || 0);
+ });
+
+ r.saldo = r.recebido - r.despesas;
+
+ return r;
+}
+
+function htmlCaixasFinanceiro(r){
+ return `
+  <div class="finance-grid">
+   <div class="finance-box"><span>Faturamento</span><b>${moeda(r.faturamento)}</b></div>
+   <div class="finance-box"><span>Recebido</span><b>${moeda(r.recebido)}</b></div>
+   <div class="finance-box"><span>A receber</span><b>${moeda(r.aReceber)}</b></div>
+   <div class="finance-box"><span>Despesas</span><b>${moeda(r.despesas)}</b></div>
+   <div class="finance-box"><span>Saldo recebido</span><b>${moeda(r.saldo)}</b></div>
+   <div class="finance-box"><span>Servicos</span><b>${r.servicos}</b></div>
+  </div>
+  <p class="small">Pedidos: <b>${r.pedidos}</b>. O saldo usa apenas pagamentos marcados como Pago.</p>
+ `;
+}
+
+function renderFinanceiro(){
+ if(!document.getElementById("financeiroResumo")) return;
+
+ if(!finMes.value){
+   finMes.value = hoje().slice(0,7);
+ }
+
+ if(!dataDespesa.value){
+   dataDespesa.value = hoje();
+ }
+
+ const mes = finMes.value;
+ const hojeData = hoje();
+
+ const osMes = ordens.filter(o=>String(o.data || "").startsWith(mes));
+ const despMes = despesas.filter(d=>String(d.data || "").startsWith(mes));
+
+ const osHoje = ordens.filter(o=>o.data === hojeData);
+ const despHoje = despesas.filter(d=>d.data === hojeData);
+
+ const resumoMes = resumoFinanceiro(osMes, despMes);
+ const resumoHoje = resumoFinanceiro(osHoje, despHoje);
+
+ financeiroResumo.innerHTML = htmlCaixasFinanceiro(resumoMes);
+ financeiroHoje.innerHTML = htmlCaixasFinanceiro(resumoHoje);
+
+ renderFinanceiroDias(mes);
+ renderDespesasLista(mes);
+}
+
+function renderFinanceiroDias(mes){
+ const datas = new Set();
+
+ ordens.forEach(o=>{
+   if(String(o.data || "").startsWith(mes)) datas.add(o.data);
+ });
+
+ despesas.forEach(d=>{
+   if(String(d.data || "").startsWith(mes)) datas.add(d.data);
+ });
+
+ const listaDatas = Array.from(datas).sort();
+
+ if(!listaDatas.length){
+   financeiroDias.innerHTML = '<p class="small">Nenhum movimento neste mes.</p>';
+   return;
+ }
+
+ let html = '<table class="finance-table"><tr><th>Dia</th><th>Recebido</th><th>Despesa</th><th>Saldo</th></tr>';
+
+ listaDatas.forEach(data=>{
+   const osDia = ordens.filter(o=>o.data === data);
+   const despDia = despesas.filter(d=>d.data === data);
+   const r = resumoFinanceiro(osDia, despDia);
+
+   html += `<tr>
+    <td>${dataBR(data)}</td>
+    <td>${moeda(r.recebido)}</td>
+    <td>${moeda(r.despesas)}</td>
+    <td><b>${moeda(r.saldo)}</b></td>
+   </tr>`;
+ });
+
+ html += '</table>';
+
+ financeiroDias.innerHTML = html;
+}
+
+function renderDespesasLista(mes){
+ const lista = despesas
+   .filter(d=>String(d.data || "").startsWith(mes))
+   .sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+
+ if(!lista.length){
+   despesasLista.innerHTML = '<p class="small">Nenhuma despesa cadastrada neste mes.</p>';
+   return;
+ }
+
+ let html = '<table class="finance-table"><tr><th>Data</th><th>Despesa</th><th>Valor</th></tr>';
+
+ lista.forEach(d=>{
+   html += `<tr>
+    <td>${dataBR(d.data)}</td>
+    <td>${limparTexto(d.categoria || "")}<br><span class="small">${limparTexto(d.descricao || "")}</span><br><button class="btn btn-red" style="padding:7px;margin-top:6px" onclick="apagarDespesa('${d.id}')">Apagar</button></td>
+    <td><b>${moeda(d.valor)}</b></td>
+   </tr>`;
+ });
+
+ html += '</table>';
+
+ despesasLista.innerHTML = html;
+}
+
+async function salvarDespesa(){
+ const data = dataDespesa.value || hoje();
+ const categoria = limparTexto(categoriaDespesa.value || "Outros");
+ const descricao = limparTexto(descDespesa.value.trim());
+ const valor = Number(String(valorDespesa.value || 0).replace(",", "."));
+
+ if(!valor || valor <= 0){
+   alert("Digite o valor da despesa.");
+   return;
+ }
+
+ const despesa = {
+   data: data,
+   categoria: categoria,
+   descricao: descricao,
+   valor: valor,
+   criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+   usuario: emailUsuarioAtual()
+ };
+
+ try{
+   await db.collection(COL_DESPESAS).add(despesa);
+   descDespesa.value = "";
+   valorDespesa.value = "";
+   if(finMes.value !== data.slice(0,7)) finMes.value = data.slice(0,7);
+   renderFinanceiro();
+ }catch(e){
+   alert("Erro ao salvar despesa: "+limparTexto(e.message));
+ }
+}
+
+async function apagarDespesa(id){
+ if(!confirm("Apagar esta despesa?")) return;
+
+ try{
+   await db.collection(COL_DESPESAS).doc(id).delete();
+ }catch(e){
+   alert("Erro ao apagar despesa: "+limparTexto(e.message));
+ }
+}
+
+function textoRelatorioFinanceiro(){
+ const mes = finMes.value || hoje().slice(0,7);
+ const osMes = ordens.filter(o=>String(o.data || "").startsWith(mes));
+ const despMes = despesas.filter(d=>String(d.data || "").startsWith(mes));
+ const r = resumoFinanceiro(osMes, despMes);
+
+ let texto = "";
+ texto += "AFIA - RESUMO FINANCEIRO\n";
+ texto += "Mes: "+mes+"\n\n";
+ texto += "Pedidos: "+r.pedidos+"\n";
+ texto += "Servicos: "+r.servicos+"\n";
+ texto += "Faturamento: "+moeda(r.faturamento)+"\n";
+ texto += "Recebido: "+moeda(r.recebido)+"\n";
+ texto += "A receber: "+moeda(r.aReceber)+"\n";
+ texto += "Despesas: "+moeda(r.despesas)+"\n";
+ texto += "Saldo recebido: "+moeda(r.saldo)+"\n\n";
+
+ const porData = {};
+ osMes.forEach(o=>{
+   if(!porData[o.data]) porData[o.data] = {os:[], desp:[]};
+   porData[o.data].os.push(o);
+ });
+ despMes.forEach(d=>{
+   if(!porData[d.data]) porData[d.data] = {os:[], desp:[]};
+   porData[d.data].desp.push(d);
+ });
+
+ Object.keys(porData).sort().forEach(data=>{
+   const dia = porData[data];
+   const rd = resumoFinanceiro(dia.os, dia.desp);
+   texto += dataBR(data)+" - recebido "+moeda(rd.recebido)+" - despesas "+moeda(rd.despesas)+" - saldo "+moeda(rd.saldo)+"\n";
+ });
+
+ return texto;
+}
+
+function nomeArquivoSeguro(txt){
+ return limparTexto(txt || "arquivo").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"");
+}
+
+function baixarArquivo(nome, conteudo, tipo){
+ const blob = new Blob([conteudo], {type: tipo || "text/plain;charset=utf-8"});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement("a");
+ a.href = url;
+ a.download = nome;
+ document.body.appendChild(a);
+ a.click();
+ document.body.removeChild(a);
+ setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+function baixarRelatorioFinanceiroTXT(){
+ const mes = finMes.value || hoje().slice(0,7);
+ baixarArquivo("afia_resumo_"+nomeArquivoSeguro(mes)+".txt", textoRelatorioFinanceiro(), "text/plain;charset=utf-8");
+}
+
+function csvEscape(v){
+ const s = String(v === undefined || v === null ? "" : v).replaceAll('"','""');
+ return '"'+s+'"';
+}
+
+function exportarFinanceiroCSV(){
+ const mes = finMes.value || hoje().slice(0,7);
+ let linhas = [];
+
+ linhas.push(["tipo","data","os","cliente","descricao","status","pagamento","valor"].map(csvEscape).join(","));
+
+ ordens.filter(o=>String(o.data || "").startsWith(mes)).forEach(o=>{
+   linhas.push([
+     "OS",
+     dataBR(o.data),
+     numeroTextoOS(o),
+     limparTexto(o.nome),
+     itensTexto(o," | "),
+     limparTexto(o.status),
+     limparTexto(o.pagamento),
+     Number(o.valor || 0).toFixed(2)
+   ].map(csvEscape).join(","));
+ });
+
+ despesas.filter(d=>String(d.data || "").startsWith(mes)).forEach(d=>{
+   linhas.push([
+     "DESPESA",
+     dataBR(d.data),
+     "",
+     "",
+     limparTexto(d.categoria || "")+" - "+limparTexto(d.descricao || ""),
+     "",
+     "",
+     "-"+Number(d.valor || 0).toFixed(2)
+   ].map(csvEscape).join(","));
+ });
+
+ baixarArquivo("afia_financeiro_"+nomeArquivoSeguro(mes)+".csv", linhas.join("\n"), "text/csv;charset=utf-8");
+}
+
+async function fecharMesFinanceiro(){
+ const mes = finMes.value || hoje().slice(0,7);
+ const texto = textoRelatorioFinanceiro();
+
+ const ok = confirm("Fechar o mes "+mes+"? O sistema vai salvar o resumo no Firebase. Depois voce podera zerar a numeracao da OS para voltar ao numero 1.");
+
+ if(!ok) return;
+
+ const osMes = ordens.filter(o=>String(o.data || "").startsWith(mes));
+ const despMes = despesas.filter(d=>String(d.data || "").startsWith(mes));
+ const resumo = resumoFinanceiro(osMes, despMes);
+
+ try{
+   await db.collection(COL_FECHAMENTOS).add({
+     mes: mes,
+     resumo: resumo,
+     relatorio: texto,
+     criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+     usuario: emailUsuarioAtual()
+   });
+
+   try{
+     await navigator.clipboard.writeText(texto);
+   }catch(e){}
+
+   alert("Fechamento salvo. O resumo tambem foi copiado quando o navegador permitiu.");
+
+   const zerar = confirm("Deseja zerar a numeracao da OS agora para a proxima OS voltar para 1?");
+
+   if(zerar){
+     await zerarNumeracaoOS();
+   }
+
+ }catch(e){
+   alert("Erro ao fechar mes: "+limparTexto(e.message));
+ }
+}
+
+
+async function copiarRelatorioFinanceiro(){
+ const texto = textoRelatorioFinanceiro();
+
+ try{
+   await navigator.clipboard.writeText(texto);
+   mostrarToast("Resumo copiado.","good");
+ }catch(e){
+   alert(texto);
+ }
+}
+
+
 function renderClientes(){
  const q = limparTexto(buscaCliente.value).toLowerCase().trim();
  const mapa = {};
@@ -967,7 +2738,7 @@ function renderClientes(){
    }
 
    mapa[chave].visitas += 1;
-   mapa[chave].pecas += getPecasAgenda(os);
+   mapa[chave].pecas += getTotalServicosOS(os);
    mapa[chave].valor += Number(os.valor || 0);
    mapa[chave].ordens.push(os);
 
@@ -997,7 +2768,7 @@ function renderClientes(){
    const ultima = c.ordens[0];
 
    const historico = c.ordens.map(os=>{
-     return `<p class="small">${dataBR(os.data)} as ${os.hora} - ${getPecasAgenda(os)} servicos - ${moeda(os.valor)} - ${limparTexto(os.status)}</p>`;
+     return `<p class="small">OS ${numeroTextoOS(os)} - ${dataBR(os.data)} as ${os.hora} - ${getTotalServicosOS(os)} servicos - ${moeda(os.valor)} - ${limparTexto(os.status)}</p>`;
    }).join("");
 
    const d = document.createElement("div");
@@ -1039,17 +2810,19 @@ async function confirmarChegada(id){
  const qtd = getPecasAgenda(os);
  let alocacoes = {};
 
- try{
-   alocacoes = calcularAlocacoes(os.data, os.hora, qtd, id);
- }catch(err){
-   alert(limparTexto(err.message));
-   return;
+ if(qtd > 0){
+   try{
+     alocacoes = calcularAlocacoes(os.data, os.hora, qtd, id);
+   }catch(err){
+     alert(limparTexto(err.message));
+     return;
+   }
  }
 
  await db.collection(COL_ORDENS).doc(id).update({
    situacao:"confirmado",
    status:"Recebido",
-   pecas:qtd,
+   pecas:getTotalServicosOS(os),
    pecasAgenda:qtd,
    alocacoes:alocacoes
  });
@@ -1065,10 +2838,14 @@ function renderServicosEdit(){
  servicosEdit.innerHTML = "";
 
  config.servicos.forEach((s,i)=>{
+   const agendaTxt = s.contaAgenda ? "Conta na agenda" : "Nao conta na agenda";
+   const btnTxt = s.contaAgenda ? "Nao contar" : "Contar";
+
    servicosEdit.innerHTML += `
     <div class="service-edit">
-     <b>${limparTexto(s.nome)}</b>
+     <b>${limparTexto(s.nome)}<br><span class="small">${agendaTxt}</span></b>
      <span>${moeda(s.preco)}</span>
+     <button class="btn btn-blue" onclick="alternarContaAgenda(${i})">${btnTxt}</button>
      <button class="btn btn-red" onclick="removerServico(${i})">Excluir</button>
     </div>`;
  });
@@ -1077,9 +2854,7 @@ function renderServicosEdit(){
 async function salvarConfig(){
  config.servicos = normalizarServicos(config.servicos);
  config.template = normalizarTemplateWhatsApp(config.template);
- config.user = limparTexto(config.user || "dono");
- config.pass = String(config.pass || "1234");
-
+ config.templatePronto = normalizarTemplateWhatsApp(config.templatePronto || defaultTemplatePronto);
  await db.doc(DOC_CONFIG).set(config,{merge:true});
 
  renderServicosOS();
@@ -1089,14 +2864,22 @@ async function salvarConfig(){
 async function adicionarServico(){
  if(!novoServico.value || !novoPreco.value) return;
 
+ const nomeNovo = limparTexto(novoServico.value.trim());
+
  config.servicos.push({
-   nome: limparTexto(novoServico.value.trim()),
-   preco: Number(novoPreco.value)
+   nome: nomeNovo,
+   preco: Number(novoPreco.value),
+   contaAgenda: inferirContaAgenda(nomeNovo)
  });
 
  novoServico.value = "";
  novoPreco.value = "";
 
+ await salvarConfig();
+}
+
+async function alternarContaAgenda(i){
+ config.servicos[i].contaAgenda = !Boolean(config.servicos[i].contaAgenda);
  await salvarConfig();
 }
 
@@ -1111,14 +2894,18 @@ async function salvarTemplate(){
  config.template = normalizarTemplateWhatsApp(templateMsg.value);
  templateMsg.value = config.template;
  await salvarConfig();
- alert("Mensagem salva.");
+ mostrarToast("Mensagem da OS salva.","good");
+}
+
+async function salvarTemplatePronto(){
+ config.templatePronto = normalizarTemplateWhatsApp(templateProntoMsg.value);
+ templateProntoMsg.value = config.templatePronto;
+ await salvarConfig();
+ mostrarToast("Mensagem de pronto salva.","good");
 }
 
 async function salvarLoginConfig(){
- config.user = limparTexto(setUser.value.trim() || "dono");
- config.pass = String(setPass.value || "1234");
- await salvarConfig();
- alert("Login salvo.");
+ alert("O login agora e controlado pelo Firebase Authentication.");
 }
 
 iniciar();
