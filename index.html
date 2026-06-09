@@ -607,7 +607,7 @@ body{
  box-shadow:0 8px 20px rgba(17,24,39,.16);
 }
 body.tab-nova #screenActionBtn,
-body.tab-financeiro #screenActionBtn,
+body.tab-servicos #screenActionBtn,
 body.tab-clientes #screenActionBtn,
 body.tab-ajustes #screenActionBtn{
  display:none;
@@ -716,6 +716,155 @@ input,select,textarea{
  .fab-new-os{right:16px;bottom:16px;width:54px;height:54px;line-height:54px}
 }
 
+
+/* V14.1 - Servicos separados */
+body.tab-servicos #screenActionBtn,
+body.tab-nova #screenActionBtn,
+body.tab-clientes #screenActionBtn,
+body.tab-ajustes #screenActionBtn{
+ display:none;
+}
+body.tab-servicos .stats,
+body.tab-nova .stats,
+body.tab-clientes .stats,
+body.tab-ajustes .stats{
+ display:none;
+}
+body:not(.tab-agenda) .fab-new-os{
+ display:none;
+}
+.servicos-list-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+ margin:12px 3px 8px;
+}
+.servicos-list-head h3{
+ margin:0;
+ font-size:17px;
+ letter-spacing:-.2px;
+}
+#servicosResumoBadge{
+ background:#111827;
+ color:#fff;
+ border-radius:999px;
+ padding:7px 10px;
+ font-size:11px;
+ font-weight:900;
+ white-space:nowrap;
+}
+.service-card-destaque{
+ border-left:0!important;
+ border:2px solid rgba(0,122,255,.18)!important;
+ box-shadow:0 12px 32px rgba(0,122,255,.08)!important;
+ overflow:hidden;
+}
+.service-os-top{
+ display:flex;
+ justify-content:space-between;
+ gap:10px;
+ align-items:flex-start;
+ margin-bottom:10px;
+}
+.service-os-number{
+ background:#007aff;
+ color:#fff;
+ border-radius:18px;
+ padding:10px 13px;
+ min-width:155px;
+ box-shadow:0 12px 24px rgba(0,122,255,.22);
+}
+.service-os-number span{
+ display:block;
+ font-size:9px;
+ letter-spacing:1.3px;
+ font-weight:950;
+ opacity:.86;
+}
+.service-os-number b{
+ display:block;
+ font-size:25px;
+ line-height:1;
+ margin-top:3px;
+}
+.service-os-money{
+ text-align:right;
+ padding-top:4px;
+}
+.service-os-money b{
+ display:block;
+ font-size:20px;
+}
+.service-os-money span{
+ display:inline-block;
+ margin-top:5px;
+ background:#f3f4f6;
+ color:#111827;
+ border-radius:999px;
+ padding:5px 8px;
+ font-size:11px;
+ font-weight:900;
+}
+.service-client-box{
+ background:#f8fafc;
+ border:1px solid #eef0f3;
+ border-radius:16px;
+ padding:10px;
+ margin-bottom:10px;
+}
+.service-client-box b{
+ display:block;
+ font-size:16px;
+}
+.service-client-box span{
+ display:block;
+ color:#6b7280;
+ font-size:12px;
+ font-weight:800;
+ margin-top:2px;
+}
+.service-items-box{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:7px;
+ margin:10px 0;
+}
+.service-chip{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:8px;
+ background:#fff;
+ border:1px solid #e5e7eb;
+ border-radius:14px;
+ padding:9px 10px;
+ font-size:14px;
+ font-weight:850;
+}
+.service-chip span{
+ color:#111827;
+}
+.service-chip b{
+ background:#111827;
+ color:#fff;
+ border-radius:10px;
+ padding:4px 8px;
+ min-width:34px;
+ text-align:center;
+}
+.service-card-info{
+ background:#f9fafb;
+ border-radius:14px;
+ padding:9px;
+}
+#financeiroAjustes{
+ margin-top:0;
+}
+#financeiroAjustes .card{
+ box-shadow:0 8px 20px rgba(15,23,42,.04);
+}
+
 #printArea{display:none}
 @media print{
  body>*:not(#printArea){display:none!important}
@@ -752,9 +901,9 @@ input,select,textarea{
     <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="16" y2="13"></line><line x1="12.5" y1="9.5" x2="12.5" y2="16.5"></line></svg></span>
     <span>OS</span>
    </button>
-   <button id="btnFinanceiro" onclick="showTab('financeiro')" aria-label="Financeiro">
-    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="3"></rect><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="11" y2="13"></line><line x1="14" y1="13" x2="16" y2="13"></line></svg></span>
-    <span>Fin.</span>
+   <button id="btnServicos" onclick="showTab('servicos')" aria-label="Servicos">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="13" y2="17"></line></svg></span>
+    <span>Serv.</span>
    </button>
    <button id="btnClientes" onclick="showTab('clientes')" aria-label="Clientes">
     <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M5 21c1.2-4.2 12.8-4.2 14 0"></path></svg></span>
@@ -783,21 +932,10 @@ input,select,textarea{
   <section id="agenda">
    <div class="card">
     <h3 class="title">Agenda</h3>
-    <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda()">
-    <label>Pesquisar OS</label><input id="buscaAgenda" oninput="renderAgenda()" placeholder="Numero da OS, nome ou telefone">
-
-    <label>Filtro de status</label>
-    <select id="filtroStatusAgenda" onchange="renderAgenda()">
-     <option value="todos">Todos</option>
-     <option value="pendentes">Pendentes / nao retirados</option>
-     <option value="pronto">Pronto</option>
-     <option value="retirado">Retirado</option>
-    </select>
-
+    <p class="small">Use esta tela apenas para conferir os horarios, vagas ocupadas e disponibilidade do dia.</p>
+    <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda(); renderServicosLista();">
     <div id="agendaGrid" style="margin-top:12px"></div>
    </div>
-   <h3 style="font-size:15px;margin:14px 0 8px">Ordens do dia</h3>
-   <div id="agendaLista"></div>
    <button class="fab-new-os" onclick="showTab('nova')" aria-label="Nova OS">+</button>
   </section>
 
@@ -867,8 +1005,57 @@ input,select,textarea{
   </section>
 
 
-  <section id="financeiro" class="hidden">
+  <section id="servicos" class="hidden">
    <div class="card">
+    <h3 class="title">Servicos</h3>
+    <p class="small">Busque pelo numero da OS, nome ou telefone da cliente para encontrar rapidamente o servico na oficina.</p>
+
+    <label>Data</label>
+    <input type="date" id="servicosData" onchange="renderServicosLista()">
+
+    <label>Pesquisar OS</label>
+    <input id="buscaServico" oninput="renderServicosLista()" placeholder="Numero da OS, nome ou telefone">
+
+    <label>Status</label>
+    <select id="filtroServicoStatus" onchange="renderServicosLista()">
+     <option value="todos">Todos</option>
+     <option value="pendentes">Pendentes / nao retirados</option>
+     <option value="pronto">Pronto</option>
+     <option value="retirado">Retirado</option>
+    </select>
+   </div>
+
+   <div class="servicos-list-head">
+    <h3>Ordens de servico</h3>
+    <span id="servicosResumoBadge">0 OS</span>
+   </div>
+
+   <div id="servicosLista"></div>
+  </section>
+
+  <section id="clientes" class="hidden">
+   <div class="card">
+    <h3 class="title">Clientes</h3>
+    <label>Pesquisar</label><input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
+   </div>
+   <div id="clientesLista"></div>
+  </section>
+
+  <section id="ajustes" class="hidden">
+   <div class="card">
+    <h3 class="title">Ajustes</h3>
+    <p class="small"><b>Versao:</b> VERSAO 14.1 - SERVICOS SEPARADOS</p>
+    <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
+    <div id="cloudStatus" class="small">Conectando ao Firebase...</div>
+
+   <div class="card">
+    <h3 class="title">Financeiro</h3>
+    <p class="small">O financeiro agora fica dentro dos ajustes para deixar a tela principal mais limpa.</p>
+    <button class="btn btn-blue" type="button" onclick="toggleFinanceiroAjustes()">Abrir / fechar financeiro</button>
+   </div>
+
+   <div id="financeiroAjustes" class="hidden">
+<div class="card">
     <h3 class="title">Gestao financeira</h3>
 
     <label>Mes</label>
@@ -924,22 +1111,8 @@ input,select,textarea{
     <button class="btn btn-blue" onclick="exportarFinanceiroCSV()">Baixar planilha CSV</button>
     <button class="btn" onclick="fecharMesFinanceiro()">Fechar mes e zerar OS</button>
    </div>
-  </section>
-
-  <section id="clientes" class="hidden">
-   <div class="card">
-    <h3 class="title">Clientes</h3>
-    <label>Pesquisar</label><input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
    </div>
-   <div id="clientesLista"></div>
-  </section>
 
-  <section id="ajustes" class="hidden">
-   <div class="card">
-    <h3 class="title">Ajustes</h3>
-    <p class="small"><b>Versao:</b> VERSAO 14.0 - VISUAL APP PREMIUM</p>
-    <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
-    <div id="cloudStatus" class="small">Conectando ao Firebase...</div>
     <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
     <div id="offlinePendentesStatus" class="small"></div>
     <button class="btn btn-gray" onclick="logout()">Sair</button>
@@ -1159,6 +1332,7 @@ function normalizarTemplateWhatsApp(t){
 
 async function iniciar(){
  document.getElementById("agendaData").value = hoje();
+ document.getElementById("servicosData").value = hoje();
  document.getElementById("dataEntrega").value = hoje();
  if(document.getElementById("dataDespesa")) dataDespesa.value = hoje();
  if(document.getElementById("finMes")) finMes.value = hoje().slice(0,7);
@@ -1227,6 +1401,7 @@ function iniciarEscutaOrdens(){
    ordens = [];
    s.forEach(d=>ordens.push({id:d.id, ...d.data()}));
    renderAgenda();
+   renderServicosLista();
    renderClientes();
    renderFinanceiro();
  },e=>{
@@ -1476,11 +1651,11 @@ async function logout(){
 
 function setScreenInfo(t){
  const titulos = {
-   agenda:["Agenda","Acompanhe os servicos do dia"],
+   agenda:["Agenda","Confira horarios e disponibilidade"],
    nova:["Nova OS","Atendimento rapido no balcao"],
-   financeiro:["Financeiro","Resumo do dia e fechamento do mes"],
+   servicos:["Servicos","Busque e acompanhe as ordens de servico"],
    clientes:["Clientes","Historico e busca de clientes"],
-   ajustes:["Ajustes","Configuracoes do sistema"]
+   ajustes:["Ajustes","Configuracoes e financeiro"]
  };
 
  const info = titulos[t] || titulos.agenda;
@@ -1488,7 +1663,7 @@ function setScreenInfo(t){
  if(document.getElementById("screenTitle")) screenTitle.textContent = info[0];
  if(document.getElementById("screenSubtitle")) screenSubtitle.textContent = info[1];
 
- document.body.classList.remove("tab-agenda","tab-nova","tab-financeiro","tab-clientes","tab-ajustes");
+ document.body.classList.remove("tab-agenda","tab-nova","tab-servicos","tab-clientes","tab-ajustes");
  document.body.classList.add("tab-"+t);
 }
 
@@ -1509,16 +1684,16 @@ function mostrarToast(msg, tipo){
 
 function showTab(t){
  setScreenInfo(t);
- ["agenda","nova","financeiro","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
- ["btnAgenda","btnNova","btnFinanceiro","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
+ ["agenda","nova","servicos","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+ ["btnAgenda","btnNova","btnServicos","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
 
  document.getElementById(t).classList.remove("hidden");
 
  if(t === "agenda") btnAgenda.classList.add("active");
  if(t === "nova"){btnNova.classList.add("active"); atualizarHorarioSugerido();}
- if(t === "financeiro"){btnFinanceiro.classList.add("active"); renderFinanceiro();}
+ if(t === "servicos"){btnServicos.classList.add("active"); renderServicosLista();}
  if(t === "clientes") btnClientes.classList.add("active");
- if(t === "ajustes") btnAjustes.classList.add("active");
+ if(t === "ajustes"){btnAjustes.classList.add("active"); renderFinanceiro();}
 }
 
 function renderServicosOS(){
@@ -2245,6 +2420,18 @@ function prepararImpressao(os){
  `;
 }
 
+function htmlItensSeparados(os){
+ const entradas = Object.entries(os.itens || {});
+
+ if(!entradas.length){
+   return '<div class="service-chip">Sem itens</div>';
+ }
+
+ return entradas.map(([nome,qtd])=>{
+   return `<div class="service-chip"><span>${limparTexto(nome)}</span><b>${Number(qtd || 0)}</b></div>`;
+ }).join("");
+}
+
 function renderAgenda(){
  const data = agendaData.value;
  const diaCompleto = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
@@ -2255,11 +2442,21 @@ function renderAgenda(){
  statValor.textContent = moeda(diaCompleto.reduce((s,o)=>s + Number(o.valor || 0), 0));
 
  renderGrid(calcDia);
+}
 
- const busca = document.getElementById("buscaAgenda") ? limparTexto(buscaAgenda.value).toLowerCase().trim() : "";
- const filtroStatus = document.getElementById("filtroStatusAgenda") ? filtroStatusAgenda.value : "todos";
+function renderServicosLista(){
+ const data = document.getElementById("servicosData") ? (servicosData.value || hoje()) : hoje();
 
- const dia = diaCompleto.filter(o=>{
+ if(document.getElementById("servicosData") && !servicosData.value){
+   servicosData.value = data;
+ }
+
+ const busca = document.getElementById("buscaServico") ? limparTexto(buscaServico.value).toLowerCase().trim() : "";
+ const filtroStatus = document.getElementById("filtroServicoStatus") ? filtroServicoStatus.value : "todos";
+
+ let dia = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
+
+ dia = dia.filter(o=>{
    const statusLimpo = limparTexto(o.status || "").toLowerCase();
 
    let okStatus = true;
@@ -2282,48 +2479,53 @@ function renderAgenda(){
           limparTelefone(o.telefone).includes(limparTelefone(busca));
  });
 
- agendaLista.innerHTML = dia.length ? "" : '<div class="card small">Nenhuma OS encontrada para esta busca/data.</div>';
-
- if(calcDia.semVaga.length){
-   const alerta = document.createElement("div");
-   alerta.className = "card";
-   alerta.innerHTML = '<p class="bad"><b>Atencao:</b> existe OS sem vaga suficiente neste dia.</p>';
-   agendaLista.appendChild(alerta);
+ if(document.getElementById("servicosResumoBadge")){
+   const totalFerramentas = dia.reduce((s,o)=>s + Number(o.pecas || getTotalServicosOS(o) || 0), 0);
+   servicosResumoBadge.textContent = `${dia.length} OS - ${totalFerramentas} serv.`;
  }
+
+ if(!document.getElementById("servicosLista")) return;
+
+ servicosLista.innerHTML = dia.length ? "" : '<div class="card small">Nenhuma ordem de servico encontrada nesta data/busca.</div>';
 
  dia.forEach((os,idx)=>{
    const chave = os.id || ("semid_"+idx);
    const d = document.createElement("div");
-   d.className = "card os-card";
+   d.className = "card os-card service-card-destaque";
 
    const sitTxt = os.situacao === "agendado" ? "Agendado / ainda vai trazer" : "Servico no balcao";
    const btnChegada = os.situacao === "agendado"
-     ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada e deixar vermelho</button>`
+     ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada</button>`
      : "";
 
-   const distObj = calcDia.distPorId[chave] || {};
-   const dist = Object.keys(distObj).length
-     ? Object.entries(distObj).map(([h,q])=>h+": "+q).join(" | ")
-     : "Sem distribuicao";
-
    d.innerHTML = `
-    <div class="compact-line">
-     <div>
-      <b>OS ${numeroTextoOS(os)} - ${os.hora}</b><br>
-      <span class="compact-muted">${limparTexto(os.nome)} - ${limparTexto(os.telefone)}</span>
+    <div class="service-os-top">
+     <div class="service-os-number">
+      <span>ORDEM DE SERVICO</span>
+      <b>${numeroTextoOS(os)}</b>
      </div>
-     <div style="text-align:right">
-      <b>${moeda(os.valor)}</b><br>
-      <span class="compact-muted">${limparTexto(os.status)}</span>
+     <div class="service-os-money">
+      <b>${moeda(os.valor)}</b>
+      <span>${limparTexto(os.status)}</span>
      </div>
     </div>
 
-    <p>${itensTexto(os," | ")}</p>
-    <p class="small">Agenda: <b>${getPecasAgenda(os)}</b> | Total: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b> | ${limparTexto(os.pagamento)}</p>
+    <div class="service-client-box">
+     <b>${limparTexto(os.nome)}</b>
+     <span>${limparTexto(os.telefone)}</span>
+    </div>
+
+    <div class="service-items-box">
+     ${htmlItensSeparados(os)}
+    </div>
+
+    <p class="small service-card-info">
+     Entrega: <b>${dataBR(os.data)} ${os.hora || ""}</b><br>
+     Total da OS: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b> servico(s) | ${limparTexto(os.pagamento)}
+    </p>
 
     <button class="btn btn-gray" type="button" onclick="this.nextElementSibling.classList.toggle('hidden')">Detalhes e acoes</button>
     <div class="hidden">
-     <p class="small">Distribuicao: ${dist}</p>
      <p>Situacao: <b>${sitTxt}</b></p>
      ${os.observacao ? `<p>${limparTexto(os.observacao)}</p>` : ""}
      ${btnChegada}
@@ -2338,7 +2540,7 @@ function renderAgenda(){
     </div>
    `;
 
-   agendaLista.appendChild(d);
+   servicosLista.appendChild(d);
  });
 }
 
@@ -2434,6 +2636,14 @@ function htmlCaixasFinanceiro(r){
   </div>
   <p class="small">Pedidos: <b>${r.pedidos}</b>. O saldo usa apenas pagamentos marcados como Pago.</p>
  `;
+}
+
+function toggleFinanceiroAjustes(){
+ const el = document.getElementById("financeiroAjustes");
+ if(el){
+   el.classList.toggle("hidden");
+   renderFinanceiro();
+ }
 }
 
 function renderFinanceiro(){
