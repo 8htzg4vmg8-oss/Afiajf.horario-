@@ -125,7 +125,7 @@ button{cursor:pointer}
  justify-content:space-between;
  align-items:center;
  gap:10px;
- margin:12px 2px 10px;
+ margin:14px 2px 12px;
 }
 .screen-head h2{
  margin:0;
@@ -298,10 +298,10 @@ input:focus,select:focus,textarea:focus{
  transform:scale(1.15);
 }
 .payment-buttons{
- display:flex;
+ display:grid;
+ grid-template-columns:1.35fr .75fr .75fr;
  gap:7px;
- justify-content:flex-end;
- flex-wrap:wrap;
+ width:100%;
 }
 .pay-toggle[hidden]{display:none!important}
 body.busca-fixa #servicos>.card:first-child,
@@ -422,7 +422,7 @@ body.os-simples .quick-services-grid{
  grid-template-columns:1fr;
 }
 body.os-simples .service-tile{
- min-height:50px;
+ min-height:56px;
 }
 body.apagar-separado .btn-delete-safe{
  grid-column:1/-1;
@@ -582,18 +582,13 @@ body.apagar-separado .btn-delete-safe{
 .field-icon{
  position:relative;
 }
-.field-icon input{padding-right:42px}
+.field-icon input{padding-right:12px}
 .field-icon .field-symbol{
- position:absolute;
- right:12px;
- top:50%;
- transform:translateY(-50%);
- color:#6b7280;
- font-weight:900;
+ display:none!important;
 }
 .quick-services-grid{
  display:grid;
- grid-template-columns:repeat(2,minmax(0,1fr));
+ grid-template-columns:1fr;
  gap:8px;
 }
 .service-tile{
@@ -601,16 +596,17 @@ body.apagar-separado .btn-delete-safe{
  background:#fff;
  border-radius:16px;
  padding:10px;
- display:flex;
+ display:grid;
+ grid-template-columns:1fr auto;
  align-items:center;
- justify-content:space-between;
- gap:8px;
- min-height:62px;
+ gap:10px;
+ min-height:64px;
+ overflow:hidden;
 }
 .service-tile b{
  display:block;
- font-size:13px;
- line-height:1.05;
+ font-size:14px;
+ line-height:1.1;
 }
 .service-tile span{
  display:block;
@@ -631,11 +627,42 @@ body.apagar-separado .btn-delete-safe{
  font-weight:900;
  flex:0 0 auto;
 }
+.qty-inline{
+ display:grid;
+ grid-template-columns:34px 54px 34px;
+ gap:5px;
+ align-items:center;
+}
+.qty-inline button{
+ width:34px;
+ height:34px;
+ border:0;
+ border-radius:11px;
+ font-size:20px;
+ font-weight:950;
+ background:#111827;
+ color:#fff;
+ line-height:34px;
+}
+.qty-inline button.minus{
+ background:#e5e7eb;
+ color:#111827;
+}
+.qty-inline input{
+ width:54px;
+ height:34px;
+ padding:4px;
+ text-align:center;
+ border-radius:11px;
+ background:#fff;
+ font-weight:950;
+ font-size:15px;
+}
 .selected-head{
  display:flex;
  justify-content:space-between;
  align-items:center;
- margin:12px 0 8px;
+ margin:14px 0 8px;
 }
 .counter{
  background:#111827;
@@ -680,16 +707,13 @@ body.apagar-separado .btn-delete-safe{
  font-weight:900;
 }
 .sticky-total{
- position:sticky;
- bottom:0;
- z-index:30;
- background:rgba(255,255,255,.95);
- backdrop-filter:blur(14px);
- -webkit-backdrop-filter:blur(14px);
+ position:static;
+ background:#fff;
  border:1px solid #e5e7eb;
  border-radius:20px;
  padding:12px;
- box-shadow:0 -10px 30px rgba(15,23,42,.08);
+ margin-top:12px;
+ box-shadow:0 10px 24px rgba(15,23,42,.055);
 }
 .total-pay-row{
  display:grid;
@@ -713,9 +737,10 @@ body.apagar-separado .btn-delete-safe{
  background:#fff;
  color:#111827;
  border-radius:12px;
- padding:10px 9px;
+ padding:10px 7px;
  font-size:12px;
  font-weight:900;
+ white-space:nowrap;
 }
 .pay-toggle.active{
  background:#007aff;
@@ -1167,10 +1192,12 @@ body.apagar-separado .btn-delete-safe{
  .chip{font-size:10px;padding:5px 6px}
  .status-line{font-size:11px}
  .details-btn{padding:9px}
- .service-tile{min-height:56px;padding:8px}
- .service-tile b{font-size:12px}
+ .service-tile{min-height:60px;padding:9px}
+ .service-tile b{font-size:13px}
  .service-tile span{font-size:10px}
- .plus-mini{width:31px;height:31px;border-radius:10px;line-height:31px}
+ .qty-inline{grid-template-columns:32px 50px 32px;gap:4px}
+ .qty-inline button{width:32px;height:32px;line-height:32px;border-radius:10px}
+ .qty-inline input{width:50px;height:32px;border-radius:10px}
  .slot{width:100%;height:auto;aspect-ratio:1/1}
  .slots{gap:8px}
  .agenda-grid-header,.agenda-row{grid-template-columns:72px minmax(0,1fr);padding:0 12px}
@@ -1189,6 +1216,86 @@ body.apagar-separado .btn-delete-safe{
  .payment-pill{font-size:8.5px}
  .shortcut{min-height:118px}
 }
+
+/* Ajustes em grade visual fixa */
+.ajustes-hub-card{
+ padding:12px;
+}
+.ajustes-filter{
+ margin-bottom:12px;
+}
+.ajustes-filter select{
+ font-size:18px;
+ font-weight:850;
+ height:54px;
+}
+.ajustes-hub-title{
+ margin:10px 2px 12px;
+ font-size:25px;
+ letter-spacing:-.4px;
+}
+.ajustes-hub .shortcut-grid,
+body.ajustes-lista .ajustes-hub .shortcut-grid{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:12px!important;
+}
+.ajustes-hub .shortcut,
+body.ajustes-lista .ajustes-hub .shortcut{
+ min-height:178px!important;
+ margin:0!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ text-align:center!important;
+ gap:12px!important;
+ padding:14px 10px!important;
+ border-radius:20px!important;
+}
+.ajustes-hub .shortcut .big-icon,
+body.ajustes-lista .ajustes-hub .shortcut .big-icon{
+ width:56px!important;
+ height:56px!important;
+ border-radius:50%!important;
+ font-size:29px!important;
+ flex:0 0 auto!important;
+}
+.ajustes-hub .shortcut b{
+ display:block;
+ font-size:17px;
+ line-height:1.1;
+}
+.ajustes-hub .shortcut p{
+ margin:7px 0 10px;
+ font-size:12px;
+ line-height:1.35;
+}
+.ajustes-hub .green-dot{
+ display:inline-block;
+ font-size:12px;
+}
+.ajustes-system-row{
+ display:grid;
+ grid-template-columns:1fr auto;
+ gap:8px;
+ align-items:center;
+}
+@media(max-width:380px){
+ .ajustes-hub .shortcut,
+ body.ajustes-lista .ajustes-hub .shortcut{
+  min-height:160px!important;
+  padding:12px 8px!important;
+ }
+ .ajustes-hub .shortcut .big-icon,
+ body.ajustes-lista .ajustes-hub .shortcut .big-icon{
+  width:50px!important;
+  height:50px!important;
+  font-size:25px!important;
+ }
+ .ajustes-hub .shortcut b{font-size:15px}
+ .ajustes-hub .shortcut p{font-size:11px}
+}
+
 </style>
 </head>
 
@@ -1197,7 +1304,7 @@ body.apagar-separado .btn-delete-safe{
 <div class="container">
  <div class="header">
   <h1 class="logo">AFIA</h1>
-  <div class="version">V15.6 FIREBASE - VISUAL CORRIGIDO</div>
+  <div class="version">V15.9 FIREBASE - AJUSTES EM GRADE</div>
  </div>
 
  <section id="loginScreen" class="card login-card">
@@ -1291,13 +1398,11 @@ body.apagar-separado .btn-delete-safe{
     <div class="field-icon">
      <label>Cliente</label>
      <input id="nome" required placeholder="Nome do cliente">
-     <span class="field-symbol">ð¤</span>
     </div>
 
     <div class="field-icon">
      <label>Tel / WhatsApp</label>
      <input id="telefone" inputmode="tel" required placeholder="(00) 00000-0000" oninput="buscarClientePorTelefone()">
-     <span class="field-symbol">â</span>
     </div>
 
     <div class="row">
@@ -1307,16 +1412,17 @@ body.apagar-separado .btn-delete-safe{
     <button id="btnProximaVaga" class="btn btn-light next-slot-btn" type="button" onclick="usarProximaVagaLivre()">Usar proxima vaga livre</button>
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin:15px 0 8px">
-     <h3 class="title" style="margin:0">Servicos rapidos</h3>
-     <button type="button" class="btn-light" style="width:auto;margin:0;padding:8px 10px;border-radius:12px;font-size:12px;font-weight:900" onclick="document.getElementById('ajustes').scrollIntoView()">Ver todos ></button>
+     <h3 class="title" style="margin:0">Servicos</h3>
+     <button type="button" class="btn-light" style="width:auto;margin:0;padding:8px 10px;border-radius:12px;font-size:12px;font-weight:900" onclick="showTab('ajustes'); abrirPainelAjustes('servicos');">Editar precos ></button>
     </div>
+    <p class="small" style="margin:0 0 8px">Digite a quantidade ou use - e +.</p>
     <div id="quickServicesGrid" class="quick-services-grid"></div>
 
-    <div class="selected-head">
+    <div class="selected-head hidden">
      <h3 class="title" style="margin:0">Servicos selecionados</h3>
      <span id="selectedCounter" class="counter">0</span>
     </div>
-    <div id="selectedServices"></div>
+    <div id="selectedServices" class="hidden"></div>
 
     <button class="btn btn-gray" type="button" onclick="toggleMaisOpcoes()">Mais opcoes</button>
     <div id="maisOpcoesOS" class="more-options">
@@ -1326,13 +1432,6 @@ body.apagar-separado .btn-delete-safe{
      <select id="situacao">
       <option value="confirmado">Cliente deixou o servico / balcao</option>
       <option value="agendado">Apenas agendamento / ainda vai trazer</option>
-     </select>
-     <label>Status da oficina</label>
-     <select id="status">
-      <option>Recebido</option>
-      <option>Na bancada</option>
-      <option>Pronto</option>
-      <option>Retirado</option>
      </select>
     </div>
 
@@ -1397,126 +1496,61 @@ body.apagar-separado .btn-delete-safe{
    <div id="clienteDetalhe"></div>
   </section>
 
-  <section id="ajustes" class="hidden">
-   <div class="card">
-    <h3 class="title">Ajustes - opcao C</h3>
-    <p class="small"><b>Versao:</b> V15.6 Firebase completo</p>
-    <p class="small"><b>Status:</b> <span id="ajusteStatus" class="ok">Conectado</span></p>
-    <p class="small"><b>Login:</b> <span id="emailLogado">-</span></p>
-    <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
-    <div id="offlinePendentesStatus" class="small"></div>
-    <button class="btn btn-gray" onclick="logout()">Sair</button>
-   </div>
-
-   <div class="card">
-    <h3 class="title">Personalizacao do app</h3>
-    <p class="small">Escolha os layouts e deixe o app do seu jeito. Essas escolhas ficam salvas neste navegador.</p>
-
-    <div class="config-grid">
-     <div>
-      <label>Layout da agenda</label>
-      <select id="cfgAgendaLayout" onchange="salvarVisualConfig()">
-       <option value="classico">Opcao A - quadradinhos classicos</option>
-       <option value="status">Opcao B - quadradinhos com status</option>
-       <option value="os">Opcao C - quadradinhos + OS</option>
-      </select>
-     </div>
-
-     <div>
-      <label>Layout da tela Servicos</label>
-      <select id="cfgServicosLayout" onchange="salvarVisualConfig()">
-       <option value="grade">Grade compacta, 2 OS lado a lado</option>
-       <option value="lista">Lista completa, 1 OS por linha</option>
-      </select>
-     </div>
-
-     <div>
-      <label>Layout da tela Clientes</label>
-      <select id="cfgClientesLayout" onchange="salvarVisualConfig()">
-       <option value="historico">Opcao C - lista + historico</option>
-       <option value="simples">Opcao A - lista simples</option>
-       <option value="cards">Opcao B - cards com dados</option>
-      </select>
-     </div>
-
-     <div class="row">
-      <div>
-       <label>Layout da OS</label>
-       <select id="cfgNovaLayout" onchange="salvarVisualConfig()">
-        <option value="balcao">Opcao C - balcao rapido</option>
-        <option value="simples">Mais simples e espacado</option>
-       </select>
-      </div>
-      <div>
-       <label>Layout dos ajustes</label>
-       <select id="cfgAjustesLayout" onchange="salvarVisualConfig()">
-        <option value="atalhos">Opcao C - atalhos visuais</option>
-        <option value="lista">Lista compacta</option>
-       </select>
-      </div>
-     </div>
+  <section id="ajustes" class="hidden ajustes-hub">
+   <div class="card ajustes-hub-card">
+    <div class="ajustes-filter">
+     <label>Filtro</label>
+     <select id="ajustesFiltro" onchange="filtrarAjustesHub()">
+      <option value="todos">Todos</option>
+      <option value="financeiro">Financeiro</option>
+      <option value="app">App e layouts</option>
+      <option value="sistema">Sistema</option>
+     </select>
     </div>
 
-    <div class="toggle-row">
-     <div><b>Busca fixa no topo</b><br><span>Ao rolar Servicos ou Clientes, a busca fica sempre visivel.</span></div>
-     <input id="cfgBuscaFixa" type="checkbox" onchange="salvarVisualConfig()">
+    <h2 class="ajustes-hub-title">Ajustes</h2>
+
+    <div class="shortcut-grid" id="ajustesHubGrid">
+     <button class="shortcut" data-cat="financeiro" onclick="abrirPainelAjustes('financeiro')" type="button">
+      <span class="big-icon">$</span>
+      <span><b>Financeiro</b><p>Contas, pagamentos e recebimentos.</p><small class="green-dot">Conectado</small></span>
+     </button>
+
+     <button class="shortcut" data-cat="financeiro" onclick="abrirPainelAjustes('despesas')" type="button">
+      <span class="big-icon">â¦</span>
+      <span><b>Despesas</b><p>Cadastre e controle suas despesas.</p><small class="green-dot">Sincronizado</small></span>
+     </button>
+
+     <button class="shortcut" data-cat="financeiro" onclick="abrirPainelAjustes('relatorio')" type="button">
+      <span class="big-icon">â¥</span>
+      <span><b>Relatorio</b><p>Visualize relatorios e indicadores.</p><small class="green-dot">Pronto</small></span>
+     </button>
+
+     <button class="shortcut" data-cat="app" onclick="abrirPainelAjustes('servicos')" type="button">
+      <span class="big-icon">ð§</span>
+      <span><b>Servicos</b><p>Gerencie servicos, precos e regras.</p><small class="green-dot">Sincronizado</small></span>
+     </button>
+
+     <button class="shortcut" data-cat="app" onclick="abrirPainelAjustes('mensagem')" type="button">
+      <span class="big-icon">â</span>
+      <span><b>Mensagem</b><p>Configure mensagens automaticas.</p><small class="green-dot">Conectado</small></span>
+     </button>
+
+     <button class="shortcut" data-cat="sistema" onclick="abrirPainelAjustes('backup')" type="button">
+      <span class="big-icon">ð¡</span>
+      <span><b>Backup/Seguranca</b><p>Backup, numeracao e permissoes.</p><small class="green-dot">Protegido</small></span>
+     </button>
+
+     <button class="shortcut" data-cat="app" onclick="abrirPainelAjustes('layout')" type="button">
+      <span class="big-icon">â£</span>
+      <span><b>Layout do app</b><p>Escolha telas, busca fixa e visual.</p><small class="green-dot">Editavel</small></span>
+     </button>
+
+     <button class="shortcut" data-cat="sistema" onclick="abrirPainelAjustes('firebase')" type="button">
+      <span class="big-icon">â</span>
+      <span><b>Firebase/Login</b><p>Status, usuario e diagnostico.</p><small class="green-dot">Online</small></span>
+     </button>
     </div>
-
-    <div class="toggle-row">
-     <div><b>Mostrar status/lotado na agenda</b><br><span>Destaca linhas cheias ou quase cheias nos quadradinhos.</span></div>
-     <input id="cfgStatusAgenda" type="checkbox" onchange="salvarVisualConfig()">
-    </div>
-
-    <div class="toggle-row">
-     <div><b>Permitir pagamento parcial</b><br><span>Adiciona a opcao Parcial junto de Pago e Pagar na retirada.</span></div>
-     <input id="cfgPagamentoParcial" type="checkbox" onchange="salvarVisualConfig()">
-    </div>
-
-    <div class="toggle-row">
-     <div><b>Botao apagar separado</b><br><span>Deixa o botao Apagar mais afastado das acoes usadas no balcao.</span></div>
-     <input id="cfgApagarSeparado" type="checkbox" onchange="salvarVisualConfig()">
-    </div>
-   </div>
-
-
-   <div class="card">
-    <h3 class="title">Diagnostico Firebase</h3>
-    <p class="small">Se nao entra no login, verifique Authentication &gt; Sign-in method &gt; Email/senha e Authentication &gt; Settings &gt; Authorized domains. Se o login entra, mas os dados nao aparecem, normalmente e regra do Firestore. Para testar, use regra de usuario logado:</p>
-    <textarea readonly style="font-size:12px;min-height:170px">rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}</textarea>
-   </div>
-
-   <div class="shortcut-grid">
-    <button class="shortcut" onclick="abrirPainelAjustes('financeiro')" type="button">
-     <span class="big-icon">$</span>
-     <span><b>Financeiro</b><p>Contas, pagamentos e recebimentos.</p><small class="green-dot">Local</small></span>
-    </button>
-    <button class="shortcut" onclick="abrirPainelAjustes('despesas')" type="button">
-     <span class="big-icon">â¦</span>
-     <span><b>Despesas</b><p>Cadastre e controle suas despesas.</p><small class="green-dot">Salvo</small></span>
-    </button>
-    <button class="shortcut" onclick="abrirPainelAjustes('relatorio')" type="button">
-     <span class="big-icon">â¥</span>
-     <span><b>Relatorio</b><p>Resumo mensal para copiar ou baixar.</p><small class="green-dot">Pronto</small></span>
-    </button>
-    <button class="shortcut" onclick="abrirPainelAjustes('servicos')" type="button">
-     <span class="big-icon">ð§</span>
-     <span><b>Servicos</b><p>Gerencie servicos, precos e agenda.</p><small class="green-dot">Editavel</small></span>
-    </button>
-    <button class="shortcut" onclick="abrirPainelAjustes('mensagem')" type="button">
-     <span class="big-icon">â</span>
-     <span><b>Mensagem</b><p>Configure mensagens automaticas.</p><small class="green-dot">Local</small></span>
-    </button>
-    <button class="shortcut" onclick="abrirPainelAjustes('backup')" type="button">
-     <span class="big-icon">ð¡</span>
-     <span><b>Backup/Seguranca</b><p>Backup, importacao e numeracao.</p><small class="green-dot">Protegido</small></span>
-    </button>
    </div>
 
    <div id="ajustesPainel" class="settings-panel hidden"></div>
@@ -1635,7 +1669,8 @@ function aplicarVisualConfig(){
  const v = getVisual();
 
  document.body.classList.toggle("busca-fixa", Boolean(v.buscaFixa));
- document.body.classList.toggle("ajustes-lista", v.ajustesLayout === "lista");
+ v.ajustesLayout = "atalhos";
+ document.body.classList.remove("ajustes-lista");
  document.body.classList.toggle("os-simples", v.novaLayout === "simples");
  document.body.classList.toggle("apagar-separado", Boolean(v.apagarSeparado));
 
@@ -2145,7 +2180,7 @@ function setScreenInfo(t){
    nova:["Nova OS","Atendimento rapido no balcao"],
    servicos:["Servicos","Busque e acompanhe as ordens de servico"],
    clientes:["Clientes","Lista + historico do cliente"],
-   ajustes:["Ajustes","Atalhos visuais para configurar"]
+   ajustes:["Ajustes","Atalhos em grade para configurar"]
  };
  const info = titulos[t] || titulos.agenda;
  screenTitle.textContent = info[0];
@@ -2163,7 +2198,7 @@ function showTab(t){
  if(t==="nova"){btnNova.classList.add("active"); atualizarHorarioSugerido(); renderQuickServices(); renderSelected();}
  if(t==="servicos"){btnServicos.classList.add("active"); renderServicosLista();}
  if(t==="clientes"){btnClientes.classList.add("active"); renderClientes();}
- if(t==="ajustes"){btnAjustes.classList.add("active"); aplicarVisualConfig();}
+ if(t==="ajustes"){btnAjustes.classList.add("active"); aplicarVisualConfig(); filtrarAjustesHub();}
  window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -2399,26 +2434,53 @@ function renderQuickServices(){
  if(!document.getElementById("quickServicesGrid")) return;
  quickServicesGrid.innerHTML = "";
  (config.servicos || []).forEach((s,i)=>{
+   const nome = s.nome;
+   const qtd = Number(selected[nome] || 0);
+   const agendaTxt = s.contaAgenda ? "conta agenda" : "rapido";
    const div = document.createElement("div");
    div.className = "service-tile";
    div.innerHTML = `
-    <div><b>${s.nome}</b><span>${moeda(s.preco)}</span></div>
-    <button class="plus-mini" type="button" onclick="addServico(${i})">+</button>
+    <div><b>${nome}</b><span>${moeda(s.preco)} cada - ${agendaTxt}</span></div>
+    <div class="qty-inline">
+     <button class="minus" type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',-1)">-</button>
+     <input type="number" min="0" inputmode="numeric" value="${qtd || ""}" placeholder="0" onfocus="this.select()" onclick="this.select()" oninput="setQtdServico('${escapeJS(nome)}', this.value, true)">
+     <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',1)">+</button>
+    </div>
    `;
    quickServicesGrid.appendChild(div);
  });
+ atualizarResumoOS();
 }
 
 function addServico(i){
  const nome = config.servicos[i].nome;
  selected[nome] = (selected[nome] || 0) + 1;
- renderSelected();
+ renderQuickServices();
+ atualizarResumoOS();
+}
+
+function setQtdServico(nome, valor, semRender){
+ let q = Number(valor || 0);
+ if(!Number.isFinite(q) || q < 0) q = 0;
+ q = Math.floor(q);
+
+ if(q > 0){
+   selected[nome] = q;
+ }else{
+   delete selected[nome];
+ }
+
+ if(semRender){
+   atualizarResumoOS();
+ }else{
+   renderQuickServices();
+   atualizarResumoOS();
+ }
 }
 
 function ajustarSelecionado(nome,delta){
- selected[nome] = (selected[nome] || 0) + delta;
- if(selected[nome] <= 0) delete selected[nome];
- renderSelected();
+ const atual = Number(selected[nome] || 0);
+ setQtdServico(nome, atual + delta, false);
 }
 
 function precoServico(nome){
@@ -2434,25 +2496,15 @@ function escapeJS(s){
  return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'");
 }
 
-function renderSelected(){
+function atualizarResumoOS(){
  const entries = Object.entries(selected);
- selectedCounter.textContent = String(entries.reduce((s,[,q])=>s+Number(q||0),0));
- if(!entries.length){
-   selectedServices.innerHTML = '<div class="small" style="padding:8px 2px">Nenhum servico selecionado.</div>';
- }else{
-   selectedServices.innerHTML = entries.map(([nome,qtd])=>`
-    <div class="selected-item">
-     <div><b>${nome}</b><span>${moeda(precoServico(nome))}</span></div>
-     <div class="qty-control">
-      <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',-1)">-</button>
-      <strong>${qtd}</strong>
-      <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',1)">+</button>
-     </div>
-     <button class="trash" type="button" onclick="delete selected['${escapeJS(nome)}']; renderSelected();">X</button>
-    </div>
-   `).join("");
- }
- valorTotalView.textContent = moeda(valorSelecionado());
+ const totalQtd = entries.reduce((s,[,q])=>s+Number(q||0),0);
+ if(document.getElementById("selectedCounter")) selectedCounter.textContent = String(totalQtd);
+ if(document.getElementById("valorTotalView")) valorTotalView.textContent = moeda(valorSelecionado());
+}
+
+function renderSelected(){
+ atualizarResumoOS();
 }
 
 function setPagamento(p){
@@ -2546,7 +2598,7 @@ async function salvarOS(e){
    alocacoes,
    situacao: situacao.value || "confirmado",
    observacao: limparTexto(observacao.value),
-   status: status.value || "Recebido",
+   status: "Recebido",
    pagamento: pagamentoAtual,
    valor: valorSelecionado()
  };
@@ -2584,6 +2636,7 @@ function resetFormOS(){
  setPagamento(pagamentoAtual);
  dataEntrega.value = hoje();
  atualizarHorarioSugerido();
+ renderQuickServices();
  renderSelected();
  if(maisOpcoesOS) maisOpcoesOS.classList.remove("open");
 }
@@ -2813,7 +2866,87 @@ function abrirViaImpressao(os){
  .box{max-width:420px;margin:0 auto}.btn{width:100%;border:0;border-radius:12px;padding:14px;margin:8px 0;font-size:16px;font-weight:900;color:#fff;background:#007aff}.btn-gray{background:#777}
  .recibo{background:#fff;border-radius:12px;padding:16px;font-family:monospace;font-size:14px}.centro{text-align:center}.titulo{font-size:24px;font-weight:900;letter-spacing:3px}.linha{margin:7px 0;line-height:1.35}hr{border:0;border-top:1px dashed #999;margin:10px 0}
  @media print{body{background:#fff;padding:0}.no-print{display:none!important}.box{max-width:none}.recibo{border-radius:0;padding:0;width:58mm;font-size:12px}}
- </style></head><body><div class="box"><div class="no-print"><button class="btn" onclick="window.print()">Imprimir ou salvar PDF</button><button class="btn btn-gray" onclick="window.close()">Fechar</button></div>
+ 
+/* Ajustes em grade visual fixa */
+.ajustes-hub-card{
+ padding:12px;
+}
+.ajustes-filter{
+ margin-bottom:12px;
+}
+.ajustes-filter select{
+ font-size:18px;
+ font-weight:850;
+ height:54px;
+}
+.ajustes-hub-title{
+ margin:10px 2px 12px;
+ font-size:25px;
+ letter-spacing:-.4px;
+}
+.ajustes-hub .shortcut-grid,
+body.ajustes-lista .ajustes-hub .shortcut-grid{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:12px!important;
+}
+.ajustes-hub .shortcut,
+body.ajustes-lista .ajustes-hub .shortcut{
+ min-height:178px!important;
+ margin:0!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ text-align:center!important;
+ gap:12px!important;
+ padding:14px 10px!important;
+ border-radius:20px!important;
+}
+.ajustes-hub .shortcut .big-icon,
+body.ajustes-lista .ajustes-hub .shortcut .big-icon{
+ width:56px!important;
+ height:56px!important;
+ border-radius:50%!important;
+ font-size:29px!important;
+ flex:0 0 auto!important;
+}
+.ajustes-hub .shortcut b{
+ display:block;
+ font-size:17px;
+ line-height:1.1;
+}
+.ajustes-hub .shortcut p{
+ margin:7px 0 10px;
+ font-size:12px;
+ line-height:1.35;
+}
+.ajustes-hub .green-dot{
+ display:inline-block;
+ font-size:12px;
+}
+.ajustes-system-row{
+ display:grid;
+ grid-template-columns:1fr auto;
+ gap:8px;
+ align-items:center;
+}
+@media(max-width:380px){
+ .ajustes-hub .shortcut,
+ body.ajustes-lista .ajustes-hub .shortcut{
+  min-height:160px!important;
+  padding:12px 8px!important;
+ }
+ .ajustes-hub .shortcut .big-icon,
+ body.ajustes-lista .ajustes-hub .shortcut .big-icon{
+  width:50px!important;
+  height:50px!important;
+  font-size:25px!important;
+ }
+ .ajustes-hub .shortcut b{font-size:15px}
+ .ajustes-hub .shortcut p{font-size:11px}
+}
+
+</style></head><body><div class="box"><div class="no-print"><button class="btn" onclick="window.print()">Imprimir ou salvar PDF</button><button class="btn btn-gray" onclick="window.close()">Fechar</button></div>
  <div class="recibo"><div class="centro titulo">AFIA</div><div class="centro">VIA DA LOJA</div><div class="centro" style="font-size:28px;font-weight:900;margin:8px 0">OS ${numeroTextoOS(os)}</div><hr>
  <div class="linha">Cliente: ${os.nome}</div><div class="linha">Telefone: ${os.telefone}</div><div class="linha">Entrega: ${dataBR(os.data)} ${os.hora}</div><hr>
  <div class="linha"><b>Servicos</b></div>${htmlItens}<hr><div class="linha">Total de servicos: <b>${getTotalServicosOS(os)}</b></div><div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div><div class="linha">Valor: <b>${moeda(os.valor)}</b></div><div class="linha">Pagamento: ${os.pagamento}</div>${os.observacao ? `<div class="linha">Obs: ${os.observacao}</div>` : ""}</div></div></body></html>`);
@@ -2929,6 +3062,14 @@ function renderClienteDetalhe(c){
  `;
 }
 
+function filtrarAjustesHub(){
+ const filtro = document.getElementById("ajustesFiltro") ? ajustesFiltro.value : "todos";
+ document.querySelectorAll("#ajustesHubGrid .shortcut").forEach(btn=>{
+   const cat = btn.getAttribute("data-cat") || "app";
+   btn.style.display = (filtro === "todos" || filtro === cat) ? "" : "none";
+ });
+}
+
 function abrirPainelAjustes(tipo){
  ajustesPainel.classList.remove("hidden");
  if(tipo==="financeiro") renderPainelFinanceiro();
@@ -2937,8 +3078,105 @@ function abrirPainelAjustes(tipo){
  if(tipo==="servicos") renderPainelServicos();
  if(tipo==="mensagem") renderPainelMensagem();
  if(tipo==="backup") renderPainelBackup();
+ if(tipo==="layout") renderPainelLayoutApp();
+ if(tipo==="firebase") renderPainelFirebase();
  setTimeout(()=>ajustesPainel.scrollIntoView({behavior:"smooth",block:"start"}),60);
 }
+
+function renderPainelLayoutApp(){
+ ensureVisualConfig();
+ ajustesPainel.innerHTML = `
+  <h3 class="title">Layout do app</h3>
+  <p class="small">Escolha os layouts e deixe o app do seu jeito. O layout dos Ajustes fica fixo em grade visual.</p>
+
+  <div class="config-grid">
+   <div>
+    <label>Layout da agenda</label>
+    <select id="cfgAgendaLayout" onchange="salvarVisualConfig()">
+     <option value="classico">Opcao A - quadradinhos classicos</option>
+     <option value="status">Opcao B - quadradinhos com status</option>
+     <option value="os">Opcao C - quadradinhos + OS</option>
+    </select>
+   </div>
+
+   <div>
+    <label>Layout da tela Servicos</label>
+    <select id="cfgServicosLayout" onchange="salvarVisualConfig()">
+     <option value="grade">Grade compacta, 2 OS lado a lado</option>
+     <option value="lista">Lista completa, 1 OS por linha</option>
+    </select>
+   </div>
+
+   <div>
+    <label>Layout da tela Clientes</label>
+    <select id="cfgClientesLayout" onchange="salvarVisualConfig()">
+     <option value="historico">Opcao C - lista + historico</option>
+     <option value="simples">Opcao A - lista simples</option>
+     <option value="cards">Opcao B - cards com dados</option>
+    </select>
+   </div>
+
+   <div>
+    <label>Layout da OS</label>
+    <select id="cfgNovaLayout" onchange="salvarVisualConfig()">
+     <option value="balcao">Quantidade limpa (- 0 +)</option>
+     <option value="simples">Mais simples e espacado</option>
+    </select>
+   </div>
+  </div>
+
+  <div class="toggle-row">
+   <div><b>Busca fixa no topo</b><br><span>Ao rolar Servicos ou Clientes, a busca fica sempre visivel.</span></div>
+   <input id="cfgBuscaFixa" type="checkbox" onchange="salvarVisualConfig()">
+  </div>
+
+  <div class="toggle-row">
+   <div><b>Mostrar status/lotado na agenda</b><br><span>Destaca linhas cheias ou quase cheias nos quadradinhos.</span></div>
+   <input id="cfgStatusAgenda" type="checkbox" onchange="salvarVisualConfig()">
+  </div>
+
+  <div class="toggle-row">
+   <div><b>Permitir pagamento parcial</b><br><span>Adiciona a opcao Parcial junto de Pago e Pagar na retirada.</span></div>
+   <input id="cfgPagamentoParcial" type="checkbox" onchange="salvarVisualConfig()">
+  </div>
+
+  <div class="toggle-row">
+   <div><b>Botao apagar separado</b><br><span>Deixa o botao Apagar mais afastado das acoes usadas no balcao.</span></div>
+   <input id="cfgApagarSeparado" type="checkbox" onchange="salvarVisualConfig()">
+  </div>
+ `;
+ aplicarVisualConfig();
+}
+
+function renderPainelFirebase(){
+ ajustesPainel.innerHTML = `
+  <h3 class="title">Firebase / Login</h3>
+  <div class="ajustes-system-row">
+   <div>
+    <p class="small"><b>Versao:</b> V15.9 Firebase completo</p>
+    <p class="small"><b>Status:</b> <span id="ajusteStatus" class="ok">Conectado</span></p>
+    <p class="small"><b>Login:</b> <span id="emailLogado">${emailUsuarioAtual() || "-"}</span></p>
+   </div>
+   <button class="btn btn-gray" style="margin:0;width:auto;padding:10px 14px" onclick="logout()">Sair</button>
+  </div>
+  <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
+  <div id="offlinePendentesStatus" class="small"></div>
+
+  <h3 class="title" style="margin-top:16px">Diagnostico Firebase</h3>
+  <p class="small">Se nao entra no login, verifique Authentication > Sign-in method > Email/senha e Authentication > Settings > Authorized domains. Se o login entra, mas os dados nao aparecem, normalmente e regra do Firestore.</p>
+  <textarea readonly style="font-size:12px;min-height:170px">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}</textarea>
+ `;
+ atualizarStatusConexao();
+ atualizarStatusPendentesOffline();
+}
+
 
 function resumoFinanceiro(listaOS, listaDespesas){
  const r = {pedidos:listaOS.length, servicos:0, faturamento:0, recebido:0, aReceber:0, despesas:0, saldo:0};
@@ -3149,80 +3387,3 @@ async function salvarProximoNumeroOS(){
  try{
    await db.doc(DOC_CONTADOR_OS).set({
      ultimo:n-1,
-     atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()
-   },{merge:true});
-   toast("Proxima OS definida como "+n+".","good");
- }catch(e){
-   alert("Erro ao salvar numeracao: "+limparTexto(e.message));
- }
-}
-
-function exportarBackup(){
- const dados = {ordens,despesas,config,contador:"ver Firebase contadores/ordens"};
- baixarArquivo("afia_backup_firebase.json", JSON.stringify(dados,null,2), "application/json");
-}
-
-function importarBackup(e){
- const file = e.target.files && e.target.files[0];
- if(!file) return;
- const reader = new FileReader();
- reader.onload = async ()=>{
-   try{
-     const dados = JSON.parse(reader.result);
-     if(!confirm("Importar backup? Isso adiciona as ordens e despesas do arquivo no Firebase.")) return;
-
-     if(Array.isArray(dados.ordens)){
-       for(const o of dados.ordens){
-         const copia = {...o};
-         delete copia.id;
-         if(!copia.criadoEm || (typeof copia.criadoEm === "string")){
-           copia.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
-         }
-         await db.collection(COL_ORDENS).add(copia);
-       }
-     }
-     if(Array.isArray(dados.despesas)){
-       for(const d of dados.despesas){
-         const copia = {...d};
-         delete copia.id;
-         if(!copia.criadoEm) copia.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
-         await db.collection(COL_DESPESAS).add(copia);
-       }
-     }
-     if(dados.config){
-       config = {...config, ...dados.config};
-       ensureVisualConfig();
-       await salvarConfig();
-     }
-     toast("Backup importado.","good");
-   }catch(err){
-     alert("Arquivo invalido ou erro ao importar.");
-   }
- };
- reader.readAsText(file);
-}
-
-function baixarArquivo(nome, conteudo, tipo){
- const blob = new Blob([conteudo],{type:tipo||"text/plain;charset=utf-8"});
- const url = URL.createObjectURL(blob);
- const a = document.createElement("a");
- a.href = url;
- a.download = nome;
- document.body.appendChild(a);
- a.click();
- document.body.removeChild(a);
- setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function renderAll(){
- aplicarVisualConfig();
- renderAgenda();
- renderServicosLista();
- renderClientes();
-}
-
-iniciar();
-
-</script>
-</body>
-</html>
