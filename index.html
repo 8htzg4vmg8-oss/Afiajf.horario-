@@ -270,7 +270,7 @@ input:focus,select:focus,textarea:focus{
 #toast.good{background:#16a34a}
 #toast.bad{background:#ef4444}
 
-/* PersonalizaÃ§Ã£o visual e layouts configurÃ¡veis */
+/* Personalizacao visual e layouts configuraveis */
 .config-grid{
  display:grid;
  grid-template-columns:1fr;
@@ -312,10 +312,10 @@ body.busca-fixa #clientes>.card:first-child{
  box-shadow:0 12px 28px rgba(15,23,42,.11);
 }
 .agenda-status-layout{
- grid-template-columns:58px 82px auto!important;
+ grid-template-columns:58px 86px minmax(0,1fr)!important;
 }
 .agenda-os-layout{
- grid-template-columns:54px 58px auto!important;
+ grid-template-columns:54px 62px minmax(0,1fr)!important;
 }
 .agenda-row.lotado{
  background:linear-gradient(90deg,rgba(0,122,255,.07),transparent);
@@ -438,7 +438,7 @@ body.apagar-separado .btn-delete-safe{
 }
 
 
-/* Agenda - opÃ§Ã£o A ajustada */
+/* Agenda - opcao A ajustada */
 .date-filter{
  display:flex;
  gap:8px;
@@ -477,6 +477,7 @@ body.apagar-separado .btn-delete-safe{
 .agenda-panel{
  overflow:hidden;
  padding:0;
+ border-radius:22px;
 }
 .agenda-title-row{
  display:flex;
@@ -498,11 +499,11 @@ body.apagar-separado .btn-delete-safe{
 .agenda-grid-header,
 .agenda-row{
  display:grid;
- grid-template-columns:64px auto;
- gap:10px;
+ grid-template-columns:82px minmax(0,1fr);
+ gap:12px;
  align-items:center;
- justify-content:flex-start;
  padding:0 14px;
+ width:100%;
 }
 .agenda-grid-header{
  height:32px;
@@ -515,7 +516,7 @@ body.apagar-separado .btn-delete-safe{
  text-align:left!important;
 }
 .agenda-row{
- min-height:45px;
+ min-height:54px;
  border-bottom:1px solid #eef0f3;
 }
 .agenda-row:last-child{border-bottom:0}
@@ -525,15 +526,17 @@ body.apagar-separado .btn-delete-safe{
  color:#111827;
 }
 .slots{
- display:flex;
- gap:9px;
- justify-content:flex-start;
+ width:100%;
+ display:grid;
+ grid-template-columns:repeat(5,minmax(0,1fr));
+ gap:10px;
  align-items:center;
 }
 .slot{
- width:31px;
- height:31px;
- border-radius:8px;
+ width:100%;
+ aspect-ratio:1/1;
+ height:auto;
+ border-radius:10px;
  border:2px solid #2b7cff;
  background:#fff;
  box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
@@ -564,7 +567,7 @@ body.apagar-separado .btn-delete-safe{
  padding:11px 0 2px;
 }
 .legend span{display:inline-flex;align-items:center;gap:7px}
-.legend .slot{width:19px;height:19px;border-radius:5px}
+.legend .slot{width:19px!important;height:19px!important;aspect-ratio:auto;border-radius:5px}
 .legend-title{
  text-align:center;
  color:#0b62d1;
@@ -572,7 +575,7 @@ body.apagar-separado .btn-delete-safe{
  margin:14px 0 0;
 }
 
-/* OS opÃ§Ã£o C */
+/* OS opcao C */
 .quick-form-card{
  padding:12px;
 }
@@ -759,7 +762,7 @@ body.apagar-separado .btn-delete-safe{
 }
 .pos-badge b{font-size:17px;line-height:1.05;margin-top:3px}
 
-/* ServiÃ§os opÃ§Ã£o C */
+/* Servicos opcao C */
 .list-head{
  display:flex;
  justify-content:space-between;
@@ -969,7 +972,7 @@ body.apagar-separado .btn-delete-safe{
  border-radius:12px;
 }
 
-/* Clientes opÃ§Ã£o C */
+/* Clientes opcao C */
 .search-row{
  display:grid;
  grid-template-columns:1fr 44px;
@@ -1080,7 +1083,7 @@ body.apagar-separado .btn-delete-safe{
 }
 .recent-os small{display:block;color:#6b7280;font-weight:800}
 
-/* Ajustes opÃ§Ã£o C */
+/* Ajustes opcao C */
 .shortcut-grid{
  display:grid;
  grid-template-columns:repeat(2,minmax(0,1fr));
@@ -1168,19 +1171,19 @@ body.apagar-separado .btn-delete-safe{
  .service-tile b{font-size:12px}
  .service-tile span{font-size:10px}
  .plus-mini{width:31px;height:31px;border-radius:10px;line-height:31px}
- .slot{width:30px;height:30px}
+ .slot{width:100%;height:auto;aspect-ratio:1/1}
  .slots{gap:8px}
- .agenda-grid-header,.agenda-row{grid-template-columns:62px auto;padding:0 12px;justify-content:flex-start}
+ .agenda-grid-header,.agenda-row{grid-template-columns:72px minmax(0,1fr);padding:0 12px}
  .agenda-time{font-size:15px}
  .summary-item b{font-size:20px}
  .summary-item span{font-size:9.5px}
- .total-pay-row{grid-template-columns:1fr auto auto}
+ .total-pay-row{grid-template-columns:1fr}
  .pay-toggle{font-size:11px;padding:9px 8px}
 }
 @media(max-width:360px){
- .slot{width:27px;height:27px;border-radius:7px}
+ .slot{width:100%;height:auto;aspect-ratio:1/1;border-radius:8px}
  .slots{gap:7px}
- .agenda-grid-header,.agenda-row{grid-template-columns:58px auto}
+ .agenda-grid-header,.agenda-row{grid-template-columns:66px minmax(0,1fr)}
  .os-card{padding:7px}
  .chips{grid-template-columns:1fr}
  .payment-pill{font-size:8.5px}
@@ -1194,7 +1197,7 @@ body.apagar-separado .btn-delete-safe{
 <div class="container">
  <div class="header">
   <h1 class="logo">AFIA</h1>
-  <div class="version">V15.3 FIREBASE Â· LAYOUTS EDITÃVEIS</div>
+  <div class="version">V15.6 FIREBASE - VISUAL CORRIGIDO</div>
  </div>
 
  <section id="loginScreen" class="card login-card">
@@ -1205,8 +1208,11 @@ body.apagar-separado .btn-delete-safe{
   <label>Senha</label>
   <input id="loginPass" type="password" autocomplete="current-password" placeholder="Senha do Firebase">
   <button class="btn btn-primary" onclick="login()">Entrar</button>
-  <p class="small">Acesso seguro usando Firebase Authentication.</p>
+  <button class="btn btn-blue" type="button" onclick="criarUsuarioFirebase()">Criar este usuario no Firebase</button>
+  <button class="btn btn-light" type="button" onclick="diagnosticarLoginFirebase()">Diagnosticar login</button>
+  <p class="small">Acesso seguro usando Firebase Authentication. Se ainda nao existir usuario no Firebase, use "Criar este usuario".</p>
   <div id="loginStatus" class="small">Conectando ao Firebase...</div>
+  <div id="loginDebug" class="small" style="margin-top:8px;white-space:pre-wrap"></div>
  </section>
 
  <main id="appScreen" class="hidden">
@@ -1219,7 +1225,7 @@ body.apagar-separado .btn-delete-safe{
     <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="16" y2="13"></line><line x1="12.5" y1="9.5" x2="12.5" y2="16.5"></line></svg></span>
     <span>OS</span>
    </button>
-   <button id="btnServicos" onclick="showTab('servicos')" aria-label="ServiÃ§os">
+   <button id="btnServicos" onclick="showTab('servicos')" aria-label="Servicos">
     <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="13" y2="17"></line></svg></span>
     <span>Serv.</span>
    </button>
@@ -1243,7 +1249,7 @@ body.apagar-separado .btn-delete-safe{
 
   <section id="agenda">
    <div class="card">
-    <h3 class="title">Agenda - opÃ§Ã£o A</h3>
+    <h3 class="title">Agenda - opcao A</h3>
     <label>Data</label>
     <div class="date-filter">
      <input type="date" id="agendaData" onchange="renderAll()">
@@ -1255,7 +1261,7 @@ body.apagar-separado .btn-delete-safe{
      <div class="summary-item"><b id="agTotal">70</b><span>vagas total</span></div>
      <div class="summary-item"><b id="agOcupadas">0</b><span>ocupadas</span></div>
      <div class="summary-item"><b id="agLivres">70</b><span>livres</span></div>
-     <div class="summary-item"><b id="agProxima" class="blue">-</b><span>prÃ³xima vaga</span></div>
+     <div class="summary-item"><b id="agProxima" class="blue">-</b><span>proxima vaga</span></div>
     </div>
    </div>
 
@@ -1280,7 +1286,7 @@ body.apagar-separado .btn-delete-safe{
 
   <section id="nova" class="hidden">
    <form id="formOS" class="card quick-form-card" onsubmit="salvarOS(event)">
-    <h3 class="title">Nova OS - opÃ§Ã£o C</h3>
+    <h3 class="title">Nova OS - opcao C</h3>
 
     <div class="field-icon">
      <label>Cliente</label>
@@ -1296,29 +1302,29 @@ body.apagar-separado .btn-delete-safe{
 
     <div class="row">
      <div><label>Entrega</label><input type="date" id="dataEntrega" required onchange="atualizarHorarioSugerido()"></div>
-     <div><label>HorÃ¡rio</label><select id="horaEntrega" required></select></div>
+     <div><label>Horario</label><select id="horaEntrega" required></select></div>
     </div>
-    <button id="btnProximaVaga" class="btn btn-light next-slot-btn" type="button" onclick="usarProximaVagaLivre()">Usar prÃ³xima vaga livre</button>
+    <button id="btnProximaVaga" class="btn btn-light next-slot-btn" type="button" onclick="usarProximaVagaLivre()">Usar proxima vaga livre</button>
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin:15px 0 8px">
-     <h3 class="title" style="margin:0">ServiÃ§os rÃ¡pidos</h3>
-     <button type="button" class="btn-light" style="width:auto;margin:0;padding:8px 10px;border-radius:12px;font-size:12px;font-weight:900" onclick="document.getElementById('ajustes').scrollIntoView()">Ver todos âº</button>
+     <h3 class="title" style="margin:0">Servicos rapidos</h3>
+     <button type="button" class="btn-light" style="width:auto;margin:0;padding:8px 10px;border-radius:12px;font-size:12px;font-weight:900" onclick="document.getElementById('ajustes').scrollIntoView()">Ver todos ></button>
     </div>
     <div id="quickServicesGrid" class="quick-services-grid"></div>
 
     <div class="selected-head">
-     <h3 class="title" style="margin:0">ServiÃ§os selecionados</h3>
+     <h3 class="title" style="margin:0">Servicos selecionados</h3>
      <span id="selectedCounter" class="counter">0</span>
     </div>
     <div id="selectedServices"></div>
 
-    <button class="btn btn-gray" type="button" onclick="toggleMaisOpcoes()">Mais opÃ§Ãµes</button>
+    <button class="btn btn-gray" type="button" onclick="toggleMaisOpcoes()">Mais opcoes</button>
     <div id="maisOpcoesOS" class="more-options">
-     <label>ObservaÃ§Ã£o</label>
+     <label>Observacao</label>
      <textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
-     <label>SituaÃ§Ã£o da OS</label>
+     <label>Situacao da OS</label>
      <select id="situacao">
-      <option value="confirmado">Cliente deixou o serviÃ§o / balcÃ£o</option>
+      <option value="confirmado">Cliente deixou o servico / balcao</option>
       <option value="agendado">Apenas agendamento / ainda vai trazer</option>
      </select>
      <label>Status da oficina</label>
@@ -1350,29 +1356,29 @@ body.apagar-separado .btn-delete-safe{
      <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar cliente</button>
      <button class="btn btn-blue" onclick="imprimirUltimaOS()">Via loja</button>
      <button class="btn" onclick="novaOSDepoisDeSalvar()">Nova OS</button>
-     <button class="btn btn-gray" onclick="showTab('servicos')">ServiÃ§os</button>
+     <button class="btn btn-gray" onclick="showTab('servicos')">Servicos</button>
     </div>
    </div>
   </section>
 
   <section id="servicos" class="hidden">
    <div class="card">
-    <h3 class="title">ServiÃ§os - opÃ§Ã£o C</h3>
+    <h3 class="title">Servicos - opcao C</h3>
     <label>Data</label>
     <input type="date" id="servicosData" onchange="renderServicosLista()">
     <label>Pesquisar OS</label>
-    <input id="buscaServico" placeholder="NÃºmero da OS, nome ou telefone" oninput="renderServicosLista()">
+    <input id="buscaServico" placeholder="Numero da OS, nome ou telefone" oninput="renderServicosLista()">
     <label>Status</label>
     <select id="filtroServicoStatus" onchange="renderServicosLista()">
      <option value="todos">Todos</option>
-     <option value="pendentes">Pendentes / nÃ£o retirados</option>
+     <option value="pendentes">Pendentes / nao retirados</option>
      <option value="pronto">Pronto</option>
      <option value="retirado">Retirado</option>
     </select>
    </div>
 
    <div class="list-head">
-    <h3>Ordens de serviÃ§o</h3>
+    <h3>Ordens de servico</h3>
     <span id="servicosResumoBadge" class="badge-dark">0 OS</span>
    </div>
    <div id="servicosLista" class="os-grid"></div>
@@ -1380,10 +1386,10 @@ body.apagar-separado .btn-delete-safe{
 
   <section id="clientes" class="hidden">
    <div class="card">
-    <h3 class="title">Clientes - opÃ§Ã£o C</h3>
+    <h3 class="title">Clientes - opcao C</h3>
     <div class="search-row">
      <input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
-     <button class="icon-btn" type="button">â</button>
+     <button class="icon-btn" type="button">ð</button>
     </div>
     <p id="clientesEncontrados" class="small"></p>
    </div>
@@ -1393,31 +1399,31 @@ body.apagar-separado .btn-delete-safe{
 
   <section id="ajustes" class="hidden">
    <div class="card">
-    <h3 class="title">Ajustes - opÃ§Ã£o C</h3>
-    <p class="small"><b>VersÃ£o:</b> V15.3 Firebase completo</p>
+    <h3 class="title">Ajustes - opcao C</h3>
+    <p class="small"><b>Versao:</b> V15.6 Firebase completo</p>
     <p class="small"><b>Status:</b> <span id="ajusteStatus" class="ok">Conectado</span></p>
     <p class="small"><b>Login:</b> <span id="emailLogado">-</span></p>
-    <div id="connectionStatus" class="connection-box">Verificando conexÃ£o...</div>
+    <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
     <div id="offlinePendentesStatus" class="small"></div>
     <button class="btn btn-gray" onclick="logout()">Sair</button>
    </div>
 
    <div class="card">
-    <h3 class="title">PersonalizaÃ§Ã£o do app</h3>
+    <h3 class="title">Personalizacao do app</h3>
     <p class="small">Escolha os layouts e deixe o app do seu jeito. Essas escolhas ficam salvas neste navegador.</p>
 
     <div class="config-grid">
      <div>
       <label>Layout da agenda</label>
       <select id="cfgAgendaLayout" onchange="salvarVisualConfig()">
-       <option value="classico">OpÃ§Ã£o A - quadradinhos clÃ¡ssicos</option>
-       <option value="status">OpÃ§Ã£o B - quadradinhos com status</option>
-       <option value="os">OpÃ§Ã£o C - quadradinhos + OS</option>
+       <option value="classico">Opcao A - quadradinhos classicos</option>
+       <option value="status">Opcao B - quadradinhos com status</option>
+       <option value="os">Opcao C - quadradinhos + OS</option>
       </select>
      </div>
 
      <div>
-      <label>Layout da tela ServiÃ§os</label>
+      <label>Layout da tela Servicos</label>
       <select id="cfgServicosLayout" onchange="salvarVisualConfig()">
        <option value="grade">Grade compacta, 2 OS lado a lado</option>
        <option value="lista">Lista completa, 1 OS por linha</option>
@@ -1427,9 +1433,9 @@ body.apagar-separado .btn-delete-safe{
      <div>
       <label>Layout da tela Clientes</label>
       <select id="cfgClientesLayout" onchange="salvarVisualConfig()">
-       <option value="historico">OpÃ§Ã£o C - lista + histÃ³rico</option>
-       <option value="simples">OpÃ§Ã£o A - lista simples</option>
-       <option value="cards">OpÃ§Ã£o B - cards com dados</option>
+       <option value="historico">Opcao C - lista + historico</option>
+       <option value="simples">Opcao A - lista simples</option>
+       <option value="cards">Opcao B - cards com dados</option>
       </select>
      </div>
 
@@ -1437,14 +1443,14 @@ body.apagar-separado .btn-delete-safe{
       <div>
        <label>Layout da OS</label>
        <select id="cfgNovaLayout" onchange="salvarVisualConfig()">
-        <option value="balcao">OpÃ§Ã£o C - balcÃ£o rÃ¡pido</option>
-        <option value="simples">Mais simples e espaÃ§ado</option>
+        <option value="balcao">Opcao C - balcao rapido</option>
+        <option value="simples">Mais simples e espacado</option>
        </select>
       </div>
       <div>
        <label>Layout dos ajustes</label>
        <select id="cfgAjustesLayout" onchange="salvarVisualConfig()">
-        <option value="atalhos">OpÃ§Ã£o C - atalhos visuais</option>
+        <option value="atalhos">Opcao C - atalhos visuais</option>
         <option value="lista">Lista compacta</option>
        </select>
       </div>
@@ -1452,7 +1458,7 @@ body.apagar-separado .btn-delete-safe{
     </div>
 
     <div class="toggle-row">
-     <div><b>Busca fixa no topo</b><br><span>Ao rolar ServiÃ§os ou Clientes, a busca fica sempre visÃ­vel.</span></div>
+     <div><b>Busca fixa no topo</b><br><span>Ao rolar Servicos ou Clientes, a busca fica sempre visivel.</span></div>
      <input id="cfgBuscaFixa" type="checkbox" onchange="salvarVisualConfig()">
     </div>
 
@@ -1462,20 +1468,20 @@ body.apagar-separado .btn-delete-safe{
     </div>
 
     <div class="toggle-row">
-     <div><b>Permitir pagamento parcial</b><br><span>Adiciona a opÃ§Ã£o Parcial junto de Pago e Pagar na retirada.</span></div>
+     <div><b>Permitir pagamento parcial</b><br><span>Adiciona a opcao Parcial junto de Pago e Pagar na retirada.</span></div>
      <input id="cfgPagamentoParcial" type="checkbox" onchange="salvarVisualConfig()">
     </div>
 
     <div class="toggle-row">
-     <div><b>BotÃ£o apagar separado</b><br><span>Deixa o botÃ£o Apagar mais afastado das aÃ§Ãµes usadas no balcÃ£o.</span></div>
+     <div><b>Botao apagar separado</b><br><span>Deixa o botao Apagar mais afastado das acoes usadas no balcao.</span></div>
      <input id="cfgApagarSeparado" type="checkbox" onchange="salvarVisualConfig()">
     </div>
    </div>
 
 
    <div class="card">
-    <h3 class="title">DiagnÃ³stico Firebase</h3>
-    <p class="small">Se o login entra, mas os dados nÃ£o aparecem, normalmente Ã© regra do Firestore. Para testar, use regra de usuÃ¡rio logado:</p>
+    <h3 class="title">Diagnostico Firebase</h3>
+    <p class="small">Se nao entra no login, verifique Authentication &gt; Sign-in method &gt; Email/senha e Authentication &gt; Settings &gt; Authorized domains. Se o login entra, mas os dados nao aparecem, normalmente e regra do Firestore. Para testar, use regra de usuario logado:</p>
     <textarea readonly style="font-size:12px;min-height:170px">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -1497,19 +1503,19 @@ service cloud.firestore {
     </button>
     <button class="shortcut" onclick="abrirPainelAjustes('relatorio')" type="button">
      <span class="big-icon">â¥</span>
-     <span><b>RelatÃ³rio</b><p>Resumo mensal para copiar ou baixar.</p><small class="green-dot">Pronto</small></span>
+     <span><b>Relatorio</b><p>Resumo mensal para copiar ou baixar.</p><small class="green-dot">Pronto</small></span>
     </button>
     <button class="shortcut" onclick="abrirPainelAjustes('servicos')" type="button">
      <span class="big-icon">ð§</span>
-     <span><b>ServiÃ§os</b><p>Gerencie serviÃ§os, preÃ§os e agenda.</p><small class="green-dot">EditÃ¡vel</small></span>
+     <span><b>Servicos</b><p>Gerencie servicos, precos e agenda.</p><small class="green-dot">Editavel</small></span>
     </button>
     <button class="shortcut" onclick="abrirPainelAjustes('mensagem')" type="button">
      <span class="big-icon">â</span>
-     <span><b>Mensagem</b><p>Configure mensagens automÃ¡ticas.</p><small class="green-dot">Local</small></span>
+     <span><b>Mensagem</b><p>Configure mensagens automaticas.</p><small class="green-dot">Local</small></span>
     </button>
     <button class="shortcut" onclick="abrirPainelAjustes('backup')" type="button">
      <span class="big-icon">ð¡</span>
-     <span><b>Backup/SeguranÃ§a</b><p>Backup, importaÃ§Ã£o e numeraÃ§Ã£o.</p><small class="green-dot">Protegido</small></span>
+     <span><b>Backup/Seguranca</b><p>Backup, importacao e numeracao.</p><small class="green-dot">Protegido</small></span>
     </button>
    </div>
 
@@ -1549,41 +1555,41 @@ const horarios = [
 ];
 
 const defaultServices = [
- {nome:"Alic. cutÃ­cula", preco:15, contaAgenda:true},
+ {nome:"Alic. cuticula", preco:15, contaAgenda:true},
  {nome:"Alic. novo", preco:45, contaAgenda:false},
  {nome:"Molas", preco:5, contaAgenda:false},
  {nome:"Facas", preco:12, contaAgenda:true},
  {nome:"Tesouras", preco:15, contaAgenda:true},
- {nome:"EspÃ¡tulas", preco:7, contaAgenda:false},
- {nome:"Outros serviÃ§os", preco:10, contaAgenda:false}
+ {nome:"Espatulas", preco:7, contaAgenda:false},
+ {nome:"Outros servicos", preco:10, contaAgenda:false}
 ];
 
 const defaultTemplate =
-`*AFIA - ORDEM DE SERVIÃO*
+`*AFIA - ORDEM DE SERVICO*
 OS: *{numero}*
 
-OlÃ¡, *{nome}*!
-Sua ordem de serviÃ§o foi registrada.
+Ola, *{nome}*!
+Sua ordem de servico foi registrada.
 
 Entrega: {data}
-HorÃ¡rio: {hora}
+Horario: {hora}
 
-*ServiÃ§os:*
+*Servicos:*
 {itens}
 
 Total: {valor}
 Pagamento: {pagamento}
 
-Obrigado pela preferÃªncia!`;
+Obrigado pela preferencia!`;
 
 const defaultTemplatePronto =
-`*AFIA - SERVIÃO PRONTO*
+`*AFIA - SERVICO PRONTO*
 OS: *{numero}*
 
-OlÃ¡, *{nome}*!
-Seu serviÃ§o ficou pronto e jÃ¡ pode ser retirado.
+Ola, *{nome}*!
+Seu servico ficou pronto e ja pode ser retirado.
 
-*ServiÃ§os:*
+*Servicos:*
 {itens}
 
 Total: {valor}
@@ -1685,7 +1691,7 @@ async function salvarVisualConfig(){
    await salvarConfig();
    aplicarVisualConfig();
    renderAll();
-   toast("PreferÃªncias de layout salvas.","good");
+   toast("Preferencias de layout salvas.","good");
  }catch(e){
    alert("Erro ao salvar layout: "+limparTexto(e.message));
  }
@@ -1736,7 +1742,7 @@ function emailUsuarioAtual(){
 function normalizarServicos(servicos){
  const lista = Array.isArray(servicos) && servicos.length ? servicos : defaultServices;
  return lista.map(s=>{
-   const nome = limparTexto(s.nome || "ServiÃ§o");
+   const nome = limparTexto(s.nome || "Servico");
    const temAgenda = Object.prototype.hasOwnProperty.call(s,"contaAgenda");
    return {
      nome,
@@ -1783,7 +1789,7 @@ function atualizarStatusConexao(){
    el.textContent = "Online - "+extra;
  }else{
    el.className = "connection-box connection-offline";
-   el.textContent = "Offline - nova OS fica pendente atÃ© voltar internet.";
+   el.textContent = "Offline - nova OS fica pendente ate voltar internet.";
  }
  atualizarStatusPendentesOffline();
 }
@@ -1799,7 +1805,7 @@ function atualizarStatusSnapshot(snap){
 
  if(snap.metadata.hasPendingWrites){
    el.className = "connection-box connection-offline";
-   el.textContent = "Online - alteraÃ§Ãµes aguardando sincronizar";
+   el.textContent = "Online - alteracoes aguardando sincronizar";
  }else if(snap.metadata.fromCache){
    el.className = "connection-box connection-offline";
    el.textContent = "Online - mostrando dados do cache";
@@ -1827,7 +1833,7 @@ function atualizarStatusPendentesOffline(){
  if(!el) return;
  const qtd = obterPendentesOffline().length;
  if(qtd > 0){
-   el.innerHTML = `<div class="pending-box"><b>${qtd} OS pendente(s) offline.</b><br>Elas serÃ£o enviadas ao Firebase quando a internet voltar.<br><button class="btn btn-blue" onclick="sincronizarPendentesOffline()">Sincronizar agora</button></div>`;
+   el.innerHTML = `<div class="pending-box"><b>${qtd} OS pendente(s) offline.</b><br>Elas serao enviadas ao Firebase quando a internet voltar.<br><button class="btn btn-blue" onclick="sincronizarPendentesOffline()">Sincronizar agora</button></div>`;
  }else{
    el.innerHTML = "";
  }
@@ -1904,13 +1910,13 @@ async function iniciar(){
    window.addEventListener("offline", atualizarStatusConexao);
 
    if(document.getElementById("loginStatus")){
-     loginStatus.innerHTML = '<span class="ok">Firebase conectado. FaÃ§a login.</span>';
+     loginStatus.innerHTML = '<span class="ok">Firebase conectado. Faca login.</span>';
    }
 
    auth.onAuthStateChanged(async user=>{
      if(user){
-       // Abre o app primeiro. Assim, se o Firestore estiver com regra/permissÃ£o errada,
-       // vocÃª nÃ£o fica preso na tela de login sem saber o que aconteceu.
+       // Abre o app primeiro. Assim, se o Firestore estiver com regra/permissao errada,
+       // voce nao fica preso na tela de login sem saber o que aconteceu.
        config = {
          servicos: defaultServices,
          template: defaultTemplate,
@@ -1926,7 +1932,7 @@ async function iniciar(){
          renderQuickServices();
          renderSelected();
        }catch(e){
-         mostrarErroFirebase("Login feito, mas nÃ£o consegui carregar as configuraÃ§Ãµes do Firestore.", e);
+         mostrarErroFirebase("Login feito, mas nao consegui carregar as configuracoes do Firestore.", e);
        }
 
        iniciarEscutaOrdens();
@@ -1944,6 +1950,43 @@ async function iniciar(){
  }
 }
 
+function erroAuthAmigavel(e){
+ const code = e && e.code ? String(e.code) : "";
+ const msg = e && e.message ? limparTexto(e.message) : limparTexto(e);
+
+ const dicas = {
+   "auth/invalid-credential":"E-mail ou senha incorretos, ou usuario ainda nao criado no Firebase Authentication.",
+   "auth/user-not-found":"Esse e-mail ainda nao esta cadastrado em Authentication > Users.",
+   "auth/wrong-password":"Senha incorreta.",
+   "auth/operation-not-allowed":"O login por E-mail/senha nao esta ativado em Authentication > Sign-in method.",
+   "auth/email-already-in-use":"Esse e-mail ja existe. Use Entrar em vez de Criar usuario.",
+   "auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.",
+   "auth/invalid-email":"O e-mail digitado nao e valido.",
+   "auth/network-request-failed":"Falha de internet ou bloqueio de conexao.",
+   "auth/too-many-requests":"Muitas tentativas. Aguarde alguns minutos e tente novamente.",
+   "auth/unauthorized-domain":"Este dominio nao esta autorizado no Firebase Authentication > Settings > Authorized domains."
+ };
+
+ return {
+   code: code || "sem codigo",
+   msg,
+   dica: dicas[code] || "Confira se o Firebase Authentication esta ativado, se o usuario existe e se o dominio do site esta autorizado."
+ };
+}
+
+function mostrarErroLogin(e){
+ const info = erroAuthAmigavel(e);
+ const texto =
+   "Erro: " + info.code + "\n" +
+   info.dica + "\n\n" +
+   "Detalhe tecnico: " + info.msg + "\n\n" +
+   "Dominio atual: " + window.location.hostname;
+
+ loginStatus.innerHTML = '<span class="bad">Falha no login: '+info.code+'</span>';
+ if(document.getElementById("loginDebug")) loginDebug.textContent = texto;
+ alert(texto);
+}
+
 async function login(){
  const email = loginUser.value.trim();
  const senha = loginPass.value;
@@ -1953,13 +1996,62 @@ async function login(){
  }
  try{
    loginStatus.innerHTML = '<span class="ok">Entrando...</span>';
+   if(document.getElementById("loginDebug")) loginDebug.textContent = "";
    await auth.signInWithEmailAndPassword(email, senha);
    loginPass.value = "";
  }catch(e){
-   const msg = limparTexto(e.message);
-   loginStatus.innerHTML = '<span class="bad">Falha no login: '+msg+'</span>';
-   alert("Login incorreto, usuÃ¡rio nÃ£o cadastrado ou Authentication nÃ£o ativado no Firebase.\n\nDetalhe: "+msg);
+   mostrarErroLogin(e);
  }
+}
+
+async function criarUsuarioFirebase(){
+ const email = loginUser.value.trim();
+ const senha = loginPass.value;
+ if(!email || !senha){
+   alert("Digite o e-mail e a senha primeiro. A senha precisa ter pelo menos 6 caracteres.");
+   return;
+ }
+ if(!confirm("Criar este usuario no Firebase Authentication?\n\nE-mail: "+email)){
+   return;
+ }
+ try{
+   loginStatus.innerHTML = '<span class="ok">Criando usuario...</span>';
+   if(document.getElementById("loginDebug")) loginDebug.textContent = "";
+   await auth.createUserWithEmailAndPassword(email, senha);
+   loginPass.value = "";
+   toast("Usuario criado e login feito.","good");
+ }catch(e){
+   mostrarErroLogin(e);
+ }
+}
+
+async function diagnosticarLoginFirebase(){
+ const linhas = [];
+ linhas.push("Diagnostico Firebase");
+ linhas.push("Dominio atual: " + window.location.hostname);
+ linhas.push("URL atual: " + window.location.href);
+ linhas.push("Auth iniciado: " + (auth ? "sim" : "nao"));
+ linhas.push("Firestore iniciado: " + (db ? "sim" : "nao"));
+ linhas.push("Internet: " + (navigator.onLine ? "online" : "offline"));
+
+ try{
+   const methods = loginUser && loginUser.value.trim()
+     ? await auth.fetchSignInMethodsForEmail(loginUser.value.trim())
+     : [];
+   if(loginUser && loginUser.value.trim()){
+     linhas.push("Metodos do e-mail: " + (methods.length ? methods.join(", ") : "nenhum usuario encontrado para este e-mail"));
+   }else{
+     linhas.push("Digite um e-mail para verificar se ele existe no Firebase.");
+   }
+ }catch(e){
+   const info = erroAuthAmigavel(e);
+   linhas.push("Erro ao consultar e-mail: " + info.code);
+   linhas.push(info.dica);
+   linhas.push(info.msg);
+ }
+
+ if(document.getElementById("loginDebug")) loginDebug.textContent = linhas.join("\\n");
+ loginStatus.innerHTML = '<span class="ok">Diagnostico exibido abaixo.</span>';
 }
 
 async function logout(){
@@ -1990,7 +2082,7 @@ function fecharApp(){
  despesas = [];
  loginScreen.classList.remove("hidden");
  appScreen.classList.add("hidden");
- if(document.getElementById("loginStatus")) loginStatus.innerHTML = '<span class="ok">Firebase conectado. FaÃ§a login.</span>';
+ if(document.getElementById("loginStatus")) loginStatus.innerHTML = '<span class="ok">Firebase conectado. Faca login.</span>';
 }
 
 async function carregarConfig(){
@@ -2026,7 +2118,7 @@ function iniciarEscutaOrdens(){
      snap.forEach(d=>ordens.push({id:d.id, ...d.data()}));
      renderAll();
    }, e=>{
-     mostrarErroFirebase("NÃ£o consegui ler as ordens no Firestore.", e);
+     mostrarErroFirebase("Nao consegui ler as ordens no Firestore.", e);
    });
  }catch(e){
    mostrarErroFirebase("Erro ao iniciar leitura das ordens.", e);
@@ -2040,7 +2132,7 @@ function iniciarEscutaDespesas(){
      despesas = [];
      snap.forEach(d=>despesas.push({id:d.id, ...d.data()}));
    }, e=>{
-     mostrarErroFirebase("NÃ£o consegui ler as despesas no Firestore.", e);
+     mostrarErroFirebase("Nao consegui ler as despesas no Firestore.", e);
    });
  }catch(e){
    mostrarErroFirebase("Erro ao iniciar leitura das despesas.", e);
@@ -2050,9 +2142,9 @@ function iniciarEscutaDespesas(){
 function setScreenInfo(t){
  const titulos = {
    agenda:["Agenda","Quadradinhos por meia hora"],
-   nova:["Nova OS","Atendimento rÃ¡pido no balcÃ£o"],
-   servicos:["ServiÃ§os","Busque e acompanhe as ordens de serviÃ§o"],
-   clientes:["Clientes","Lista + histÃ³rico do cliente"],
+   nova:["Nova OS","Atendimento rapido no balcao"],
+   servicos:["Servicos","Busque e acompanhe as ordens de servico"],
+   clientes:["Clientes","Lista + historico do cliente"],
    ajustes:["Ajustes","Atalhos visuais para configurar"]
  };
  const info = titulos[t] || titulos.agenda;
@@ -2141,9 +2233,9 @@ function calcularAlocacaoNoMapa(mapaOcupado, horaBase, quantidade){
  let restante = Number(quantidade || 0);
  if(restante <= 0) return aloc;
  const ordem = ordemPrioridade(horaBase);
- if(!ordem.length) throw new Error("HorÃ¡rio invÃ¡lido.");
+ if(!ordem.length) throw new Error("Horario invalido.");
  if(Number(mapaOcupado[horaBase] || 0) >= 5){
-   throw new Error("O horÃ¡rio escolhido jÃ¡ estÃ¡ cheio. Escolha outro horÃ¡rio com vaga livre.");
+   throw new Error("O horario escolhido ja esta cheio. Escolha outro horario com vaga livre.");
  }
  for(const i of ordem){
    const h = horarios[i];
@@ -2158,7 +2250,7 @@ function calcularAlocacaoNoMapa(mapaOcupado, horaBase, quantidade){
    }
  }
  if(restante > 0){
-   throw new Error("NÃ£o hÃ¡ vagas suficientes nesse dia para essa quantidade de serviÃ§os.");
+   throw new Error("Nao ha vagas suficientes nesse dia para essa quantidade de servicos.");
  }
  return aloc;
 }
@@ -2225,7 +2317,7 @@ function usarProximaVagaLivre(){
  const data = dataEntrega.value || hoje();
  const h = sugerirHorarioDisponivel(data);
  horaEntrega.value = h;
- toast("PrÃ³xima vaga livre selecionada: "+h,"good");
+ toast("Proxima vaga livre selecionada: "+h,"good");
 }
 
 function statusAgenda(usado){
@@ -2237,7 +2329,7 @@ function statusAgenda(usado){
 
 function osBadgeDoHorario(data,h){
  const lista = ordens.filter(o=>o.data === data && ((o.alocacoes && Number(o.alocacoes[h] || 0) > 0) || o.hora === h));
- if(!lista.length) return "â";
+ if(!lista.length) return "-";
  return "OS " + numeroTextoOS(lista[0]);
 }
 
@@ -2274,7 +2366,7 @@ function renderAgenda(){
  let html = "";
  horarios.forEach(h=>{
    if(h === "14:30"){
-     html += '<div class="interval-row">Intervalo de almoÃ§o</div>';
+     html += '<div class="interval-row">Intervalo de almoco</div>';
    }
 
    const usado = Math.min(5, Number(mapa[h] || 0));
@@ -2291,7 +2383,7 @@ function renderAgenda(){
      html += `<div class="agenda-status ${st.cls}">${st.txt}</div>`;
    }else if(v.agendaLayout === "os"){
      const badge = osBadgeDoHorario(data,h);
-     html += `<div>${badge === "â" ? "â" : `<span class="os-mini-badge">${badge}</span>`}</div>`;
+     html += `<div>${badge === "-" ? "-" : `<span class="os-mini-badge">${badge}</span>`}</div>`;
    }
 
    html += `<div class="slots">`;
@@ -2346,17 +2438,17 @@ function renderSelected(){
  const entries = Object.entries(selected);
  selectedCounter.textContent = String(entries.reduce((s,[,q])=>s+Number(q||0),0));
  if(!entries.length){
-   selectedServices.innerHTML = '<div class="small" style="padding:8px 2px">Nenhum serviÃ§o selecionado.</div>';
+   selectedServices.innerHTML = '<div class="small" style="padding:8px 2px">Nenhum servico selecionado.</div>';
  }else{
    selectedServices.innerHTML = entries.map(([nome,qtd])=>`
     <div class="selected-item">
      <div><b>${nome}</b><span>${moeda(precoServico(nome))}</span></div>
      <div class="qty-control">
-      <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',-1)">â</button>
+      <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',-1)">-</button>
       <strong>${qtd}</strong>
       <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',1)">+</button>
      </div>
-     <button class="trash" type="button" onclick="delete selected['${escapeJS(nome)}']; renderSelected();">â«</button>
+     <button class="trash" type="button" onclick="delete selected['${escapeJS(nome)}']; renderSelected();">X</button>
     </div>
    `).join("");
  }
@@ -2426,7 +2518,7 @@ async function salvarOS(e){
  e.preventDefault();
  const entries = Object.entries(selected).filter(([,q])=>Number(q)>0);
  if(!entries.length){
-   alert("Escolha pelo menos 1 serviÃ§o.");
+   alert("Escolha pelo menos 1 servico.");
    return;
  }
  const itens = {};
@@ -2501,12 +2593,12 @@ function mostrarAcoesDepoisDeSalvar(os){
  posSalvarPanel.classList.remove("hidden");
  posSalvarResumo.innerHTML = `
   <div class="pos-save-top">
-   <div class="pos-badge blue"><span>Ordem de serviÃ§o</span><b>${numeroTextoOS(os)}</b></div>
+   <div class="pos-badge blue"><span>Ordem de servico</span><b>${numeroTextoOS(os)}</b></div>
    <div class="pos-badge blue"><span>Entrega</span><b>${dataBR(os.data)}<br>${os.hora}</b></div>
    <div class="pos-badge light"><span>Valor</span><b>${moeda(os.valor)}</b></div>
   </div>
   <b>${os.nome}</b><br>
-  <span class="small">${getTotalServicosOS(os)} serviÃ§o(s) Â· ${os.pagamento}</span>
+  <span class="small">${getTotalServicosOS(os)} servico(s) - ${os.pagamento}</span>
  `;
  setTimeout(()=>posSalvarPanel.scrollIntoView({behavior:"smooth",block:"start"}),80);
 }
@@ -2541,12 +2633,12 @@ function htmlBadgePagamento(os){
 
 function nomeServicoCurto(nome){
  const n = normalizar(nome);
- if(n.includes("alic") && n.includes("cut")) return "Alic. cutÃ­cula";
+ if(n.includes("alic") && n.includes("cut")) return "Alic. cuticula";
  if(n.includes("alic") && n.includes("novo")) return "Alic. novo";
  if(n.includes("mola")) return "Molas";
  if(n.includes("tesoura")) return "Tesouras";
  if(n.includes("faca")) return "Facas";
- if(n.includes("espatu")) return "EspÃ¡tulas";
+ if(n.includes("espatu")) return "Espatulas";
  if(n.includes("outro")) return "Outros";
  return nome.length > 16 ? nome.slice(0,16)+"â¦" : nome;
 }
@@ -2594,17 +2686,17 @@ function renderServicosLista(){
    card.innerHTML = `
     <div class="os-card-top">
      <div class="os-num"><small>OS</small><b>${numeroTextoOS(os)}</b></div>
-     <div class="calendar-dot">â´</div>
+     <div class="calendar-dot">o</div>
     </div>
-    <div class="os-meta"><span>â£ ${dataBR(os.data)}</span><span>â· ${os.hora}</span></div>
+    <div class="os-meta"><span># ${dataBR(os.data)}</span><span>@ ${os.hora}</span></div>
     <div class="os-value-row">
      <div><small>Valor</small><b>${moeda(os.valor)}</b></div>
      ${htmlBadgePagamento(os)}
     </div>
     <div class="os-client"><b>${os.nome}</b><span>${os.telefone}</span></div>
     <div class="chips">${htmlChips(os)}</div>
-    <div class="status-line">â¢ ${os.status || "Recebido"}<span>Total da OS: ${getTotalServicosOS(os)} serviÃ§o(s)</span></div>
-    <button class="details-btn" type="button" onclick="toggleDetalhes('${os.id}')">Detalhes âº</button>
+    <div class="status-line">â¢ ${os.status || "Recebido"}<span>Total da OS: ${getTotalServicosOS(os)} servico(s)</span></div>
+    <button class="details-btn" type="button" onclick="toggleDetalhes('${os.id}')">Detalhes ></button>
     <div id="det_${os.id}" class="details-panel hidden">
      <p class="small"><b>Obs:</b> ${os.observacao || "-"}</p>
      <div class="action-grid">
@@ -2711,7 +2803,7 @@ function abrirViaImpressao(os){
  const htmlItens = Object.entries(os.itens || {}).map(([n,q])=>`<div>${n}: <b>${q}</b></div>`).join("");
  const w = window.open("", "_blank");
  if(!w){
-   alert("O navegador bloqueou a via de impressÃ£o.");
+   alert("O navegador bloqueou a via de impressao.");
    return;
  }
  w.document.open();
@@ -2724,7 +2816,7 @@ function abrirViaImpressao(os){
  </style></head><body><div class="box"><div class="no-print"><button class="btn" onclick="window.print()">Imprimir ou salvar PDF</button><button class="btn btn-gray" onclick="window.close()">Fechar</button></div>
  <div class="recibo"><div class="centro titulo">AFIA</div><div class="centro">VIA DA LOJA</div><div class="centro" style="font-size:28px;font-weight:900;margin:8px 0">OS ${numeroTextoOS(os)}</div><hr>
  <div class="linha">Cliente: ${os.nome}</div><div class="linha">Telefone: ${os.telefone}</div><div class="linha">Entrega: ${dataBR(os.data)} ${os.hora}</div><hr>
- <div class="linha"><b>ServiÃ§os</b></div>${htmlItens}<hr><div class="linha">Total de serviÃ§os: <b>${getTotalServicosOS(os)}</b></div><div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div><div class="linha">Valor: <b>${moeda(os.valor)}</b></div><div class="linha">Pagamento: ${os.pagamento}</div>${os.observacao ? `<div class="linha">Obs: ${os.observacao}</div>` : ""}</div></div></body></html>`);
+ <div class="linha"><b>Servicos</b></div>${htmlItens}<hr><div class="linha">Total de servicos: <b>${getTotalServicosOS(os)}</b></div><div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div><div class="linha">Valor: <b>${moeda(os.valor)}</b></div><div class="linha">Pagamento: ${os.pagamento}</div>${os.observacao ? `<div class="linha">Obs: ${os.observacao}</div>` : ""}</div></div></body></html>`);
  w.document.close();
 }
 
@@ -2774,13 +2866,13 @@ function renderClientes(){
      return `
       <div class="client-card" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
        <div class="client-card-top">
-        <div class="avatar">â</div>
+        <div class="avatar">ð¤</div>
         <div><b>${c.nome}</b><br><span class="small">${c.telefone}</span></div>
        </div>
        <div class="client-card-stats">
         <div><span>Total gasto</span><b>${moeda(c.valor)}</b></div>
-        <div><span>ServiÃ§os</span><b>${c.servicos}</b></div>
-        <div><span>Ãltima visita</span><b>${ultima ? dataBR(ultima.data) : "-"}</b></div>
+        <div><span>Servicos</span><b>${c.servicos}</b></div>
+        <div><span>Ultima visita</span><b>${ultima ? dataBR(ultima.data) : "-"}</b></div>
        </div>
       </div>
      `;
@@ -2794,8 +2886,8 @@ function renderClientes(){
    const ultima = ordensOrdenadas[0];
    return `
     <div class="client-row ${layout === "historico" && c.key===clienteSelecionadoKey ? "selected" : ""}" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
-     <div class="avatar">â</div>
-     <div><b>${c.nome}</b><span>${c.telefone}<br>Ãltima visita: ${ultima ? dataBR(ultima.data) : "-"}</span></div>
+     <div class="avatar">ð¤</div>
+     <div><b>${c.nome}</b><span>${c.telefone}<br>Ultima visita: ${ultima ? dataBR(ultima.data) : "-"}</span></div>
      <div class="visit-count"><b>${c.visitas}</b><br><span>visitas</span></div>
     </div>
    `;
@@ -2816,20 +2908,20 @@ function renderClienteDetalhe(c){
  const recentes = [...c.ordens].sort((a,b)=>String(b.data).localeCompare(String(a.data))).slice(0,4);
  clienteDetalhe.innerHTML = `
   <div class="client-detail">
-   <div class="detail-top"><h3 style="margin:0">${c.nome}</h3><button class="icon-btn" onclick="clienteSelecionadoKey=''; clienteDetalhe.innerHTML='';">Ã</button></div>
+   <div class="detail-top"><h3 style="margin:0">${c.nome}</h3><button class="icon-btn" onclick="clienteSelecionadoKey=''; clienteDetalhe.innerHTML='';">x</button></div>
    <div class="detail-stats">
     <div><span>Total gasto</span><b>${moeda(c.valor)}</b></div>
-    <div><span>Total serviÃ§os</span><b>${c.servicos}</b></div>
-    <div><span>Ãltima visita</span><b>${recentes[0] ? dataBR(recentes[0].data) : "-"}</b></div>
+    <div><span>Total servicos</span><b>${c.servicos}</b></div>
+    <div><span>Ultima visita</span><b>${recentes[0] ? dataBR(recentes[0].data) : "-"}</b></div>
    </div>
-   <div class="client-tabs"><button>Resumo</button><button class="active">HistÃ³rico</button><button>Dados</button></div>
+   <div class="client-tabs"><button>Resumo</button><button class="active">Historico</button><button>Dados</button></div>
    <h3 class="title">OS recentes</h3>
    ${recentes.map(os=>`
     <div class="recent-os">
      <span class="os-mini">OS ${numeroTextoOS(os)}</span>
      <div><b>${dataBR(os.data)}</b><small>${os.hora}</small></div>
      <div><small>${os.status}</small><b>${moeda(os.valor)}</b></div>
-     <button class="icon-btn" onclick="showTab('servicos'); buscaServico.value='${numeroTextoOS(os)}'; renderServicosLista();">âº</button>
+     <button class="icon-btn" onclick="showTab('servicos'); buscaServico.value='${numeroTextoOS(os)}'; renderServicosLista();">></button>
     </div>
    `).join("")}
    <button class="btn btn-light" onclick="showTab('servicos'); buscaServico.value='${limparTelefone(c.telefone)}'; renderServicosLista();">Ver todas as OS do cliente</button>
@@ -2870,14 +2962,14 @@ function renderPainelFinanceiro(){
  const r = resumoFinanceiro(osMes, despMes);
  ajustesPainel.innerHTML = `
   <h3 class="title">Financeiro</h3>
-  <label>MÃªs</label><input id="finMesLocal" type="month" value="${mes}" onchange="renderPainelFinanceiro()">
+  <label>Mes</label><input id="finMesLocal" type="month" value="${mes}" onchange="renderPainelFinanceiro()">
   <div class="finance-grid" style="margin-top:10px">
    <div class="finance-box"><span>Faturamento</span><b>${moeda(r.faturamento)}</b></div>
    <div class="finance-box"><span>Recebido</span><b>${moeda(r.recebido)}</b></div>
    <div class="finance-box"><span>A receber</span><b>${moeda(r.aReceber)}</b></div>
    <div class="finance-box"><span>Despesas</span><b>${moeda(r.despesas)}</b></div>
    <div class="finance-box"><span>Saldo recebido</span><b>${moeda(r.saldo)}</b></div>
-   <div class="finance-box"><span>ServiÃ§os</span><b>${r.servicos}</b></div>
+   <div class="finance-box"><span>Servicos</span><b>${r.servicos}</b></div>
   </div>
  `;
 }
@@ -2886,7 +2978,7 @@ function renderPainelDespesas(){
  ajustesPainel.innerHTML = `
   <h3 class="title">Despesas</h3>
   <div class="row"><div><label>Data</label><input id="dataDespesa" type="date" value="${hoje()}"></div><div><label>Categoria</label><select id="categoriaDespesa"><option>Material</option><option>Aluguel</option><option>Conta</option><option>Marketing</option><option>Equipamento</option><option>Outros</option></select></div></div>
-  <label>DescriÃ§Ã£o</label><input id="descDespesa" placeholder="Ex: compra de molas">
+  <label>Descricao</label><input id="descDespesa" placeholder="Ex: compra de molas">
   <label>Valor</label><input id="valorDespesa" type="number" step="0.01" placeholder="Ex: 50">
   <button class="btn btn-primary" onclick="salvarDespesa()">Adicionar despesa</button>
   <div id="despesasLista" style="margin-top:10px"></div>
@@ -2920,9 +3012,9 @@ function renderDespesasLista(){
  if(!despesas.length){el.innerHTML='<p class="small">Nenhuma despesa cadastrada.</p>';return;}
  el.innerHTML = despesas.slice(0,20).map(d=>`
   <div class="selected-item">
-   <div><b>${dataBR(d.data)} Â· ${d.categoria}</b><span>${d.descricao || "-"}</span></div>
+   <div><b>${dataBR(d.data)} - ${d.categoria}</b><span>${d.descricao || "-"}</span></div>
    <b>${moeda(d.valor)}</b>
-   <button class="trash" onclick="apagarDespesa('${d.id}')">â«</button>
+   <button class="trash" onclick="apagarDespesa('${d.id}')">X</button>
   </div>
  `).join("");
 }
@@ -2943,22 +3035,22 @@ function textoRelatorio(){
  const osMes = ordens.filter(o=>String(o.data).startsWith(mes));
  const despMes = despesas.filter(d=>String(d.data).startsWith(mes));
  const r = resumoFinanceiro(osMes, despMes);
- return `AFIA - RESUMO FINANCEIRO\nMÃªs: ${mes}\n\nPedidos: ${r.pedidos}\nServiÃ§os: ${r.servicos}\nFaturamento: ${moeda(r.faturamento)}\nRecebido: ${moeda(r.recebido)}\nA receber: ${moeda(r.aReceber)}\nDespesas: ${moeda(r.despesas)}\nSaldo recebido: ${moeda(r.saldo)}\n`;
+ return `AFIA - RESUMO FINANCEIRO\nMes: ${mes}\n\nPedidos: ${r.pedidos}\nServicos: ${r.servicos}\nFaturamento: ${moeda(r.faturamento)}\nRecebido: ${moeda(r.recebido)}\nA receber: ${moeda(r.aReceber)}\nDespesas: ${moeda(r.despesas)}\nSaldo recebido: ${moeda(r.saldo)}\n`;
 }
 
 function renderPainelRelatorio(){
  ajustesPainel.innerHTML = `
-  <h3 class="title">RelatÃ³rio</h3>
-  <p class="small">Resumo do mÃªs atual para copiar ou baixar.</p>
+  <h3 class="title">Relatorio</h3>
+  <p class="small">Resumo do mes atual para copiar ou baixar.</p>
   <textarea id="relatorioTexto">${textoRelatorio()}</textarea>
   <button class="btn btn-primary" onclick="copiarRelatorio()">Copiar resumo</button>
   <button class="btn btn-blue" onclick="baixarArquivo('afia_relatorio.txt', relatorioTexto.value, 'text/plain')">Baixar TXT</button>
-  <button class="btn btn-blue" onclick="fecharMesFinanceiro()">Salvar fechamento do mÃªs</button>
+  <button class="btn btn-blue" onclick="fecharMesFinanceiro()">Salvar fechamento do mes</button>
  `;
 }
 
 function copiarRelatorio(){
- navigator.clipboard.writeText(relatorioTexto.value).then(()=>toast("RelatÃ³rio copiado.","good")).catch(()=>alert(relatorioTexto.value));
+ navigator.clipboard.writeText(relatorioTexto.value).then(()=>toast("Relatorio copiado.","good")).catch(()=>alert(relatorioTexto.value));
 }
 
 async function fecharMesFinanceiro(){
@@ -2976,18 +3068,18 @@ async function fecharMesFinanceiro(){
    });
    toast("Fechamento salvo no Firebase.","good");
  }catch(e){
-   alert("Erro ao fechar mÃªs: "+limparTexto(e.message));
+   alert("Erro ao fechar mes: "+limparTexto(e.message));
  }
 }
 
 function renderPainelServicos(){
  ajustesPainel.innerHTML = `
-  <h3 class="title">ServiÃ§os e preÃ§os</h3>
-  <p class="small">Ative âconta agendaâ somente para serviÃ§os que ocupam vaga nos quadradinhos.</p>
+  <h3 class="title">Servicos e precos</h3>
+  <p class="small">Ative "conta agenda" somente para servicos que ocupam vaga nos quadradinhos.</p>
   <div id="servicosEdit"></div>
-  <label>Novo serviÃ§o</label><input id="novoServico" placeholder="Ex: Alicates de cutÃ­cula">
-  <label>PreÃ§o unitÃ¡rio</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
-  <button class="btn btn-primary" onclick="adicionarServico()">Adicionar serviÃ§o</button>
+  <label>Novo servico</label><input id="novoServico" placeholder="Ex: Alicates de cuticula">
+  <label>Preco unitario</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
+  <button class="btn btn-primary" onclick="adicionarServico()">Adicionar servico</button>
  `;
  renderServicosEdit();
 }
@@ -2997,9 +3089,9 @@ function renderServicosEdit(){
  if(!el) return;
  el.innerHTML = (config.servicos || []).map((s,i)=>`
   <div class="service-edit">
-   <div><b>${s.nome}</b><br><span>${s.contaAgenda ? "Conta na agenda" : "NÃ£o conta na agenda"}</span></div>
+   <div><b>${s.nome}</b><br><span>${s.contaAgenda ? "Conta na agenda" : "Nao conta na agenda"}</span></div>
    <input type="number" step="0.01" value="${s.preco}" onchange="config.servicos[${i}].preco=Number(this.value||0); salvarConfig().then(()=>{renderQuickServices(); renderSelected();})">
-   <button class="btn ${s.contaAgenda ? "btn-red" : "btn-blue"}" onclick="config.servicos[${i}].contaAgenda=!config.servicos[${i}].contaAgenda; salvarConfig().then(()=>renderServicosEdit());">${s.contaAgenda ? "NÃ£o contar" : "Contar"}</button>
+   <button class="btn ${s.contaAgenda ? "btn-red" : "btn-blue"}" onclick="config.servicos[${i}].contaAgenda=!config.servicos[${i}].contaAgenda; salvarConfig().then(()=>renderServicosEdit());">${s.contaAgenda ? "Nao contar" : "Contar"}</button>
   </div>
  `).join("");
 }
@@ -3012,9 +3104,9 @@ async function adicionarServico(){
    await salvarConfig();
    renderPainelServicos();
    renderQuickServices();
-   toast("ServiÃ§o adicionado.","good");
+   toast("Servico adicionado.","good");
  }catch(e){
-   alert("Erro ao adicionar serviÃ§o: "+limparTexto(e.message));
+   alert("Erro ao adicionar servico: "+limparTexto(e.message));
  }
 }
 
@@ -3024,18 +3116,18 @@ function renderPainelMensagem(){
   <p class="small">Use: {numero}, {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
   <label>Mensagem da OS</label><textarea id="templateMsg">${config.template || defaultTemplate}</textarea>
   <button class="btn btn-primary" onclick="config.template=templateMsg.value; salvarConfig().then(()=>toast('Mensagem salva.','good'))">Salvar mensagem da OS</button>
-  <label>Mensagem de serviÃ§o pronto</label><textarea id="templateProntoMsg">${config.templatePronto || defaultTemplatePronto}</textarea>
+  <label>Mensagem de servico pronto</label><textarea id="templateProntoMsg">${config.templatePronto || defaultTemplatePronto}</textarea>
   <button class="btn btn-primary" onclick="config.templatePronto=templateProntoMsg.value; salvarConfig().then(()=>toast('Mensagem de pronto salva.','good'))">Salvar mensagem de pronto</button>
  `;
 }
 
 function renderPainelBackup(){
  ajustesPainel.innerHTML = `
-  <h3 class="title">Backup / seguranÃ§a Firebase</h3>
-  <p class="small">Os dados ficam salvos no Firebase. O backup abaixo baixa uma cÃ³pia JSON do que estÃ¡ carregado nesta tela.</p>
-  <label>PrÃ³ximo nÃºmero da OS</label><input id="setProximoNumero" type="number" min="1" value="">
-  <button class="btn btn-primary" onclick="salvarProximoNumeroOS()">Salvar prÃ³ximo nÃºmero</button>
-  <button class="btn btn-blue" onclick="carregarNumeroAtual()">Ver nÃºmero atual</button>
+  <h3 class="title">Backup / seguranca Firebase</h3>
+  <p class="small">Os dados ficam salvos no Firebase. O backup abaixo baixa uma copia JSON do que esta carregado nesta tela.</p>
+  <label>Proximo numero da OS</label><input id="setProximoNumero" type="number" min="1" value="">
+  <button class="btn btn-primary" onclick="salvarProximoNumeroOS()">Salvar proximo numero</button>
+  <button class="btn btn-blue" onclick="carregarNumeroAtual()">Ver numero atual</button>
   <button class="btn btn-blue" onclick="exportarBackup()">Baixar backup JSON</button>
   <label>Importar backup JSON</label><input id="backupFile" type="file" accept="application/json" onchange="importarBackup(event)">
  `;
@@ -3053,15 +3145,15 @@ async function carregarNumeroAtual(){
 
 async function salvarProximoNumeroOS(){
  const n = Number(setProximoNumero.value || 1);
- if(n < 1){alert("Digite um nÃºmero maior que zero."); return;}
+ if(n < 1){alert("Digite um numero maior que zero."); return;}
  try{
    await db.doc(DOC_CONTADOR_OS).set({
      ultimo:n-1,
      atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()
    },{merge:true});
-   toast("PrÃ³xima OS definida como "+n+".","good");
+   toast("Proxima OS definida como "+n+".","good");
  }catch(e){
-   alert("Erro ao salvar numeraÃ§Ã£o: "+limparTexto(e.message));
+   alert("Erro ao salvar numeracao: "+limparTexto(e.message));
  }
 }
 
@@ -3104,7 +3196,7 @@ function importarBackup(e){
      }
      toast("Backup importado.","good");
    }catch(err){
-     alert("Arquivo invÃ¡lido ou erro ao importar.");
+     alert("Arquivo invalido ou erro ao importar.");
    }
  };
  reader.readAsText(file);
