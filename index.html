@@ -607,7 +607,7 @@ body{
  box-shadow:0 8px 20px rgba(17,24,39,.16);
 }
 body.tab-nova #screenActionBtn,
-body.tab-servicos #screenActionBtn,
+body.tab-financeiro #screenActionBtn,
 body.tab-clientes #screenActionBtn,
 body.tab-ajustes #screenActionBtn{
  display:none;
@@ -717,7 +717,7 @@ input,select,textarea{
 }
 
 
-/* V14.1 - Servicos separados */
+/* V14.2 - OS destacada, pagamento visual e servicos mais compactos */
 body.tab-servicos #screenActionBtn,
 body.tab-nova #screenActionBtn,
 body.tab-clientes #screenActionBtn,
@@ -761,57 +761,99 @@ body:not(.tab-agenda) .fab-new-os{
  overflow:hidden;
 }
 .service-os-top{
- display:flex;
- justify-content:space-between;
- gap:10px;
- align-items:flex-start;
- margin-bottom:10px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ align-items:stretch;
+ margin-bottom:8px;
 }
-.service-os-number{
+.service-os-number,
+.service-delivery-badge{
  background:#007aff;
  color:#fff;
  border-radius:18px;
- padding:10px 13px;
- min-width:155px;
- box-shadow:0 12px 24px rgba(0,122,255,.22);
+ padding:10px 12px;
+ box-shadow:0 12px 24px rgba(0,122,255,.18);
+ min-height:66px;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
 }
-.service-os-number span{
+.service-os-number span,
+.service-delivery-badge span{
  display:block;
  font-size:9px;
- letter-spacing:1.3px;
+ letter-spacing:1.15px;
  font-weight:950;
- opacity:.86;
+ opacity:.88;
+ text-transform:uppercase;
 }
 .service-os-number b{
  display:block;
- font-size:25px;
+ font-size:27px;
  line-height:1;
  margin-top:3px;
 }
+.service-delivery-badge b{
+ display:block;
+ font-size:17px;
+ line-height:1.08;
+ margin-top:4px;
+}
 .service-os-money{
- text-align:right;
- padding-top:4px;
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+ border-radius:16px;
+ padding:10px 11px;
+ margin-bottom:9px;
+ display:flex;
+ justify-content:space-between;
+ gap:8px;
+ align-items:center;
+}
+.service-os-money small{
+ display:block;
+ color:#6b7280;
+ font-size:10px;
+ font-weight:900;
+ text-transform:uppercase;
+ letter-spacing:.7px;
 }
 .service-os-money b{
  display:block;
- font-size:20px;
+ font-size:22px;
+ line-height:1.05;
+ margin-top:2px;
 }
-.service-os-money span{
- display:inline-block;
- margin-top:5px;
- background:#f3f4f6;
- color:#111827;
+.payment-pill{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
  border-radius:999px;
- padding:5px 8px;
+ padding:8px 10px;
  font-size:11px;
- font-weight:900;
+ font-weight:950;
+ text-align:center;
+ min-width:118px;
+ border:1px solid transparent;
+ line-height:1.05;
+}
+.payment-pill.pago{
+ background:#dcfce7;
+ color:#166534;
+ border-color:#86efac;
+}
+.payment-pill.retirada{
+ background:#fee2e2;
+ color:#991b1b;
+ border-color:#fecaca;
 }
 .service-client-box{
  background:#f8fafc;
  border:1px solid #eef0f3;
  border-radius:16px;
  padding:10px;
- margin-bottom:10px;
+ margin-bottom:9px;
 }
 .service-client-box b{
  display:block;
@@ -826,43 +868,80 @@ body:not(.tab-agenda) .fab-new-os{
 }
 .service-items-box{
  display:grid;
- grid-template-columns:1fr;
- gap:7px;
- margin:10px 0;
+ grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+ gap:6px;
+ margin:9px 0;
 }
 .service-chip{
  display:flex;
  justify-content:space-between;
  align-items:center;
- gap:8px;
+ gap:7px;
  background:#fff;
  border:1px solid #e5e7eb;
- border-radius:14px;
- padding:9px 10px;
- font-size:14px;
+ border-radius:12px;
+ padding:7px 8px;
+ font-size:12.5px;
  font-weight:850;
+ min-height:36px;
 }
 .service-chip span{
  color:#111827;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 .service-chip b{
  background:#111827;
  color:#fff;
- border-radius:10px;
- padding:4px 8px;
- min-width:34px;
+ border-radius:9px;
+ padding:3px 7px;
+ min-width:28px;
  text-align:center;
+ font-size:12px;
+ flex:0 0 auto;
 }
 .service-card-info{
  background:#f9fafb;
  border-radius:14px;
  padding:9px;
+ margin:8px 0 0;
+}
+.pos-save-main{
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+ border-radius:18px;
+ padding:11px;
+ margin-top:8px;
+}
+.pos-save-row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-bottom:8px;
+}
+.saving-note{
+ color:#6b7280;
+ font-weight:800;
+ font-size:12px;
+ margin-top:7px;
+}
+.btn[disabled]{
+ opacity:.65;
+ pointer-events:none;
 }
 #financeiroAjustes{
  margin-top:0;
 }
 #financeiroAjustes .card{
  box-shadow:0 8px 20px rgba(15,23,42,.04);
+}
+@media(max-width:430px){
+ .service-os-top,
+ .pos-save-row{grid-template-columns:1fr}
+ .service-os-number b{font-size:26px}
+ .service-delivery-badge b{font-size:18px}
+ .service-os-money{align-items:flex-start;flex-direction:column}
+ .payment-pill{width:100%;min-width:0}
 }
 
 #printArea{display:none}
@@ -989,20 +1068,21 @@ body:not(.tab-agenda) .fab-new-os{
      </select>
     </div>
 
-    <button class="btn" type="submit">Salvar OS</button>
+    <button id="btnSalvarOS" class="btn" type="submit">Salvar OS</button>
    </form>
 
    <div id="posSalvarPanel" class="card hidden">
     <h3 class="title">OS salva</h3>
     <p id="posSalvarResumo" class="small"></p>
-    <div class="quick-actions">
+    <div id="posSalvarAcoes" class="quick-actions">
      <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar cliente</button>
      <button class="btn btn-blue" onclick="imprimirUltimaOS()">Via loja</button>
      <button class="btn" onclick="novaOSDepoisDeSalvar()">Nova OS</button>
-     <button class="btn btn-gray" onclick="showTab('agenda')">Agenda</button>
+     <button class="btn btn-gray" onclick="showTab('servicos')">Servicos</button>
     </div>
    </div>
   </section>
+
 
 
   <section id="servicos" class="hidden">
@@ -1044,9 +1124,13 @@ body:not(.tab-agenda) .fab-new-os{
   <section id="ajustes" class="hidden">
    <div class="card">
     <h3 class="title">Ajustes</h3>
-    <p class="small"><b>Versao:</b> VERSAO 14.1 - SERVICOS SEPARADOS</p>
+    <p class="small"><b>Versao:</b> VERSAO 14.2 - SERVICOS FLUIDOS</p>
     <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
     <div id="cloudStatus" class="small">Conectando ao Firebase...</div>
+    <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
+    <div id="offlinePendentesStatus" class="small"></div>
+    <button class="btn btn-gray" onclick="logout()">Sair</button>
+   </div>
 
    <div class="card">
     <h3 class="title">Financeiro</h3>
@@ -1055,7 +1139,7 @@ body:not(.tab-agenda) .fab-new-os{
    </div>
 
    <div id="financeiroAjustes" class="hidden">
-<div class="card">
+   <div class="card">
     <h3 class="title">Gestao financeira</h3>
 
     <label>Mes</label>
@@ -1111,11 +1195,6 @@ body:not(.tab-agenda) .fab-new-os{
     <button class="btn btn-blue" onclick="exportarFinanceiroCSV()">Baixar planilha CSV</button>
     <button class="btn" onclick="fecharMesFinanceiro()">Fechar mes e zerar OS</button>
    </div>
-   </div>
-
-    <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
-    <div id="offlinePendentesStatus" class="small"></div>
-    <button class="btn btn-gray" onclick="logout()">Sair</button>
    </div>
 
    <div class="card">
@@ -1185,6 +1264,7 @@ let ordens = [];
 let despesas = [];
 let config = {};
 let ultimaOSSalva = null;
+let salvandoOS = false;
 
 const COL_ORDENS = "ordens_afia_v2";
 const COL_DESPESAS = "despesas_afia_v1";
@@ -1332,7 +1412,7 @@ function normalizarTemplateWhatsApp(t){
 
 async function iniciar(){
  document.getElementById("agendaData").value = hoje();
- document.getElementById("servicosData").value = hoje();
+ if(document.getElementById("servicosData")) servicosData.value = hoje();
  document.getElementById("dataEntrega").value = hoje();
  if(document.getElementById("dataDespesa")) dataDespesa.value = hoje();
  if(document.getElementById("finMes")) finMes.value = hoje().slice(0,7);
@@ -1684,16 +1764,27 @@ function mostrarToast(msg, tipo){
 
 function showTab(t){
  setScreenInfo(t);
- ["agenda","nova","servicos","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
- ["btnAgenda","btnNova","btnServicos","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
+ ["agenda","nova","servicos","clientes","ajustes"].forEach(id=>{
+   const el = document.getElementById(id);
+   if(el) el.classList.add("hidden");
+ });
+ ["btnAgenda","btnNova","btnServicos","btnClientes","btnAjustes"].forEach(id=>{
+   const el = document.getElementById(id);
+   if(el) el.classList.remove("active");
+ });
 
- document.getElementById(t).classList.remove("hidden");
+ const tela = document.getElementById(t);
+ if(tela) tela.classList.remove("hidden");
 
  if(t === "agenda") btnAgenda.classList.add("active");
  if(t === "nova"){btnNova.classList.add("active"); atualizarHorarioSugerido();}
  if(t === "servicos"){btnServicos.classList.add("active"); renderServicosLista();}
  if(t === "clientes") btnClientes.classList.add("active");
- if(t === "ajustes"){btnAjustes.classList.add("active"); renderFinanceiro();}
+ if(t === "ajustes"){
+   btnAjustes.classList.add("active");
+   renderFinanceiro();
+   renderNumeroOSAjustes();
+ }
 }
 
 function renderServicosOS(){
@@ -2077,6 +2168,52 @@ function atualizarHorarioSugerido(){
  }
 }
 
+
+function setEstadoBotaoSalvar(carregando){
+ const btn = document.getElementById("btnSalvarOS");
+ if(!btn) return;
+ btn.disabled = Boolean(carregando);
+ btn.textContent = carregando ? "Salvando..." : "Salvar OS";
+}
+
+function mostrarFormNovaOS(){
+ const form = document.querySelector("#nova form");
+ const panel = document.getElementById("posSalvarPanel");
+ if(panel) panel.classList.add("hidden");
+ const acoes = document.getElementById("posSalvarAcoes");
+ if(acoes) acoes.classList.remove("hidden");
+ if(form) form.classList.remove("hidden");
+}
+
+function mostrarPainelSalvando(os){
+ const form = document.querySelector("#nova form");
+ const panel = document.getElementById("posSalvarPanel");
+ const resumo = document.getElementById("posSalvarResumo");
+ const acoes = document.getElementById("posSalvarAcoes");
+
+ if(form) form.classList.add("hidden");
+ if(acoes) acoes.classList.add("hidden");
+
+ if(resumo){
+   resumo.innerHTML = `
+    <div class="pos-save-main">
+     <div class="pos-save-row">
+      <div class="service-os-number"><span>ORDEM DE SERVICO</span><b>Salvando</b></div>
+      <div class="service-delivery-badge"><span>ENTREGA</span><b>${dataBR(os.data)}<br>${os.hora || ""}</b></div>
+     </div>
+     <b>${limparTexto(os.nome)}</b><br>
+     <span class="small">Aguarde. Assim que o numero oficial da OS for gerado, aparecem os botoes de enviar e imprimir.</span>
+     <div class="saving-note">Sincronizando com o Firebase...</div>
+    </div>
+   `;
+ }
+
+ if(panel) {
+   panel.classList.remove("hidden");
+   setTimeout(()=>panel.scrollIntoView({behavior:"smooth", block:"start"}),80);
+ }
+}
+
 async function salvarOS(e){
  e.preventDefault();
 
@@ -2132,6 +2269,11 @@ async function salvarOS(e){
    criadoEm: firebase.firestore.FieldValue.serverTimestamp()
  };
 
+ if(salvandoOS) return;
+ salvandoOS = true;
+ setEstadoBotaoSalvar(true);
+ mostrarPainelSalvando(os);
+
  try{
    if(!navigator.onLine){
      salvarOSOffline(os);
@@ -2156,8 +2298,12 @@ async function salvarOS(e){
      dataEntrega.value = hoje();
      renderServicosOS();
    }else{
+     mostrarFormNovaOS();
      alert("Erro ao salvar: " + limparTexto(err.message));
    }
+ }finally{
+   salvandoOS = false;
+   setEstadoBotaoSalvar(false);
  }
 }
 
@@ -2165,19 +2311,33 @@ function mostrarAcoesDepoisDeSalvar(os){
  const form = document.querySelector("#nova form");
  const panel = document.getElementById("posSalvarPanel");
  const resumo = document.getElementById("posSalvarResumo");
+ const acoes = document.getElementById("posSalvarAcoes");
 
  if(form) form.classList.add("hidden");
+ if(acoes) acoes.classList.remove("hidden");
 
  if(resumo){
    const dist = Object.entries(os.alocacoes || {}).map(([h,q])=>h+": "+q).join(" | ");
    resumo.innerHTML = `
-    <b>OS ${numeroTextoOS(os)} - ${limparTexto(os.nome)}</b><br>
-    ${dataBR(os.data)} as ${os.hora} - ${Number(os.pecas || 0)} servicos - ${moeda(os.valor)}<br>
-    <span class="small">Agenda: ${getPecasAgenda(os)} | ${dist || "-"}</span>
+    <div class="pos-save-main">
+     <div class="pos-save-row">
+      <div class="service-os-number"><span>ORDEM DE SERVICO</span><b>${numeroTextoOS(os)}</b></div>
+      <div class="service-delivery-badge"><span>ENTREGA</span><b>${dataBR(os.data)}<br>${os.hora || ""}</b></div>
+     </div>
+     <div class="service-os-money">
+      <div><small>Valor</small><b>${moeda(os.valor)}</b></div>
+      ${htmlBadgePagamento(os)}
+     </div>
+     <b>${limparTexto(os.nome)}</b><br>
+     <span class="small">${Number(os.pecas || 0)} servicos - Agenda: ${getPecasAgenda(os)} | ${dist || "-"}</span>
+    </div>
    `;
  }
 
- if(panel) panel.classList.remove("hidden");
+ if(panel){
+   panel.classList.remove("hidden");
+   setTimeout(()=>panel.scrollIntoView({behavior:"smooth", block:"start"}),80);
+ }
  mostrarToast("OS "+numeroTextoOS(os)+" salva com sucesso","good");
 }
 
@@ -2420,28 +2580,51 @@ function prepararImpressao(os){
  `;
 }
 
+
+function nomeServicoCurto(nome){
+ const original = limparTexto(nome || "Servico").trim();
+ const n = original.toLowerCase();
+
+ if(n.includes("alicate") && n.includes("cut")) return "Alic. cuticula";
+ if(n.includes("alicate novo")) return "Alic. novo";
+ if(n.includes("tesoura")) return "Tesouras";
+ if(n.includes("faca")) return "Facas";
+ if(n.includes("mola")) return "Molas";
+ if(n.includes("espatu")) return "Espatulas";
+ if(n.includes("outros")) return "Outros";
+
+ return original.length > 18 ? original.slice(0,18).trim()+"..." : original;
+}
+
+function textoPagamentoCurto(os){
+ return pagamentoFoiRecebido(os) ? "PAGO" : "PAGAR NA RETIRADA";
+}
+
+function classePagamento(os){
+ return pagamentoFoiRecebido(os) ? "pago" : "retirada";
+}
+
+function htmlBadgePagamento(os){
+ return `<span class="payment-pill ${classePagamento(os)}">${textoPagamentoCurto(os)}</span>`;
+}
+
+function itensTextoCurto(os, sep){
+ sep = sep === undefined ? " | " : sep;
+ return Object.entries(os.itens || {})
+   .map(([n,q])=>nomeServicoCurto(n)+": "+Number(q || 0))
+   .join(sep);
+}
+
 function htmlItensSeparados(os){
  const entradas = Object.entries(os.itens || {});
 
  if(!entradas.length){
-   return '<div class="service-chip">Sem itens</div>';
+   return '<div class="service-chip"><span>Sem itens</span><b>0</b></div>';
  }
 
  return entradas.map(([nome,qtd])=>{
-   return `<div class="service-chip"><span>${limparTexto(nome)}</span><b>${Number(qtd || 0)}</b></div>`;
+   return `<div class="service-chip"><span>${nomeServicoCurto(nome)}</span><b>${Number(qtd || 0)}</b></div>`;
  }).join("");
-}
-
-function renderAgenda(){
- const data = agendaData.value;
- const diaCompleto = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
- const calcDia = calcularDistribuicoesDoDia(diaCompleto);
-
- statPedidos.textContent = diaCompleto.length;
- statPecas.textContent = diaCompleto.reduce((s,o)=>s + getPecasAgenda(o), 0);
- statValor.textContent = moeda(diaCompleto.reduce((s,o)=>s + Number(o.valor || 0), 0));
-
- renderGrid(calcDia);
 }
 
 function renderServicosLista(){
@@ -2452,6 +2635,7 @@ function renderServicosLista(){
  }
 
  const busca = document.getElementById("buscaServico") ? limparTexto(buscaServico.value).toLowerCase().trim() : "";
+ const buscaTel = limparTelefone(busca);
  const filtroStatus = document.getElementById("filtroServicoStatus") ? filtroServicoStatus.value : "todos";
 
  let dia = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
@@ -2470,13 +2654,12 @@ function renderServicosLista(){
    }
 
    if(!okStatus) return false;
-
    if(!busca) return true;
 
    return numeroTextoOS(o).toLowerCase().includes(busca) ||
           limparTexto(o.nome).toLowerCase().includes(busca) ||
           limparTexto(o.telefone).toLowerCase().includes(busca) ||
-          limparTelefone(o.telefone).includes(limparTelefone(busca));
+          (buscaTel && limparTelefone(o.telefone).includes(buscaTel));
  });
 
  if(document.getElementById("servicosResumoBadge")){
@@ -2488,8 +2671,7 @@ function renderServicosLista(){
 
  servicosLista.innerHTML = dia.length ? "" : '<div class="card small">Nenhuma ordem de servico encontrada nesta data/busca.</div>';
 
- dia.forEach((os,idx)=>{
-   const chave = os.id || ("semid_"+idx);
+ dia.forEach((os)=>{
    const d = document.createElement("div");
    d.className = "card os-card service-card-destaque";
 
@@ -2504,10 +2686,18 @@ function renderServicosLista(){
       <span>ORDEM DE SERVICO</span>
       <b>${numeroTextoOS(os)}</b>
      </div>
-     <div class="service-os-money">
-      <b>${moeda(os.valor)}</b>
-      <span>${limparTexto(os.status)}</span>
+     <div class="service-delivery-badge">
+      <span>ENTREGA</span>
+      <b>${dataBR(os.data)}<br>${os.hora || ""}</b>
      </div>
+    </div>
+
+    <div class="service-os-money">
+     <div>
+      <small>Valor</small>
+      <b>${moeda(os.valor)}</b>
+     </div>
+     ${htmlBadgePagamento(os)}
     </div>
 
     <div class="service-client-box">
@@ -2520,8 +2710,8 @@ function renderServicosLista(){
     </div>
 
     <p class="small service-card-info">
-     Entrega: <b>${dataBR(os.data)} ${os.hora || ""}</b><br>
-     Total da OS: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b> servico(s) | ${limparTexto(os.pagamento)}
+     Status da oficina: <b>${limparTexto(os.status || "Recebido")}</b><br>
+     Total da OS: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b> servico(s)
     </p>
 
     <button class="btn btn-gray" type="button" onclick="this.nextElementSibling.classList.toggle('hidden')">Detalhes e acoes</button>
@@ -2542,6 +2732,18 @@ function renderServicosLista(){
 
    servicosLista.appendChild(d);
  });
+}
+
+function renderAgenda(){
+ const data = agendaData.value;
+ const diaCompleto = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
+ const calcDia = calcularDistribuicoesDoDia(diaCompleto);
+
+ statPedidos.textContent = diaCompleto.length;
+ statPecas.textContent = diaCompleto.reduce((s,o)=>s + getPecasAgenda(o), 0);
+ statValor.textContent = moeda(diaCompleto.reduce((s,o)=>s + Number(o.valor || 0), 0));
+
+ renderGrid(calcDia);
 }
 
 function renderGrid(calcDia){
@@ -2637,6 +2839,7 @@ function htmlCaixasFinanceiro(r){
   <p class="small">Pedidos: <b>${r.pedidos}</b>. O saldo usa apenas pagamentos marcados como Pago.</p>
  `;
 }
+
 
 function toggleFinanceiroAjustes(){
  const el = document.getElementById("financeiroAjustes");
