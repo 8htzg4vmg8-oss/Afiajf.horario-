@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -11,439 +10,54 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f2f2f7;color:#1d1d1f}
-.container{max-width:540px;margin:0 auto}
-.header{text-align:center;margin:14px 0}
-.header h1{margin:0;font-size:34px;letter-spacing:2px}
-.header p{margin:5px 0 0;color:#777;font-size:12px;font-weight:800;letter-spacing:.8px}
-.version{font-size:10px!important;color:#999!important;font-weight:700!important;letter-spacing:0!important}
-.card{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
-.title{color:#007aff;font-size:14px;font-weight:900;text-transform:uppercase;margin:0 0 12px}
-.tabs{display:flex;gap:5px;background:#e5e5ea;padding:5px;border-radius:14px;margin-bottom:12px}
-.tabs button{flex:1;border:0;background:transparent;border-radius:10px;padding:10px 2px;font-size:12px;font-weight:800}
-.tabs button.active{background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.12)}
-.stats{display:flex;gap:8px;margin-bottom:12px}
-.stat{flex:1;background:#fff;border-radius:14px;text-align:center;padding:12px 4px;font-size:12px;color:#777;font-weight:800}
-.stat b{display:block;color:#111;font-size:21px}
-.hidden{display:none}
-label{display:block;margin:10px 0 5px;font-size:13px;font-weight:800}
-input,select,textarea{width:100%;padding:12px;border:1px solid #d2d2d7;border-radius:10px;font-size:16px;background:#fff;font-family:inherit}
-textarea{min-height:80px}
-.row{display:flex;gap:8px}.row>*{flex:1}
-.btn{width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;font-size:15px;font-weight:900;color:#fff;background:#34c759}
-.btn-blue{background:#007aff}.btn-red{background:#ff3b30}.btn-gray{background:#777}
-.small{font-size:12px;color:#777}
-.ok{color:#23a647;font-weight:900}.bad{color:#ff3b30;font-weight:900}
-.qty-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid #eee;padding:9px 0}
-.qty-row:last-child{border-bottom:0}
-.qty-name{flex:1;font-weight:800;font-size:14px}
-.qty-name span{display:block;color:#777;font-size:11px;font-weight:700}
-.qty-row input{width:74px;text-align:center;padding:8px}
-.agenda-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px;background:#fff}
-.agenda-table td,.agenda-table th{border:1px solid #e5e5ea;padding:8px;text-align:center}
-.agenda-table th{font-size:12px;color:#777;background:#f8f8fa}
-.time{font-weight:900;width:72px}
-.slots{display:flex;justify-content:center;gap:7px}
-.slot{width:34px;height:34px;border:3px solid #8e8e93;border-radius:9px;background:#fff}
-.slot.on{background:#ff3b30;border-color:#ff3b30}.slot.pending{background:#ff9500;border-color:#ff9500}
-.interval td{background:#f1f1f4;color:#777;font-weight:900}
-.os-card{border-left:5px solid #007aff}
-.os-card p{margin:5px 0;font-size:14px}
-.service-edit{display:flex;gap:6px;align-items:center;border-bottom:1px solid #eee;padding:8px 0}
-.service-edit b{flex:1}
-.service-edit button{width:auto;margin:0;padding:8px 10px;border-radius:8px}
-
-.finance-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.finance-box{background:#f8f8fa;border-radius:12px;padding:10px;text-align:center}
-.finance-box span{display:block;font-size:11px;color:#777;font-weight:800}
-.finance-box b{display:block;font-size:18px;color:#111;margin-top:3px}
-.finance-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
-.finance-table th,.finance-table td{border-bottom:1px solid #eee;padding:7px 4px;text-align:left}
-.finance-table th{color:#777;font-size:11px}
-.finance-table td:last-child,.finance-table th:last-child{text-align:right}
-.connection-box{font-size:12px;font-weight:900;margin-top:6px;padding:8px;border-radius:10px;background:#f8f8fa}
-.connection-online{color:#23a647}
-.connection-offline{color:#ff3b30}
-.pending-box{background:#fff8e6;border:1px solid #ffd37a;border-radius:12px;padding:10px;margin-top:10px;font-size:12px}
-.os-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.os-actions .btn{margin-top:0;padding:11px 6px;font-size:13px}
-.quick-services .qty-row{gap:10px}
-.qty-controls{display:flex;align-items:center;gap:6px}
-.qty-btn{width:36px;height:36px;border:0;border-radius:10px;font-size:20px;font-weight:900;color:#fff;background:#007aff}
-.qty-btn.minus{background:#777}
-.qty-controls input{width:58px;text-align:center;padding:8px}
-.more-options{display:none;margin-top:10px;border-top:1px solid #eee;padding-top:10px}
-.more-options.open{display:block}
-.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.quick-actions .btn{margin-top:0}
-.compact-line{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-.compact-line b{font-size:16px}
-.compact-muted{font-size:12px;color:#777;font-weight:800}
-
-
-
-/* V13 - Layout clean premium */
+:root{
+ --blue:#007aff;
+ --blue2:#0b6ff2;
+ --navy:#0f172a;
+ --text:#111827;
+ --muted:#6b7280;
+ --line:#e5e7eb;
+ --bg:#f5f7fb;
+ --card:#fff;
+ --green:#16a34a;
+ --red:#ef4444;
+ --soft-blue:#eff6ff;
+}
+html,body{min-height:100%}
 body{
- background:linear-gradient(180deg,#f8f9fc 0%,#eef1f7 100%);
- padding:10px;
- color:#1c1d20;
+ margin:0;
+ padding:10px 10px 32px;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+ background:radial-gradient(circle at top left, rgba(0,122,255,.07), transparent 34%),linear-gradient(180deg,#fbfcff 0%,#eef2f7 100%);
+ color:var(--text);
+ -webkit-font-smoothing:antialiased;
 }
-.container{max-width:560px}
-.header{
- text-align:left;
- margin:6px 2px 12px;
- padding:8px 4px 2px;
-}
-.header h1{
- font-size:30px;
- letter-spacing:4px;
- font-weight:950;
- line-height:1;
-}
-.header p{
- margin-top:4px;
- color:#6b7280;
- font-size:11px;
- letter-spacing:1.2px;
-}
-.version{
- font-size:9px!important;
- color:#a1a1aa!important;
- letter-spacing:.3px!important;
-}
-.card{
- border-radius:20px;
- padding:14px;
- margin-bottom:10px;
- box-shadow:0 8px 26px rgba(31,41,55,.055);
- border:1px solid rgba(229,231,235,.9);
-}
-.status-card{
- padding:10px 12px;
- box-shadow:none;
- background:rgba(255,255,255,.72);
-}
-.status-card #cloudStatus{
- font-size:12px;
-}
-.connection-box{
- margin-top:6px;
- padding:6px 8px;
- border-radius:999px;
- background:#f3f4f6;
- font-size:11px;
-}
-.tabs{
- position:sticky;
- top:0;
- z-index:20;
- overflow-x:auto;
- -webkit-overflow-scrolling:touch;
- display:flex;
- gap:7px;
- background:rgba(242,244,248,.92);
- backdrop-filter:blur(14px);
- padding:6px;
- border-radius:18px;
- margin-bottom:10px;
- box-shadow:0 6px 18px rgba(31,41,55,.06);
-}
-.tabs::-webkit-scrollbar{display:none}
-.tabs button{
- flex:0 0 auto;
- min-width:86px;
- padding:10px 10px;
- border-radius:14px;
- color:#4b5563;
- font-size:12px;
-}
-.tabs button.active{
- background:#111827;
- color:#fff;
- box-shadow:0 4px 12px rgba(17,24,39,.18);
-}
-.stats{
- gap:7px;
- margin-bottom:10px;
-}
-.stat{
- padding:10px 4px;
- border:1px solid rgba(229,231,235,.85);
- box-shadow:0 5px 15px rgba(31,41,55,.035);
-}
-.stat b{
- font-size:18px;
-}
-.title{
- color:#111827;
- font-size:13px;
- letter-spacing:.6px;
- margin-bottom:10px;
-}
-label{
- margin:9px 0 4px;
- color:#374151;
- font-size:12px;
-}
-input,select,textarea{
- border:1px solid #e5e7eb;
- border-radius:14px;
- background:#fafafa;
- padding:12px;
-}
-input:focus,select:focus,textarea:focus{
- outline:0;
- border-color:#007aff;
- background:#fff;
- box-shadow:0 0 0 3px rgba(0,122,255,.10);
-}
-.btn{
- border-radius:15px;
- padding:13px;
- box-shadow:0 4px 12px rgba(31,41,55,.08);
-}
-.btn-blue{background:#111827}
-.btn-gray{background:#6b7280}
-.btn-red{background:#ef4444}
-.qty-row{
- background:#f9fafb;
- border:1px solid #eef0f3;
- border-bottom:1px solid #eef0f3;
- border-radius:16px;
- padding:10px;
- margin-bottom:8px;
-}
-.qty-row:last-child{border-bottom:1px solid #eef0f3}
-.qty-name{
- font-size:14px;
-}
-.qty-name span{
- color:#8a8f98;
- font-size:10.5px;
- margin-top:2px;
-}
-.qty-btn{
- background:#111827;
- border-radius:12px;
- box-shadow:none;
-}
-.qty-btn.minus{
- background:#e5e7eb;
- color:#111827;
-}
-.qty-controls input{
- background:#fff;
- font-weight:900;
- border-radius:12px;
-}
-.more-options{
- border-top:0;
- background:#f9fafb;
- border-radius:16px;
- padding:12px;
-}
-.agenda-table{
- border-radius:16px;
- overflow:hidden;
-}
-.agenda-table th{
- background:#f3f4f6;
- color:#6b7280;
-}
-.agenda-table td,.agenda-table th{
- border-color:#eceff3;
-}
-.slot{
- width:30px;
- height:30px;
- border-width:2px;
- border-radius:9px;
-}
-.os-card{
- border-left:0;
- border:1px solid #e5e7eb;
- padding:13px;
-}
-.os-card p{
- font-size:13px;
- line-height:1.32;
-}
-.compact-line b{
- font-size:15px;
-}
-.compact-muted{
- color:#6b7280;
- font-size:11.5px;
-}
-.os-actions{
- gap:7px;
-}
-.os-actions .btn{
- padding:10px 6px;
- border-radius:13px;
- font-size:12.5px;
-}
-.quick-actions{
- gap:8px;
-}
-.quick-actions .btn{
- border-radius:14px;
-}
-.finance-box{
- background:#f9fafb;
- border:1px solid #eef0f3;
- border-radius:16px;
-}
-.finance-box b{
- font-size:16px;
-}
-.finance-table th,.finance-table td{
- padding:9px 4px;
-}
-.service-edit{
- background:#f9fafb;
- border:1px solid #eef0f3;
- border-bottom:1px solid #eef0f3;
- border-radius:14px;
- margin-bottom:8px;
- padding:9px;
-}
-.pending-box{
- border-radius:16px;
-}
-@media(max-width:380px){
- .tabs button{min-width:78px;font-size:11px}
- .slot{width:27px;height:27px}
- .row{gap:6px}
-}
-
-
-/* V13.2 - Menu inferior clean */
-body{
- padding-bottom:92px;
-}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.container{max-width:570px;margin:0 auto}
 .header{
  text-align:center;
- margin:8px 0 14px;
- padding:8px 0 0;
+ padding:8px 0 6px;
 }
-.header h1{
- font-size:36px;
- letter-spacing:5px;
- font-weight:950;
-}
-.status-card{
- display:none!important;
-}
-.tabs{
- position:fixed;
- left:10px;
- right:10px;
- bottom:10px;
- top:auto;
- z-index:999;
- max-width:560px;
- margin:0 auto;
- height:74px;
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:0;
- background:rgba(255,255,255,.94);
- backdrop-filter:blur(18px);
- -webkit-backdrop-filter:blur(18px);
- border:1px solid rgba(229,231,235,.95);
- border-radius:24px;
- padding:7px 6px 6px;
- box-shadow:0 -8px 30px rgba(17,24,39,.13);
- overflow:visible;
-}
-.tabs button{
- min-width:0;
- width:100%;
- height:61px;
- padding:3px 2px 0;
- border-radius:17px;
- color:#71717a;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- gap:4px;
- font-size:11px;
+.logo{
+ margin:0;
+ font-size:38px;
  line-height:1;
- position:relative;
- background:transparent;
+ letter-spacing:6px;
+ font-weight:950;
+ color:var(--blue);
 }
-.tabs button.active{
- background:transparent;
- color:#111827;
- box-shadow:none;
-}
-.tabs button.active:after{
- content:"";
- position:absolute;
- bottom:2px;
- width:28px;
- height:4px;
- border-radius:999px;
- background:#16a34a;
-}
-.nav-icon{
- width:27px;
- height:27px;
- display:flex;
- align-items:center;
- justify-content:center;
-}
-.nav-icon svg{
- width:27px;
- height:27px;
- fill:none;
- stroke:currentColor;
- stroke-width:2.2;
- stroke-linecap:round;
- stroke-linejoin:round;
-}
-.tabs button.active .nav-icon svg{
- stroke:#000;
-}
-.tabs button span:last-child{
+.version{
+ font-size:10px;
+ color:#94a3b8;
  font-weight:800;
- letter-spacing:.1px;
-}
-.connection-box{
- display:block;
-}
-@media(max-width:380px){
- .tabs{
-  left:8px;
-  right:8px;
-  height:72px;
-  border-radius:22px;
- }
- .tabs button{
-  font-size:10px;
- }
- .nav-icon,.nav-icon svg{
-  width:25px;
-  height:25px;
- }
-}
-
-
-/* V13.3 - Menu superior com icones */
-body{
- padding-bottom:10px;
+ margin-top:4px;
 }
 .tabs{
  position:sticky;
- top:6px;
- bottom:auto;
- left:auto;
- right:auto;
- max-width:none;
- margin:0 0 12px 0;
- height:74px;
+ top:4px;
+ z-index:50;
+ height:78px;
  display:grid;
  grid-template-columns:repeat(5,1fr);
  gap:0;
@@ -451,17 +65,18 @@ body{
  backdrop-filter:blur(18px);
  -webkit-backdrop-filter:blur(18px);
  border:1px solid rgba(229,231,235,.95);
- border-radius:24px;
- padding:7px 6px 6px;
- box-shadow:0 8px 24px rgba(17,24,39,.08);
- overflow:visible;
+ border-radius:26px;
+ padding:8px 7px 7px;
+ box-shadow:0 12px 30px rgba(15,23,42,.09);
+ margin-bottom:12px;
 }
 .tabs button{
+ border:0;
  min-width:0;
  width:100%;
  height:61px;
  padding:3px 2px 0;
- border-radius:17px;
+ border-radius:18px;
  color:#71717a;
  display:flex;
  flex-direction:column;
@@ -472,87 +87,27 @@ body{
  line-height:1;
  position:relative;
  background:transparent;
-}
-.tabs button.active{
- background:transparent;
- color:#111827;
- box-shadow:none;
-}
-.tabs button.active:after{
- content:"";
- position:absolute;
- bottom:2px;
- width:28px;
- height:4px;
- border-radius:999px;
- background:#16a34a;
-}
-.nav-icon{
- width:27px;
- height:27px;
- display:flex;
- align-items:center;
- justify-content:center;
-}
-.nav-icon svg{
- width:27px;
- height:27px;
- fill:none;
- stroke:currentColor;
- stroke-width:2.2;
- stroke-linecap:round;
- stroke-linejoin:round;
-}
-.tabs button.active .nav-icon svg{
- stroke:#000;
-}
-@media(max-width:380px){
- .tabs{
-  height:72px;
-  border-radius:22px;
- }
- .tabs button{
-  font-size:10px;
- }
- .nav-icon,.nav-icon svg{
-  width:25px;
-  height:25px;
- }
-}
-
-
-/* V14 - Visual App Premium */
-body{
- background:
-  radial-gradient(circle at top left, rgba(22,163,74,.08), transparent 34%),
-  linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
-}
-.container{
- max-width:570px;
-}
-.header{
- margin:5px 0 8px;
-}
-.header h1{
- font-size:38px;
- letter-spacing:6px;
- background:linear-gradient(90deg,#111827,#404650);
- -webkit-background-clip:text;
- background-clip:text;
- color:transparent;
-}
-.tabs{
- top:4px;
- height:78px;
- padding:8px 7px 7px;
- border-radius:26px;
- box-shadow:0 12px 30px rgba(15,23,42,.09);
-}
-.tabs button{
- border-radius:18px;
+ font-weight:800;
 }
 .tabs button.active{
  color:#000;
+}
+.tabs button.active:after{
+ content:"";
+ position:absolute;
+ bottom:-1px;
+ width:28px;
+ height:4px;
+ border-radius:999px;
+ background:#16a34a;
+}
+.nav-icon{
+ width:31px;
+ height:31px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ transition:.15s ease;
 }
 .tabs button.active .nav-icon{
  background:#111827;
@@ -560,22 +115,9 @@ body{
  border-radius:15px;
  box-shadow:0 8px 16px rgba(17,24,39,.15);
 }
-.tabs button.active .nav-icon svg{
- stroke:#fff;
-}
-.tabs button.active:after{
- background:#16a34a;
- bottom:-1px;
- height:4px;
-}
-.nav-icon{
- width:31px;
- height:31px;
- transition:.15s ease;
-}
 .nav-icon svg{
- width:25px;
- height:25px;
+ width:25px;height:25px;
+ fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
 }
 .screen-head{
  display:flex;
@@ -586,13 +128,13 @@ body{
 }
 .screen-head h2{
  margin:0;
- font-size:22px;
+ font-size:23px;
  line-height:1;
- letter-spacing:-.4px;
+ letter-spacing:-.5px;
 }
 .screen-head p{
  margin:5px 0 0;
- color:#6b7280;
+ color:var(--muted);
  font-size:12px;
  font-weight:700;
 }
@@ -606,66 +148,104 @@ body{
  font-weight:900;
  box-shadow:0 8px 20px rgba(17,24,39,.16);
 }
-body.tab-nova #screenActionBtn,
-body.tab-financeiro #screenActionBtn,
-body.tab-clientes #screenActionBtn,
-body.tab-ajustes #screenActionBtn{
- display:none;
-}
-body.tab-nova .stats,
-body.tab-clientes .stats,
-body.tab-ajustes .stats{
- display:none;
-}
-.stats{
- background:rgba(255,255,255,.65);
- padding:5px;
- border-radius:22px;
- border:1px solid rgba(229,231,235,.9);
-}
-.stat{
- background:#fff;
- border:0;
-}
 .card{
+ background:rgba(255,255,255,.96);
+ border:1px solid rgba(229,231,235,.95);
+ border-radius:20px;
+ padding:14px;
+ margin-bottom:10px;
  box-shadow:0 10px 30px rgba(15,23,42,.055);
 }
-.title{
- color:#111827;
+.hidden{display:none!important}
+
+.login-card{
+ max-width:420px;
+ margin:10px auto 0;
 }
-#agenda>.card:first-child{
- padding-top:12px;
-}
-#agendaLista .os-card{
- transition:.12s ease;
-}
-#agendaLista .os-card:active{
- transform:scale(.99);
-}
-.compact-line{
- border-bottom:1px solid #f0f2f5;
- padding-bottom:8px;
+.login-card .logo-mini{
+ text-align:center;
+ font-size:24px;
+ font-weight:950;
+ color:#007aff;
+ letter-spacing:4px;
  margin-bottom:8px;
 }
-.fab-new-os{
- position:fixed;
- right:22px;
- bottom:22px;
- width:58px;
- height:58px;
+.connection-box{
+ font-size:12px;
+ font-weight:900;
+ margin-top:8px;
+ padding:9px 10px;
+ border-radius:999px;
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+}
+.connection-online{color:#16a34a}
+.connection-offline{color:#ef4444}
+.pending-box{
+ background:#fff8e6;
+ border:1px solid #ffd37a;
+ border-radius:14px;
+ padding:10px;
+ margin-top:10px;
+ font-size:12px;
+}
+
+.title{
+ margin:0 0 10px;
+ color:#111827;
+ font-size:13px;
+ font-weight:950;
+ text-transform:uppercase;
+ letter-spacing:.7px;
+}
+label{
+ display:block;
+ margin:9px 0 4px;
+ color:#374151;
+ font-size:12px;
+ font-weight:850;
+}
+input,select,textarea{
+ width:100%;
+ border:1px solid #e5e7eb;
+ border-radius:14px;
+ background:#fafafa;
+ padding:12px;
+ font-size:16px;
+ outline:0;
+}
+textarea{min-height:86px;resize:vertical}
+input:focus,select:focus,textarea:focus{
+ border-color:var(--blue);
+ background:#fff;
+ box-shadow:0 0 0 3px rgba(0,122,255,.10);
+}
+.row{display:flex;gap:8px}
+.row>*{flex:1}
+.btn{
+ width:100%;
  border:0;
- border-radius:21px;
- background:#111827;
+ border-radius:15px;
+ padding:13px;
+ margin-top:10px;
+ font-size:15px;
+ font-weight:900;
  color:#fff;
- font-size:34px;
- line-height:58px;
- font-weight:700;
- box-shadow:0 14px 30px rgba(17,24,39,.26);
- z-index:998;
+ background:#34c759;
+ box-shadow:0 4px 12px rgba(31,41,55,.08);
 }
-body:not(.tab-agenda) .fab-new-os{
- display:none;
+.btn-blue{background:#111827}
+.btn-primary{background:linear-gradient(180deg,#0b84ff,#0069d9)}
+.btn-gray{background:#6b7280}
+.btn-red{background:#ef4444}
+.btn-light{
+ background:#fff;
+ color:#111827;
+ border:1px solid #e5e7eb;
 }
+.small{font-size:12px;color:#777}
+.ok{color:#16a34a;font-weight:900}
+.bad{color:#ef4444;font-weight:900}
 #toast{
  position:fixed;
  left:18px;
@@ -678,163 +258,614 @@ body:not(.tab-agenda) .fab-new-os{
  border-radius:16px;
  box-shadow:0 16px 34px rgba(15,23,42,.25);
  font-size:14px;
- font-weight:800;
+ font-weight:850;
  text-align:center;
  opacity:0;
  transform:translateY(20px);
  pointer-events:none;
  transition:.22s ease;
 }
-#toast.show{
- opacity:1;
- transform:translateY(0);
-}
-#toast.ok{background:#111827}
+#toast.show{opacity:1;transform:translateY(0)}
 #toast.good{background:#16a34a}
 #toast.bad{background:#ef4444}
-input,select,textarea{
+
+/* PersonalizaÃ§Ã£o visual e layouts configurÃ¡veis */
+.config-grid{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:9px;
+}
+.config-grid .row{align-items:end}
+.toggle-row{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:10px;
+ border:1px solid #eef0f3;
+ border-radius:14px;
+ background:#fff;
+ margin-top:8px;
+}
+.toggle-row span{
+ font-size:12px;
+ color:#4b5563;
+ font-weight:800;
+}
+.toggle-row input{
+ width:auto;
+ transform:scale(1.15);
+}
+.payment-buttons{
+ display:flex;
+ gap:7px;
+ justify-content:flex-end;
+ flex-wrap:wrap;
+}
+.pay-toggle[hidden]{display:none!important}
+body.busca-fixa #servicos>.card:first-child,
+body.busca-fixa #clientes>.card:first-child{
+ position:sticky;
+ top:92px;
+ z-index:35;
+ box-shadow:0 12px 28px rgba(15,23,42,.11);
+}
+.agenda-status-layout{
+ grid-template-columns:58px 82px auto!important;
+}
+.agenda-os-layout{
+ grid-template-columns:54px 58px auto!important;
+}
+.agenda-row.lotado{
+ background:linear-gradient(90deg,rgba(0,122,255,.07),transparent);
+}
+.agenda-status{
+ font-size:10.5px;
+ font-weight:950;
+}
+.agenda-status.livre{color:#16a34a}
+.agenda-status.quase{color:#f59e0b}
+.agenda-status.lotado{color:#ef4444}
+.os-mini-badge{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ border:1px solid #bfdbfe;
+ background:#fff;
+ color:#0b62d1;
+ border-radius:8px;
+ padding:5px 6px;
+ font-size:10px;
+ font-weight:950;
+ min-width:42px;
+}
+.os-list{
+ display:block!important;
+}
+.os-list .os-card{
+ margin-bottom:9px;
+}
+.os-list .os-card{
+ display:grid;
+ grid-template-columns:90px 1fr;
+ gap:9px;
+ align-items:start;
+}
+.os-list .os-card-top{
+ border-bottom:0;
+ padding-bottom:0;
+ margin-bottom:0;
+}
+.os-list .os-meta,
+.os-list .os-value-row,
+.os-list .os-client,
+.os-list .chips,
+.os-list .status-line,
+.os-list .details-btn,
+.os-list .details-panel{
+ grid-column:2;
+}
+.client-card{
+ background:#fff;
+ border:1px solid #e5e7eb;
+ border-radius:18px;
+ padding:12px;
+ margin-bottom:9px;
+ box-shadow:0 8px 18px rgba(15,23,42,.04);
+}
+.client-card-top{
+ display:grid;
+ grid-template-columns:42px 1fr;
+ gap:10px;
+ align-items:center;
+}
+.client-card-stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ border-top:1px solid #eef0f3;
+ margin-top:10px;
+ padding-top:10px;
+ gap:4px;
+}
+.client-card-stats span{
+ display:block;
+ font-size:9px;
+ text-transform:uppercase;
+ color:#6b7280;
+ font-weight:900;
+}
+.client-card-stats b{
+ display:block;
+ font-size:12px;
+ margin-top:3px;
+}
+body.ajustes-lista .shortcut-grid{
+ display:block;
+}
+body.ajustes-lista .shortcut{
+ min-height:auto;
+ margin-bottom:8px;
+ flex-direction:row;
+ align-items:center;
+ justify-content:flex-start;
+ gap:12px;
+}
+body.ajustes-lista .shortcut .big-icon{
+ width:40px;
+ height:40px;
+ border-radius:14px;
+ font-size:22px;
+ flex:0 0 auto;
+}
+body.os-simples .quick-services-grid{
+ grid-template-columns:1fr;
+}
+body.os-simples .service-tile{
+ min-height:50px;
+}
+body.apagar-separado .btn-delete-safe{
+ grid-column:1/-1;
+ margin-top:2px!important;
+}
+.next-slot-btn{
+ width:auto;
+ margin:0;
+ padding:10px 11px;
+ border-radius:13px;
+ font-size:12px;
+ white-space:nowrap;
+}
+
+
+/* Agenda - opÃ§Ã£o A ajustada */
+.date-filter{
+ display:flex;
+ gap:8px;
+ align-items:center;
+}
+.summary-grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:0;
+ background:#fff;
+ border:1px solid #e5e7eb;
+ border-radius:16px;
+ overflow:hidden;
+ box-shadow:0 8px 18px rgba(15,23,42,.035);
+}
+.summary-item{
+ text-align:center;
+ padding:11px 4px;
+ border-right:1px solid #eef0f3;
+}
+.summary-item:last-child{border-right:0}
+.summary-item b{
+ display:block;
+ font-size:22px;
+ line-height:1;
+ letter-spacing:-.5px;
+}
+.summary-item span{
+ display:block;
+ font-size:10.5px;
+ color:#4b5563;
+ font-weight:800;
+ margin-top:4px;
+}
+.summary-item .blue{color:var(--blue)}
+.agenda-panel{
+ overflow:hidden;
+ padding:0;
+}
+.agenda-title-row{
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-end;
+ gap:8px;
+ padding:14px 14px 8px;
+}
+.agenda-title-row h3{
+ margin:0;
+ font-size:17px;
+ letter-spacing:-.2px;
+}
+.agenda-title-row span{
+ font-size:11px;
+ color:#374151;
+ font-weight:800;
+}
+.agenda-grid-header,
+.agenda-row{
+ display:grid;
+ grid-template-columns:64px auto;
+ gap:10px;
+ align-items:center;
+ justify-content:flex-start;
+ padding:0 14px;
+}
+.agenda-grid-header{
+ height:32px;
+ color:#374151;
+ font-size:11px;
+ font-weight:900;
+ border-bottom:1px solid #edf0f5;
+}
+.agenda-grid-header div:last-child{
+ text-align:left!important;
+}
+.agenda-row{
+ min-height:45px;
+ border-bottom:1px solid #eef0f3;
+}
+.agenda-row:last-child{border-bottom:0}
+.agenda-time{
  font-size:16px;
+ font-weight:850;
+ color:#111827;
 }
-.quick-services{
- background:#fff!important;
+.slots{
+ display:flex;
+ gap:9px;
+ justify-content:flex-start;
+ align-items:center;
 }
-.qty-row{
- background:linear-gradient(180deg,#fff,#fafafa);
+.slot{
+ width:31px;
+ height:31px;
+ border-radius:8px;
+ border:2px solid #2b7cff;
+ background:#fff;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
 }
-.qty-btn{
- width:38px;
- height:38px;
+.slot.on{
+ background:linear-gradient(180deg,#0b84ff,#005fe8);
+ border-color:#005fe8;
+ box-shadow:0 5px 12px rgba(0,122,255,.20);
 }
-.os-actions .btn,
-.quick-actions .btn{
- box-shadow:none;
+.interval-row{
+ background:#eef4ff;
+ color:#0b62d1;
+ text-align:center;
+ font-weight:900;
+ font-size:13px;
+ padding:9px 10px;
+ border-top:1px solid #dbeafe;
+ border-bottom:1px solid #dbeafe;
 }
-@media(max-width:380px){
- .screen-head h2{font-size:20px}
- .screen-head p{font-size:11px}
- .mini-action{padding:9px 12px}
- .fab-new-os{right:16px;bottom:16px;width:54px;height:54px;line-height:54px}
+.legend{
+ display:flex;
+ gap:22px;
+ justify-content:center;
+ align-items:center;
+ color:#374151;
+ font-size:13px;
+ font-weight:800;
+ padding:11px 0 2px;
+}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend .slot{width:19px;height:19px;border-radius:5px}
+.legend-title{
+ text-align:center;
+ color:#0b62d1;
+ font-weight:950;
+ margin:14px 0 0;
 }
 
+/* OS opÃ§Ã£o C */
+.quick-form-card{
+ padding:12px;
+}
+.field-icon{
+ position:relative;
+}
+.field-icon input{padding-right:42px}
+.field-icon .field-symbol{
+ position:absolute;
+ right:12px;
+ top:50%;
+ transform:translateY(-50%);
+ color:#6b7280;
+ font-weight:900;
+}
+.quick-services-grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px;
+}
+.service-tile{
+ border:1px solid #e5e7eb;
+ background:#fff;
+ border-radius:16px;
+ padding:10px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+ min-height:62px;
+}
+.service-tile b{
+ display:block;
+ font-size:13px;
+ line-height:1.05;
+}
+.service-tile span{
+ display:block;
+ color:#6b7280;
+ font-size:11px;
+ margin-top:4px;
+ font-weight:800;
+}
+.plus-mini{
+ width:34px;
+ height:34px;
+ border:0;
+ border-radius:12px;
+ background:#111827;
+ color:#fff;
+ font-size:21px;
+ line-height:34px;
+ font-weight:900;
+ flex:0 0 auto;
+}
+.selected-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin:12px 0 8px;
+}
+.counter{
+ background:#111827;
+ color:#fff;
+ border-radius:999px;
+ padding:5px 9px;
+ font-size:11px;
+ font-weight:900;
+}
+.selected-item{
+ display:grid;
+ grid-template-columns:1fr auto auto;
+ gap:8px;
+ align-items:center;
+ background:#fff;
+ border:1px solid #e5e7eb;
+ border-radius:15px;
+ padding:9px;
+ margin-bottom:8px;
+}
+.selected-item b{font-size:13px;display:block}
+.selected-item span{font-size:11px;color:#6b7280;font-weight:800}
+.qty-control{
+ display:flex;
+ align-items:center;
+ border:1px solid #e5e7eb;
+ border-radius:12px;
+ overflow:hidden;
+ height:34px;
+}
+.qty-control button{
+ width:32px;height:34px;border:0;background:#fff;color:#111827;font-weight:900;font-size:18px;
+}
+.qty-control strong{min-width:26px;text-align:center;font-size:14px}
+.trash{
+ border:0;
+ background:#fee2e2;
+ color:#dc2626;
+ border-radius:10px;
+ width:32px;
+ height:32px;
+ font-weight:900;
+}
+.sticky-total{
+ position:sticky;
+ bottom:0;
+ z-index:30;
+ background:rgba(255,255,255,.95);
+ backdrop-filter:blur(14px);
+ -webkit-backdrop-filter:blur(14px);
+ border:1px solid #e5e7eb;
+ border-radius:20px;
+ padding:12px;
+ box-shadow:0 -10px 30px rgba(15,23,42,.08);
+}
+.total-pay-row{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:9px;
+ align-items:center;
+}
+.total-pay-row small{
+ display:block;
+ color:#6b7280;
+ font-size:10px;
+ font-weight:900;
+ text-transform:uppercase;
+}
+.total-pay-row b{
+ font-size:25px;
+ letter-spacing:-.8px;
+}
+.pay-toggle{
+ border:1px solid #e5e7eb;
+ background:#fff;
+ color:#111827;
+ border-radius:12px;
+ padding:10px 9px;
+ font-size:12px;
+ font-weight:900;
+}
+.pay-toggle.active{
+ background:#007aff;
+ border-color:#007aff;
+ color:#fff;
+}
+.more-options{
+ display:none;
+ margin-top:10px;
+ padding:12px;
+ border-radius:16px;
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+}
+.more-options.open{display:block}
+.pos-save-box{
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+ border-radius:18px;
+ padding:12px;
+}
+.pos-save-top{
+ display:grid;
+ grid-template-columns:1fr 1fr 1fr;
+ gap:7px;
+ margin-bottom:8px;
+}
+.pos-badge{
+ border-radius:15px;
+ padding:8px 9px;
+ min-height:56px;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+}
+.pos-badge.blue{background:#007aff;color:#fff}
+.pos-badge.light{background:#fff;border:1px solid #e5e7eb;color:#111827}
+.pos-badge span{
+ font-size:8px;
+ text-transform:uppercase;
+ letter-spacing:.9px;
+ font-weight:950;
+ opacity:.85;
+}
+.pos-badge b{font-size:17px;line-height:1.05;margin-top:3px}
 
-/* V14.2 - OS destacada, pagamento visual e servicos mais compactos */
-body.tab-servicos #screenActionBtn,
-body.tab-nova #screenActionBtn,
-body.tab-clientes #screenActionBtn,
-body.tab-ajustes #screenActionBtn{
- display:none;
-}
-body.tab-servicos .stats,
-body.tab-nova .stats,
-body.tab-clientes .stats,
-body.tab-ajustes .stats{
- display:none;
-}
-body:not(.tab-agenda) .fab-new-os{
- display:none;
-}
-.servicos-list-head{
+/* ServiÃ§os opÃ§Ã£o C */
+.list-head{
  display:flex;
  justify-content:space-between;
  align-items:center;
  gap:10px;
  margin:12px 3px 8px;
 }
-.servicos-list-head h3{
+.list-head h3{
  margin:0;
- font-size:17px;
- letter-spacing:-.2px;
+ font-size:20px;
+ letter-spacing:-.3px;
 }
-#servicosResumoBadge{
+.badge-dark{
  background:#111827;
  color:#fff;
  border-radius:999px;
- padding:7px 10px;
- font-size:11px;
- font-weight:900;
+ padding:8px 11px;
+ font-size:12px;
+ font-weight:950;
  white-space:nowrap;
 }
-.service-card-destaque{
- border-left:0!important;
- border:2px solid rgba(0,122,255,.18)!important;
- box-shadow:0 12px 32px rgba(0,122,255,.08)!important;
+.os-grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:9px;
+}
+.os-card{
+ background:#fff;
+ border:1.5px solid rgba(0,122,255,.14);
+ border-radius:19px;
+ padding:10px;
+ box-shadow:0 10px 24px rgba(15,23,42,.055);
  overflow:hidden;
 }
-.service-os-top{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:8px;
- align-items:stretch;
- margin-bottom:8px;
-}
-.service-os-number,
-.service-delivery-badge{
- background:#007aff;
- color:#fff;
- border-radius:18px;
- padding:10px 12px;
- box-shadow:0 12px 24px rgba(0,122,255,.18);
- min-height:66px;
- display:flex;
- flex-direction:column;
- justify-content:center;
-}
-.service-os-number span,
-.service-delivery-badge span{
- display:block;
- font-size:9px;
- letter-spacing:1.15px;
- font-weight:950;
- opacity:.88;
- text-transform:uppercase;
-}
-.service-os-number b{
- display:block;
- font-size:27px;
- line-height:1;
- margin-top:3px;
-}
-.service-delivery-badge b{
- display:block;
- font-size:17px;
- line-height:1.08;
- margin-top:4px;
-}
-.service-os-money{
- background:#f8fafc;
- border:1px solid #e5e7eb;
- border-radius:16px;
- padding:10px 11px;
- margin-bottom:9px;
+.os-card-top{
  display:flex;
  justify-content:space-between;
  gap:8px;
- align-items:center;
+ align-items:flex-start;
+ border-bottom:1px solid #eef0f3;
+ padding-bottom:8px;
+ margin-bottom:8px;
 }
-.service-os-money small{
+.os-num{
+ color:#007aff;
+ font-weight:950;
+}
+.os-num small{
+ display:block;
+ font-size:10px;
+ letter-spacing:1px;
+}
+.os-num b{
+ display:block;
+ font-size:26px;
+ line-height:1;
+}
+.calendar-dot{
+ width:38px;
+ height:38px;
+ border-radius:50%;
+ background:#eff6ff;
+ color:#007aff;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:22px;
+}
+.os-meta{
+ display:flex;
+ gap:8px;
+ color:#111827;
+ font-size:12px;
+ font-weight:800;
+ margin-bottom:8px;
+}
+.os-value-row{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+ border-bottom:1px solid #eef0f3;
+ padding-bottom:8px;
+ margin-bottom:8px;
+}
+.os-value-row small{
  display:block;
  color:#6b7280;
- font-size:10px;
- font-weight:900;
+ font-size:9px;
+ font-weight:950;
  text-transform:uppercase;
- letter-spacing:.7px;
+ letter-spacing:.8px;
 }
-.service-os-money b{
- display:block;
- font-size:22px;
- line-height:1.05;
- margin-top:2px;
+.os-value-row b{
+ font-size:21px;
+ line-height:1;
 }
 .payment-pill{
  display:inline-flex;
  align-items:center;
  justify-content:center;
  border-radius:999px;
- padding:8px 10px;
- font-size:11px;
+ padding:7px 8px;
+ font-size:10px;
  font-weight:950;
  text-align:center;
- min-width:118px;
+ min-width:0;
  border:1px solid transparent;
  line-height:1.05;
 }
@@ -848,126 +879,333 @@ body:not(.tab-agenda) .fab-new-os{
  color:#991b1b;
  border-color:#fecaca;
 }
-.service-client-box{
+.os-client b{
+ display:block;
+ font-size:14px;
+ line-height:1.1;
+}
+.os-client span{
+ display:block;
+ font-size:11px;
+ color:#6b7280;
+ font-weight:800;
+ margin-top:2px;
+}
+.chips{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:6px;
+ margin:9px 0;
+}
+.chip{
+ display:flex;
+ justify-content:space-between;
+ gap:6px;
+ align-items:center;
+ border:1px solid #dbeafe;
+ background:#fff;
+ border-radius:11px;
+ padding:6px 7px;
+ font-size:11px;
+ font-weight:850;
+ color:#0f172a;
+ min-width:0;
+}
+.chip span{
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+.chip b{
+ background:#111827;
+ color:#fff;
+ border-radius:8px;
+ padding:3px 6px;
+ min-width:24px;
+ text-align:center;
+}
+.status-line{
+ border-top:1px dashed #d7dde8;
+ padding-top:7px;
+ margin-top:7px;
+ font-size:12px;
+ color:#0b62d1;
+ font-weight:900;
+}
+.status-line span{
+ display:block;
+ color:#6b7280;
+ margin-left:16px;
+ margin-top:4px;
+ font-weight:800;
+}
+.details-btn{
+ width:100%;
+ margin-top:9px;
+ border:1px solid #d7dde8;
+ background:#fff;
+ border-radius:13px;
+ padding:10px;
+ font-weight:900;
+ color:#111827;
+}
+.details-panel{
+ margin-top:8px;
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+ border-radius:14px;
+ padding:8px;
+}
+.action-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:7px;
+}
+.action-grid .btn{
+ padding:9px 5px;
+ margin:0;
+ font-size:12px;
+ border-radius:12px;
+}
+
+/* Clientes opÃ§Ã£o C */
+.search-row{
+ display:grid;
+ grid-template-columns:1fr 44px;
+ gap:8px;
+}
+.icon-btn{
+ border:1px solid #e5e7eb;
+ background:#fff;
+ border-radius:14px;
+ font-size:18px;
+}
+.client-row{
+ display:grid;
+ grid-template-columns:42px 1fr auto;
+ gap:9px;
+ align-items:center;
+ padding:10px;
+ border:1px solid transparent;
+ border-radius:16px;
+ background:#fff;
+ margin-bottom:8px;
+}
+.client-row.selected{
+ border-color:#bfdbfe;
+ box-shadow:0 8px 20px rgba(0,122,255,.07);
+}
+.avatar{
+ width:42px;
+ height:42px;
+ border-radius:50%;
+ background:#eff6ff;
+ color:#007aff;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:20px;
+}
+.client-row b{font-size:14px;display:block}
+.client-row span{font-size:11px;color:#6b7280;font-weight:800}
+.visit-count{
+ color:#007aff;
+ text-align:center;
+ font-weight:950;
+}
+.visit-count b{font-size:18px}
+.client-detail{
+ border:1.5px solid #bfdbfe;
+ border-radius:18px;
+ padding:12px;
+ background:#fff;
+ margin-top:10px;
+}
+.detail-top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+.detail-stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:0;
+ margin:10px 0;
+ border:1px solid #eef0f3;
+ border-radius:14px;
+ overflow:hidden;
+}
+.detail-stats div{
+ padding:9px 5px;
+ text-align:center;
+ border-right:1px solid #eef0f3;
+}
+.detail-stats div:last-child{border-right:0}
+.detail-stats span{
+ display:block;
+ font-size:10px;
+ color:#6b7280;
+ font-weight:850;
+}
+.detail-stats b{
+ display:block;
+ margin-top:5px;
+ font-size:13px;
+}
+.client-tabs{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ border-bottom:1px solid #e5e7eb;
+ margin:8px 0;
+}
+.client-tabs button{
+ border:0;background:transparent;padding:9px 0;font-weight:900;color:#6b7280;
+}
+.client-tabs button.active{
+ color:#007aff;border-bottom:2px solid #007aff;
+}
+.recent-os{
+ display:grid;
+ grid-template-columns:auto 1fr auto auto;
+ gap:8px;
+ align-items:center;
+ border:1px solid #eef0f3;
+ border-radius:13px;
+ padding:8px;
+ margin-bottom:7px;
+}
+.recent-os .os-mini{
+ background:#007aff;color:#fff;border-radius:8px;padding:7px 6px;font-weight:950;font-size:11px;
+}
+.recent-os small{display:block;color:#6b7280;font-weight:800}
+
+/* Ajustes opÃ§Ã£o C */
+.shortcut-grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;
+}
+.shortcut{
+ border:1px solid #e5e7eb;
+ background:#fff;
+ border-radius:18px;
+ padding:13px;
+ min-height:132px;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+}
+.shortcut .big-icon{
+ width:46px;height:46px;border-radius:16px;
+ background:#eff6ff;color:#007aff;
+ display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;
+}
+.shortcut b{font-size:15px}
+.shortcut p{margin:5px 0;color:#6b7280;font-size:12px;line-height:1.25;font-weight:700}
+.green-dot:before{
+ content:"";
+ display:inline-block;
+ width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:6px;
+}
+.green-dot{color:#166534;font-size:11px;font-weight:900}
+.settings-panel{
+ background:#fff;
+ border:1px solid #e5e7eb;
+ border-radius:18px;
+ padding:12px;
+ margin-top:10px;
+}
+.service-edit{
+ display:grid;
+ grid-template-columns:1fr 74px auto;
+ gap:8px;
+ align-items:center;
+ border:1px solid #eef0f3;
+ border-radius:14px;
+ padding:9px;
+ margin-bottom:8px;
+}
+.service-edit b{font-size:13px}
+.service-edit span{font-size:11px;color:#6b7280}
+.service-edit input{padding:8px;font-size:14px;border-radius:10px}
+.service-edit button{margin:0;padding:8px;border-radius:10px;font-size:12px}
+.finance-grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px;
+}
+.finance-box{
  background:#f8fafc;
  border:1px solid #eef0f3;
  border-radius:16px;
  padding:10px;
- margin-bottom:9px;
-}
-.service-client-box b{
- display:block;
- font-size:16px;
-}
-.service-client-box span{
- display:block;
- color:#6b7280;
- font-size:12px;
- font-weight:800;
- margin-top:2px;
-}
-.service-items-box{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
- gap:6px;
- margin:9px 0;
-}
-.service-chip{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:7px;
- background:#fff;
- border:1px solid #e5e7eb;
- border-radius:12px;
- padding:7px 8px;
- font-size:12.5px;
- font-weight:850;
- min-height:36px;
-}
-.service-chip span{
- color:#111827;
- overflow:hidden;
- text-overflow:ellipsis;
-}
-.service-chip b{
- background:#111827;
- color:#fff;
- border-radius:9px;
- padding:3px 7px;
- min-width:28px;
  text-align:center;
- font-size:12px;
- flex:0 0 auto;
 }
-.service-card-info{
- background:#f9fafb;
- border-radius:14px;
- padding:9px;
- margin:8px 0 0;
-}
-.pos-save-main{
- background:#f8fafc;
- border:1px solid #e5e7eb;
- border-radius:18px;
- padding:11px;
- margin-top:8px;
-}
-.pos-save-row{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:8px;
- margin-bottom:8px;
-}
-.saving-note{
- color:#6b7280;
- font-weight:800;
- font-size:12px;
- margin-top:7px;
-}
-.btn[disabled]{
- opacity:.65;
- pointer-events:none;
-}
-#financeiroAjustes{
- margin-top:0;
-}
-#financeiroAjustes .card{
- box-shadow:0 8px 20px rgba(15,23,42,.04);
-}
-@media(max-width:430px){
- .service-os-top,
- .pos-save-row{grid-template-columns:1fr}
- .service-os-number b{font-size:26px}
- .service-delivery-badge b{font-size:18px}
- .service-os-money{align-items:flex-start;flex-direction:column}
- .payment-pill{width:100%;min-width:0}
-}
+.finance-box span{display:block;font-size:10px;color:#6b7280;font-weight:850;text-transform:uppercase}
+.finance-box b{display:block;font-size:18px;margin-top:4px}
 
-#printArea{display:none}
-@media print{
- body>*:not(#printArea){display:none!important}
- #printArea{display:block!important;font-family:monospace;font-size:12px;width:58mm}
- .print-line{margin:3px 0}
+/* responsive */
+@media(max-width:430px){
+ body{padding:8px 8px 24px}
+ .logo{font-size:34px}
+ .tabs{height:74px;border-radius:24px;padding:7px 6px 6px}
+ .nav-icon{width:28px;height:28px}
+ .nav-icon svg{width:23px;height:23px}
+ .tabs button{font-size:10px;height:60px}
+ .screen-head h2{font-size:21px}
+ .os-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .os-card{padding:8px;border-radius:16px}
+ .os-num b{font-size:24px}
+ .calendar-dot{width:34px;height:34px}
+ .os-meta{font-size:11px;gap:6px}
+ .os-value-row b{font-size:18px}
+ .payment-pill{font-size:9px;padding:6px 7px}
+ .chip{font-size:10px;padding:5px 6px}
+ .status-line{font-size:11px}
+ .details-btn{padding:9px}
+ .service-tile{min-height:56px;padding:8px}
+ .service-tile b{font-size:12px}
+ .service-tile span{font-size:10px}
+ .plus-mini{width:31px;height:31px;border-radius:10px;line-height:31px}
+ .slot{width:30px;height:30px}
+ .slots{gap:8px}
+ .agenda-grid-header,.agenda-row{grid-template-columns:62px auto;padding:0 12px;justify-content:flex-start}
+ .agenda-time{font-size:15px}
+ .summary-item b{font-size:20px}
+ .summary-item span{font-size:9.5px}
+ .total-pay-row{grid-template-columns:1fr auto auto}
+ .pay-toggle{font-size:11px;padding:9px 8px}
+}
+@media(max-width:360px){
+ .slot{width:27px;height:27px;border-radius:7px}
+ .slots{gap:7px}
+ .agenda-grid-header,.agenda-row{grid-template-columns:58px auto}
+ .os-card{padding:7px}
+ .chips{grid-template-columns:1fr}
+ .payment-pill{font-size:8.5px}
+ .shortcut{min-height:118px}
 }
 </style>
 </head>
 
 <body>
 <div id="toast"></div>
-<div id="printArea"></div>
-
 <div class="container">
  <div class="header">
-  <h1>AFIA</h1>
+  <h1 class="logo">AFIA</h1>
+  <div class="version">V15.3 FIREBASE Â· LAYOUTS EDITÃVEIS</div>
  </div>
 
- <section id="loginScreen" class="card">
+ <section id="loginScreen" class="card login-card">
+  <div class="logo-mini">AFIA</div>
   <h3 class="title">Login</h3>
-  <label>E-mail do Firebase</label><input id="loginUser" type="email" autocomplete="username" placeholder="seuemail@gmail.com">
-  <label>Senha</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Senha do Firebase">
-  <button class="btn" onclick="login()">Entrar</button>
-  <p class="small">Agora o acesso usa Firebase Authentication. Entre com o e-mail e senha cadastrados no Firebase.</p>
+  <label>E-mail do Firebase</label>
+  <input id="loginUser" type="email" autocomplete="username" placeholder="seuemail@gmail.com">
+  <label>Senha</label>
+  <input id="loginPass" type="password" autocomplete="current-password" placeholder="Senha do Firebase">
+  <button class="btn btn-primary" onclick="login()">Entrar</button>
+  <p class="small">Acesso seguro usando Firebase Authentication.</p>
+  <div id="loginStatus" class="small">Conectando ao Firebase...</div>
  </section>
 
  <main id="appScreen" class="hidden">
@@ -980,7 +1218,7 @@ body:not(.tab-agenda) .fab-new-os{
     <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><line x1="9" y1="13" x2="16" y2="13"></line><line x1="12.5" y1="9.5" x2="12.5" y2="16.5"></line></svg></span>
     <span>OS</span>
    </button>
-   <button id="btnServicos" onclick="showTab('servicos')" aria-label="Servicos">
+   <button id="btnServicos" onclick="showTab('servicos')" aria-label="ServiÃ§os">
     <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"></rect><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="13" y2="17"></line></svg></span>
     <span>Serv.</span>
    </button>
@@ -997,254 +1235,276 @@ body:not(.tab-agenda) .fab-new-os{
   <div class="screen-head">
    <div>
     <h2 id="screenTitle">Agenda</h2>
-    <p id="screenSubtitle">Acompanhe os servicos do dia</p>
+    <p id="screenSubtitle">Quadradinhos por meia hora</p>
    </div>
    <button id="screenActionBtn" class="mini-action" onclick="showTab('nova')">+ OS</button>
   </div>
 
-  <div class="stats">
-   <div class="stat"><b id="statPedidos">0</b>Pedidos</div>
-   <div class="stat"><b id="statPecas">0</b>Servicos</div>
-   <div class="stat"><b id="statValor">R$ 0,00</b>Faturamento</div>
-  </div>
-
   <section id="agenda">
    <div class="card">
-    <h3 class="title">Agenda</h3>
-    <p class="small">Use esta tela apenas para conferir os horarios, vagas ocupadas e disponibilidade do dia.</p>
-    <label>Data</label><input type="date" id="agendaData" onchange="renderAgenda(); renderServicosLista();">
-    <div id="agendaGrid" style="margin-top:12px"></div>
+    <h3 class="title">Agenda - opÃ§Ã£o A</h3>
+    <label>Data</label>
+    <div class="date-filter">
+     <input type="date" id="agendaData" onchange="renderAll()">
+    </div>
    </div>
-   <button class="fab-new-os" onclick="showTab('nova')" aria-label="Nova OS">+</button>
+
+   <div class="card">
+    <div class="summary-grid">
+     <div class="summary-item"><b id="agTotal">70</b><span>vagas total</span></div>
+     <div class="summary-item"><b id="agOcupadas">0</b><span>ocupadas</span></div>
+     <div class="summary-item"><b id="agLivres">70</b><span>livres</span></div>
+     <div class="summary-item"><b id="agProxima" class="blue">-</b><span>prÃ³xima vaga</span></div>
+    </div>
+   </div>
+
+   <div class="card agenda-panel">
+    <div class="agenda-title-row">
+     <h3>Agenda - Hoje</h3>
+     <span>5 vagas por meia hora</span>
+    </div>
+    <div class="agenda-grid-header">
+     <div>Hora</div>
+     <div style="text-align:right">5 vagas por meia hora</div>
+    </div>
+    <div id="agendaRows"></div>
+   </div>
+
+   <div class="legend-title">5 vagas por meia hora</div>
+   <div class="legend">
+    <span><i class="slot on"></i> Ocupado</span>
+    <span><i class="slot"></i> Livre</span>
+   </div>
   </section>
 
   <section id="nova" class="hidden">
-   <form class="card" onsubmit="salvarOS(event)">
-    <h3 class="title">Nova OS</h3>
+   <form id="formOS" class="card quick-form-card" onsubmit="salvarOS(event)">
+    <h3 class="title">Nova OS - opÃ§Ã£o C</h3>
 
-    <label>Telefone / WhatsApp</label>
-    <input id="telefone" inputmode="tel" required oninput="buscarClientePorTelefone()" placeholder="Digite o telefone primeiro">
+    <div class="field-icon">
+     <label>Cliente</label>
+     <input id="nome" required placeholder="Nome do cliente">
+     <span class="field-symbol">ð¤</span>
+    </div>
 
-    <label>Nome do cliente</label>
-    <input id="nome" required placeholder="Preenche automatico se ja for cliente">
+    <div class="field-icon">
+     <label>Tel / WhatsApp</label>
+     <input id="telefone" inputmode="tel" required placeholder="(00) 00000-0000" oninput="buscarClientePorTelefone()">
+     <span class="field-symbol">â</span>
+    </div>
 
     <div class="row">
-     <div><label>Data da entrega</label><input type="date" id="dataEntrega" required onchange="atualizarHorarioSugerido()"></div>
-     <div><label>Horario</label><select id="horaEntrega" required></select></div>
+     <div><label>Entrega</label><input type="date" id="dataEntrega" required onchange="atualizarHorarioSugerido()"></div>
+     <div><label>HorÃ¡rio</label><select id="horaEntrega" required></select></div>
     </div>
+    <button id="btnProximaVaga" class="btn btn-light next-slot-btn" type="button" onclick="usarProximaVagaLivre()">Usar prÃ³xima vaga livre</button>
 
-    <div class="card quick-services" style="box-shadow:none;border:1px solid #eee;padding:10px;margin-top:12px">
-     <h3 class="title">Servicos</h3>
-     <div id="servicosOS"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:15px 0 8px">
+     <h3 class="title" style="margin:0">ServiÃ§os rÃ¡pidos</h3>
+     <button type="button" class="btn-light" style="width:auto;margin:0;padding:8px 10px;border-radius:12px;font-size:12px;font-weight:900" onclick="document.getElementById('ajustes').scrollIntoView()">Ver todos âº</button>
     </div>
+    <div id="quickServicesGrid" class="quick-services-grid"></div>
 
-    <label>Valor total</label>
-    <input id="valorTotal" type="number" step="0.01" required>
+    <div class="selected-head">
+     <h3 class="title" style="margin:0">ServiÃ§os selecionados</h3>
+     <span id="selectedCounter" class="counter">0</span>
+    </div>
+    <div id="selectedServices"></div>
 
-    <button class="btn btn-gray" type="button" onclick="toggleMaisOpcoes()">Mais opcoes</button>
-
+    <button class="btn btn-gray" type="button" onclick="toggleMaisOpcoes()">Mais opÃ§Ãµes</button>
     <div id="maisOpcoesOS" class="more-options">
-     <label>Observacao</label>
+     <label>ObservaÃ§Ã£o</label>
      <textarea id="observacao" placeholder="Ex: ponta quebrada, trocar mola, Staleks..."></textarea>
-
-     <label>Situacao da OS</label>
+     <label>SituaÃ§Ã£o da OS</label>
      <select id="situacao">
-      <option value="confirmado">Cliente deixou o servico / balcao</option>
+      <option value="confirmado">Cliente deixou o serviÃ§o / balcÃ£o</option>
       <option value="agendado">Apenas agendamento / ainda vai trazer</option>
      </select>
-
-     <label>Status de producao</label>
+     <label>Status da oficina</label>
      <select id="status">
       <option>Recebido</option>
       <option>Na bancada</option>
       <option>Pronto</option>
       <option>Retirado</option>
      </select>
-
-     <label>Pagamento</label>
-     <select id="pagamento">
-      <option>Pagar na retirada</option>
-      <option>Pago</option>
-     </select>
     </div>
 
-    <button id="btnSalvarOS" class="btn" type="submit">Salvar OS</button>
+    <div class="sticky-total">
+     <div class="total-pay-row">
+      <div><small>Valor total</small><b id="valorTotalView">R$ 0,00</b></div>
+      <div class="payment-buttons">
+       <button type="button" id="payRetirada" class="pay-toggle active" onclick="setPagamento('Pagar na retirada')">Pagar na retirada</button>
+       <button type="button" id="payParcial" class="pay-toggle" onclick="setPagamento('Parcial')">Parcial</button>
+       <button type="button" id="payPago" class="pay-toggle" onclick="setPagamento('Pago')">Pago</button>
+      </div>
+     </div>
+     <button id="btnSalvarOS" class="btn btn-primary" type="submit">Salvar OS</button>
+    </div>
    </form>
 
    <div id="posSalvarPanel" class="card hidden">
     <h3 class="title">OS salva</h3>
-    <p id="posSalvarResumo" class="small"></p>
-    <div id="posSalvarAcoes" class="quick-actions">
+    <div id="posSalvarResumo" class="pos-save-box"></div>
+    <div class="action-grid" style="margin-top:10px">
      <button class="btn btn-blue" onclick="enviarUltimaOS()">Enviar cliente</button>
      <button class="btn btn-blue" onclick="imprimirUltimaOS()">Via loja</button>
      <button class="btn" onclick="novaOSDepoisDeSalvar()">Nova OS</button>
-     <button class="btn btn-gray" onclick="showTab('servicos')">Servicos</button>
+     <button class="btn btn-gray" onclick="showTab('servicos')">ServiÃ§os</button>
     </div>
    </div>
   </section>
 
-
-
   <section id="servicos" class="hidden">
    <div class="card">
-    <h3 class="title">Servicos</h3>
-    <p class="small">Busque pelo numero da OS, nome ou telefone da cliente para encontrar rapidamente o servico na oficina.</p>
-
+    <h3 class="title">ServiÃ§os - opÃ§Ã£o C</h3>
     <label>Data</label>
     <input type="date" id="servicosData" onchange="renderServicosLista()">
-
     <label>Pesquisar OS</label>
-    <input id="buscaServico" oninput="renderServicosLista()" placeholder="Numero da OS, nome ou telefone">
-
+    <input id="buscaServico" placeholder="NÃºmero da OS, nome ou telefone" oninput="renderServicosLista()">
     <label>Status</label>
     <select id="filtroServicoStatus" onchange="renderServicosLista()">
      <option value="todos">Todos</option>
-     <option value="pendentes">Pendentes / nao retirados</option>
+     <option value="pendentes">Pendentes / nÃ£o retirados</option>
      <option value="pronto">Pronto</option>
      <option value="retirado">Retirado</option>
     </select>
    </div>
 
-   <div class="servicos-list-head">
-    <h3>Ordens de servico</h3>
-    <span id="servicosResumoBadge">0 OS</span>
+   <div class="list-head">
+    <h3>Ordens de serviÃ§o</h3>
+    <span id="servicosResumoBadge" class="badge-dark">0 OS</span>
    </div>
-
-   <div id="servicosLista"></div>
+   <div id="servicosLista" class="os-grid"></div>
   </section>
 
   <section id="clientes" class="hidden">
    <div class="card">
-    <h3 class="title">Clientes</h3>
-    <label>Pesquisar</label><input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
+    <h3 class="title">Clientes - opÃ§Ã£o C</h3>
+    <div class="search-row">
+     <input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
+     <button class="icon-btn" type="button">â</button>
+    </div>
+    <p id="clientesEncontrados" class="small"></p>
    </div>
    <div id="clientesLista"></div>
+   <div id="clienteDetalhe"></div>
   </section>
 
   <section id="ajustes" class="hidden">
    <div class="card">
-    <h3 class="title">Ajustes</h3>
-    <p class="small"><b>Versao:</b> VERSAO 14.2 - SERVICOS FLUIDOS</p>
-    <p><b>Status:</b> <span id="ajusteStatus">Verificando...</span></p>
-    <div id="cloudStatus" class="small">Conectando ao Firebase...</div>
-    <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
+    <h3 class="title">Ajustes - opÃ§Ã£o C</h3>
+    <p class="small"><b>VersÃ£o:</b> V15.3 Firebase completo</p>
+    <p class="small"><b>Status:</b> <span id="ajusteStatus" class="ok">Conectado</span></p>
+    <p class="small"><b>Login:</b> <span id="emailLogado">-</span></p>
+    <div id="connectionStatus" class="connection-box">Verificando conexÃ£o...</div>
     <div id="offlinePendentesStatus" class="small"></div>
     <button class="btn btn-gray" onclick="logout()">Sair</button>
    </div>
 
    <div class="card">
-    <h3 class="title">Financeiro</h3>
-    <p class="small">O financeiro agora fica dentro dos ajustes para deixar a tela principal mais limpa.</p>
-    <button class="btn btn-blue" type="button" onclick="toggleFinanceiroAjustes()">Abrir / fechar financeiro</button>
-   </div>
+    <h3 class="title">PersonalizaÃ§Ã£o do app</h3>
+    <p class="small">Escolha os layouts e deixe o app do seu jeito. Essas escolhas ficam salvas neste navegador.</p>
 
-   <div id="financeiroAjustes" class="hidden">
-   <div class="card">
-    <h3 class="title">Gestao financeira</h3>
-
-    <label>Mes</label>
-    <input type="month" id="finMes" onchange="renderFinanceiro()">
-
-    <div id="financeiroResumo"></div>
-   </div>
-
-   <div class="card">
-    <h3 class="title">Fechamento do dia</h3>
-    <div id="financeiroHoje"></div>
-   </div>
-
-   <div class="card">
-    <h3 class="title">Fechamento por dia no mes</h3>
-    <div id="financeiroDias"></div>
-   </div>
-
-   <div class="card">
-    <h3 class="title">Despesas</h3>
-
-    <div class="row">
-     <div><label>Data</label><input type="date" id="dataDespesa"></div>
+    <div class="config-grid">
      <div>
-      <label>Categoria</label>
-      <select id="categoriaDespesa">
-       <option>Material</option>
-       <option>Aluguel</option>
-       <option>Conta</option>
-       <option>Marketing</option>
-       <option>Equipamento</option>
-       <option>Outros</option>
+      <label>Layout da agenda</label>
+      <select id="cfgAgendaLayout" onchange="salvarVisualConfig()">
+       <option value="classico">OpÃ§Ã£o A - quadradinhos clÃ¡ssicos</option>
+       <option value="status">OpÃ§Ã£o B - quadradinhos com status</option>
+       <option value="os">OpÃ§Ã£o C - quadradinhos + OS</option>
       </select>
+     </div>
+
+     <div>
+      <label>Layout da tela ServiÃ§os</label>
+      <select id="cfgServicosLayout" onchange="salvarVisualConfig()">
+       <option value="grade">Grade compacta, 2 OS lado a lado</option>
+       <option value="lista">Lista completa, 1 OS por linha</option>
+      </select>
+     </div>
+
+     <div>
+      <label>Layout da tela Clientes</label>
+      <select id="cfgClientesLayout" onchange="salvarVisualConfig()">
+       <option value="historico">OpÃ§Ã£o C - lista + histÃ³rico</option>
+       <option value="simples">OpÃ§Ã£o A - lista simples</option>
+       <option value="cards">OpÃ§Ã£o B - cards com dados</option>
+      </select>
+     </div>
+
+     <div class="row">
+      <div>
+       <label>Layout da OS</label>
+       <select id="cfgNovaLayout" onchange="salvarVisualConfig()">
+        <option value="balcao">OpÃ§Ã£o C - balcÃ£o rÃ¡pido</option>
+        <option value="simples">Mais simples e espaÃ§ado</option>
+       </select>
+      </div>
+      <div>
+       <label>Layout dos ajustes</label>
+       <select id="cfgAjustesLayout" onchange="salvarVisualConfig()">
+        <option value="atalhos">OpÃ§Ã£o C - atalhos visuais</option>
+        <option value="lista">Lista compacta</option>
+       </select>
+      </div>
      </div>
     </div>
 
-    <label>Descricao</label>
-    <input id="descDespesa" placeholder="Ex: compra de molas, embalagem, gasolina">
+    <div class="toggle-row">
+     <div><b>Busca fixa no topo</b><br><span>Ao rolar ServiÃ§os ou Clientes, a busca fica sempre visÃ­vel.</span></div>
+     <input id="cfgBuscaFixa" type="checkbox" onchange="salvarVisualConfig()">
+    </div>
 
-    <label>Valor</label>
-    <input id="valorDespesa" type="number" step="0.01" placeholder="Ex: 50">
+    <div class="toggle-row">
+     <div><b>Mostrar status/lotado na agenda</b><br><span>Destaca linhas cheias ou quase cheias nos quadradinhos.</span></div>
+     <input id="cfgStatusAgenda" type="checkbox" onchange="salvarVisualConfig()">
+    </div>
 
-    <button class="btn btn-blue" onclick="salvarDespesa()">Adicionar despesa</button>
+    <div class="toggle-row">
+     <div><b>Permitir pagamento parcial</b><br><span>Adiciona a opÃ§Ã£o Parcial junto de Pago e Pagar na retirada.</span></div>
+     <input id="cfgPagamentoParcial" type="checkbox" onchange="salvarVisualConfig()">
+    </div>
 
-    <div id="despesasLista" style="margin-top:12px"></div>
+    <div class="toggle-row">
+     <div><b>BotÃ£o apagar separado</b><br><span>Deixa o botÃ£o Apagar mais afastado das aÃ§Ãµes usadas no balcÃ£o.</span></div>
+     <input id="cfgApagarSeparado" type="checkbox" onchange="salvarVisualConfig()">
+    </div>
    </div>
 
-   <div class="card">
-    <h3 class="title">Relatorio</h3>
-    <p class="small">Gera um resumo do mes para voce copiar, salvar ou enviar para seu contador.</p>
-    <button class="btn btn-blue" onclick="copiarRelatorioFinanceiro()">Copiar resumo do mes</button>
-    <button class="btn btn-blue" onclick="baixarRelatorioFinanceiroTXT()">Baixar resumo TXT</button>
-    <button class="btn btn-blue" onclick="exportarFinanceiroCSV()">Baixar planilha CSV</button>
-    <button class="btn" onclick="fecharMesFinanceiro()">Fechar mes e zerar OS</button>
-   </div>
-   </div>
-
-   <div class="card">
-    <h3 class="title">Servicos e precos</h3>
-    <p class="small">Use o botao Contar/Nao contar para escolher quais servicos ocupam quadradinho na agenda.</p>
-    <div id="servicosEdit"></div>
-    <label>Novo servico</label><input id="novoServico" placeholder="Ex: Alicates de cuticula">
-    <label>Preco unitario</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
-    <button class="btn btn-blue" onclick="adicionarServico()">Adicionar servico</button>
-   </div>
-
-   <div class="card">
-    <h3 class="title">Mensagem do WhatsApp</h3>
-    <p class="small">Mensagem enviada quando a OS e criada.</p>
-    <p class="small">Use: {numero}, {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
-    <textarea id="templateMsg"></textarea>
-    <button class="btn btn-blue" onclick="salvarTemplate()">Salvar mensagem da OS</button>
-
-    <hr>
-
-    <p class="small"><b>Mensagem de servico pronto</b></p>
-    <textarea id="templateProntoMsg"></textarea>
-    <button class="btn btn-blue" onclick="salvarTemplatePronto()">Salvar mensagem de pronto</button>
+   <div class="shortcut-grid">
+    <button class="shortcut" onclick="abrirPainelAjustes('financeiro')" type="button">
+     <span class="big-icon">$</span>
+     <span><b>Financeiro</b><p>Contas, pagamentos e recebimentos.</p><small class="green-dot">Local</small></span>
+    </button>
+    <button class="shortcut" onclick="abrirPainelAjustes('despesas')" type="button">
+     <span class="big-icon">â¦</span>
+     <span><b>Despesas</b><p>Cadastre e controle suas despesas.</p><small class="green-dot">Salvo</small></span>
+    </button>
+    <button class="shortcut" onclick="abrirPainelAjustes('relatorio')" type="button">
+     <span class="big-icon">â¥</span>
+     <span><b>RelatÃ³rio</b><p>Resumo mensal para copiar ou baixar.</p><small class="green-dot">Pronto</small></span>
+    </button>
+    <button class="shortcut" onclick="abrirPainelAjustes('servicos')" type="button">
+     <span class="big-icon">ð§</span>
+     <span><b>ServiÃ§os</b><p>Gerencie serviÃ§os, preÃ§os e agenda.</p><small class="green-dot">EditÃ¡vel</small></span>
+    </button>
+    <button class="shortcut" onclick="abrirPainelAjustes('mensagem')" type="button">
+     <span class="big-icon">â</span>
+     <span><b>Mensagem</b><p>Configure mensagens automÃ¡ticas.</p><small class="green-dot">Local</small></span>
+    </button>
+    <button class="shortcut" onclick="abrirPainelAjustes('backup')" type="button">
+     <span class="big-icon">ð¡</span>
+     <span><b>Backup/SeguranÃ§a</b><p>Backup, importaÃ§Ã£o e numeraÃ§Ã£o.</p><small class="green-dot">Protegido</small></span>
+    </button>
    </div>
 
-   <div class="card">
-    <h3 class="title">Numeracao da OS</h3>
-    <p class="small">A OS comeca no numero <b>1</b> e continua subindo. Ela <b>nao zera automaticamente</b>.</p>
-    <p class="small">No fechamento do mes, voce pode zerar manualmente para a proxima OS voltar para <b>1</b>.</p>
-    <p class="small">Proxima OS: <b id="proximoNumeroOS">-</b></p>
-
-    <label>Definir proxima OS</label>
-    <input id="setProximoNumero" type="number" min="1" placeholder="Ex: 1">
-
-    <button class="btn btn-blue" onclick="salvarProximoNumeroOS()">Salvar proximo numero</button>
-    <button class="btn btn-red" onclick="zerarNumeracaoOS()">Zerar OS e voltar para 1</button>
-
-    <p class="small">Isso nao apaga ordens antigas. Apenas faz a proxima OS voltar para o numero escolhido.</p>
-   </div>
-
-   <div class="card">
-    <h3 class="title">Seguranca Firebase</h3>
-    <p class="small">Login atual: <b id="emailLogado">-</b></p>
-    <p class="small">Para trocar senha ou criar outro usuario, use o painel do Firebase em Authentication &gt; Users.</p>
-   </div>
+   <div id="ajustesPainel" class="settings-panel hidden"></div>
   </section>
  </main>
 </div>
 
 <script>
+
 const firebaseConfig = {
  apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
  authDomain: "afia-37aa8.firebaseapp.com",
@@ -1260,19 +1520,13 @@ let auth = null;
 let unsubscribeOrdens = null;
 let unsubscribeDespesas = null;
 let offlinePersistenceOk = false;
-let ordens = [];
-let despesas = [];
-let config = {};
-let ultimaOSSalva = null;
-let salvandoOS = false;
 
 const COL_ORDENS = "ordens_afia_v2";
 const COL_DESPESAS = "despesas_afia_v1";
 const COL_FECHAMENTOS = "fechamentos_afia_v1";
 const DOC_CONFIG = "config/afia";
-const LOCAL_OS_PENDENTES = "afia_os_pendentes_v1";
 const DOC_CONTADOR_OS = "contadores/ordens";
-const OS_INICIO = 1;
+const LOCAL_OS_PENDENTES = "afia_os_pendentes_v15";
 
 const horarios = [
  "09:00","09:30","10:00","10:30","11:00","11:30",
@@ -1280,47 +1534,147 @@ const horarios = [
 ];
 
 const defaultServices = [
- {nome:"Alicates de cuticula", preco:15, contaAgenda:true},
+ {nome:"Alic. cutÃ­cula", preco:15, contaAgenda:true},
+ {nome:"Alic. novo", preco:45, contaAgenda:false},
+ {nome:"Molas", preco:5, contaAgenda:false},
  {nome:"Facas", preco:12, contaAgenda:true},
  {nome:"Tesouras", preco:15, contaAgenda:true},
- {nome:"Alicate novo", preco:0, contaAgenda:false},
- {nome:"Molas", preco:5, contaAgenda:false},
- {nome:"Espatulas", preco:7, contaAgenda:false},
- {nome:"Outros servicos", preco:10, contaAgenda:false}
+ {nome:"EspÃ¡tulas", preco:7, contaAgenda:false},
+ {nome:"Outros serviÃ§os", preco:10, contaAgenda:false}
 ];
 
 const defaultTemplate =
-`*AFIA - ORDEM DE SERVICO*
+`*AFIA - ORDEM DE SERVIÃO*
 OS: *{numero}*
 
-Ola, *{nome}*!
-Sua ordem de servico foi registrada.
+OlÃ¡, *{nome}*!
+Sua ordem de serviÃ§o foi registrada.
 
 Entrega: {data}
-Horario: {hora}
+HorÃ¡rio: {hora}
 
-*Servicos:*
+*ServiÃ§os:*
 {itens}
 
 Total: {valor}
 Pagamento: {pagamento}
 
-Obrigado pela preferencia!`;
+Obrigado pela preferÃªncia!`;
 
 const defaultTemplatePronto =
-`*AFIA - SERVICO PRONTO*
+`*AFIA - SERVIÃO PRONTO*
 OS: *{numero}*
 
-Ola, *{nome}*!
-Seu servico ficou pronto e ja pode ser retirado.
+OlÃ¡, *{nome}*!
+Seu serviÃ§o ficou pronto e jÃ¡ pode ser retirado.
 
-*Servicos:*
+*ServiÃ§os:*
 {itens}
 
 Total: {valor}
-Pagamento: {pagamento}
+Pagamento: {pagamento}`;
 
-Obrigado pela preferencia!`;
+let ordens = [];
+let despesas = [];
+let config = {};
+let selected = {};
+let pagamentoAtual = "Pagar na retirada";
+let ultimaOSSalva = null;
+let clienteSelecionadoKey = "";
+
+function defaultVisualConfig(){
+ return {
+   agendaLayout:"classico",
+   servicosLayout:"grade",
+   clientesLayout:"historico",
+   novaLayout:"balcao",
+   ajustesLayout:"atalhos",
+   buscaFixa:true,
+   mostrarStatusAgenda:true,
+   permitirPagamentoParcial:true,
+   apagarSeparado:true
+ };
+}
+
+function ensureVisualConfig(){
+ if(!config) config = {};
+ config.visual = {...defaultVisualConfig(), ...(config.visual || {})};
+ if(!config.servicos || !Array.isArray(config.servicos) || !config.servicos.length) config.servicos = defaultServices;
+ if(!config.template) config.template = defaultTemplate;
+ if(!config.templatePronto) config.templatePronto = defaultTemplatePronto;
+ config.servicos = normalizarServicos(config.servicos);
+ return config.visual;
+}
+
+function getVisual(){
+ return ensureVisualConfig();
+}
+
+function aplicarVisualConfig(){
+ const v = getVisual();
+
+ document.body.classList.toggle("busca-fixa", Boolean(v.buscaFixa));
+ document.body.classList.toggle("ajustes-lista", v.ajustesLayout === "lista");
+ document.body.classList.toggle("os-simples", v.novaLayout === "simples");
+ document.body.classList.toggle("apagar-separado", Boolean(v.apagarSeparado));
+
+ const map = [
+   ["cfgAgendaLayout", v.agendaLayout],
+   ["cfgServicosLayout", v.servicosLayout],
+   ["cfgClientesLayout", v.clientesLayout],
+   ["cfgNovaLayout", v.novaLayout],
+   ["cfgAjustesLayout", v.ajustesLayout]
+ ];
+ map.forEach(([id,val])=>{
+   const el = document.getElementById(id);
+   if(el) el.value = val;
+ });
+
+ const checks = [
+   ["cfgBuscaFixa", v.buscaFixa],
+   ["cfgStatusAgenda", v.mostrarStatusAgenda],
+   ["cfgPagamentoParcial", v.permitirPagamentoParcial],
+   ["cfgApagarSeparado", v.apagarSeparado]
+ ];
+ checks.forEach(([id,val])=>{
+   const el = document.getElementById(id);
+   if(el) el.checked = Boolean(val);
+ });
+
+ const parcial = document.getElementById("payParcial");
+ if(parcial) parcial.hidden = !v.permitirPagamentoParcial;
+ if(!v.permitirPagamentoParcial && pagamentoAtual === "Parcial"){
+   pagamentoAtual = "Pagar na retirada";
+   setPagamento(pagamentoAtual);
+ }
+}
+
+async function salvarVisualConfig(){
+ ensureVisualConfig();
+ const v = config.visual;
+
+ const getVal = (id, fallback)=>document.getElementById(id) ? document.getElementById(id).value : fallback;
+ const getChk = (id, fallback)=>document.getElementById(id) ? document.getElementById(id).checked : fallback;
+
+ v.agendaLayout = getVal("cfgAgendaLayout", v.agendaLayout);
+ v.servicosLayout = getVal("cfgServicosLayout", v.servicosLayout);
+ v.clientesLayout = getVal("cfgClientesLayout", v.clientesLayout);
+ v.novaLayout = getVal("cfgNovaLayout", v.novaLayout);
+ v.ajustesLayout = getVal("cfgAjustesLayout", v.ajustesLayout);
+ v.buscaFixa = getChk("cfgBuscaFixa", v.buscaFixa);
+ v.mostrarStatusAgenda = getChk("cfgStatusAgenda", v.mostrarStatusAgenda);
+ v.permitirPagamentoParcial = getChk("cfgPagamentoParcial", v.permitirPagamentoParcial);
+ v.apagarSeparado = getChk("cfgApagarSeparado", v.apagarSeparado);
+
+ try{
+   await salvarConfig();
+   aplicarVisualConfig();
+   renderAll();
+   toast("PreferÃªncias de layout salvas.","good");
+ }catch(e){
+   alert("Erro ao salvar layout: "+limparTexto(e.message));
+ }
+}
 
 function hoje(){
  const d = new Date();
@@ -1338,36 +1692,16 @@ function moeda(v){
  return "R$ "+Number(v || 0).toFixed(2).replace(".",",");
 }
 
-function emailUsuarioAtual(){
- const u = auth ? auth.currentUser : null;
- return u && u.email ? u.email : "";
-}
-
 function limparTexto(txt){
- let s = String(txt || "");
-
+ let s = String(txt || "").trim();
  try{
-   if(/[\u00C3\u00C2\u00E2]/.test(s)){
-     s = decodeURIComponent(escape(s));
-   }
+   s = s
+    .replaceAll("\u2013","-")
+    .replaceAll("\u2014","-")
+    .replaceAll("\u201C",'"')
+    .replaceAll("\u201D",'"')
+    .replaceAll("\u2019","'");
  }catch(e){}
-
- try{
-   s = s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
- }catch(e){}
-
- s = s
-   .replaceAll("\u2022","-")
-   .replaceAll("\u00B7","-")
-   .replaceAll("\u2013","-")
-   .replaceAll("\u2014","-")
-   .replaceAll("\u201C",'"')
-   .replaceAll("\u201D",'"')
-   .replaceAll("\u2019","'")
-   .replaceAll("`","'");
-
- s = s.replace(/[^\x09\x0A\x0D\x20-\x7E]/g,"");
-
  return s;
 }
 
@@ -1375,172 +1709,72 @@ function limparTelefone(t){
  return String(t || "").replace(/\D/g,"");
 }
 
-function inferirContaAgenda(nome){
- const n = limparTexto(nome).toLowerCase();
+function normalizar(txt){
+ return limparTexto(txt).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
 
- if(n.includes("mola") || n.includes("espatu") || n.includes("alicate novo")){
-   return false;
- }
-
- if(n.includes("alicate") || n.includes("tesoura") || n.includes("faca")){
-   return true;
- }
-
- return false;
+function emailUsuarioAtual(){
+ const u = auth ? auth.currentUser : null;
+ return u && u.email ? u.email : "";
 }
 
 function normalizarServicos(servicos){
  const lista = Array.isArray(servicos) && servicos.length ? servicos : defaultServices;
-
- return lista.map(s => {
-   const nome = limparTexto(s.nome || "Servico");
-   const temCampoAgenda = Object.prototype.hasOwnProperty.call(s, "contaAgenda");
-
+ return lista.map(s=>{
+   const nome = limparTexto(s.nome || "ServiÃ§o");
+   const temAgenda = Object.prototype.hasOwnProperty.call(s,"contaAgenda");
    return {
-     nome: nome,
+     nome,
      preco: Number(s.preco || 0),
-     contaAgenda: temCampoAgenda ? Boolean(s.contaAgenda) : inferirContaAgenda(nome)
+     contaAgenda: temAgenda ? Boolean(s.contaAgenda) : inferirContaAgenda(nome)
    };
  });
 }
 
-function normalizarTemplateWhatsApp(t){
- return limparTexto(String(t || defaultTemplate)
-   .replace(/\\n/g,"\n")
-   .replace(/\n{3,}/g,"\n\n"));
-}
-
-async function iniciar(){
- document.getElementById("agendaData").value = hoje();
- if(document.getElementById("servicosData")) servicosData.value = hoje();
- document.getElementById("dataEntrega").value = hoje();
- if(document.getElementById("dataDespesa")) dataDespesa.value = hoje();
- if(document.getElementById("finMes")) finMes.value = hoje().slice(0,7);
-
- horarios.forEach(h=>{
-   const o = document.createElement("option");
-   o.value = h;
-   o.textContent = h;
-   horaEntrega.appendChild(o);
- });
-
- try{
-   firebase.initializeApp(firebaseConfig);
-   db = firebase.firestore();
-
-   try{
-     await db.enablePersistence({synchronizeTabs:true});
-     offlinePersistenceOk = true;
-   }catch(persistError){
-     offlinePersistenceOk = false;
-   }
-
-   auth = firebase.auth();
-
-   atualizarStatusConexao();
-   window.addEventListener("online", ()=>{
-     atualizarStatusConexao();
-     sincronizarPendentesOffline();
-   });
-   window.addEventListener("offline", atualizarStatusConexao);
-
-   cloudStatus.innerHTML = '<span class="ok">Firebase conectado - layout clean premium ativo</span>';
-   ajusteStatus.innerHTML = '<span class="ok">Conectado</span>';
-
-   auth.onAuthStateChanged(async user=>{
-     if(user){
-       try{
-         await carregarConfig();
-         abrirApp();
-         iniciarEscutaOrdens();
-         iniciarEscutaDespesas();
-         atualizarStatusPendentesOffline();
-         sincronizarPendentesOffline();
-       }catch(e){
-         cloudStatus.innerHTML = '<span class="bad">Erro ao carregar dados: '+limparTexto(e.message)+'</span>';
-       }
-     }else{
-       fecharApp();
-     }
-   });
-
- }catch(e){
-   cloudStatus.innerHTML = '<span class="bad">Erro: '+limparTexto(e.message)+'</span>';
-   ajusteStatus.textContent = limparTexto(e.message);
- }
-}
-
-function iniciarEscutaOrdens(){
- if(unsubscribeOrdens){
-   unsubscribeOrdens();
-   unsubscribeOrdens = null;
- }
-
- unsubscribeOrdens = db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot({includeMetadataChanges:true}, s=>{
-   atualizarStatusSnapshot(s);
-   ordens = [];
-   s.forEach(d=>ordens.push({id:d.id, ...d.data()}));
-   renderAgenda();
-   renderServicosLista();
-   renderClientes();
-   renderFinanceiro();
- },e=>{
-   cloudStatus.innerHTML = '<span class="bad">Erro ao ler agenda: '+limparTexto(e.message)+'</span>';
- });
-}
-
-function iniciarEscutaDespesas(){
- if(unsubscribeDespesas){
-   unsubscribeDespesas();
-   unsubscribeDespesas = null;
- }
-
- unsubscribeDespesas = db.collection(COL_DESPESAS).orderBy("data","desc").onSnapshot({includeMetadataChanges:true}, s=>{
-   despesas = [];
-   s.forEach(d=>despesas.push({id:d.id, ...d.data()}));
-   renderFinanceiro();
- },e=>{
-   cloudStatus.innerHTML = '<span class="bad">Erro ao ler despesas: '+limparTexto(e.message)+'</span>';
- });
+function toast(msg,tipo){
+ const el = document.getElementById("toast");
+ if(!el) return;
+ el.textContent = msg;
+ el.className = "";
+ el.classList.add(tipo || "ok");
+ el.classList.add("show");
+ clearTimeout(window._toast);
+ window._toast = setTimeout(()=>el.classList.remove("show"),2300);
 }
 
 function atualizarStatusConexao(){
- if(!document.getElementById("connectionStatus")) return;
+ const el = document.getElementById("connectionStatus");
+ if(!el) return;
 
- const online = navigator.onLine;
-
- if(online){
-   const extra = offlinePersistenceOk ? "Cache offline ativo" : "Cache offline limitado";
-   connectionStatus.className = "connection-box connection-online";
-   connectionStatus.textContent = "Online - "+extra;
+ if(navigator.onLine){
+   const extra = offlinePersistenceOk ? "cache offline ativo" : "cache offline limitado";
+   el.className = "connection-box connection-online";
+   el.textContent = "Online - "+extra;
  }else{
-   connectionStatus.className = "connection-box connection-offline";
-   connectionStatus.textContent = "Offline - voce pode consultar dados ja carregados. Nova OS fica pendente ate voltar internet.";
+   el.className = "connection-box connection-offline";
+   el.textContent = "Offline - nova OS fica pendente atÃ© voltar internet.";
  }
-
  atualizarStatusPendentesOffline();
 }
 
 function atualizarStatusSnapshot(snap){
- if(!document.getElementById("connectionStatus")) return;
-
- const pendente = snap.metadata && snap.metadata.hasPendingWrites;
- const cache = snap.metadata && snap.metadata.fromCache;
+ const el = document.getElementById("connectionStatus");
+ if(!el || !snap || !snap.metadata) return;
 
  if(!navigator.onLine){
    atualizarStatusConexao();
    return;
  }
 
- if(pendente){
-   connectionStatus.className = "connection-box connection-offline";
-   connectionStatus.textContent = "Online - existem alteracoes aguardando sincronizar";
- }else if(cache){
-   connectionStatus.className = "connection-box connection-offline";
-   connectionStatus.textContent = "Online - mostrando dados do cache";
+ if(snap.metadata.hasPendingWrites){
+   el.className = "connection-box connection-offline";
+   el.textContent = "Online - alteraÃ§Ãµes aguardando sincronizar";
+ }else if(snap.metadata.fromCache){
+   el.className = "connection-box connection-offline";
+   el.textContent = "Online - mostrando dados do cache";
  }else{
-   connectionStatus.className = "connection-box connection-online";
-   connectionStatus.textContent = "Online - sincronizado com Firebase";
+   el.className = "connection-box connection-online";
+   el.textContent = "Online - sincronizado com Firebase";
  }
 }
 
@@ -1558,56 +1792,26 @@ function salvarPendentesOffline(lista){
 }
 
 function atualizarStatusPendentesOffline(){
- if(!document.getElementById("offlinePendentesStatus")) return;
-
+ const el = document.getElementById("offlinePendentesStatus");
+ if(!el) return;
  const qtd = obterPendentesOffline().length;
-
  if(qtd > 0){
-   offlinePendentesStatus.innerHTML = '<div class="pending-box"><b>'+qtd+' OS pendente(s) offline.</b><br>Elas serao enviadas para o Firebase quando a internet voltar.<br><button class="btn btn-blue" onclick="sincronizarPendentesOffline()">Sincronizar agora</button></div>';
+   el.innerHTML = `<div class="pending-box"><b>${qtd} OS pendente(s) offline.</b><br>Elas serÃ£o enviadas ao Firebase quando a internet voltar.<br><button class="btn btn-blue" onclick="sincronizarPendentesOffline()">Sincronizar agora</button></div>`;
  }else{
-   offlinePendentesStatus.innerHTML = "";
+   el.innerHTML = "";
  }
 }
 
 function salvarOSOffline(os){
  const lista = obterPendentesOffline();
-
- os.id = "offline_" + Date.now();
+ os.id = "offline_"+Date.now();
  os.numeroOS = "PENDENTE";
  os.criadoOfflineEm = new Date().toISOString();
-
  lista.push(os);
  salvarPendentesOffline(lista);
-
  ultimaOSSalva = os;
  mostrarAcoesDepoisDeSalvar(os);
-
- alert("Sem internet. A OS ficou salva como pendente offline. O numero oficial sera gerado quando voltar a internet.");
-}
-
-async function salvarOSNoFirebase(os){
- let novoId = "";
- let numeroGerado = null;
-
- await db.runTransaction(async transaction=>{
-   const novaRef = db.collection(COL_ORDENS).doc();
-   const numeroOS = await gerarNumeroOSDentroDaTransacao(transaction);
-
-   novoId = novaRef.id;
-   numeroGerado = numeroOS;
-
-   transaction.set(novaRef, {
-     ...os,
-     numeroOS: numeroOS,
-     criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
-     sincronizadoEm: firebase.firestore.FieldValue.serverTimestamp()
-   });
- });
-
- os.id = novoId;
- os.numeroOS = numeroGerado;
-
- return os;
+ toast("OS salva offline. Vai sincronizar depois.","bad");
 }
 
 async function sincronizarPendentesOffline(){
@@ -1615,110 +1819,102 @@ async function sincronizarPendentesOffline(){
    atualizarStatusPendentesOffline();
    return;
  }
-
- let lista = obterPendentesOffline();
-
- if(!lista.length){
-   atualizarStatusPendentesOffline();
-   return;
- }
+ const lista = obterPendentesOffline();
+ if(!lista.length) return;
 
  const restantes = [];
-
- for(const osPendente of lista){
+ for(const pend of lista){
    try{
-     const osLimpa = {...osPendente};
+     const osLimpa = {...pend};
      delete osLimpa.id;
      delete osLimpa.numeroOS;
-
+     delete osLimpa.criadoOfflineEm;
      await salvarOSNoFirebase(osLimpa);
    }catch(e){
-     restantes.push(osPendente);
+     restantes.push(pend);
    }
  }
-
  salvarPendentesOffline(restantes);
-
  if(lista.length && !restantes.length){
-   await renderNumeroOSAjustes();
-   alert("OS pendentes offline sincronizadas com sucesso.");
+   toast("OS pendentes sincronizadas.","good");
  }
 }
 
+async function iniciar(){
+ try{
+   agendaData.value = hoje();
+   servicosData.value = hoje();
+   dataEntrega.value = hoje();
 
-async function carregarConfig(){
- const snap = await db.doc(DOC_CONFIG).get();
+   horarios.forEach(h=>{
+     const o = document.createElement("option");
+     o.value = h;
+     o.textContent = h;
+     horaEntrega.appendChild(o);
+   });
 
- if(snap.exists){
-   config = snap.data();
- }else{
-   config = {servicos:defaultServices, template:defaultTemplate};
+   firebase.initializeApp(firebaseConfig);
+   db = firebase.firestore();
+
+   try{
+     await db.enablePersistence({synchronizeTabs:true});
+     offlinePersistenceOk = true;
+   }catch(e){
+     offlinePersistenceOk = false;
+   }
+
+   auth = firebase.auth();
+   atualizarStatusConexao();
+
+   window.addEventListener("online", ()=>{
+     atualizarStatusConexao();
+     sincronizarPendentesOffline();
+   });
+   window.addEventListener("offline", atualizarStatusConexao);
+
+   if(document.getElementById("loginStatus")){
+     loginStatus.innerHTML = '<span class="ok">Firebase conectado. FaÃ§a login.</span>';
+   }
+
+   auth.onAuthStateChanged(async user=>{
+     if(user){
+       try{
+         await carregarConfig();
+         abrirApp();
+         iniciarEscutaOrdens();
+         iniciarEscutaDespesas();
+         sincronizarPendentesOffline();
+       }catch(e){
+         if(document.getElementById("loginStatus")){
+           loginStatus.innerHTML = '<span class="bad">Erro ao carregar dados: '+limparTexto(e.message)+'</span>';
+         }
+       }
+     }else{
+       fecharApp();
+     }
+   });
+ }catch(e){
+   if(document.getElementById("loginStatus")){
+     loginStatus.innerHTML = '<span class="bad">Erro Firebase: '+limparTexto(e.message)+'</span>';
+   }
  }
-
- if(!config.servicos) config.servicos = defaultServices;
- if(!config.template) config.template = defaultTemplate;
- if(!config.templatePronto) config.templatePronto = defaultTemplatePronto;
-
- config.servicos = normalizarServicos(config.servicos);
- config.template = normalizarTemplateWhatsApp(config.template);
- config.templatePronto = normalizarTemplateWhatsApp(config.templatePronto);
-
- await db.doc(DOC_CONFIG).set(config,{merge:true});
-
- templateMsg.value = config.template;
- if(document.getElementById("templateProntoMsg")){
-   templateProntoMsg.value = config.templatePronto;
- }
-
- renderServicosOS();
- renderServicosEdit();
 }
 
 async function login(){
  const email = loginUser.value.trim();
  const senha = loginPass.value;
-
  if(!email || !senha){
    alert("Digite o e-mail e a senha do Firebase.");
    return;
  }
-
  try{
-   cloudStatus.innerHTML = '<span class="ok">Entrando...</span>';
+   loginStatus.innerHTML = '<span class="ok">Entrando...</span>';
    await auth.signInWithEmailAndPassword(email, senha);
    loginPass.value = "";
  }catch(e){
-   cloudStatus.innerHTML = '<span class="bad">Falha no login</span>';
-   alert("Login incorreto ou usuario nao cadastrado no Firebase.");
+   loginStatus.innerHTML = '<span class="bad">Falha no login</span>';
+   alert("Login incorreto ou usuÃ¡rio nÃ£o cadastrado no Firebase.");
  }
-}
-
-function abrirApp(){
- loginScreen.classList.add("hidden");
- appScreen.classList.remove("hidden");
- setScreenInfo("agenda");
- cloudStatus.innerHTML = '<span class="ok">Login seguro ativo: '+limparTexto(emailUsuarioAtual())+'</span>';
- if(document.getElementById("emailLogado")){
-   emailLogado.textContent = limparTexto(emailUsuarioAtual());
- }
-}
-
-function fecharApp(){
- if(unsubscribeOrdens){
-   unsubscribeOrdens();
-   unsubscribeOrdens = null;
- }
-
- if(unsubscribeDespesas){
-   unsubscribeDespesas();
-   unsubscribeDespesas = null;
- }
-
- ordens = [];
- despesas = [];
- loginScreen.classList.remove("hidden");
- appScreen.classList.add("hidden");
- cloudStatus.innerHTML = '<span class="ok">Firebase conectado - faca login</span>';
 }
 
 async function logout(){
@@ -1729,1599 +1925,1049 @@ async function logout(){
  }
 }
 
-function setScreenInfo(t){
- const titulos = {
-   agenda:["Agenda","Confira horarios e disponibilidade"],
-   nova:["Nova OS","Atendimento rapido no balcao"],
-   servicos:["Servicos","Busque e acompanhe as ordens de servico"],
-   clientes:["Clientes","Historico e busca de clientes"],
-   ajustes:["Ajustes","Configuracoes e financeiro"]
- };
-
- const info = titulos[t] || titulos.agenda;
-
- if(document.getElementById("screenTitle")) screenTitle.textContent = info[0];
- if(document.getElementById("screenSubtitle")) screenSubtitle.textContent = info[1];
-
- document.body.classList.remove("tab-agenda","tab-nova","tab-servicos","tab-clientes","tab-ajustes");
- document.body.classList.add("tab-"+t);
+function abrirApp(){
+ loginScreen.classList.add("hidden");
+ appScreen.classList.remove("hidden");
+ if(document.getElementById("emailLogado")) emailLogado.textContent = emailUsuarioAtual();
+ if(document.getElementById("ajusteStatus")) ajusteStatus.textContent = "Conectado";
+ aplicarVisualConfig();
+ atualizarHorarioSugerido();
+ renderQuickServices();
+ renderSelected();
+ renderAll();
+ showTab("agenda");
 }
 
-function mostrarToast(msg, tipo){
- const t = document.getElementById("toast");
- if(!t) return;
+function fecharApp(){
+ if(unsubscribeOrdens){unsubscribeOrdens(); unsubscribeOrdens = null;}
+ if(unsubscribeDespesas){unsubscribeDespesas(); unsubscribeDespesas = null;}
+ ordens = [];
+ despesas = [];
+ loginScreen.classList.remove("hidden");
+ appScreen.classList.add("hidden");
+ if(document.getElementById("loginStatus")) loginStatus.innerHTML = '<span class="ok">Firebase conectado. FaÃ§a login.</span>';
+}
 
- t.textContent = msg;
- t.className = "";
- t.classList.add(tipo || "ok");
- t.classList.add("show");
+async function carregarConfig(){
+ const snap = await db.doc(DOC_CONFIG).get();
+ if(snap.exists){
+   config = snap.data();
+ }else{
+   config = {
+     servicos: defaultServices,
+     template: defaultTemplate,
+     templatePronto: defaultTemplatePronto,
+     visual: defaultVisualConfig()
+   };
+ }
+ ensureVisualConfig();
+ await db.doc(DOC_CONFIG).set(config,{merge:true});
+ aplicarVisualConfig();
+ renderQuickServices();
+ renderSelected();
+}
 
- clearTimeout(window._afiaToastTimer);
- window._afiaToastTimer = setTimeout(()=>{
-   t.classList.remove("show");
- },2400);
+async function salvarConfig(){
+ ensureVisualConfig();
+ await db.doc(DOC_CONFIG).set(config,{merge:true});
+}
+
+function iniciarEscutaOrdens(){
+ if(unsubscribeOrdens){unsubscribeOrdens(); unsubscribeOrdens = null;}
+ unsubscribeOrdens = db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot({includeMetadataChanges:true}, snap=>{
+   atualizarStatusSnapshot(snap);
+   ordens = [];
+   snap.forEach(d=>ordens.push({id:d.id, ...d.data()}));
+   renderAll();
+ }, e=>{
+   alert("Erro ao ler ordens: "+limparTexto(e.message));
+ });
+}
+
+function iniciarEscutaDespesas(){
+ if(unsubscribeDespesas){unsubscribeDespesas(); unsubscribeDespesas = null;}
+ unsubscribeDespesas = db.collection(COL_DESPESAS).orderBy("data","desc").onSnapshot({includeMetadataChanges:true}, snap=>{
+   despesas = [];
+   snap.forEach(d=>despesas.push({id:d.id, ...d.data()}));
+ }, e=>{
+   alert("Erro ao ler despesas: "+limparTexto(e.message));
+ });
+}
+
+function setScreenInfo(t){
+ const titulos = {
+   agenda:["Agenda","Quadradinhos por meia hora"],
+   nova:["Nova OS","Atendimento rÃ¡pido no balcÃ£o"],
+   servicos:["ServiÃ§os","Busque e acompanhe as ordens de serviÃ§o"],
+   clientes:["Clientes","Lista + histÃ³rico do cliente"],
+   ajustes:["Ajustes","Atalhos visuais para configurar"]
+ };
+ const info = titulos[t] || titulos.agenda;
+ screenTitle.textContent = info[0];
+ screenSubtitle.textContent = info[1];
+ document.body.dataset.tab = t;
+ screenActionBtn.style.display = t === "agenda" || t === "servicos" || t === "clientes" ? "block" : "none";
 }
 
 function showTab(t){
  setScreenInfo(t);
- ["agenda","nova","servicos","clientes","ajustes"].forEach(id=>{
-   const el = document.getElementById(id);
-   if(el) el.classList.add("hidden");
- });
- ["btnAgenda","btnNova","btnServicos","btnClientes","btnAjustes"].forEach(id=>{
-   const el = document.getElementById(id);
-   if(el) el.classList.remove("active");
- });
+ ["agenda","nova","servicos","clientes","ajustes"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+ ["btnAgenda","btnNova","btnServicos","btnClientes","btnAjustes"].forEach(id=>document.getElementById(id).classList.remove("active"));
+ document.getElementById(t).classList.remove("hidden");
+ if(t==="agenda"){btnAgenda.classList.add("active"); renderAgenda();}
+ if(t==="nova"){btnNova.classList.add("active"); atualizarHorarioSugerido(); renderQuickServices(); renderSelected();}
+ if(t==="servicos"){btnServicos.classList.add("active"); renderServicosLista();}
+ if(t==="clientes"){btnClientes.classList.add("active"); renderClientes();}
+ if(t==="ajustes"){btnAjustes.classList.add("active"); aplicarVisualConfig();}
+ window.scrollTo({top:0,behavior:"smooth"});
+}
 
- const tela = document.getElementById(t);
- if(tela) tela.classList.remove("hidden");
-
- if(t === "agenda") btnAgenda.classList.add("active");
- if(t === "nova"){btnNova.classList.add("active"); atualizarHorarioSugerido();}
- if(t === "servicos"){btnServicos.classList.add("active"); renderServicosLista();}
- if(t === "clientes") btnClientes.classList.add("active");
- if(t === "ajustes"){
-   btnAjustes.classList.add("active");
-   renderFinanceiro();
-   renderNumeroOSAjustes();
+function inferirContaAgenda(nome){
+ const n = normalizar(nome);
+ if(n.includes("mola") || n.includes("espatu") || n.includes("alic novo") || n.includes("novo")){
+   return false;
  }
-}
-
-function renderServicosOS(){
- servicosOS.innerHTML = "";
-
- config.servicos.forEach((s,i)=>{
-   const agendaTxt = s.contaAgenda ? "agenda" : "rapido";
-
-   servicosOS.innerHTML += `
-    <div class="qty-row">
-     <div class="qty-name">${limparTexto(s.nome)}<span>${moeda(s.preco)} cada - ${agendaTxt}</span></div>
-     <div class="qty-controls">
-      <button class="qty-btn minus" type="button" onclick="ajustarQtdServico(${i},-1)">-</button>
-      <input type="number" min="0" placeholder="0" inputmode="numeric" id="svc_${i}" onfocus="this.select()" onclick="this.select()" oninput="calcularTotal()">
-      <button class="qty-btn" type="button" onclick="ajustarQtdServico(${i},1)">+</button>
-     </div>
-    </div>`;
- });
-}
-
-function ajustarQtdServico(i, delta){
- const campo = document.getElementById("svc_"+i);
- if(!campo) return;
-
- let atual = Number(campo.value || 0);
- atual += delta;
-
- if(atual < 0) atual = 0;
-
- campo.value = atual || "";
- calcularTotal();
-}
-
-function calcularTotal(){
- let total = 0;
-
- config.servicos.forEach((s,i)=>{
-   const q = Number(document.getElementById("svc_"+i)?.value) || 0;
-   total += q * Number(s.preco || 0);
- });
-
- valorTotal.value = total.toFixed(2);
-}
-
-function toggleMaisOpcoes(){
- const el = document.getElementById("maisOpcoesOS");
- if(el) el.classList.toggle("open");
-}
-
-function buscarClientePorTelefone(){
- const telDigitado = limparTelefone(telefone.value);
-
- if(telDigitado.length < 4) return;
-
- const cliente = ordens.find(o=>{
-   const telSalvo = limparTelefone(o.telefone);
-   return telSalvo && (
-     telSalvo === telDigitado ||
-     telSalvo.endsWith(telDigitado) ||
-     telDigitado.endsWith(telSalvo)
-   );
- });
-
- if(cliente && cliente.nome){
-   nome.value = limparTexto(cliente.nome);
+ if(n.includes("alicate") || n.includes("alic") || n.includes("tesoura") || n.includes("faca")){
+   return true;
  }
-}
-
-function calcularTotalServicos(itens){
- let total = 0;
-
- Object.entries(itens || {}).forEach(([nome,qtd])=>{
-   total += Number(qtd || 0);
- });
-
- return total;
+ return false;
 }
 
 function servicoContaNaAgenda(nomeServico){
- const nomeLimpo = limparTexto(nomeServico);
- const servico = (config.servicos || []).find(s => limparTexto(s.nome).toLowerCase() === nomeLimpo.toLowerCase());
-
- if(servico){
-   return Boolean(servico.contaAgenda);
- }
-
- return inferirContaAgenda(nomeLimpo);
+ const n = normalizar(nomeServico);
+ const s = (config.servicos || []).find(x=>normalizar(x.nome) === n);
+ return s ? Boolean(s.contaAgenda) : inferirContaAgenda(nomeServico);
 }
 
 function calcularTotalAgendaServicos(itens){
  let total = 0;
-
  Object.entries(itens || {}).forEach(([nome,qtd])=>{
-   if(servicoContaNaAgenda(nome)){
-     total += Number(qtd || 0);
-   }
+   if(servicoContaNaAgenda(nome)) total += Number(qtd || 0);
  });
-
  return total;
 }
 
 function getTotalServicosOS(os){
- const somaItens = calcularTotalServicos(os.itens || {});
- if(somaItens > 0) return somaItens;
- return Number(os.pecas || 0);
+ const soma = Object.values(os.itens || {}).reduce((s,q)=>s+Number(q||0),0);
+ return soma || Number(os.pecas || 0);
 }
 
 function getPecasAgenda(os){
- if(os.pecasAgenda !== undefined){
-   return Number(os.pecasAgenda || 0);
- }
-
+ if(os.pecasAgenda !== undefined) return Number(os.pecasAgenda || 0);
  return calcularTotalAgendaServicos(os.itens || {});
 }
 
 function mapaVazio(){
  const m = {};
- horarios.forEach(h=>m[h] = 0);
+ horarios.forEach(h=>m[h]=0);
  return m;
-}
-
-function somarAlocacao(aloc){
- return Object.values(aloc || {}).reduce((s,q)=>s + Number(q || 0), 0);
-}
-
-function ordemPrioridade(horaBase){
- const idx = horarios.indexOf(horaBase);
-
- if(idx < 0) return [];
-
- const ordem = [];
-
- ordem.push(idx);
-
- for(let i = idx - 1; i >= 0; i--){
-   ordem.push(i);
- }
-
- for(let i = idx + 1; i < horarios.length; i++){
-   ordem.push(i);
- }
-
- return ordem;
-}
-
-function calcularAlocacaoNoMapa(mapaOcupado, horaBase, quantidade){
- const aloc = {};
- let restante = Number(quantidade || 0);
-
- if(restante <= 0) return aloc;
-
- const ordem = ordemPrioridade(horaBase);
-
- if(!ordem.length){
-   throw new Error("Horario invalido.");
- }
-
- const usadoNoHorarioEscolhido = Number(mapaOcupado[horaBase] || 0);
-
- if(usadoNoHorarioEscolhido >= 5){
-   throw new Error("O horario escolhido ja esta cheio. Escolha outro horario com pelo menos 1 vaga livre.");
- }
-
- for(const i of ordem){
-   const h = horarios[i];
-   const usado = Number(mapaOcupado[h] || 0);
-   const livre = Math.max(0, 5 - usado);
-
-   if(livre > 0){
-     const pega = Math.min(livre, restante);
-
-     aloc[h] = (aloc[h] || 0) + pega;
-     mapaOcupado[h] = usado + pega;
-
-     restante -= pega;
-
-     if(restante <= 0) break;
-   }
- }
-
- if(restante > 0){
-   throw new Error("Nao ha vagas suficientes nesse dia para essa quantidade de servicos.");
- }
-
- return aloc;
 }
 
 function ordenarOrdensDoDia(lista){
  return [...lista].sort((a,b)=>{
    const ha = String(a.hora || "");
    const hb = String(b.hora || "");
-
    if(ha !== hb) return ha.localeCompare(hb);
-
    const ta = a.criadoEm && a.criadoEm.seconds ? a.criadoEm.seconds : 0;
    const tb = b.criadoEm && b.criadoEm.seconds ? b.criadoEm.seconds : 0;
-
    return ta - tb;
  });
 }
 
-function calcularDistribuicoesDoDia(dia, ignorarId){
- const confirmado = mapaVazio();
- const agendado = mapaVazio();
+function ordemPrioridade(horaBase){
+ const idx = horarios.indexOf(horaBase);
+ if(idx < 0) return [];
+ const ordem = [idx];
+ for(let i=idx-1;i>=0;i--) ordem.push(i);
+ for(let i=idx+1;i<horarios.length;i++) ordem.push(i);
+ return ordem;
+}
+
+function calcularAlocacaoNoMapa(mapaOcupado, horaBase, quantidade){
+ const aloc = {};
+ let restante = Number(quantidade || 0);
+ if(restante <= 0) return aloc;
+ const ordem = ordemPrioridade(horaBase);
+ if(!ordem.length) throw new Error("HorÃ¡rio invÃ¡lido.");
+ if(Number(mapaOcupado[horaBase] || 0) >= 5){
+   throw new Error("O horÃ¡rio escolhido jÃ¡ estÃ¡ cheio. Escolha outro horÃ¡rio com vaga livre.");
+ }
+ for(const i of ordem){
+   const h = horarios[i];
+   const usado = Number(mapaOcupado[h] || 0);
+   const livre = Math.max(0, 5 - usado);
+   if(livre > 0){
+     const pega = Math.min(livre, restante);
+     aloc[h] = (aloc[h] || 0) + pega;
+     mapaOcupado[h] = usado + pega;
+     restante -= pega;
+     if(restante <= 0) break;
+   }
+ }
+ if(restante > 0){
+   throw new Error("NÃ£o hÃ¡ vagas suficientes nesse dia para essa quantidade de serviÃ§os.");
+ }
+ return aloc;
+}
+
+function calcularDistribuicoesDoDia(lista, ignorarId){
  const ocupadoTotal = mapaVazio();
  const distPorId = {};
- const semVaga = [];
-
- const lista = ordenarOrdensDoDia(dia).filter(o => !ignorarId || o.id !== ignorarId);
-
- lista.forEach((o,idx)=>{
-   const chave = o.id || ("semid_"+idx);
+ const dia = ordenarOrdensDoDia(lista).filter(o=>!ignorarId || o.id !== ignorarId);
+ dia.forEach((o,idx)=>{
+   const key = o.id || "semid_"+idx;
    const qtd = getPecasAgenda(o);
-   const situacao = o.situacao === "agendado" ? "agendado" : "confirmado";
-   const mapaCor = situacao === "agendado" ? agendado : confirmado;
-
    let aloc = {};
-
    if(qtd > 0){
      try{
-       aloc = calcularAlocacaoNoMapa(ocupadoTotal, o.hora, qtd);
-     }catch(e){
-       semVaga.push(o);
-       aloc = {};
-     }
+       if(o.alocacoes && Object.keys(o.alocacoes).length){
+         Object.entries(o.alocacoes).forEach(([h,q])=>{
+           if(ocupadoTotal[h] !== undefined){
+             const pega = Math.min(Number(q||0), Math.max(0, 5 - ocupadoTotal[h]));
+             if(pega > 0){
+               aloc[h] = (aloc[h] || 0) + pega;
+               ocupadoTotal[h] += pega;
+             }
+           }
+         });
+         const restante = qtd - Object.values(aloc).reduce((s,q)=>s+Number(q||0),0);
+         if(restante > 0){
+           const extra = calcularAlocacaoNoMapa(ocupadoTotal, o.hora, restante);
+           Object.entries(extra).forEach(([h,q])=>aloc[h]=(aloc[h]||0)+q);
+         }
+       }else{
+         aloc = calcularAlocacaoNoMapa(ocupadoTotal, o.hora, qtd);
+       }
+     }catch(e){}
    }
-
-   Object.entries(aloc).forEach(([h,q])=>{
-     if(mapaCor[h] !== undefined){
-       mapaCor[h] += Number(q || 0);
-     }
-   });
-
-   distPorId[chave] = aloc;
+   distPorId[key] = aloc;
  });
-
- return {confirmado, agendado, ocupadoTotal, distPorId, semVaga};
+ return {ocupadoTotal, distPorId};
 }
 
-
-function numeroTextoOS(os){
- if(os && os.numeroOS){
-   return String(os.numeroOS);
- }
-
- if(os && os.id){
-   return "ANTIGA-" + String(os.id).slice(0,6);
- }
-
- return "-";
+function calcularAlocacoesSeguro(data,hora,quantidade,ignorarId){
+ const lista = ordens.filter(o=>o.data === data);
+ const calc = calcularDistribuicoesDoDia(lista, ignorarId);
+ return calcularAlocacaoNoMapa({...calc.ocupadoTotal}, hora, quantidade);
 }
 
-function proximoNumeroDepoisDe(ultimo){
- ultimo = Number(ultimo || 0);
-
- if(ultimo < 0){
-   ultimo = 0;
- }
-
- return ultimo + 1;
-}
-
-async function gerarNumeroOSDentroDaTransacao(transaction){
- const refContador = db.doc(DOC_CONTADOR_OS);
- const snap = await transaction.get(refContador);
-
- let ultimo = 0;
-
- if(snap.exists){
-   ultimo = Number(snap.data().ultimo || 0);
- }
-
- const proximo = proximoNumeroDepoisDe(ultimo);
-
- transaction.set(refContador, {
-   ultimo: proximo,
-   atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
- }, {merge:true});
-
- return proximo;
-}
-
-async function renderNumeroOSAjustes(){
- if(!document.getElementById("proximoNumeroOS")) return;
-
- try{
-   const snap = await db.doc(DOC_CONTADOR_OS).get();
-   let ultimo = 0;
-
-   if(snap.exists){
-     ultimo = Number(snap.data().ultimo || 0);
-   }
-
-   const proximo = proximoNumeroDepoisDe(ultimo);
-
-   proximoNumeroOS.textContent = String(proximo);
-   if(document.getElementById("setProximoNumero")){
-     setProximoNumero.value = proximo;
-   }
- }catch(e){
-   proximoNumeroOS.textContent = "Erro";
- }
-}
-
-async function salvarProximoNumeroOS(){
- const n = Number(setProximoNumero.value || 0);
-
- if(n < OS_INICIO){
-   alert("Digite um numero igual ou maior que "+OS_INICIO+".");
-   return;
- }
-
- try{
-   await db.doc(DOC_CONTADOR_OS).set({
-     ultimo: n - 1,
-     atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
-   }, {merge:true});
-
-   await renderNumeroOSAjustes();
-
-   mostrarToast("Proxima OS definida como "+String(n)+".","good");
- }catch(e){
-   alert("Erro ao salvar numeracao: "+limparTexto(e.message));
- }
-}
-
-async function zerarNumeracaoOS(){
- const ok = confirm("Zerar a numeracao da OS? A proxima OS criada sera a numero 1. As ordens antigas nao serao apagadas.");
-
- if(!ok) return;
-
- try{
-   await db.doc(DOC_CONTADOR_OS).set({
-     ultimo: 0,
-     zeradoEm: firebase.firestore.FieldValue.serverTimestamp(),
-     atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
-   }, {merge:true});
-
-   await renderNumeroOSAjustes();
-
-   mostrarToast("Numeracao zerada. Proxima OS 1.","good");
- }catch(e){
-   alert("Erro ao zerar numeracao: "+limparTexto(e.message));
- }
-}
-
-function ocupacaoTotalDoDia(data, ignorarId){
- const dia = ordens.filter(o=>o.data === data);
- return calcularDistribuicoesDoDia(dia, ignorarId).ocupadoTotal;
-}
-
-function calcularAlocacoes(data, horaBase, quantidade, ignorarId){
- const mapa = {...ocupacaoTotalDoDia(data, ignorarId)};
- return calcularAlocacaoNoMapa(mapa, horaBase, quantidade);
+function ocupacaoTotalDoDia(data){
+ return calcularDistribuicoesDoDia(ordens.filter(o=>o.data===data)).ocupadoTotal;
 }
 
 function sugerirHorarioDisponivel(data){
  const mapa = ocupacaoTotalDoDia(data);
- const atual = horaEntrega ? horaEntrega.value : "";
-
- if(atual && Number(mapa[atual] || 0) < 5){
-   return atual;
- }
-
  for(const h of horarios){
-   if(Number(mapa[h] || 0) < 5){
-     return h;
-   }
+   if(Number(mapa[h] || 0) < 5) return h;
  }
-
  return horarios[0];
 }
 
 function atualizarHorarioSugerido(){
- if(!document.getElementById("horaEntrega") || !document.getElementById("dataEntrega")) return;
-
  const h = sugerirHorarioDisponivel(dataEntrega.value || hoje());
+ horaEntrega.value = h;
+}
 
- if(h){
-   horaEntrega.value = h;
+function usarProximaVagaLivre(){
+ const data = dataEntrega.value || hoje();
+ const h = sugerirHorarioDisponivel(data);
+ horaEntrega.value = h;
+ toast("PrÃ³xima vaga livre selecionada: "+h,"good");
+}
+
+function statusAgenda(usado){
+ if(usado >= 5) return {txt:"Lotado", cls:"lotado"};
+ if(usado >= 4) return {txt:"Quase cheio", cls:"quase"};
+ if(usado <= 0) return {txt:"Livre", cls:"livre"};
+ return {txt:"Poucas vagas", cls:"livre"};
+}
+
+function osBadgeDoHorario(data,h){
+ const lista = ordens.filter(o=>o.data === data && ((o.alocacoes && Number(o.alocacoes[h] || 0) > 0) || o.hora === h));
+ if(!lista.length) return "â";
+ return "OS " + numeroTextoOS(lista[0]);
+}
+
+function renderAgenda(){
+ if(!document.getElementById("agendaRows")) return;
+ const data = agendaData.value || hoje();
+ agendaData.value = data;
+ const mapa = ocupacaoTotalDoDia(data);
+ const total = horarios.length * 5;
+ const ocupadas = horarios.reduce((s,h)=>s+Number(mapa[h]||0),0);
+ const livres = Math.max(0,total-ocupadas);
+ const prox = horarios.find(h=>Number(mapa[h]||0)<5) || "-";
+ const v = getVisual();
+
+ agTotal.textContent = total;
+ agOcupadas.textContent = ocupadas;
+ agLivres.textContent = livres;
+ agProxima.textContent = prox;
+
+ const header = document.querySelector(".agenda-grid-header");
+ if(header){
+   header.className = "agenda-grid-header";
+   if(v.agendaLayout === "status"){
+     header.classList.add("agenda-status-layout");
+     header.innerHTML = '<div>Hora</div><div>Status</div><div>5 vagas</div>';
+   }else if(v.agendaLayout === "os"){
+     header.classList.add("agenda-os-layout");
+     header.innerHTML = '<div>Hora</div><div>OS</div><div>5 vagas</div>';
+   }else{
+     header.innerHTML = '<div>Hora</div><div>5 vagas por meia hora</div>';
+   }
  }
+
+ let html = "";
+ horarios.forEach(h=>{
+   if(h === "14:30"){
+     html += '<div class="interval-row">Intervalo de almoÃ§o</div>';
+   }
+
+   const usado = Math.min(5, Number(mapa[h] || 0));
+   const st = statusAgenda(usado);
+   const destaque = v.mostrarStatusAgenda && (st.cls === "lotado" || st.cls === "quase") ? st.cls : "";
+
+   let rowClass = "agenda-row " + destaque;
+   if(v.agendaLayout === "status") rowClass += " agenda-status-layout";
+   if(v.agendaLayout === "os") rowClass += " agenda-os-layout";
+
+   html += `<div class="${rowClass}"><div class="agenda-time">${h}</div>`;
+
+   if(v.agendaLayout === "status"){
+     html += `<div class="agenda-status ${st.cls}">${st.txt}</div>`;
+   }else if(v.agendaLayout === "os"){
+     const badge = osBadgeDoHorario(data,h);
+     html += `<div>${badge === "â" ? "â" : `<span class="os-mini-badge">${badge}</span>`}</div>`;
+   }
+
+   html += `<div class="slots">`;
+   for(let i=0;i<5;i++){
+     html += `<span class="slot ${i < usado ? "on" : ""}"></span>`;
+   }
+   html += `</div></div>`;
+ });
+ agendaRows.innerHTML = html;
 }
 
-
-function setEstadoBotaoSalvar(carregando){
- const btn = document.getElementById("btnSalvarOS");
- if(!btn) return;
- btn.disabled = Boolean(carregando);
- btn.textContent = carregando ? "Salvando..." : "Salvar OS";
-}
-
-function mostrarFormNovaOS(){
- const form = document.querySelector("#nova form");
- const panel = document.getElementById("posSalvarPanel");
- if(panel) panel.classList.add("hidden");
- const acoes = document.getElementById("posSalvarAcoes");
- if(acoes) acoes.classList.remove("hidden");
- if(form) form.classList.remove("hidden");
-}
-
-function mostrarPainelSalvando(os){
- const form = document.querySelector("#nova form");
- const panel = document.getElementById("posSalvarPanel");
- const resumo = document.getElementById("posSalvarResumo");
- const acoes = document.getElementById("posSalvarAcoes");
-
- if(form) form.classList.add("hidden");
- if(acoes) acoes.classList.add("hidden");
-
- if(resumo){
-   resumo.innerHTML = `
-    <div class="pos-save-main">
-     <div class="pos-save-row">
-      <div class="service-os-number"><span>ORDEM DE SERVICO</span><b>Salvando</b></div>
-      <div class="service-delivery-badge"><span>ENTREGA</span><b>${dataBR(os.data)}<br>${os.hora || ""}</b></div>
-     </div>
-     <b>${limparTexto(os.nome)}</b><br>
-     <span class="small">Aguarde. Assim que o numero oficial da OS for gerado, aparecem os botoes de enviar e imprimir.</span>
-     <div class="saving-note">Sincronizando com o Firebase...</div>
-    </div>
+function renderQuickServices(){
+ if(!document.getElementById("quickServicesGrid")) return;
+ quickServicesGrid.innerHTML = "";
+ (config.servicos || []).forEach((s,i)=>{
+   const div = document.createElement("div");
+   div.className = "service-tile";
+   div.innerHTML = `
+    <div><b>${s.nome}</b><span>${moeda(s.preco)}</span></div>
+    <button class="plus-mini" type="button" onclick="addServico(${i})">+</button>
    `;
- }
+   quickServicesGrid.appendChild(div);
+ });
+}
 
- if(panel) {
-   panel.classList.remove("hidden");
-   setTimeout(()=>panel.scrollIntoView({behavior:"smooth", block:"start"}),80);
+function addServico(i){
+ const nome = config.servicos[i].nome;
+ selected[nome] = (selected[nome] || 0) + 1;
+ renderSelected();
+}
+
+function ajustarSelecionado(nome,delta){
+ selected[nome] = (selected[nome] || 0) + delta;
+ if(selected[nome] <= 0) delete selected[nome];
+ renderSelected();
+}
+
+function precoServico(nome){
+ const s = (config.servicos || []).find(x=>normalizar(x.nome) === normalizar(nome));
+ return s ? Number(s.preco || 0) : 0;
+}
+
+function valorSelecionado(){
+ return Object.entries(selected).reduce((s,[nome,qtd])=>s + precoServico(nome)*Number(qtd||0),0);
+}
+
+function escapeJS(s){
+ return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+}
+
+function renderSelected(){
+ const entries = Object.entries(selected);
+ selectedCounter.textContent = String(entries.reduce((s,[,q])=>s+Number(q||0),0));
+ if(!entries.length){
+   selectedServices.innerHTML = '<div class="small" style="padding:8px 2px">Nenhum serviÃ§o selecionado.</div>';
+ }else{
+   selectedServices.innerHTML = entries.map(([nome,qtd])=>`
+    <div class="selected-item">
+     <div><b>${nome}</b><span>${moeda(precoServico(nome))}</span></div>
+     <div class="qty-control">
+      <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',-1)">â</button>
+      <strong>${qtd}</strong>
+      <button type="button" onclick="ajustarSelecionado('${escapeJS(nome)}',1)">+</button>
+     </div>
+     <button class="trash" type="button" onclick="delete selected['${escapeJS(nome)}']; renderSelected();">â«</button>
+    </div>
+   `).join("");
  }
+ valorTotalView.textContent = moeda(valorSelecionado());
+}
+
+function setPagamento(p){
+ pagamentoAtual = p;
+ payRetirada.classList.toggle("active",p==="Pagar na retirada");
+ if(document.getElementById("payParcial")){
+   payParcial.classList.toggle("active",p==="Parcial");
+ }
+ payPago.classList.toggle("active",p==="Pago");
+}
+
+function toggleMaisOpcoes(){
+ maisOpcoesOS.classList.toggle("open");
+}
+
+function buscarClientePorTelefone(){
+ const tel = limparTelefone(telefone.value);
+ if(tel.length < 4) return;
+ const os = ordens.find(o=>{
+   const t = limparTelefone(o.telefone);
+   return t && (t === tel || t.endsWith(tel) || tel.endsWith(t));
+ });
+ if(os && os.nome) nome.value = os.nome;
+}
+
+async function gerarNumeroOSDentroDaTransacao(transaction){
+ const ref = db.doc(DOC_CONTADOR_OS);
+ const snap = await transaction.get(ref);
+ let ultimo = 0;
+ if(snap.exists) ultimo = Number(snap.data().ultimo || 0);
+ const proximo = ultimo + 1;
+ transaction.set(ref, {
+   ultimo: proximo,
+   atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+ }, {merge:true});
+ return proximo;
+}
+
+async function salvarOSNoFirebase(os){
+ let novoId = "";
+ let numeroGerado = null;
+
+ await db.runTransaction(async transaction=>{
+   const novaRef = db.collection(COL_ORDENS).doc();
+   const numeroOS = await gerarNumeroOSDentroDaTransacao(transaction);
+   novoId = novaRef.id;
+   numeroGerado = numeroOS;
+   transaction.set(novaRef, {
+     ...os,
+     numeroOS,
+     criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+     sincronizadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+     usuario: emailUsuarioAtual()
+   });
+ });
+
+ os.id = novoId;
+ os.numeroOS = numeroGerado;
+ return os;
 }
 
 async function salvarOS(e){
  e.preventDefault();
-
- let itens = {};
- let totalServicos = 0;
-
- config.servicos.forEach((s,i)=>{
-   const campo = document.getElementById("svc_"+i);
-   const q = Number(campo ? campo.value : 0) || 0;
-
-   if(q > 0){
-     const nomeServico = limparTexto(s.nome);
-     itens[nomeServico] = q;
-     totalServicos += q;
-   }
- });
-
- if(totalServicos <= 0){
-   alert("Marque pelo menos 1 servico.");
+ const entries = Object.entries(selected).filter(([,q])=>Number(q)>0);
+ if(!entries.length){
+   alert("Escolha pelo menos 1 serviÃ§o.");
    return;
  }
-
+ const itens = {};
+ entries.forEach(([n,q])=>itens[n]=Number(q));
  const data = dataEntrega.value;
  const hora = horaEntrega.value;
- const situacaoOS = situacao.value || "confirmado";
  const totalAgenda = calcularTotalAgendaServicos(itens);
-
  let alocacoes = {};
-
  if(totalAgenda > 0){
    try{
-     alocacoes = calcularAlocacoes(data, hora, totalAgenda);
+     alocacoes = calcularAlocacoesSeguro(data,hora,totalAgenda);
    }catch(err){
-     alert(limparTexto(err.message));
+     alert(err.message);
      return;
    }
  }
-
  const os = {
-   nome: limparTexto(nome.value.trim()),
-   telefone: limparTexto(telefone.value.trim()),
-   data: data,
-   hora: hora,
-   itens: itens,
-   pecas: totalServicos,
+   nome: limparTexto(nome.value),
+   telefone: limparTexto(telefone.value),
+   data,
+   hora,
+   itens,
+   pecas: Object.values(itens).reduce((s,q)=>s+Number(q||0),0),
    pecasAgenda: totalAgenda,
-   alocacoes: alocacoes,
-   situacao: situacaoOS,
-   observacao: limparTexto(observacao.value.trim()),
-   status: limparTexto(status.value || "Recebido"),
-   pagamento: limparTexto(pagamento.value || "Pagar na retirada"),
-   valor: Number(String(valorTotal.value || 0).replace(",", ".")),
-   criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+   alocacoes,
+   situacao: situacao.value || "confirmado",
+   observacao: limparTexto(observacao.value),
+   status: status.value || "Recebido",
+   pagamento: pagamentoAtual,
+   valor: valorSelecionado()
  };
 
- if(salvandoOS) return;
- salvandoOS = true;
- setEstadoBotaoSalvar(true);
- mostrarPainelSalvando(os);
+ btnSalvarOS.disabled = true;
+ btnSalvarOS.textContent = "Salvando...";
 
  try{
    if(!navigator.onLine){
      salvarOSOffline(os);
    }else{
-     const salva = await salvarOSNoFirebase(os);
-     ultimaOSSalva = salva;
-
-     await renderNumeroOSAjustes();
-     mostrarAcoesDepoisDeSalvar(salva);
+     const salvo = await salvarOSNoFirebase(os);
+     ultimaOSSalva = salvo;
+     mostrarAcoesDepoisDeSalvar(salvo);
+     toast("OS "+numeroTextoOS(salvo)+" salva no Firebase.","good");
    }
-
-   e.target.reset();
-   dataEntrega.value = hoje();
-   if(document.getElementById("maisOpcoesOS")) maisOpcoesOS.classList.remove("open");
-   renderServicosOS();
-   atualizarHorarioSugerido();
-
+   resetFormOS();
  }catch(err){
    if(!navigator.onLine){
      salvarOSOffline(os);
-     e.target.reset();
-     dataEntrega.value = hoje();
-     renderServicosOS();
+     resetFormOS();
    }else{
-     mostrarFormNovaOS();
-     alert("Erro ao salvar: " + limparTexto(err.message));
+     alert("Erro ao salvar: "+limparTexto(err.message));
    }
  }finally{
-   salvandoOS = false;
-   setEstadoBotaoSalvar(false);
+   btnSalvarOS.disabled = false;
+   btnSalvarOS.textContent = "Salvar OS";
  }
+}
+
+function resetFormOS(){
+ formOS.reset();
+ selected = {};
+ pagamentoAtual = "Pagar na retirada";
+ setPagamento(pagamentoAtual);
+ dataEntrega.value = hoje();
+ atualizarHorarioSugerido();
+ renderSelected();
+ if(maisOpcoesOS) maisOpcoesOS.classList.remove("open");
 }
 
 function mostrarAcoesDepoisDeSalvar(os){
- const form = document.querySelector("#nova form");
- const panel = document.getElementById("posSalvarPanel");
- const resumo = document.getElementById("posSalvarResumo");
- const acoes = document.getElementById("posSalvarAcoes");
-
- if(form) form.classList.add("hidden");
- if(acoes) acoes.classList.remove("hidden");
-
- if(resumo){
-   const dist = Object.entries(os.alocacoes || {}).map(([h,q])=>h+": "+q).join(" | ");
-   resumo.innerHTML = `
-    <div class="pos-save-main">
-     <div class="pos-save-row">
-      <div class="service-os-number"><span>ORDEM DE SERVICO</span><b>${numeroTextoOS(os)}</b></div>
-      <div class="service-delivery-badge"><span>ENTREGA</span><b>${dataBR(os.data)}<br>${os.hora || ""}</b></div>
-     </div>
-     <div class="service-os-money">
-      <div><small>Valor</small><b>${moeda(os.valor)}</b></div>
-      ${htmlBadgePagamento(os)}
-     </div>
-     <b>${limparTexto(os.nome)}</b><br>
-     <span class="small">${Number(os.pecas || 0)} servicos - Agenda: ${getPecasAgenda(os)} | ${dist || "-"}</span>
-    </div>
-   `;
- }
-
- if(panel){
-   panel.classList.remove("hidden");
-   setTimeout(()=>panel.scrollIntoView({behavior:"smooth", block:"start"}),80);
- }
- mostrarToast("OS "+numeroTextoOS(os)+" salva com sucesso","good");
-}
-
-function enviarUltimaOS(){
- if(ultimaOSSalva) enviarWhatsApp(ultimaOSSalva);
-}
-
-function imprimirUltimaOS(){
- if(ultimaOSSalva){
-   abrirViaImpressao(ultimaOSSalva);
- }
+ formOS.classList.add("hidden");
+ posSalvarPanel.classList.remove("hidden");
+ posSalvarResumo.innerHTML = `
+  <div class="pos-save-top">
+   <div class="pos-badge blue"><span>Ordem de serviÃ§o</span><b>${numeroTextoOS(os)}</b></div>
+   <div class="pos-badge blue"><span>Entrega</span><b>${dataBR(os.data)}<br>${os.hora}</b></div>
+   <div class="pos-badge light"><span>Valor</span><b>${moeda(os.valor)}</b></div>
+  </div>
+  <b>${os.nome}</b><br>
+  <span class="small">${getTotalServicosOS(os)} serviÃ§o(s) Â· ${os.pagamento}</span>
+ `;
+ setTimeout(()=>posSalvarPanel.scrollIntoView({behavior:"smooth",block:"start"}),80);
 }
 
 function novaOSDepoisDeSalvar(){
- const form = document.querySelector("#nova form");
- const panel = document.getElementById("posSalvarPanel");
-
- if(panel) panel.classList.add("hidden");
- if(form) form.classList.remove("hidden");
- if(document.getElementById("maisOpcoesOS")) maisOpcoesOS.classList.remove("open");
+ posSalvarPanel.classList.add("hidden");
+ formOS.classList.remove("hidden");
  atualizarHorarioSugerido();
- setTimeout(()=>{ if(document.getElementById("telefone")) telefone.focus(); },100);
-}
-
-function itensTexto(os, sep){
- sep = sep === undefined ? "\n" : sep;
-
- return Object.entries(os.itens || {})
-   .map(([n,q])=>limparTexto(n)+": "+Number(q || 0))
-   .join(sep);
-}
-
-function montarMensagemWhatsApp(os, template){
- return normalizarTemplateWhatsApp(template || defaultTemplate)
-   .replaceAll("{numero}", numeroTextoOS(os))
-   .replaceAll("{nome}", limparTexto(os.nome))
-   .replaceAll("{data}", dataBR(os.data))
-   .replaceAll("{hora}", os.hora)
-   .replaceAll("{itens}", itensTexto(os,"\n"))
-   .replaceAll("{valor}", moeda(os.valor))
-   .replaceAll("{pagamento}", limparTexto(os.pagamento));
-}
-
-function urlWhatsAppOS(os, mensagem){
- let tel = limparTelefone(os.telefone);
-
- if(!tel.startsWith("55")){
-   tel = "55" + tel;
- }
-
- return "https://wa.me/"+tel+"?text="+encodeURIComponent(mensagem);
-}
-
-function abrirWhatsAppOS(os, mensagem){
- const url = urlWhatsAppOS(os, mensagem);
- const janela = window.open(url, "_blank");
-
- if(!janela){
-   alert("O navegador bloqueou o WhatsApp. Toque novamente ou permita pop-up para este site.");
-   return false;
- }
-
- return true;
-}
-
-function enviarWhatsApp(os){
- const msg = montarMensagemWhatsApp(os, config.template || defaultTemplate);
- abrirWhatsAppOS(os, msg);
-}
-
-async function avisarServicoPronto(id){
- const os = ordens.find(o=>o.id === id);
- if(!os) return;
-
- const atualizado = {
-   ...os,
-   status:"Pronto",
-   avisoProntoEnviadoEm:new Date().toISOString()
- };
-
- const msg = montarMensagemWhatsApp(atualizado, config.templatePronto || defaultTemplatePronto);
-
- // Abre o WhatsApp primeiro, no clique do usuario. Isso evita bloqueio no iPhone/Chrome.
- const abriu = abrirWhatsAppOS(atualizado, msg);
-
- try{
-   await db.collection(COL_ORDENS).doc(id).update({
-     status:"Pronto",
-     avisoProntoEnviadoEm:firebase.firestore.FieldValue.serverTimestamp()
-   });
- }catch(e){
-   alert("O WhatsApp foi aberto, mas nao consegui marcar como pronto: "+limparTexto(e.message));
-   return;
- }
-
- if(!abriu){
-   return;
- }
-}
-
-async function marcarComoPago(id){
- const os = ordens.find(o=>o.id === id);
- if(!os) return;
-
- try{
-   await db.collection(COL_ORDENS).doc(id).update({
-     pagamento:"Pago",
-     pagoEm:firebase.firestore.FieldValue.serverTimestamp()
-   });
-
-   mostrarToast("OS "+numeroTextoOS(os)+" marcada como paga.","good");
- }catch(e){
-   alert("Erro ao marcar como pago: "+limparTexto(e.message));
- }
-}
-
-async function marcarComoRetirado(id){
- const os = ordens.find(o=>o.id === id);
- if(!os) return;
-
- try{
-   await db.collection(COL_ORDENS).doc(id).update({
-     status:"Retirado",
-     retiradoEm:firebase.firestore.FieldValue.serverTimestamp()
-   });
-
-   mostrarToast("OS "+numeroTextoOS(os)+" marcada como retirada.","good");
- }catch(e){
-   alert("Erro ao marcar como retirado: "+limparTexto(e.message));
- }
-}
-
-function escaparHtml(txt){
- return String(txt || "")
-   .replaceAll("&","&amp;")
-   .replaceAll("<","&lt;")
-   .replaceAll(">","&gt;")
-   .replaceAll('"',"&quot;")
-   .replaceAll("'","&#039;");
-}
-
-function htmlViaLoja(os){
- const linhasItens = Object.entries(os.itens || {})
-   .map(([n,q])=>`<div class="linha">${escaparHtml(limparTexto(n))}: <b>${Number(q || 0)}</b></div>`)
-   .join("");
-
- const dist = Object.entries(os.alocacoes || {})
-   .map(([h,q])=>`${h}: ${q}`)
-   .join(" | ");
-
- return `
-  <div class="recibo">
-   <div class="centro titulo">AFIA</div>
-   <div class="centro subtitulo">VIA DA LOJA</div>
-   <div class="centro" style="font-size:28px;font-weight:900;margin:8px 0">OS ${escaparHtml(numeroTextoOS(os))}</div>
-   <hr>
-   <div class="linha">Codigo interno: ${escaparHtml(os.id || "")}</div>
-   <div class="linha">Cliente: ${escaparHtml(limparTexto(os.nome))}</div>
-   <div class="linha">Telefone: ${escaparHtml(limparTexto(os.telefone))}</div>
-   <div class="linha">Entrega: ${escaparHtml(dataBR(os.data))} ${escaparHtml(os.hora || "")}</div>
-   <hr>
-   <div class="linha"><b>Servicos</b></div>
-   ${linhasItens}
-   <hr>
-   <div class="linha">Total de servicos: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b></div>
-   <div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div>
-   <div class="linha">Distribuicao: ${escaparHtml(dist || "-")}</div>
-   <div class="linha">Valor: <b>${escaparHtml(moeda(os.valor))}</b></div>
-   <div class="linha">Pagamento: ${escaparHtml(limparTexto(os.pagamento))}</div>
-   ${os.observacao ? `<div class="linha">Obs: ${escaparHtml(limparTexto(os.observacao))}</div>` : ""}
-  </div>
- `;
-}
-
-function abrirViaImpressao(os){
- const conteudo = htmlViaLoja(os);
- const w = window.open("", "_blank");
-
- if(!w){
-   alert("O navegador bloqueou a abertura da via. Toque em permitir pop-up ou tente novamente.");
-   return;
- }
-
- w.document.open();
- w.document.write(`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AFIA - Via da loja</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;padding:16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f2f2f7;color:#111}
-.box{max-width:420px;margin:0 auto}
-.btn{width:100%;border:0;border-radius:12px;padding:14px;margin:8px 0;font-size:16px;font-weight:900;color:#fff;background:#007aff}
-.btn-gray{background:#777}
-.recibo{background:#fff;border-radius:12px;padding:16px;font-family:monospace;font-size:14px}
-.centro{text-align:center}
-.titulo{font-size:24px;font-weight:900;letter-spacing:3px}
-.subtitulo{font-size:14px;font-weight:900}
-.linha{margin:7px 0;line-height:1.35}
-hr{border:0;border-top:1px dashed #999;margin:10px 0}
-.aviso{font-size:13px;color:#555;margin:8px 0 12px;line-height:1.35}
-@media print{
- body{background:#fff;padding:0}
- .no-print{display:none!important}
- .box{max-width:none;margin:0}
- .recibo{border-radius:0;padding:0;width:58mm;font-size:12px}
-}
-</style>
-</head>
-<body>
-<div class="box">
- <div class="no-print">
-  <button class="btn" onclick="window.print()">Imprimir ou salvar PDF</button>
-  <button class="btn btn-gray" onclick="window.close()">Fechar</button>
-  <p class="aviso">A via ja abriu. Agora toque no botao azul para imprimir ou salvar em PDF.</p>
- </div>
- ${conteudo}
-</div>
-</body>
-</html>`);
- w.document.close();
-}
-
-function prepararImpressao(os){
- printArea.innerHTML = `
-  <div style="text-align:center;font-weight:bold">AFIA - VIA DA LOJA</div>
-  <div class="print-line" style="text-align:center;font-size:20px;font-weight:bold">OS ${numeroTextoOS(os)}</div>
-  <div class="print-line">Codigo interno: ${os.id || ""}</div>
-  <div class="print-line">Cliente: ${limparTexto(os.nome)}</div>
-  <div class="print-line">Tel: ${limparTexto(os.telefone)}</div>
-  <div class="print-line">Entrega: ${dataBR(os.data)} ${os.hora}</div>
-  <div class="print-line">--------------------------</div>
-  <div class="print-line">${itensTexto(os,"<br>")}</div>
-  <div class="print-line">--------------------------</div>
-  <div class="print-line">Total: ${moeda(os.valor)}</div>
-  <div class="print-line">${limparTexto(os.pagamento)}</div>
-  <div class="print-line">${limparTexto(os.observacao || "")}</div>
- `;
-}
-
-
-function nomeServicoCurto(nome){
- const original = limparTexto(nome || "Servico").trim();
- const n = original.toLowerCase();
-
- if(n.includes("alicate") && n.includes("cut")) return "Alic. cuticula";
- if(n.includes("alicate novo")) return "Alic. novo";
- if(n.includes("tesoura")) return "Tesouras";
- if(n.includes("faca")) return "Facas";
- if(n.includes("mola")) return "Molas";
- if(n.includes("espatu")) return "Espatulas";
- if(n.includes("outros")) return "Outros";
-
- return original.length > 18 ? original.slice(0,18).trim()+"..." : original;
+ setTimeout(()=>nome.focus(),80);
 }
 
 function textoPagamentoCurto(os){
- return pagamentoFoiRecebido(os) ? "PAGO" : "PAGAR NA RETIRADA";
+ const p = normalizar(os.pagamento || "");
+ if(p.includes("pago")) return "PAGO";
+ if(p.includes("parcial")) return "PARCIAL";
+ return "PAGAR NA RETIRADA";
 }
 
 function classePagamento(os){
- return pagamentoFoiRecebido(os) ? "pago" : "retirada";
+ const p = normalizar(os.pagamento || "");
+ if(p.includes("pago")) return "pago";
+ return "retirada";
+}
+
+function pagamentoFoiRecebido(os){
+ return normalizar(os.pagamento || "").includes("pago");
 }
 
 function htmlBadgePagamento(os){
  return `<span class="payment-pill ${classePagamento(os)}">${textoPagamentoCurto(os)}</span>`;
 }
 
-function itensTextoCurto(os, sep){
- sep = sep === undefined ? " | " : sep;
- return Object.entries(os.itens || {})
-   .map(([n,q])=>nomeServicoCurto(n)+": "+Number(q || 0))
-   .join(sep);
+function nomeServicoCurto(nome){
+ const n = normalizar(nome);
+ if(n.includes("alic") && n.includes("cut")) return "Alic. cutÃ­cula";
+ if(n.includes("alic") && n.includes("novo")) return "Alic. novo";
+ if(n.includes("mola")) return "Molas";
+ if(n.includes("tesoura")) return "Tesouras";
+ if(n.includes("faca")) return "Facas";
+ if(n.includes("espatu")) return "EspÃ¡tulas";
+ if(n.includes("outro")) return "Outros";
+ return nome.length > 16 ? nome.slice(0,16)+"â¦" : nome;
 }
 
-function htmlItensSeparados(os){
- const entradas = Object.entries(os.itens || {});
+function htmlChips(os){
+ const entries = Object.entries(os.itens || {});
+ if(!entries.length) return "";
+ return entries.slice(0,4).map(([nome,q])=>`<div class="chip"><span>${nomeServicoCurto(nome)}</span><b>${q}</b></div>`).join("");
+}
 
- if(!entradas.length){
-   return '<div class="service-chip"><span>Sem itens</span><b>0</b></div>';
- }
-
- return entradas.map(([nome,qtd])=>{
-   return `<div class="service-chip"><span>${nomeServicoCurto(nome)}</span><b>${Number(qtd || 0)}</b></div>`;
- }).join("");
+function numeroTextoOS(os){
+ return os && os.numeroOS ? String(os.numeroOS) : (os && os.id ? "ANTIGA-"+String(os.id).slice(0,6) : "-");
 }
 
 function renderServicosLista(){
- const data = document.getElementById("servicosData") ? (servicosData.value || hoje()) : hoje();
-
- if(document.getElementById("servicosData") && !servicosData.value){
-   servicosData.value = data;
- }
-
- const busca = document.getElementById("buscaServico") ? limparTexto(buscaServico.value).toLowerCase().trim() : "";
- const buscaTel = limparTelefone(busca);
- const filtroStatus = document.getElementById("filtroServicoStatus") ? filtroServicoStatus.value : "todos";
-
- let dia = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
-
- dia = dia.filter(o=>{
-   const statusLimpo = limparTexto(o.status || "").toLowerCase();
-
-   let okStatus = true;
-
-   if(filtroStatus === "pendentes"){
-     okStatus = !statusLimpo.includes("retirado");
-   }else if(filtroStatus === "pronto"){
-     okStatus = statusLimpo.includes("pronto");
-   }else if(filtroStatus === "retirado"){
-     okStatus = statusLimpo.includes("retirado");
-   }
-
-   if(!okStatus) return false;
-   if(!busca) return true;
-
-   return numeroTextoOS(o).toLowerCase().includes(busca) ||
-          limparTexto(o.nome).toLowerCase().includes(busca) ||
-          limparTexto(o.telefone).toLowerCase().includes(busca) ||
-          (buscaTel && limparTelefone(o.telefone).includes(buscaTel));
- });
-
- if(document.getElementById("servicosResumoBadge")){
-   const totalFerramentas = dia.reduce((s,o)=>s + Number(o.pecas || getTotalServicosOS(o) || 0), 0);
-   servicosResumoBadge.textContent = `${dia.length} OS - ${totalFerramentas} serv.`;
- }
-
  if(!document.getElementById("servicosLista")) return;
-
- servicosLista.innerHTML = dia.length ? "" : '<div class="card small">Nenhuma ordem de servico encontrada nesta data/busca.</div>';
-
- dia.forEach((os)=>{
-   const d = document.createElement("div");
-   d.className = "card os-card service-card-destaque";
-
-   const sitTxt = os.situacao === "agendado" ? "Agendado / ainda vai trazer" : "Servico no balcao";
-   const btnChegada = os.situacao === "agendado"
-     ? `<button class="btn" onclick="confirmarChegada('${os.id}')">Confirmar chegada</button>`
-     : "";
-
-   d.innerHTML = `
-    <div class="service-os-top">
-     <div class="service-os-number">
-      <span>ORDEM DE SERVICO</span>
-      <b>${numeroTextoOS(os)}</b>
-     </div>
-     <div class="service-delivery-badge">
-      <span>ENTREGA</span>
-      <b>${dataBR(os.data)}<br>${os.hora || ""}</b>
-     </div>
+ const data = servicosData.value || hoje();
+ servicosData.value = data;
+ const busca = normalizar(buscaServico.value || "");
+ const buscaTel = limparTelefone(buscaServico.value || "");
+ const filtro = filtroServicoStatus.value || "todos";
+ let lista = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
+ lista = lista.filter(o=>{
+   const st = normalizar(o.status || "");
+   if(filtro==="pendentes" && st.includes("retirado")) return false;
+   if(filtro==="pronto" && !st.includes("pronto")) return false;
+   if(filtro==="retirado" && !st.includes("retirado")) return false;
+   if(!busca && !buscaTel) return true;
+   return normalizar(numeroTextoOS(o)).includes(busca) ||
+          normalizar(o.nome).includes(busca) ||
+          limparTelefone(o.telefone).includes(buscaTel);
+ });
+ const totalServ = lista.reduce((s,o)=>s+getTotalServicosOS(o),0);
+ servicosResumoBadge.textContent = `${lista.length} OS - ${totalServ} serv.`;
+ if(!lista.length){
+   servicosLista.className = "os-grid";
+   servicosLista.innerHTML = '<div class="card small" style="grid-column:1/-1">Nenhuma OS encontrada.</div>';
+   return;
+ }
+ servicosLista.className = getVisual().servicosLayout === "lista" ? "os-list" : "os-grid";
+ servicosLista.innerHTML = "";
+ lista.forEach(os=>{
+   const card = document.createElement("div");
+   card.className = "os-card";
+   card.innerHTML = `
+    <div class="os-card-top">
+     <div class="os-num"><small>OS</small><b>${numeroTextoOS(os)}</b></div>
+     <div class="calendar-dot">â´</div>
     </div>
-
-    <div class="service-os-money">
-     <div>
-      <small>Valor</small>
-      <b>${moeda(os.valor)}</b>
-     </div>
+    <div class="os-meta"><span>â£ ${dataBR(os.data)}</span><span>â· ${os.hora}</span></div>
+    <div class="os-value-row">
+     <div><small>Valor</small><b>${moeda(os.valor)}</b></div>
      ${htmlBadgePagamento(os)}
     </div>
-
-    <div class="service-client-box">
-     <b>${limparTexto(os.nome)}</b>
-     <span>${limparTexto(os.telefone)}</span>
-    </div>
-
-    <div class="service-items-box">
-     ${htmlItensSeparados(os)}
-    </div>
-
-    <p class="small service-card-info">
-     Status da oficina: <b>${limparTexto(os.status || "Recebido")}</b><br>
-     Total da OS: <b>${Number(os.pecas || getTotalServicosOS(os) || 0)}</b> servico(s)
-    </p>
-
-    <button class="btn btn-gray" type="button" onclick="this.nextElementSibling.classList.toggle('hidden')">Detalhes e acoes</button>
-    <div class="hidden">
-     <p>Situacao: <b>${sitTxt}</b></p>
-     ${os.observacao ? `<p>${limparTexto(os.observacao)}</p>` : ""}
-     ${btnChegada}
-     <div class="os-actions">
-      <button class="btn btn-blue" onclick="reenviar('${os.id}')">WhatsApp OS</button>
-      <button class="btn" onclick="avisarServicoPronto('${os.id}')">Avisar pronto</button>
-      <button class="btn btn-blue" onclick="marcarComoPago('${os.id}')">Marcar pago</button>
-      <button class="btn btn-gray" onclick="marcarComoRetirado('${os.id}')">Retirado</button>
+    <div class="os-client"><b>${os.nome}</b><span>${os.telefone}</span></div>
+    <div class="chips">${htmlChips(os)}</div>
+    <div class="status-line">â¢ ${os.status || "Recebido"}<span>Total da OS: ${getTotalServicosOS(os)} serviÃ§o(s)</span></div>
+    <button class="details-btn" type="button" onclick="toggleDetalhes('${os.id}')">Detalhes âº</button>
+    <div id="det_${os.id}" class="details-panel hidden">
+     <p class="small"><b>Obs:</b> ${os.observacao || "-"}</p>
+     <div class="action-grid">
+      <button class="btn btn-blue" onclick="reenviar('${os.id}')">WhatsApp</button>
       <button class="btn btn-blue" onclick="imprimir('${os.id}')">Via loja</button>
-      <button class="btn btn-red" onclick="apagarOS('${os.id}')">Apagar</button>
+      <button class="btn btn-blue" onclick="marcarPago('${os.id}')">Marcar pago</button>
+      <button class="btn" onclick="avisarPronto('${os.id}')">Pronto</button>
+      <button class="btn btn-gray" onclick="marcarRetirado('${os.id}')">Retirado</button>
+      <button class="btn btn-red btn-delete-safe" onclick="apagarOS('${os.id}')">Apagar</button>
      </div>
     </div>
    `;
-
-   servicosLista.appendChild(d);
+   servicosLista.appendChild(card);
  });
 }
 
-function renderAgenda(){
- const data = agendaData.value;
- const diaCompleto = ordenarOrdensDoDia(ordens.filter(o=>o.data === data));
- const calcDia = calcularDistribuicoesDoDia(diaCompleto);
-
- statPedidos.textContent = diaCompleto.length;
- statPecas.textContent = diaCompleto.reduce((s,o)=>s + getPecasAgenda(o), 0);
- statValor.textContent = moeda(diaCompleto.reduce((s,o)=>s + Number(o.valor || 0), 0));
-
- renderGrid(calcDia);
+function toggleDetalhes(id){
+ const el = document.getElementById("det_"+id);
+ if(el) el.classList.toggle("hidden");
 }
 
-function renderGrid(calcDia){
- const confirmado = calcDia.confirmado;
- const agendado = calcDia.agendado;
+function encontrarOS(id){
+ return ordens.find(o=>o.id === id);
+}
 
- let totalConfirmado = 0;
- let totalAgendado = 0;
+async function atualizarOS(id, dados){
+ try{
+   await db.collection(COL_ORDENS).doc(id).update(dados);
+ }catch(e){
+   alert("Erro ao atualizar OS: "+limparTexto(e.message));
+ }
+}
 
- let html = '<table class="agenda-table"><tr><th>Horario</th><th>Vagas ocupadas</th></tr>';
+function marcarPago(id){
+ atualizarOS(id,{pagamento:"Pago", pagoEm:firebase.firestore.FieldValue.serverTimestamp()});
+ toast("OS marcada como paga.","good");
+}
 
- horarios.forEach(h=>{
-   if(h === "14:30"){
-     html += '<tr class="interval"><td colspan="2">ALMOCO / INTERVALO (13:30 as 14:30)</td></tr>';
+function marcarRetirado(id){
+ atualizarOS(id,{status:"Retirado", retiradoEm:firebase.firestore.FieldValue.serverTimestamp()});
+ toast("OS marcada como retirada.","good");
+}
+
+async function avisarPronto(id){
+ const os = encontrarOS(id);
+ if(!os) return;
+ const atualizado = {...os,status:"Pronto"};
+ enviarWhatsApp(atualizado, config.templatePronto);
+ await atualizarOS(id,{status:"Pronto", avisoProntoEnviadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+}
+
+async function apagarOS(id){
+ if(!confirm("Apagar esta OS?")) return;
+ try{
+   await db.collection(COL_ORDENS).doc(id).delete();
+   toast("OS apagada.","good");
+ }catch(e){
+   alert("Erro ao apagar OS: "+limparTexto(e.message));
+ }
+}
+
+function itensTexto(os, sep){
+ return Object.entries(os.itens || {}).map(([n,q])=>`${n}: ${q}`).join(sep || "\n");
+}
+
+function montarMensagemWhatsApp(os, template){
+ return String(template || config.template || defaultTemplate)
+   .replaceAll("{numero}", numeroTextoOS(os))
+   .replaceAll("{nome}", os.nome)
+   .replaceAll("{data}", dataBR(os.data))
+   .replaceAll("{hora}", os.hora)
+   .replaceAll("{itens}", itensTexto(os,"\n"))
+   .replaceAll("{valor}", moeda(os.valor))
+   .replaceAll("{pagamento}", os.pagamento);
+}
+
+function enviarWhatsApp(os, template){
+ let tel = limparTelefone(os.telefone);
+ if(!tel.startsWith("55")) tel = "55"+tel;
+ const msg = montarMensagemWhatsApp(os, template || config.template);
+ const url = "https://wa.me/"+tel+"?text="+encodeURIComponent(msg);
+ window.open(url,"_blank");
+}
+
+function enviarUltimaOS(){
+ if(ultimaOSSalva) enviarWhatsApp(ultimaOSSalva);
+}
+
+function reenviar(id){
+ const os = encontrarOS(id);
+ if(os) enviarWhatsApp(os);
+}
+
+function imprimirUltimaOS(){
+ if(ultimaOSSalva) abrirViaImpressao(ultimaOSSalva);
+}
+
+function imprimir(id){
+ const os = encontrarOS(id);
+ if(os) abrirViaImpressao(os);
+}
+
+function abrirViaImpressao(os){
+ const htmlItens = Object.entries(os.itens || {}).map(([n,q])=>`<div>${n}: <b>${q}</b></div>`).join("");
+ const w = window.open("", "_blank");
+ if(!w){
+   alert("O navegador bloqueou a via de impressÃ£o.");
+   return;
+ }
+ w.document.open();
+ w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AFIA OS ${numeroTextoOS(os)}</title>
+ <style>
+ body{margin:0;padding:16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f2f2f7;color:#111}
+ .box{max-width:420px;margin:0 auto}.btn{width:100%;border:0;border-radius:12px;padding:14px;margin:8px 0;font-size:16px;font-weight:900;color:#fff;background:#007aff}.btn-gray{background:#777}
+ .recibo{background:#fff;border-radius:12px;padding:16px;font-family:monospace;font-size:14px}.centro{text-align:center}.titulo{font-size:24px;font-weight:900;letter-spacing:3px}.linha{margin:7px 0;line-height:1.35}hr{border:0;border-top:1px dashed #999;margin:10px 0}
+ @media print{body{background:#fff;padding:0}.no-print{display:none!important}.box{max-width:none}.recibo{border-radius:0;padding:0;width:58mm;font-size:12px}}
+ </style></head><body><div class="box"><div class="no-print"><button class="btn" onclick="window.print()">Imprimir ou salvar PDF</button><button class="btn btn-gray" onclick="window.close()">Fechar</button></div>
+ <div class="recibo"><div class="centro titulo">AFIA</div><div class="centro">VIA DA LOJA</div><div class="centro" style="font-size:28px;font-weight:900;margin:8px 0">OS ${numeroTextoOS(os)}</div><hr>
+ <div class="linha">Cliente: ${os.nome}</div><div class="linha">Telefone: ${os.telefone}</div><div class="linha">Entrega: ${dataBR(os.data)} ${os.hora}</div><hr>
+ <div class="linha"><b>ServiÃ§os</b></div>${htmlItens}<hr><div class="linha">Total de serviÃ§os: <b>${getTotalServicosOS(os)}</b></div><div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div><div class="linha">Valor: <b>${moeda(os.valor)}</b></div><div class="linha">Pagamento: ${os.pagamento}</div>${os.observacao ? `<div class="linha">Obs: ${os.observacao}</div>` : ""}</div></div></body></html>`);
+ w.document.close();
+}
+
+function agruparClientes(){
+ const mapa = {};
+ ordens.forEach(os=>{
+   const tel = limparTelefone(os.telefone);
+   const key = tel || normalizar(os.nome);
+   if(!mapa[key]){
+     mapa[key] = {key,nome:os.nome,telefone:os.telefone,visitas:0,servicos:0,valor:0,ordens:[]};
    }
+   mapa[key].visitas += 1;
+   mapa[key].servicos += getTotalServicosOS(os);
+   mapa[key].valor += Number(os.valor || 0);
+   mapa[key].ordens.push(os);
+   if(os.nome) mapa[key].nome = os.nome;
+   if(os.telefone) mapa[key].telefone = os.telefone;
+ });
+ return Object.values(mapa).sort((a,b)=>a.nome.localeCompare(b.nome));
+}
 
-   const red = Math.min(confirmado[h] || 0, 5);
-   const orange = Math.min(agendado[h] || 0, Math.max(0, 5 - red));
+function renderClientes(){
+ if(!document.getElementById("clientesLista")) return;
+ const q = normalizar(buscaCliente.value || "");
+ const qt = limparTelefone(buscaCliente.value || "");
+ const layout = getVisual().clientesLayout;
 
-   totalConfirmado += confirmado[h] || 0;
-   totalAgendado += agendado[h] || 0;
-
-   html += `<tr><td class="time">${h}</td><td><div class="slots">`;
-
-   for(let i=0;i<5;i++){
-     let cls = "";
-
-     if(i < red){
-       cls = "on";
-     }else if(i < red + orange){
-       cls = "pending";
-     }
-
-     html += `<div class="slot ${cls}"></div>`;
-   }
-
-   html += '</div></td></tr>';
+ let clientes = agruparClientes().filter(c=>{
+   if(!q && !qt) return true;
+   return normalizar(c.nome).includes(q) || limparTelefone(c.telefone).includes(qt);
  });
 
- html += `<tr><td><b>TOTAL</b></td><td><b>${totalConfirmado} vermelhas - ${totalAgendado} laranjas</b></td></tr></table>`;
+ clientesEncontrados.textContent = `Clientes encontrados: ${clientes.length}`;
 
- agendaGrid.innerHTML = html;
+ if(!clientes.length){
+   clientesLista.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
+   clienteDetalhe.innerHTML = "";
+   return;
+ }
+
+ if(!clienteSelecionadoKey && clientes.length) clienteSelecionadoKey = clientes[0].key;
+
+ if(layout === "cards"){
+   clientesLista.innerHTML = clientes.map(c=>{
+     const ordensOrdenadas = [...c.ordens].sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+     const ultima = ordensOrdenadas[0];
+     return `
+      <div class="client-card" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
+       <div class="client-card-top">
+        <div class="avatar">â</div>
+        <div><b>${c.nome}</b><br><span class="small">${c.telefone}</span></div>
+       </div>
+       <div class="client-card-stats">
+        <div><span>Total gasto</span><b>${moeda(c.valor)}</b></div>
+        <div><span>ServiÃ§os</span><b>${c.servicos}</b></div>
+        <div><span>Ãltima visita</span><b>${ultima ? dataBR(ultima.data) : "-"}</b></div>
+       </div>
+      </div>
+     `;
+   }).join("");
+   clienteDetalhe.innerHTML = "";
+   return;
+ }
+
+ clientesLista.innerHTML = clientes.map(c=>{
+   const ordensOrdenadas = [...c.ordens].sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+   const ultima = ordensOrdenadas[0];
+   return `
+    <div class="client-row ${layout === "historico" && c.key===clienteSelecionadoKey ? "selected" : ""}" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
+     <div class="avatar">â</div>
+     <div><b>${c.nome}</b><span>${c.telefone}<br>Ãltima visita: ${ultima ? dataBR(ultima.data) : "-"}</span></div>
+     <div class="visit-count"><b>${c.visitas}</b><br><span>visitas</span></div>
+    </div>
+   `;
+ }).join("");
+
+ if(layout === "historico"){
+   renderClienteDetalhe(clientes.find(c=>c.key===clienteSelecionadoKey) || clientes[0]);
+ }else{
+   clienteDetalhe.innerHTML = "";
+ }
 }
 
+function renderClienteDetalhe(c){
+ if(!c){
+   clienteDetalhe.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
+   return;
+ }
+ const recentes = [...c.ordens].sort((a,b)=>String(b.data).localeCompare(String(a.data))).slice(0,4);
+ clienteDetalhe.innerHTML = `
+  <div class="client-detail">
+   <div class="detail-top"><h3 style="margin:0">${c.nome}</h3><button class="icon-btn" onclick="clienteSelecionadoKey=''; clienteDetalhe.innerHTML='';">Ã</button></div>
+   <div class="detail-stats">
+    <div><span>Total gasto</span><b>${moeda(c.valor)}</b></div>
+    <div><span>Total serviÃ§os</span><b>${c.servicos}</b></div>
+    <div><span>Ãltima visita</span><b>${recentes[0] ? dataBR(recentes[0].data) : "-"}</b></div>
+   </div>
+   <div class="client-tabs"><button>Resumo</button><button class="active">HistÃ³rico</button><button>Dados</button></div>
+   <h3 class="title">OS recentes</h3>
+   ${recentes.map(os=>`
+    <div class="recent-os">
+     <span class="os-mini">OS ${numeroTextoOS(os)}</span>
+     <div><b>${dataBR(os.data)}</b><small>${os.hora}</small></div>
+     <div><small>${os.status}</small><b>${moeda(os.valor)}</b></div>
+     <button class="icon-btn" onclick="showTab('servicos'); buscaServico.value='${numeroTextoOS(os)}'; renderServicosLista();">âº</button>
+    </div>
+   `).join("")}
+   <button class="btn btn-light" onclick="showTab('servicos'); buscaServico.value='${limparTelefone(c.telefone)}'; renderServicosLista();">Ver todas as OS do cliente</button>
+  </div>
+ `;
+}
 
-function pagamentoFoiRecebido(os){
- const p = limparTexto(os.pagamento || "").toLowerCase();
- return p.includes("pago");
+function abrirPainelAjustes(tipo){
+ ajustesPainel.classList.remove("hidden");
+ if(tipo==="financeiro") renderPainelFinanceiro();
+ if(tipo==="despesas") renderPainelDespesas();
+ if(tipo==="relatorio") renderPainelRelatorio();
+ if(tipo==="servicos") renderPainelServicos();
+ if(tipo==="mensagem") renderPainelMensagem();
+ if(tipo==="backup") renderPainelBackup();
+ setTimeout(()=>ajustesPainel.scrollIntoView({behavior:"smooth",block:"start"}),60);
 }
 
 function resumoFinanceiro(listaOS, listaDespesas){
- const r = {
-   pedidos: listaOS.length,
-   servicos: 0,
-   faturamento: 0,
-   recebido: 0,
-   aReceber: 0,
-   despesas: 0,
-   saldo: 0
- };
-
+ const r = {pedidos:listaOS.length, servicos:0, faturamento:0, recebido:0, aReceber:0, despesas:0, saldo:0};
  listaOS.forEach(os=>{
    const valor = Number(os.valor || 0);
    r.servicos += getTotalServicosOS(os);
    r.faturamento += valor;
-
-   if(pagamentoFoiRecebido(os)){
-     r.recebido += valor;
-   }else{
-     r.aReceber += valor;
-   }
+   if(pagamentoFoiRecebido(os)) r.recebido += valor; else r.aReceber += valor;
  });
-
- listaDespesas.forEach(d=>{
-   r.despesas += Number(d.valor || 0);
- });
-
+ listaDespesas.forEach(d=>r.despesas += Number(d.valor || 0));
  r.saldo = r.recebido - r.despesas;
-
  return r;
 }
 
-function htmlCaixasFinanceiro(r){
- return `
-  <div class="finance-grid">
+function mesAtual(){return hoje().slice(0,7)}
+
+function renderPainelFinanceiro(){
+ const mes = document.getElementById("finMesLocal") ? finMesLocal.value : mesAtual();
+ const osMes = ordens.filter(o=>String(o.data).startsWith(mes));
+ const despMes = despesas.filter(d=>String(d.data).startsWith(mes));
+ const r = resumoFinanceiro(osMes, despMes);
+ ajustesPainel.innerHTML = `
+  <h3 class="title">Financeiro</h3>
+  <label>MÃªs</label><input id="finMesLocal" type="month" value="${mes}" onchange="renderPainelFinanceiro()">
+  <div class="finance-grid" style="margin-top:10px">
    <div class="finance-box"><span>Faturamento</span><b>${moeda(r.faturamento)}</b></div>
    <div class="finance-box"><span>Recebido</span><b>${moeda(r.recebido)}</b></div>
    <div class="finance-box"><span>A receber</span><b>${moeda(r.aReceber)}</b></div>
    <div class="finance-box"><span>Despesas</span><b>${moeda(r.despesas)}</b></div>
    <div class="finance-box"><span>Saldo recebido</span><b>${moeda(r.saldo)}</b></div>
-   <div class="finance-box"><span>Servicos</span><b>${r.servicos}</b></div>
+   <div class="finance-box"><span>ServiÃ§os</span><b>${r.servicos}</b></div>
   </div>
-  <p class="small">Pedidos: <b>${r.pedidos}</b>. O saldo usa apenas pagamentos marcados como Pago.</p>
  `;
 }
 
-
-function toggleFinanceiroAjustes(){
- const el = document.getElementById("financeiroAjustes");
- if(el){
-   el.classList.toggle("hidden");
-   renderFinanceiro();
- }
-}
-
-function renderFinanceiro(){
- if(!document.getElementById("financeiroResumo")) return;
-
- if(!finMes.value){
-   finMes.value = hoje().slice(0,7);
- }
-
- if(!dataDespesa.value){
-   dataDespesa.value = hoje();
- }
-
- const mes = finMes.value;
- const hojeData = hoje();
-
- const osMes = ordens.filter(o=>String(o.data || "").startsWith(mes));
- const despMes = despesas.filter(d=>String(d.data || "").startsWith(mes));
-
- const osHoje = ordens.filter(o=>o.data === hojeData);
- const despHoje = despesas.filter(d=>d.data === hojeData);
-
- const resumoMes = resumoFinanceiro(osMes, despMes);
- const resumoHoje = resumoFinanceiro(osHoje, despHoje);
-
- financeiroResumo.innerHTML = htmlCaixasFinanceiro(resumoMes);
- financeiroHoje.innerHTML = htmlCaixasFinanceiro(resumoHoje);
-
- renderFinanceiroDias(mes);
- renderDespesasLista(mes);
-}
-
-function renderFinanceiroDias(mes){
- const datas = new Set();
-
- ordens.forEach(o=>{
-   if(String(o.data || "").startsWith(mes)) datas.add(o.data);
- });
-
- despesas.forEach(d=>{
-   if(String(d.data || "").startsWith(mes)) datas.add(d.data);
- });
-
- const listaDatas = Array.from(datas).sort();
-
- if(!listaDatas.length){
-   financeiroDias.innerHTML = '<p class="small">Nenhum movimento neste mes.</p>';
-   return;
- }
-
- let html = '<table class="finance-table"><tr><th>Dia</th><th>Recebido</th><th>Despesa</th><th>Saldo</th></tr>';
-
- listaDatas.forEach(data=>{
-   const osDia = ordens.filter(o=>o.data === data);
-   const despDia = despesas.filter(d=>d.data === data);
-   const r = resumoFinanceiro(osDia, despDia);
-
-   html += `<tr>
-    <td>${dataBR(data)}</td>
-    <td>${moeda(r.recebido)}</td>
-    <td>${moeda(r.despesas)}</td>
-    <td><b>${moeda(r.saldo)}</b></td>
-   </tr>`;
- });
-
- html += '</table>';
-
- financeiroDias.innerHTML = html;
-}
-
-function renderDespesasLista(mes){
- const lista = despesas
-   .filter(d=>String(d.data || "").startsWith(mes))
-   .sort((a,b)=>String(b.data).localeCompare(String(a.data)));
-
- if(!lista.length){
-   despesasLista.innerHTML = '<p class="small">Nenhuma despesa cadastrada neste mes.</p>';
-   return;
- }
-
- let html = '<table class="finance-table"><tr><th>Data</th><th>Despesa</th><th>Valor</th></tr>';
-
- lista.forEach(d=>{
-   html += `<tr>
-    <td>${dataBR(d.data)}</td>
-    <td>${limparTexto(d.categoria || "")}<br><span class="small">${limparTexto(d.descricao || "")}</span><br><button class="btn btn-red" style="padding:7px;margin-top:6px" onclick="apagarDespesa('${d.id}')">Apagar</button></td>
-    <td><b>${moeda(d.valor)}</b></td>
-   </tr>`;
- });
-
- html += '</table>';
-
- despesasLista.innerHTML = html;
+function renderPainelDespesas(){
+ ajustesPainel.innerHTML = `
+  <h3 class="title">Despesas</h3>
+  <div class="row"><div><label>Data</label><input id="dataDespesa" type="date" value="${hoje()}"></div><div><label>Categoria</label><select id="categoriaDespesa"><option>Material</option><option>Aluguel</option><option>Conta</option><option>Marketing</option><option>Equipamento</option><option>Outros</option></select></div></div>
+  <label>DescriÃ§Ã£o</label><input id="descDespesa" placeholder="Ex: compra de molas">
+  <label>Valor</label><input id="valorDespesa" type="number" step="0.01" placeholder="Ex: 50">
+  <button class="btn btn-primary" onclick="salvarDespesa()">Adicionar despesa</button>
+  <div id="despesasLista" style="margin-top:10px"></div>
+ `;
+ renderDespesasLista();
 }
 
 async function salvarDespesa(){
- const data = dataDespesa.value || hoje();
- const categoria = limparTexto(categoriaDespesa.value || "Outros");
- const descricao = limparTexto(descDespesa.value.trim());
- const valor = Number(String(valorDespesa.value || 0).replace(",", "."));
-
- if(!valor || valor <= 0){
-   alert("Digite o valor da despesa.");
-   return;
- }
-
+ const valor = Number(String(valorDespesa.value || 0).replace(",","."));
+ if(!valor || valor <= 0){alert("Digite o valor da despesa."); return;}
  const despesa = {
-   data: data,
-   categoria: categoria,
-   descricao: descricao,
-   valor: valor,
-   criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
-   usuario: emailUsuarioAtual()
+   data:dataDespesa.value || hoje(),
+   categoria:categoriaDespesa.value,
+   descricao:limparTexto(descDespesa.value),
+   valor,
+   criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+   usuario:emailUsuarioAtual()
  };
-
  try{
    await db.collection(COL_DESPESAS).add(despesa);
-   descDespesa.value = "";
-   valorDespesa.value = "";
-   if(finMes.value !== data.slice(0,7)) finMes.value = data.slice(0,7);
-   renderFinanceiro();
+   toast("Despesa salva.","good");
+   renderPainelDespesas();
  }catch(e){
    alert("Erro ao salvar despesa: "+limparTexto(e.message));
  }
 }
 
+function renderDespesasLista(){
+ const el = document.getElementById("despesasLista");
+ if(!el) return;
+ if(!despesas.length){el.innerHTML='<p class="small">Nenhuma despesa cadastrada.</p>';return;}
+ el.innerHTML = despesas.slice(0,20).map(d=>`
+  <div class="selected-item">
+   <div><b>${dataBR(d.data)} Â· ${d.categoria}</b><span>${d.descricao || "-"}</span></div>
+   <b>${moeda(d.valor)}</b>
+   <button class="trash" onclick="apagarDespesa('${d.id}')">â«</button>
+  </div>
+ `).join("");
+}
+
 async function apagarDespesa(id){
  if(!confirm("Apagar esta despesa?")) return;
-
  try{
    await db.collection(COL_DESPESAS).doc(id).delete();
+   toast("Despesa apagada.","good");
+   renderPainelDespesas();
  }catch(e){
    alert("Erro ao apagar despesa: "+limparTexto(e.message));
  }
 }
 
-function textoRelatorioFinanceiro(){
- const mes = finMes.value || hoje().slice(0,7);
- const osMes = ordens.filter(o=>String(o.data || "").startsWith(mes));
- const despMes = despesas.filter(d=>String(d.data || "").startsWith(mes));
+function textoRelatorio(){
+ const mes = mesAtual();
+ const osMes = ordens.filter(o=>String(o.data).startsWith(mes));
+ const despMes = despesas.filter(d=>String(d.data).startsWith(mes));
  const r = resumoFinanceiro(osMes, despMes);
-
- let texto = "";
- texto += "AFIA - RESUMO FINANCEIRO\n";
- texto += "Mes: "+mes+"\n\n";
- texto += "Pedidos: "+r.pedidos+"\n";
- texto += "Servicos: "+r.servicos+"\n";
- texto += "Faturamento: "+moeda(r.faturamento)+"\n";
- texto += "Recebido: "+moeda(r.recebido)+"\n";
- texto += "A receber: "+moeda(r.aReceber)+"\n";
- texto += "Despesas: "+moeda(r.despesas)+"\n";
- texto += "Saldo recebido: "+moeda(r.saldo)+"\n\n";
-
- const porData = {};
- osMes.forEach(o=>{
-   if(!porData[o.data]) porData[o.data] = {os:[], desp:[]};
-   porData[o.data].os.push(o);
- });
- despMes.forEach(d=>{
-   if(!porData[d.data]) porData[d.data] = {os:[], desp:[]};
-   porData[d.data].desp.push(d);
- });
-
- Object.keys(porData).sort().forEach(data=>{
-   const dia = porData[data];
-   const rd = resumoFinanceiro(dia.os, dia.desp);
-   texto += dataBR(data)+" - recebido "+moeda(rd.recebido)+" - despesas "+moeda(rd.despesas)+" - saldo "+moeda(rd.saldo)+"\n";
- });
-
- return texto;
+ return `AFIA - RESUMO FINANCEIRO\nMÃªs: ${mes}\n\nPedidos: ${r.pedidos}\nServiÃ§os: ${r.servicos}\nFaturamento: ${moeda(r.faturamento)}\nRecebido: ${moeda(r.recebido)}\nA receber: ${moeda(r.aReceber)}\nDespesas: ${moeda(r.despesas)}\nSaldo recebido: ${moeda(r.saldo)}\n`;
 }
 
-function nomeArquivoSeguro(txt){
- return limparTexto(txt || "arquivo").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"");
+function renderPainelRelatorio(){
+ ajustesPainel.innerHTML = `
+  <h3 class="title">RelatÃ³rio</h3>
+  <p class="small">Resumo do mÃªs atual para copiar ou baixar.</p>
+  <textarea id="relatorioTexto">${textoRelatorio()}</textarea>
+  <button class="btn btn-primary" onclick="copiarRelatorio()">Copiar resumo</button>
+  <button class="btn btn-blue" onclick="baixarArquivo('afia_relatorio.txt', relatorioTexto.value, 'text/plain')">Baixar TXT</button>
+  <button class="btn btn-blue" onclick="fecharMesFinanceiro()">Salvar fechamento do mÃªs</button>
+ `;
 }
 
-function baixarArquivo(nome, conteudo, tipo){
- const blob = new Blob([conteudo], {type: tipo || "text/plain;charset=utf-8"});
- const url = URL.createObjectURL(blob);
- const a = document.createElement("a");
- a.href = url;
- a.download = nome;
- document.body.appendChild(a);
- a.click();
- document.body.removeChild(a);
- setTimeout(()=>URL.revokeObjectURL(url), 1000);
-}
-
-function baixarRelatorioFinanceiroTXT(){
- const mes = finMes.value || hoje().slice(0,7);
- baixarArquivo("afia_resumo_"+nomeArquivoSeguro(mes)+".txt", textoRelatorioFinanceiro(), "text/plain;charset=utf-8");
-}
-
-function csvEscape(v){
- const s = String(v === undefined || v === null ? "" : v).replaceAll('"','""');
- return '"'+s+'"';
-}
-
-function exportarFinanceiroCSV(){
- const mes = finMes.value || hoje().slice(0,7);
- let linhas = [];
-
- linhas.push(["tipo","data","os","cliente","descricao","status","pagamento","valor"].map(csvEscape).join(","));
-
- ordens.filter(o=>String(o.data || "").startsWith(mes)).forEach(o=>{
-   linhas.push([
-     "OS",
-     dataBR(o.data),
-     numeroTextoOS(o),
-     limparTexto(o.nome),
-     itensTexto(o," | "),
-     limparTexto(o.status),
-     limparTexto(o.pagamento),
-     Number(o.valor || 0).toFixed(2)
-   ].map(csvEscape).join(","));
- });
-
- despesas.filter(d=>String(d.data || "").startsWith(mes)).forEach(d=>{
-   linhas.push([
-     "DESPESA",
-     dataBR(d.data),
-     "",
-     "",
-     limparTexto(d.categoria || "")+" - "+limparTexto(d.descricao || ""),
-     "",
-     "",
-     "-"+Number(d.valor || 0).toFixed(2)
-   ].map(csvEscape).join(","));
- });
-
- baixarArquivo("afia_financeiro_"+nomeArquivoSeguro(mes)+".csv", linhas.join("\n"), "text/csv;charset=utf-8");
+function copiarRelatorio(){
+ navigator.clipboard.writeText(relatorioTexto.value).then(()=>toast("RelatÃ³rio copiado.","good")).catch(()=>alert(relatorioTexto.value));
 }
 
 async function fecharMesFinanceiro(){
- const mes = finMes.value || hoje().slice(0,7);
- const texto = textoRelatorioFinanceiro();
-
- const ok = confirm("Fechar o mes "+mes+"? O sistema vai salvar o resumo no Firebase. Depois voce podera zerar a numeracao da OS para voltar ao numero 1.");
-
- if(!ok) return;
-
- const osMes = ordens.filter(o=>String(o.data || "").startsWith(mes));
- const despMes = despesas.filter(d=>String(d.data || "").startsWith(mes));
+ const mes = mesAtual();
+ const osMes = ordens.filter(o=>String(o.data).startsWith(mes));
+ const despMes = despesas.filter(d=>String(d.data).startsWith(mes));
  const resumo = resumoFinanceiro(osMes, despMes);
-
  try{
    await db.collection(COL_FECHAMENTOS).add({
-     mes: mes,
-     resumo: resumo,
-     relatorio: texto,
-     criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
-     usuario: emailUsuarioAtual()
+     mes,
+     resumo,
+     relatorio:textoRelatorio(),
+     criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
+     usuario:emailUsuarioAtual()
    });
-
-   try{
-     await navigator.clipboard.writeText(texto);
-   }catch(e){}
-
-   alert("Fechamento salvo. O resumo tambem foi copiado quando o navegador permitiu.");
-
-   const zerar = confirm("Deseja zerar a numeracao da OS agora para a proxima OS voltar para 1?");
-
-   if(zerar){
-     await zerarNumeracaoOS();
-   }
-
+   toast("Fechamento salvo no Firebase.","good");
  }catch(e){
-   alert("Erro ao fechar mes: "+limparTexto(e.message));
+   alert("Erro ao fechar mÃªs: "+limparTexto(e.message));
  }
 }
 
-
-async function copiarRelatorioFinanceiro(){
- const texto = textoRelatorioFinanceiro();
-
- try{
-   await navigator.clipboard.writeText(texto);
-   mostrarToast("Resumo copiado.","good");
- }catch(e){
-   alert(texto);
- }
-}
-
-
-function renderClientes(){
- const q = limparTexto(buscaCliente.value).toLowerCase().trim();
- const mapa = {};
-
- ordens.forEach(os=>{
-   const tel = limparTelefone(os.telefone);
-   const chave = tel || limparTexto(os.nome).toLowerCase();
-
-   if(!mapa[chave]){
-     mapa[chave] = {
-       nome: limparTexto(os.nome),
-       telefone: limparTexto(os.telefone),
-       visitas: 0,
-       pecas: 0,
-       valor: 0,
-       ordens: []
-     };
-   }
-
-   mapa[chave].visitas += 1;
-   mapa[chave].pecas += getTotalServicosOS(os);
-   mapa[chave].valor += Number(os.valor || 0);
-   mapa[chave].ordens.push(os);
-
-   if(os.nome) mapa[chave].nome = limparTexto(os.nome);
-   if(os.telefone) mapa[chave].telefone = limparTexto(os.telefone);
- });
-
- const clientes = Object.values(mapa).filter(c =>
-   !q ||
-   c.nome.toLowerCase().includes(q) ||
-   c.telefone.includes(q) ||
-   limparTelefone(c.telefone).includes(limparTelefone(q))
- );
-
- clientes.sort((a,b)=>a.nome.localeCompare(b.nome));
-
- clientesLista.innerHTML = "";
-
- if(clientes.length === 0){
-   clientesLista.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
-   return;
- }
-
- clientes.forEach(c=>{
-   c.ordens.sort((a,b)=>String(b.data).localeCompare(String(a.data)));
-
-   const ultima = c.ordens[0];
-
-   const historico = c.ordens.map(os=>{
-     return `<p class="small">OS ${numeroTextoOS(os)} - ${dataBR(os.data)} as ${os.hora} - ${getTotalServicosOS(os)} servicos - ${moeda(os.valor)} - ${limparTexto(os.status)}</p>`;
-   }).join("");
-
-   const d = document.createElement("div");
-   d.className = "card";
-
-   d.innerHTML = `
-    <p><b>${c.nome}</b></p>
-    <p>${c.telefone}</p>
-    <p>Veio na loja: <b>${c.visitas}</b> vez(es)</p>
-    <p>Total de servicos: <b>${c.pecas}</b></p>
-    <p>Total gasto: <b>${moeda(c.valor)}</b></p>
-    <p>Ultima visita: <b>${ultima ? dataBR(ultima.data) : "-"}</b></p>
-    <hr>
-    <p><b>Historico:</b></p>
-    ${historico}
-   `;
-
-   clientesLista.appendChild(d);
- });
-}
-
-function reenviar(id){
- const os = ordens.find(o=>o.id === id);
- if(os) enviarWhatsApp(os);
-}
-
-function imprimir(id){
- const os = ordens.find(o=>o.id === id);
- if(os){
-   abrirViaImpressao(os);
- }
-}
-
-async function confirmarChegada(id){
- const os = ordens.find(o=>o.id === id);
-
- if(!os) return;
-
- const qtd = getPecasAgenda(os);
- let alocacoes = {};
-
- if(qtd > 0){
-   try{
-     alocacoes = calcularAlocacoes(os.data, os.hora, qtd, id);
-   }catch(err){
-     alert(limparTexto(err.message));
-     return;
-   }
- }
-
- await db.collection(COL_ORDENS).doc(id).update({
-   situacao:"confirmado",
-   status:"Recebido",
-   pecas:getTotalServicosOS(os),
-   pecasAgenda:qtd,
-   alocacoes:alocacoes
- });
-}
-
-async function apagarOS(id){
- if(confirm("Apagar esta OS?")){
-   await db.collection(COL_ORDENS).doc(id).delete();
- }
+function renderPainelServicos(){
+ ajustesPainel.innerHTML = `
+  <h3 class="title">ServiÃ§os e preÃ§os</h3>
+  <p class="small">Ative âconta agendaâ somente para serviÃ§os que ocupam vaga nos quadradinhos.</p>
+  <div id="servicosEdit"></div>
+  <label>Novo serviÃ§o</label><input id="novoServico" placeholder="Ex: Alicates de cutÃ­cula">
+  <label>PreÃ§o unitÃ¡rio</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
+  <button class="btn btn-primary" onclick="adicionarServico()">Adicionar serviÃ§o</button>
+ `;
+ renderServicosEdit();
 }
 
 function renderServicosEdit(){
- servicosEdit.innerHTML = "";
-
- config.servicos.forEach((s,i)=>{
-   const agendaTxt = s.contaAgenda ? "Conta na agenda" : "Nao conta na agenda";
-   const btnTxt = s.contaAgenda ? "Nao contar" : "Contar";
-
-   servicosEdit.innerHTML += `
-    <div class="service-edit">
-     <b>${limparTexto(s.nome)}<br><span class="small">${agendaTxt}</span></b>
-     <span>${moeda(s.preco)}</span>
-     <button class="btn btn-blue" onclick="alternarContaAgenda(${i})">${btnTxt}</button>
-     <button class="btn btn-red" onclick="removerServico(${i})">Excluir</button>
-    </div>`;
- });
-}
-
-async function salvarConfig(){
- config.servicos = normalizarServicos(config.servicos);
- config.template = normalizarTemplateWhatsApp(config.template);
- config.templatePronto = normalizarTemplateWhatsApp(config.templatePronto || defaultTemplatePronto);
- await db.doc(DOC_CONFIG).set(config,{merge:true});
-
- renderServicosOS();
- renderServicosEdit();
+ const el = document.getElementById("servicosEdit");
+ if(!el) return;
+ el.innerHTML = (config.servicos || []).map((s,i)=>`
+  <div class="service-edit">
+   <div><b>${s.nome}</b><br><span>${s.contaAgenda ? "Conta na agenda" : "NÃ£o conta na agenda"}</span></div>
+   <input type="number" step="0.01" value="${s.preco}" onchange="config.servicos[${i}].preco=Number(this.value||0); salvarConfig().then(()=>{renderQuickServices(); renderSelected();})">
+   <button class="btn ${s.contaAgenda ? "btn-red" : "btn-blue"}" onclick="config.servicos[${i}].contaAgenda=!config.servicos[${i}].contaAgenda; salvarConfig().then(()=>renderServicosEdit());">${s.contaAgenda ? "NÃ£o contar" : "Contar"}</button>
+  </div>
+ `).join("");
 }
 
 async function adicionarServico(){
  if(!novoServico.value || !novoPreco.value) return;
-
- const nomeNovo = limparTexto(novoServico.value.trim());
-
- config.servicos.push({
-   nome: nomeNovo,
-   preco: Number(novoPreco.value),
-   contaAgenda: inferirContaAgenda(nomeNovo)
- });
-
- novoServico.value = "";
- novoPreco.value = "";
-
- await salvarConfig();
-}
-
-async function alternarContaAgenda(i){
- config.servicos[i].contaAgenda = !Boolean(config.servicos[i].contaAgenda);
- await salvarConfig();
-}
-
-async function removerServico(i){
- if(confirm("Excluir este servico da OS?")){
-   config.servicos.splice(i,1);
+ const nome = limparTexto(novoServico.value);
+ config.servicos.push({nome,preco:Number(novoPreco.value),contaAgenda:inferirContaAgenda(nome)});
+ try{
    await salvarConfig();
+   renderPainelServicos();
+   renderQuickServices();
+   toast("ServiÃ§o adicionado.","good");
+ }catch(e){
+   alert("Erro ao adicionar serviÃ§o: "+limparTexto(e.message));
  }
 }
 
-async function salvarTemplate(){
- config.template = normalizarTemplateWhatsApp(templateMsg.value);
- templateMsg.value = config.template;
- await salvarConfig();
- mostrarToast("Mensagem da OS salva.","good");
-}
-
-async function salvarTemplatePronto(){
- config.templatePronto = normalizarTemplateWhatsApp(templateProntoMsg.value);
- templateProntoMsg.value = config.templatePronto;
- await salvarConfig();
- mostrarToast("Mensagem de pronto salva.","good");
-}
-
-async function salvarLoginConfig(){
- alert("O login agora e controlado pelo Firebase Authentication.");
-}
-
-iniciar();
-</script>
-</body>
-</html>
+function renderPainelMensagem(){
+ ajustesPainel.innerHTML = `
+  <h3 class="title">Mensagem do WhatsApp</h3>
+  <p class="small">Use: {numero}, {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
+  <label>Mensagem da OS</label><textarea id="templateMsg">${config.template || defaultTemplate}</textarea>
+  <button class="btn btn-primary" onclick="config.template=templateMsg.value; salvarConfig().then(()=>toa
