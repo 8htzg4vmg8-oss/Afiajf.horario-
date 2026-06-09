@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1471,6 +1472,20 @@ body.apagar-separado .btn-delete-safe{
     </div>
    </div>
 
+
+   <div class="card">
+    <h3 class="title">DiagnÃ³stico Firebase</h3>
+    <p class="small">Se o login entra, mas os dados nÃ£o aparecem, normalmente Ã© regra do Firestore. Para testar, use regra de usuÃ¡rio logado:</p>
+    <textarea readonly style="font-size:12px;min-height:170px">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}</textarea>
+   </div>
+
    <div class="shortcut-grid">
     <button class="shortcut" onclick="abrirPainelAjustes('financeiro')" type="button">
      <span class="big-icon">$</span>
@@ -1742,6 +1757,22 @@ function toast(msg,tipo){
  window._toast = setTimeout(()=>el.classList.remove("show"),2300);
 }
 
+function mostrarErroFirebase(titulo, erro){
+ const msg = limparTexto(erro && erro.message ? erro.message : erro);
+ console.error(titulo, erro);
+
+ if(document.getElementById("connectionStatus")){
+   connectionStatus.className = "connection-box connection-offline";
+   connectionStatus.textContent = titulo + " " + msg;
+ }
+
+ if(document.getElementById("loginStatus")){
+   loginStatus.innerHTML = '<span class="bad">'+titulo+' '+msg+'</span>';
+ }
+
+ toast(titulo,"bad");
+}
+
 function atualizarStatusConexao(){
  const el = document.getElementById("connectionStatus");
  if(!el) return;
@@ -1878,17 +1909,30 @@ async function iniciar(){
 
    auth.onAuthStateChanged(async user=>{
      if(user){
+       // Abre o app primeiro. Assim, se o Firestore estiver com regra/permissÃ£o errada,
+       // vocÃª nÃ£o fica preso na tela de login sem saber o que aconteceu.
+       config = {
+         servicos: defaultServices,
+         template: defaultTemplate,
+         templatePronto: defaultTemplatePronto,
+         visual: defaultVisualConfig()
+       };
+       ensureVisualConfig();
+       abrirApp();
+
        try{
          await carregarConfig();
-         abrirApp();
-         iniciarEscutaOrdens();
-         iniciarEscutaDespesas();
-         sincronizarPendentesOffline();
+         aplicarVisualConfig();
+         renderQuickServices();
+         renderSelected();
        }catch(e){
-         if(document.getElementById("loginStatus")){
-           loginStatus.innerHTML = '<span class="bad">Erro ao carregar dados: '+limparTexto(e.message)+'</span>';
-         }
+         mostrarErroFirebase("Login feito, mas nÃ£o consegui carregar as configuraÃ§Ãµes do Firestore.", e);
        }
+
+       iniciarEscutaOrdens();
+       iniciarEscutaDespesas();
+       sincronizarPendentesOffline();
+
      }else{
        fecharApp();
      }
@@ -1912,8 +1956,9 @@ async function login(){
    await auth.signInWithEmailAndPassword(email, senha);
    loginPass.value = "";
  }catch(e){
-   loginStatus.innerHTML = '<span class="bad">Falha no login</span>';
-   alert("Login incorreto ou usuÃ¡rio nÃ£o cadastrado no Firebase.");
+   const msg = limparTexto(e.message);
+   loginStatus.innerHTML = '<span class="bad">Falha no login: '+msg+'</span>';
+   alert("Login incorreto, usuÃ¡rio nÃ£o cadastrado ou Authentication nÃ£o ativado no Firebase.\n\nDetalhe: "+msg);
  }
 }
 
@@ -1974,24 +2019,32 @@ async function salvarConfig(){
 
 function iniciarEscutaOrdens(){
  if(unsubscribeOrdens){unsubscribeOrdens(); unsubscribeOrdens = null;}
- unsubscribeOrdens = db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot({includeMetadataChanges:true}, snap=>{
-   atualizarStatusSnapshot(snap);
-   ordens = [];
-   snap.forEach(d=>ordens.push({id:d.id, ...d.data()}));
-   renderAll();
- }, e=>{
-   alert("Erro ao ler ordens: "+limparTexto(e.message));
- });
+ try{
+   unsubscribeOrdens = db.collection(COL_ORDENS).orderBy("criadoEm","desc").onSnapshot({includeMetadataChanges:true}, snap=>{
+     atualizarStatusSnapshot(snap);
+     ordens = [];
+     snap.forEach(d=>ordens.push({id:d.id, ...d.data()}));
+     renderAll();
+   }, e=>{
+     mostrarErroFirebase("NÃ£o consegui ler as ordens no Firestore.", e);
+   });
+ }catch(e){
+   mostrarErroFirebase("Erro ao iniciar leitura das ordens.", e);
+ }
 }
 
 function iniciarEscutaDespesas(){
  if(unsubscribeDespesas){unsubscribeDespesas(); unsubscribeDespesas = null;}
- unsubscribeDespesas = db.collection(COL_DESPESAS).orderBy("data","desc").onSnapshot({includeMetadataChanges:true}, snap=>{
-   despesas = [];
-   snap.forEach(d=>despesas.push({id:d.id, ...d.data()}));
- }, e=>{
-   alert("Erro ao ler despesas: "+limparTexto(e.message));
- });
+ try{
+   unsubscribeDespesas = db.collection(COL_DESPESAS).orderBy("data","desc").onSnapshot({includeMetadataChanges:true}, snap=>{
+     despesas = [];
+     snap.forEach(d=>despesas.push({id:d.id, ...d.data()}));
+   }, e=>{
+     mostrarErroFirebase("NÃ£o consegui ler as despesas no Firestore.", e);
+   });
+ }catch(e){
+   mostrarErroFirebase("Erro ao iniciar leitura das despesas.", e);
+ }
 }
 
 function setScreenInfo(t){
@@ -2970,4 +3023,114 @@ function renderPainelMensagem(){
   <h3 class="title">Mensagem do WhatsApp</h3>
   <p class="small">Use: {numero}, {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
   <label>Mensagem da OS</label><textarea id="templateMsg">${config.template || defaultTemplate}</textarea>
-  <button class="btn btn-primary" onclick="config.template=templateMsg.value; salvarConfig().then(()=>toa
+  <button class="btn btn-primary" onclick="config.template=templateMsg.value; salvarConfig().then(()=>toast('Mensagem salva.','good'))">Salvar mensagem da OS</button>
+  <label>Mensagem de serviÃ§o pronto</label><textarea id="templateProntoMsg">${config.templatePronto || defaultTemplatePronto}</textarea>
+  <button class="btn btn-primary" onclick="config.templatePronto=templateProntoMsg.value; salvarConfig().then(()=>toast('Mensagem de pronto salva.','good'))">Salvar mensagem de pronto</button>
+ `;
+}
+
+function renderPainelBackup(){
+ ajustesPainel.innerHTML = `
+  <h3 class="title">Backup / seguranÃ§a Firebase</h3>
+  <p class="small">Os dados ficam salvos no Firebase. O backup abaixo baixa uma cÃ³pia JSON do que estÃ¡ carregado nesta tela.</p>
+  <label>PrÃ³ximo nÃºmero da OS</label><input id="setProximoNumero" type="number" min="1" value="">
+  <button class="btn btn-primary" onclick="salvarProximoNumeroOS()">Salvar prÃ³ximo nÃºmero</button>
+  <button class="btn btn-blue" onclick="carregarNumeroAtual()">Ver nÃºmero atual</button>
+  <button class="btn btn-blue" onclick="exportarBackup()">Baixar backup JSON</button>
+  <label>Importar backup JSON</label><input id="backupFile" type="file" accept="application/json" onchange="importarBackup(event)">
+ `;
+ carregarNumeroAtual();
+}
+
+async function carregarNumeroAtual(){
+ if(!document.getElementById("setProximoNumero")) return;
+ try{
+   const snap = await db.doc(DOC_CONTADOR_OS).get();
+   const ultimo = snap.exists ? Number(snap.data().ultimo || 0) : 0;
+   setProximoNumero.value = ultimo + 1;
+ }catch(e){}
+}
+
+async function salvarProximoNumeroOS(){
+ const n = Number(setProximoNumero.value || 1);
+ if(n < 1){alert("Digite um nÃºmero maior que zero."); return;}
+ try{
+   await db.doc(DOC_CONTADOR_OS).set({
+     ultimo:n-1,
+     atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()
+   },{merge:true});
+   toast("PrÃ³xima OS definida como "+n+".","good");
+ }catch(e){
+   alert("Erro ao salvar numeraÃ§Ã£o: "+limparTexto(e.message));
+ }
+}
+
+function exportarBackup(){
+ const dados = {ordens,despesas,config,contador:"ver Firebase contadores/ordens"};
+ baixarArquivo("afia_backup_firebase.json", JSON.stringify(dados,null,2), "application/json");
+}
+
+function importarBackup(e){
+ const file = e.target.files && e.target.files[0];
+ if(!file) return;
+ const reader = new FileReader();
+ reader.onload = async ()=>{
+   try{
+     const dados = JSON.parse(reader.result);
+     if(!confirm("Importar backup? Isso adiciona as ordens e despesas do arquivo no Firebase.")) return;
+
+     if(Array.isArray(dados.ordens)){
+       for(const o of dados.ordens){
+         const copia = {...o};
+         delete copia.id;
+         if(!copia.criadoEm || (typeof copia.criadoEm === "string")){
+           copia.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
+         }
+         await db.collection(COL_ORDENS).add(copia);
+       }
+     }
+     if(Array.isArray(dados.despesas)){
+       for(const d of dados.despesas){
+         const copia = {...d};
+         delete copia.id;
+         if(!copia.criadoEm) copia.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
+         await db.collection(COL_DESPESAS).add(copia);
+       }
+     }
+     if(dados.config){
+       config = {...config, ...dados.config};
+       ensureVisualConfig();
+       await salvarConfig();
+     }
+     toast("Backup importado.","good");
+   }catch(err){
+     alert("Arquivo invÃ¡lido ou erro ao importar.");
+   }
+ };
+ reader.readAsText(file);
+}
+
+function baixarArquivo(nome, conteudo, tipo){
+ const blob = new Blob([conteudo],{type:tipo||"text/plain;charset=utf-8"});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement("a");
+ a.href = url;
+ a.download = nome;
+ document.body.appendChild(a);
+ a.click();
+ document.body.removeChild(a);
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function renderAll(){
+ aplicarVisualConfig();
+ renderAgenda();
+ renderServicosLista();
+ renderClientes();
+}
+
+iniciar();
+
+</script>
+</body>
+</html>
