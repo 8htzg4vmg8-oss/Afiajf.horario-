@@ -1657,6 +1657,107 @@ body.ajustes-lista .ajustes-hub .shortcut{
  color:#111827;
 }
 </style>
+
+<script>
+(function(){
+  function byId(id){ return document.getElementById(id); }
+
+  function textoDiagnosticoBase(extra){
+    var linhas = [];
+    linhas.push("DIAGNOSTICO DO LOGIN - EMERGENCIA");
+    linhas.push("Data/hora: " + new Date().toLocaleString());
+    linhas.push("Dominio atual: " + window.location.hostname);
+    linhas.push("URL atual: " + window.location.href);
+    linhas.push("Internet: " + (navigator.onLine ? "online" : "offline"));
+    linhas.push("Firebase SDK carregado: " + (typeof window.firebase !== "undefined" ? "sim" : "nao"));
+    linhas.push("Script principal carregou: " + (window._afiaMainReady ? "sim" : "nao"));
+    linhas.push("");
+    linhas.push("No Firebase > Authentication > Settings > Authorized domains, adicione exatamente:");
+    linhas.push(window.location.hostname || "(sem dominio)");
+    linhas.push("");
+    linhas.push("Checklist:");
+    linhas.push("1. Authentication > Sign-in method > Email/senha ativado.");
+    linhas.push("2. Authentication > Users tem o email cadastrado.");
+    linhas.push("3. Authorized domains contem o dominio acima.");
+    linhas.push("4. Abra com ?v=176 no final do link para fugir do cache.");
+    if(extra){
+      linhas.push("");
+      linhas.push("Erro capturado:");
+      linhas.push(String(extra));
+    }
+    return linhas.join("\n");
+  }
+
+  function escrever(texto, ruim){
+    var box = byId("loginDebug");
+    var status = byId("loginStatus");
+    if(box){
+      box.textContent = texto;
+      box.style.display = "block";
+    }
+    if(status){
+      status.innerHTML = ruim ? '<span class="bad">Veja o diagnostico abaixo.</span>' : '<span class="ok">Diagnostico exibido abaixo.</span>';
+    }
+  }
+
+  window.diagnosticoEmergenciaLogin = function(extra){
+    var texto = textoDiagnosticoBase(extra);
+    escrever(texto, !!extra);
+    try { alert("Diagnostico gerado. Role a tela para ver."); } catch(e){}
+    return texto;
+  };
+
+  window.copiarDiagnosticoEmergencia = async function(){
+    var box = byId("loginDebug");
+    var texto = box && box.textContent ? box.textContent : window.diagnosticoEmergenciaLogin();
+    try{
+      await navigator.clipboard.writeText(texto);
+      alert("Diagnostico copiado.");
+    }catch(e){
+      alert(texto);
+    }
+  };
+
+  
+function instalarEventosLogin(){
+ const pares = [
+   ["btnLogin", login],
+   ["btnCriarUsuario", criarUsuarioFirebase],
+   ["btnDiagLogin", diagnosticarLoginFirebase],
+   ["btnCopiarDiag", copiarDiagnosticoLogin]
+ ];
+
+ pares.forEach(([id, fn])=>{
+   const el = document.getElementById(id);
+   if(el){
+     el.onclick = function(ev){
+       ev.preventDefault();
+       try{ fn(); }catch(e){
+         if(window.diagnosticoEmergenciaLogin) window.diagnosticoEmergenciaLogin(e.message || e);
+       }
+     };
+   }
+ });
+}
+
+window.login = login;
+window.criarUsuarioFirebase = criarUsuarioFirebase;
+window.diagnosticarLoginFirebase = diagnosticarLoginFirebase;
+window.copiarDiagnosticoLogin = copiarDiagnosticoLogin;
+window._afiaMainReady = true;
+
+window.addEventListener("error", function(ev){
+    var msg = ev && ev.message ? ev.message : "erro desconhecido";
+    window.diagnosticoEmergenciaLogin(msg);
+  });
+
+  window.addEventListener("unhandledrejection", function(ev){
+    var msg = ev && ev.reason ? (ev.reason.message || ev.reason) : "promessa rejeitada";
+    window.diagnosticoEmergenciaLogin(msg);
+  });
+})();
+</script>
+
 </head>
 
 <body>
@@ -1674,10 +1775,10 @@ body.ajustes-lista .ajustes-hub .shortcut{
   <input id="loginUser" type="email" autocomplete="username" placeholder="seuemail@gmail.com">
   <label>Senha</label>
   <input id="loginPass" type="password" autocomplete="current-password" placeholder="Senha do Firebase">
-  <button class="btn btn-primary" onclick="login()" type="button">Entrar</button>
-  <button class="btn btn-blue" type="button" onclick="criarUsuarioFirebase()">Criar este usuario no Firebase</button>
-  <button class="btn btn-light" type="button" onclick="diagnosticarLoginFirebase()">Ver diagnostico do login</button>
-  <button class="btn btn-light" type="button" onclick="copiarDiagnosticoLogin()">Copiar diagnostico</button>
+  <button id="btnLogin" class="btn btn-primary" onclick="login()" type="button">Entrar</button>
+  <button id="btnCriarUsuario" class="btn btn-blue" type="button" onclick="criarUsuarioFirebase()">Criar este usuario no Firebase</button>
+  <button id="btnDiagLogin" class="btn btn-light" type="button" onclick="diagnosticarLoginFirebase()">Ver diagnostico do login</button>
+  <button id="btnCopiarDiag" class="btn btn-light" type="button" onclick="copiarDiagnosticoLogin()">Copiar diagnostico</button>
   <p class="small">Acesso seguro usando Firebase Authentication. Se ainda nao existir usuario no Firebase, use "Criar este usuario".</p>
   <div id="loginStatus" class="small">Conectando ao Firebase...</div>
   <div id="loginDebug" class="small" style="margin-top:8px;white-space:pre-wrap;background:#f8fafc;border:1px solid #e5e7eb;border-radius:14px;padding:10px"></div>
@@ -2377,6 +2478,7 @@ async function sincronizarPendentesOffline(){
 
 async function iniciar(){
  try{
+   instalarEventosLogin();
    agendaData.value = hoje();
    servicosData.value = hoje();
    dataEntrega.value = hoje();
@@ -2447,7 +2549,10 @@ async function iniciar(){
      loginStatus.innerHTML = '<span class="bad">Erro Firebase: '+msg+'</span>';
    }
    if(document.getElementById("loginDebug")){
-     loginDebug.textContent = "ERRO AO INICIAR FIREBASE\n" + msg + "\n\nDominio: " + window.location.hostname + "\nURL: " + window.location.href;
+     document.getElementById("loginDebug").textContent = "ERRO AO INICIAR FIREBASE\n" + msg + "\n\nDominio: " + window.location.hostname + "\nURL: " + window.location.href;
+   }
+   if(window.diagnosticoEmergenciaLogin){
+     window.diagnosticoEmergenciaLogin(msg);
    }
  }
 }
@@ -2513,13 +2618,14 @@ async function login(){
  const passEl = document.getElementById("loginPass");
  const email = emailEl ? emailEl.value.trim() : "";
  const senha = passEl ? passEl.value : "";
+ const st = document.getElementById("loginStatus");
 
  if(!email || !senha){
    alert("Digite o e-mail e a senha do Firebase.");
    return;
  }
  try{
-   loginStatus.innerHTML = '<span class="ok">Entrando...</span>';
+   if(st) st.innerHTML = '<span class="ok">Entrando...</span>';
    escreverDiagnosticoLogin("", true);
    if(!auth) throw new Error("Firebase Auth ainda nao iniciou. Recarregue a pagina.");
    await auth.signInWithEmailAndPassword(email, senha);
@@ -2564,37 +2670,35 @@ async function diagnosticarLoginFirebase(){
  linhas.push("Dominio atual: " + window.location.hostname);
  linhas.push("URL atual: " + window.location.href);
  linhas.push("Internet: " + (navigator.onLine ? "online" : "offline"));
- linhas.push("Firebase carregado: " + (typeof firebase !== "undefined" ? "sim" : "nao"));
+ linhas.push("Firebase SDK carregado: " + (typeof firebase !== "undefined" ? "sim" : "nao"));
  linhas.push("Auth iniciado: " + (auth ? "sim" : "nao"));
  linhas.push("Firestore iniciado: " + (db ? "sim" : "nao"));
+ linhas.push("Script principal carregou: " + (window._afiaMainReady ? "sim" : "nao"));
  linhas.push("E-mail digitado: " + (email || "(nenhum)"));
  linhas.push("");
 
- if(window.location.hostname && !["localhost","127.0.0.1"].includes(window.location.hostname)){
-   linhas.push("IMPORTANTE:");
-   linhas.push("No Firebase, adicione este dominio em Authentication > Settings > Authorized domains:");
-   linhas.push(window.location.hostname);
-   linhas.push("");
- }
+ linhas.push("Dominio que precisa estar autorizado no Firebase:");
+ linhas.push(window.location.hostname || "(sem dominio)");
+ linhas.push("");
 
  linhas.push("Checklist:");
  linhas.push("1. Firebase > Authentication > Sign-in method > Email/senha esta ativado?");
  linhas.push("2. Firebase > Authentication > Users tem esse e-mail cadastrado?");
- linhas.push("3. Firebase > Authentication > Settings > Authorized domains tem este dominio?");
- linhas.push("4. Firestore Database > Rules permite usuario logado?");
+ linhas.push("3. Firebase > Authentication > Settings > Authorized domains tem o dominio acima?");
+ linhas.push("4. Se acabou de trocar o index.html, abra o link com ?v=176 no final.");
  linhas.push("");
 
  try{
-   if(!auth) throw new Error("Auth nao iniciou ainda.");
+   if(!auth) throw new Error("Auth nao iniciou ainda. Firebase SDK pode nao ter carregado ou o script travou antes.");
    if(email && typeof auth.fetchSignInMethodsForEmail === "function"){
      const methods = await auth.fetchSignInMethodsForEmail(email);
      linhas.push("Consulta do e-mail:");
      linhas.push(methods.length ? "Metodos encontrados: " + methods.join(", ") : "Nenhum metodo retornado para este e-mail.");
-     linhas.push("Observacao: dependendo da protecao do Firebase, essa consulta pode retornar vazio mesmo com usuario existente.");
+     linhas.push("Observacao: em projetos novos, essa consulta pode retornar vazio mesmo com usuario existente.");
    }else if(!email){
      linhas.push("Digite um e-mail para tentar consultar os metodos desse usuario.");
    }else{
-     linhas.push("fetchSignInMethodsForEmail nao esta disponivel neste navegador/SDK.");
+     linhas.push("fetchSignInMethodsForEmail nao esta disponivel.");
    }
  }catch(e){
    const info = erroAuthAmigavel(e);
@@ -2605,15 +2709,19 @@ async function diagnosticarLoginFirebase(){
  }
 
  escreverDiagnosticoLogin(linhas.join("\n"), true);
- alert("Diagnostico gerado. Role um pouco a tela de login para ver e use 'Copiar diagnostico' se precisar me enviar.");
+ return linhas.join("\n");
 }
 
 async function copiarDiagnosticoLogin(){
  const box = document.getElementById("loginDebug");
- const texto = box && box.textContent ? box.textContent : "";
+ let texto = box && box.textContent ? box.textContent : "";
+
  if(!texto){
-   diagnosticarLoginFirebase();
-   return;
+   try{
+     texto = await diagnosticarLoginFirebase();
+   }catch(e){
+     texto = window.diagnosticoEmergenciaLogin ? window.diagnosticoEmergenciaLogin(e.message || e) : String(e);
+   }
  }
 
  try{
@@ -3941,11 +4049,3 @@ body.ajustes-lista .ajustes-hub .shortcut{
 }
 .time-pill.next{
  border-color:#16a34a;
-}
-.horario-helper{
- display:flex;
- justify-content:space-between;
- gap:8px;
- align-items:center;
- margin-top:5px;
- color:#6b7280;
