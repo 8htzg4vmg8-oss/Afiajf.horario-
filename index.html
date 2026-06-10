@@ -1630,6 +1630,32 @@ body.ajustes-lista .ajustes-hub .shortcut{
  background:#eff6ff!important;
  overflow:hidden!important;
 }
+
+/* V17.4 - mini-carrinho com atualizaÃ§Ã£o ao vivo */
+.cart-stepper{
+ display:grid;
+ grid-template-columns:30px 34px 30px;
+ align-items:center;
+ border:1px solid #dbeafe;
+ border-radius:12px;
+ overflow:hidden;
+ background:#f8fbff;
+}
+.cart-stepper button{
+ width:30px;
+ height:30px;
+ border:0;
+ background:#eff6ff;
+ color:#0b84ff;
+ font-size:18px;
+ font-weight:950;
+}
+.cart-stepper span{
+ text-align:center;
+ font-size:14px;
+ font-weight:950;
+ color:#111827;
+}
 </style>
 </head>
 
@@ -3078,12 +3104,13 @@ function limparTipoSelecionado(tipo){
 }
 
 function renderQuickServices(){
- if(!document.getElementById("quickServicesGrid")) return;
+ const grid = document.getElementById("quickServicesGrid");
+ if(!grid) return;
 
  const principais = getServicosPrincipais();
 
- quickServicesGrid.classList.add("balcao-add");
- quickServicesGrid.innerHTML = "";
+ grid.classList.add("balcao-add");
+ grid.innerHTML = "";
 
  principais.forEach(s=>{
    const tipo = s.tipo;
@@ -3106,7 +3133,7 @@ function renderQuickServices(){
     </div>
    `;
 
-   quickServicesGrid.appendChild(btn);
+   grid.appendChild(btn);
  });
 
  renderExtraServices();
@@ -3147,13 +3174,26 @@ function addServicoTipo(tipo){
 
  selected[s.nome] = Number(selected[s.nome] || 0) + 1;
 
- renderQuickServices();
+ try{
+   renderQuickServices();
+ }catch(e){
+   console.error("Erro ao redesenhar servicos", e);
+ }
+
+ renderMiniCart();
  atualizarResumoOS();
 }
 
 function addServicoNome(nome){
  selected[nome] = Number(selected[nome] || 0) + 1;
- renderQuickServices();
+
+ try{
+   renderQuickServices();
+ }catch(e){
+   console.error("Erro ao redesenhar servicos", e);
+ }
+
+ renderMiniCart();
  atualizarResumoOS();
 }
 
@@ -3189,7 +3229,12 @@ function setQtdServico(nome, valor, semRender){
    renderMiniCart();
    renderExtraServices();
  }else{
-   renderQuickServices();
+   try{
+     renderQuickServices();
+   }catch(e){
+     console.error("Erro ao redesenhar servicos", e);
+   }
+   renderMiniCart();
    atualizarResumoOS();
  }
 }
@@ -3229,6 +3274,15 @@ function ordemItemCarrinho(nome){
  return 99;
 }
 
+function escapeJS(txt){
+ return String(txt || "")
+   .replaceAll("\\","\\\\")
+   .replaceAll("'","\\'")
+   .replaceAll('"','\\"')
+   .replaceAll("\n"," ")
+   .replaceAll("\r"," ");
+}
+
 function renderMiniCart(){
  const el = document.getElementById("selectedServices");
  if(!el) return;
@@ -3242,27 +3296,57 @@ function renderMiniCart(){
    return;
  }
 
- el.innerHTML = entries.map(([nome,qtd])=>{
+ el.innerHTML = "";
+
+ entries.forEach(([nome,qtd])=>{
    const unit = precoServico(nome);
    const linha = unit * Number(qtd || 0);
 
-   return `
-    <div class="mini-cart-row">
-     <div><b>${nome}</b><span>${moeda(unit)} cada - ${moeda(linha)}</span></div>
-     <span class="mini-cart-qty">${qtd}</span>
-     <button type="button" class="mini-cart-minus" onclick="ajustarSelecionado('${escapeJS(nome)}',-1)">-</button>
-    </div>
-   `;
- }).join("");
+   const row = document.createElement("div");
+   row.className = "mini-cart-row";
+
+   const info = document.createElement("div");
+   info.innerHTML = `<b>${nome}</b><span>${moeda(unit)} cada - ${moeda(linha)}</span>`;
+
+   const stepper = document.createElement("div");
+   stepper.className = "cart-stepper";
+
+   const menos = document.createElement("button");
+   menos.type = "button";
+   menos.textContent = "-";
+   menos.onclick = function(){ ajustarSelecionado(nome,-1); };
+
+   const qtdEl = document.createElement("span");
+   qtdEl.textContent = String(qtd);
+
+   const mais = document.createElement("button");
+   mais.type = "button";
+   mais.textContent = "+";
+   mais.onclick = function(){ ajustarSelecionado(nome,1); };
+
+   stepper.appendChild(menos);
+   stepper.appendChild(qtdEl);
+   stepper.appendChild(mais);
+
+   row.appendChild(info);
+   row.appendChild(stepper);
+
+   el.appendChild(row);
+ });
 }
 
 function atualizarResumoOS(){
  const entries = Object.entries(selected || {});
  const totalQtd = entries.reduce((s,[,q])=>s+Number(q||0),0);
+ const totalValor = valorSelecionado();
 
- if(document.getElementById("selectedCounter")) selectedCounter.textContent = String(totalQtd);
- if(document.getElementById("valorTotalView")) valorTotalView.textContent = moeda(valorSelecionado());
- if(document.getElementById("pagamentoAtualView")) pagamentoAtualView.textContent = pagamentoAtual;
+ const counterEl = document.getElementById("selectedCounter");
+ const totalEl = document.getElementById("valorTotalView");
+ const pagamentoEl = document.getElementById("pagamentoAtualView");
+
+ if(counterEl) counterEl.textContent = String(totalQtd);
+ if(totalEl) totalEl.textContent = moeda(totalValor);
+ if(pagamentoEl) pagamentoEl.textContent = pagamentoAtual;
 }
 
 function renderSelected(){
@@ -3303,6 +3387,18 @@ function toggleMaisOpcoes(){
  if(el.classList.contains("open")){
    renderExtraServices();
  }
+}
+
+function testarSomaServicos(){
+ selected = {};
+ addServicoTipo("cuticula");
+ addServicoTipo("mola");
+ return {
+   selecionado:selected,
+   total:valorSelecionado(),
+   contador:document.getElementById("selectedCounter") ? document.getElementById("selectedCounter").textContent : "",
+   valorTela:document.getElementById("valorTotalView") ? document.getElementById("valorTotalView").textContent : ""
+ };
 }
 
 function buscarClientePorTelefone(){
@@ -3853,672 +3949,3 @@ body.ajustes-lista .ajustes-hub .shortcut{
  align-items:center;
  margin-top:5px;
  color:#6b7280;
- font-size:11px;
- font-weight:800;
-}
-.quick-services-grid.balcao-add{
- grid-template-columns:repeat(2,minmax(0,1fr));
- gap:12px;
-}
-.balcao-service-btn{
- min-height:104px;
- border:1px solid #bfdbfe;
- background:linear-gradient(180deg,#eff6ff 0%, #dbeafe 100%);
- border-radius:20px;
- padding:14px 12px;
- text-align:left;
- display:grid;
- grid-template-columns:1fr auto;
- align-items:center;
- gap:12px;
- box-shadow:0 8px 18px rgba(59,130,246,.10);
-}
-.balcao-service-btn:active{
- transform:scale(.985);
-}
-.balcao-service-btn b{
- display:block;
- font-size:16px;
- line-height:1.12;
- color:#0f172a;
-}
-.balcao-service-btn span{
- display:block;
- margin-top:5px;
- color:#475569;
- font-size:12px;
- font-weight:850;
-}
-.balcao-plus{
- width:54px;
- height:54px;
- border-radius:18px;
- background:linear-gradient(180deg,#2563eb 0%, #0b84ff 100%);
- color:#fff;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:34px;
- line-height:1;
- font-weight:950;
- box-shadow:0 8px 16px rgba(37,99,235,.22);
-}
-.service-count-badge{
- display:inline-flex!important;
- align-items:center;
- justify-content:center;
- margin-top:8px!important;
- background:#16a34a;
- color:#fff!important;
- border-radius:999px;
- padding:4px 9px;
- font-size:11px!important;
- width:max-content;
-}
-.mini-cart{
- margin:10px 0 12px;
- border:1px solid #e5e7eb;
- background:#fff;
- border-radius:18px;
- padding:10px;
-}
-.mini-cart-empty{
- color:#6b7280;
- font-size:12px;
- font-weight:800;
- padding:2px 0;
-}
-.mini-cart-row{
- display:grid;
- grid-template-columns:1fr auto auto;
- gap:8px;
- align-items:center;
- padding:8px 0;
- border-bottom:1px solid #eef0f3;
-}
-.mini-cart-row:last-child{border-bottom:0}
-.mini-cart-row b{
- font-size:13px;
- display:block;
- line-height:1.1;
-}
-.mini-cart-row span{
- color:#6b7280;
- font-size:11px;
- font-weight:800;
-}
-.mini-cart-qty{
- background:#111827;
- color:#fff;
- border-radius:999px;
- padding:5px 9px;
- font-size:12px;
- font-weight:950;
-}
-.mini-cart-minus{
- border:0;
- background:#fee2e2;
- color:#dc2626;
- width:34px;
- height:30px;
- border-radius:10px;
- font-size:20px;
- line-height:1;
- font-weight:950;
-}
-.payment-line{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:8px;
- margin-top:8px;
-}
-.payment-line span{
- color:#6b7280;
- font-size:12px;
- font-weight:850;
-}
-.payment-change-btn{
- border:0;
- background:transparent;
- color:#007aff;
- font-size:13px;
- font-weight:950;
- padding:8px 0;
-}
-.payment-buttons.compact-pay{
- display:none;
- grid-template-columns:1.2fr .75fr .75fr;
- margin-top:8px;
-}
-.payment-buttons.compact-pay.open{
- display:grid;
-}
-@media(max-width:380px){
- .quick-services-grid.balcao-add{gap:10px}
- .balcao-service-btn{min-height:154px;padding:11px}
- .balcao-service-btn b{font-size:14px}
- .svc-image-wrap{height:82px}
- .time-pill{padding:10px 13px;font-size:14px}
- .extra-services-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
- .service-notify-badge{min-width:28px;height:28px;font-size:13px;top:-8px;right:-8px}
-}
-
-</style></head><body><div class="box"><div class="no-print"><button class="btn" onclick="window.print()">Imprimir ou salvar PDF</button><button class="btn btn-gray" onclick="window.close()">Fechar</button></div>
- <div class="recibo"><div class="centro titulo">AFIA</div><div class="centro">VIA DA LOJA</div><div class="centro" style="font-size:28px;font-weight:900;margin:8px 0">OS ${numeroTextoOS(os)}</div><hr>
- <div class="linha">Cliente: ${escaparHtml(os.nome)}</div><div class="linha">Telefone: ${escaparHtml(os.telefone)}</div><div class="linha">Entrega: ${escaparHtml(dataBR(os.data))} ${escaparHtml(os.hora)}</div><hr>
- <div class="linha"><b>Servicos</b></div>${htmlItens}<hr><div class="linha">Total de servicos: <b>${getTotalServicosOS(os)}</b></div><div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div><div class="linha">Valor: <b>${moeda(os.valor)}</b></div><div class="linha">Pagamento: ${escaparHtml(os.pagamento)}</div>${os.observacao ? `<div class="linha">Obs: ${escaparHtml(os.observacao)}</div>` : ""}</div></div></body></html>`);
- w.document.close();
-}
-
-function agruparClientes(){
- const mapa = {};
- ordens.forEach(os=>{
-   const tel = limparTelefone(os.telefone);
-   const key = tel || normalizar(os.nome);
-   if(!mapa[key]){
-     mapa[key] = {key,nome:os.nome,telefone:os.telefone,visitas:0,servicos:0,valor:0,ordens:[]};
-   }
-   mapa[key].visitas += 1;
-   mapa[key].servicos += getTotalServicosOS(os);
-   mapa[key].valor += Number(os.valor || 0);
-   mapa[key].ordens.push(os);
-   if(os.nome) mapa[key].nome = os.nome;
-   if(os.telefone) mapa[key].telefone = os.telefone;
- });
- return Object.values(mapa).sort((a,b)=>a.nome.localeCompare(b.nome));
-}
-
-function renderClientes(){
- if(!document.getElementById("clientesLista")) return;
- const q = normalizar(buscaCliente.value || "");
- const qt = limparTelefone(buscaCliente.value || "");
- const layout = getVisual().clientesLayout;
-
- let clientes = agruparClientes().filter(c=>{
-   if(!q && !qt) return true;
-   return normalizar(c.nome).includes(q) || limparTelefone(c.telefone).includes(qt);
- });
-
- clientesEncontrados.textContent = `Clientes encontrados: ${clientes.length}`;
-
- if(!clientes.length){
-   clientesLista.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
-   clienteDetalhe.innerHTML = "";
-   return;
- }
-
- if(!clienteSelecionadoKey && clientes.length) clienteSelecionadoKey = clientes[0].key;
-
- if(layout === "cards"){
-   clientesLista.innerHTML = clientes.map(c=>{
-     const ordensOrdenadas = [...c.ordens].sort((a,b)=>String(b.data).localeCompare(String(a.data)));
-     const ultima = ordensOrdenadas[0];
-     return `
-      <div class="client-card" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
-       <div class="client-card-top">
-        <div class="avatar">C</div>
-        <div><b>${c.nome}</b><br><span class="small">${c.telefone}</span></div>
-       </div>
-       <div class="client-card-stats">
-        <div><span>Total gasto</span><b>${moeda(c.valor)}</b></div>
-        <div><span>Servicos</span><b>${c.servicos}</b></div>
-        <div><span>Ultima visita</span><b>${ultima ? dataBR(ultima.data) : "-"}</b></div>
-       </div>
-      </div>
-     `;
-   }).join("");
-   clienteDetalhe.innerHTML = "";
-   return;
- }
-
- clientesLista.innerHTML = clientes.map(c=>{
-   const ordensOrdenadas = [...c.ordens].sort((a,b)=>String(b.data).localeCompare(String(a.data)));
-   const ultima = ordensOrdenadas[0];
-   return `
-    <div class="client-row ${layout === "historico" && c.key===clienteSelecionadoKey ? "selected" : ""}" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
-     <div class="avatar">C</div>
-     <div><b>${c.nome}</b><span>${c.telefone}<br>Ultima visita: ${ultima ? dataBR(ultima.data) : "-"}</span></div>
-     <div class="visit-count"><b>${c.visitas}</b><br><span>visitas</span></div>
-    </div>
-   `;
- }).join("");
-
- if(layout === "historico"){
-   renderClienteDetalhe(clientes.find(c=>c.key===clienteSelecionadoKey) || clientes[0]);
- }else{
-   clienteDetalhe.innerHTML = "";
- }
-}
-
-function renderClienteDetalhe(c){
- if(!c){
-   clienteDetalhe.innerHTML = '<div class="card small">Nenhum cliente encontrado.</div>';
-   return;
- }
- const recentes = [...c.ordens].sort((a,b)=>String(b.data).localeCompare(String(a.data))).slice(0,4);
- clienteDetalhe.innerHTML = `
-  <div class="client-detail">
-   <div class="detail-top"><h3 style="margin:0">${c.nome}</h3><button class="icon-btn" onclick="clienteSelecionadoKey=''; clienteDetalhe.innerHTML='';">x</button></div>
-   <div class="detail-stats">
-    <div><span>Total gasto</span><b>${moeda(c.valor)}</b></div>
-    <div><span>Total servicos</span><b>${c.servicos}</b></div>
-    <div><span>Ultima visita</span><b>${recentes[0] ? dataBR(recentes[0].data) : "-"}</b></div>
-   </div>
-   <div class="client-tabs"><button>Resumo</button><button class="active">Historico</button><button>Dados</button></div>
-   <h3 class="title">OS recentes</h3>
-   ${recentes.map(os=>`
-    <div class="recent-os">
-     <span class="os-mini">OS ${numeroTextoOS(os)}</span>
-     <div><b>${dataBR(os.data)}</b><small>${os.hora}</small></div>
-     <div><small>${os.status}</small><b>${moeda(os.valor)}</b></div>
-     <button class="icon-btn" onclick="showTab('servicos'); buscaServico.value='${numeroTextoOS(os)}'; renderServicosLista();">></button>
-    </div>
-   `).join("")}
-   <button class="btn btn-light" onclick="showTab('servicos'); buscaServico.value='${limparTelefone(c.telefone)}'; renderServicosLista();">Ver todas as OS do cliente</button>
-  </div>
- `;
-}
-
-function filtrarAjustesHub(){
- const filtro = document.getElementById("ajustesFiltro") ? ajustesFiltro.value : "todos";
- document.querySelectorAll("#ajustesHubGrid .shortcut").forEach(btn=>{
-   const cat = btn.getAttribute("data-cat") || "app";
-   btn.style.display = (filtro === "todos" || filtro === cat) ? "" : "none";
- });
-}
-
-function abrirPainelAjustes(tipo){
- ajustesPainel.classList.remove("hidden");
- if(tipo==="financeiro") renderPainelFinanceiro();
- if(tipo==="despesas") renderPainelDespesas();
- if(tipo==="relatorio") renderPainelRelatorio();
- if(tipo==="servicos") renderPainelServicos();
- if(tipo==="mensagem") renderPainelMensagem();
- if(tipo==="backup") renderPainelBackup();
- if(tipo==="layout") renderPainelLayoutApp();
- if(tipo==="firebase") renderPainelFirebase();
- setTimeout(()=>ajustesPainel.scrollIntoView({behavior:"smooth",block:"start"}),60);
-}
-
-function renderPainelLayoutApp(){
- ensureVisualConfig();
- ajustesPainel.innerHTML = `
-  <h3 class="title">Layout do app</h3>
-  <p class="small">Escolha os layouts e deixe o app do seu jeito. O layout dos Ajustes fica fixo em grade visual.</p>
-
-  <div class="config-grid">
-   <div>
-    <label>Layout da agenda</label>
-    <select id="cfgAgendaLayout" onchange="salvarVisualConfig()">
-     <option value="classico">Opcao A - quadradinhos classicos</option>
-     <option value="status">Opcao B - quadradinhos com status</option>
-     <option value="os">Opcao C - quadradinhos + OS</option>
-    </select>
-   </div>
-
-   <div>
-    <label>Layout da tela Servicos</label>
-    <select id="cfgServicosLayout" onchange="salvarVisualConfig()">
-     <option value="grade">Grade compacta, 2 OS lado a lado</option>
-     <option value="lista">Lista completa, 1 OS por linha</option>
-    </select>
-   </div>
-
-   <div>
-    <label>Layout da tela Clientes</label>
-    <select id="cfgClientesLayout" onchange="salvarVisualConfig()">
-     <option value="historico">Opcao C - lista + historico</option>
-     <option value="simples">Opcao A - lista simples</option>
-     <option value="cards">Opcao B - cards com dados</option>
-    </select>
-   </div>
-
-   <div>
-    <label>Layout da OS</label>
-    <select id="cfgNovaLayout" onchange="salvarVisualConfig()">
-     <option value="balcao">Quantidade limpa (- 0 +)</option>
-     <option value="simples">Mais simples e espacado</option>
-    </select>
-   </div>
-  </div>
-
-  <div class="toggle-row">
-   <div><b>Busca fixa no topo</b><br><span>Ao rolar Servicos ou Clientes, a busca fica sempre visivel.</span></div>
-   <input id="cfgBuscaFixa" type="checkbox" onchange="salvarVisualConfig()">
-  </div>
-
-  <div class="toggle-row">
-   <div><b>Mostrar status/lotado na agenda</b><br><span>Destaca linhas cheias ou quase cheias nos quadradinhos.</span></div>
-   <input id="cfgStatusAgenda" type="checkbox" onchange="salvarVisualConfig()">
-  </div>
-
-  <div class="toggle-row">
-   <div><b>Permitir pagamento parcial</b><br><span>Adiciona a opcao Parcial junto de Pago e Pagar na retirada.</span></div>
-   <input id="cfgPagamentoParcial" type="checkbox" onchange="salvarVisualConfig()">
-  </div>
-
-  <div class="toggle-row">
-   <div><b>Botao apagar separado</b><br><span>Deixa o botao Apagar mais afastado das acoes usadas no balcao.</span></div>
-   <input id="cfgApagarSeparado" type="checkbox" onchange="salvarVisualConfig()">
-  </div>
- `;
- aplicarVisualConfig();
-}
-
-function renderPainelFirebase(){
- ajustesPainel.innerHTML = `
-  <h3 class="title">Firebase / Login</h3>
-  <div class="ajustes-system-row">
-   <div>
-    <p class="small"><b>Versao:</b> V17.0 Firebase teste final</p>
-    <p class="small"><b>Status:</b> <span id="ajusteStatus" class="ok">Conectado</span></p>
-    <p class="small"><b>Login:</b> <span id="emailLogado">${emailUsuarioAtual() || "-"}</span></p>
-   </div>
-   <button class="btn btn-gray" style="margin:0;width:auto;padding:10px 14px" onclick="logout()">Sair</button>
-  </div>
-  <div id="connectionStatus" class="connection-box">Verificando conexao...</div>
-  <div id="offlinePendentesStatus" class="small"></div>
-
-  <h3 class="title" style="margin-top:16px">Diagnostico Firebase</h3>
-  <p class="small">Se nao entra no login, verifique Authentication > Sign-in method > Email/senha e Authentication > Settings > Authorized domains. Se o login entra, mas os dados nao aparecem, normalmente e regra do Firestore.</p>
-  <textarea readonly style="font-size:12px;min-height:170px">rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}</textarea>
- `;
- atualizarStatusConexao();
- atualizarStatusPendentesOffline();
-}
-
-
-function resumoFinanceiro(listaOS, listaDespesas){
- const r = {pedidos:listaOS.length, servicos:0, faturamento:0, recebido:0, aReceber:0, despesas:0, saldo:0};
- listaOS.forEach(os=>{
-   const valor = Number(os.valor || 0);
-   r.servicos += getTotalServicosOS(os);
-   r.faturamento += valor;
-   if(pagamentoFoiRecebido(os)) r.recebido += valor; else r.aReceber += valor;
- });
- listaDespesas.forEach(d=>r.despesas += Number(d.valor || 0));
- r.saldo = r.recebido - r.despesas;
- return r;
-}
-
-function mesAtual(){return hoje().slice(0,7)}
-
-function renderPainelFinanceiro(){
- const mes = document.getElementById("finMesLocal") ? finMesLocal.value : mesAtual();
- const osMes = ordens.filter(o=>String(o.data).startsWith(mes));
- const despMes = despesas.filter(d=>String(d.data).startsWith(mes));
- const r = resumoFinanceiro(osMes, despMes);
- ajustesPainel.innerHTML = `
-  <h3 class="title">Financeiro</h3>
-  <label>Mes</label><input id="finMesLocal" type="month" value="${mes}" onchange="renderPainelFinanceiro()">
-  <div class="finance-grid" style="margin-top:10px">
-   <div class="finance-box"><span>Faturamento</span><b>${moeda(r.faturamento)}</b></div>
-   <div class="finance-box"><span>Recebido</span><b>${moeda(r.recebido)}</b></div>
-   <div class="finance-box"><span>A receber</span><b>${moeda(r.aReceber)}</b></div>
-   <div class="finance-box"><span>Despesas</span><b>${moeda(r.despesas)}</b></div>
-   <div class="finance-box"><span>Saldo recebido</span><b>${moeda(r.saldo)}</b></div>
-   <div class="finance-box"><span>Servicos</span><b>${r.servicos}</b></div>
-  </div>
- `;
-}
-
-function renderPainelDespesas(){
- ajustesPainel.innerHTML = `
-  <h3 class="title">Despesas</h3>
-  <div class="row"><div><label>Data</label><input id="dataDespesa" type="date" value="${hoje()}"></div><div><label>Categoria</label><select id="categoriaDespesa"><option>Material</option><option>Aluguel</option><option>Conta</option><option>Marketing</option><option>Equipamento</option><option>Outros</option></select></div></div>
-  <label>Descricao</label><input id="descDespesa" placeholder="Ex: compra de molas">
-  <label>Valor</label><input id="valorDespesa" type="number" step="0.01" placeholder="Ex: 50">
-  <button class="btn btn-primary" onclick="salvarDespesa()">Adicionar despesa</button>
-  <div id="despesasLista" style="margin-top:10px"></div>
- `;
- renderDespesasLista();
-}
-
-async function salvarDespesa(){
- const valor = Number(String(valorDespesa.value || 0).replace(",","."));
- if(!valor || valor <= 0){alert("Digite o valor da despesa."); return;}
- const despesa = {
-   data:dataDespesa.value || hoje(),
-   categoria:categoriaDespesa.value,
-   descricao:limparTexto(descDespesa.value),
-   valor,
-   criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
-   usuario:emailUsuarioAtual()
- };
- try{
-   await db.collection(COL_DESPESAS).add(despesa);
-   toast("Despesa salva.","good");
-   renderPainelDespesas();
- }catch(e){
-   alert("Erro ao salvar despesa: "+limparTexto(e.message));
- }
-}
-
-function renderDespesasLista(){
- const el = document.getElementById("despesasLista");
- if(!el) return;
- if(!despesas.length){el.innerHTML='<p class="small">Nenhuma despesa cadastrada.</p>';return;}
- el.innerHTML = despesas.slice(0,20).map(d=>`
-  <div class="selected-item">
-   <div><b>${dataBR(d.data)} - ${d.categoria}</b><span>${d.descricao || "-"}</span></div>
-   <b>${moeda(d.valor)}</b>
-   <button class="trash" onclick="apagarDespesa('${d.id}')">X</button>
-  </div>
- `).join("");
-}
-
-async function apagarDespesa(id){
- if(!confirm("Apagar esta despesa?")) return;
- try{
-   await db.collection(COL_DESPESAS).doc(id).delete();
-   toast("Despesa apagada.","good");
-   renderPainelDespesas();
- }catch(e){
-   alert("Erro ao apagar despesa: "+limparTexto(e.message));
- }
-}
-
-function textoRelatorio(){
- const mes = mesAtual();
- const osMes = ordens.filter(o=>String(o.data).startsWith(mes));
- const despMes = despesas.filter(d=>String(d.data).startsWith(mes));
- const r = resumoFinanceiro(osMes, despMes);
- return `AFIA - RESUMO FINANCEIRO\nMes: ${mes}\n\nPedidos: ${r.pedidos}\nServicos: ${r.servicos}\nFaturamento: ${moeda(r.faturamento)}\nRecebido: ${moeda(r.recebido)}\nA receber: ${moeda(r.aReceber)}\nDespesas: ${moeda(r.despesas)}\nSaldo recebido: ${moeda(r.saldo)}\n`;
-}
-
-function renderPainelRelatorio(){
- ajustesPainel.innerHTML = `
-  <h3 class="title">Relatorio</h3>
-  <p class="small">Resumo do mes atual para copiar ou baixar.</p>
-  <textarea id="relatorioTexto">${textoRelatorio()}</textarea>
-  <button class="btn btn-primary" onclick="copiarRelatorio()">Copiar resumo</button>
-  <button class="btn btn-blue" onclick="baixarArquivo('afia_relatorio.txt', relatorioTexto.value, 'text/plain')">Baixar TXT</button>
-  <button class="btn btn-blue" onclick="fecharMesFinanceiro()">Salvar fechamento do mes</button>
- `;
-}
-
-function copiarRelatorio(){
- navigator.clipboard.writeText(relatorioTexto.value).then(()=>toast("Relatorio copiado.","good")).catch(()=>alert(relatorioTexto.value));
-}
-
-async function fecharMesFinanceiro(){
- const mes = mesAtual();
- const osMes = ordens.filter(o=>String(o.data).startsWith(mes));
- const despMes = despesas.filter(d=>String(d.data).startsWith(mes));
- const resumo = resumoFinanceiro(osMes, despMes);
- try{
-   await db.collection(COL_FECHAMENTOS).add({
-     mes,
-     resumo,
-     relatorio:textoRelatorio(),
-     criadoEm:firebase.firestore.FieldValue.serverTimestamp(),
-     usuario:emailUsuarioAtual()
-   });
-   toast("Fechamento salvo no Firebase.","good");
- }catch(e){
-   alert("Erro ao fechar mes: "+limparTexto(e.message));
- }
-}
-
-function renderPainelServicos(){
- ajustesPainel.innerHTML = `
-  <h3 class="title">Servicos e precos</h3>
-  <p class="small">Ative "conta agenda" somente para servicos que ocupam vaga nos quadradinhos.</p>
-  <div id="servicosEdit"></div>
-  <label>Novo servico</label><input id="novoServico" placeholder="Ex: Alicates de cuticula">
-  <label>Preco unitario</label><input id="novoPreco" type="number" step="0.01" placeholder="Ex: 15">
-  <button class="btn btn-primary" onclick="adicionarServico()">Adicionar servico</button>
- `;
- renderServicosEdit();
-}
-
-function renderServicosEdit(){
- const el = document.getElementById("servicosEdit");
- if(!el) return;
- el.innerHTML = (config.servicos || []).map((s,i)=>`
-  <div class="service-edit">
-   <div><b>${s.nome}</b><br><span>${s.contaAgenda ? "Conta na agenda" : "Nao conta na agenda"}</span></div>
-   <input type="number" step="0.01" value="${s.preco}" onchange="config.servicos[${i}].preco=Number(this.value||0); salvarConfig().then(()=>{renderQuickServices(); renderSelected();})">
-   <button class="btn ${s.contaAgenda ? "btn-red" : "btn-blue"}" onclick="config.servicos[${i}].contaAgenda=!config.servicos[${i}].contaAgenda; salvarConfig().then(()=>renderServicosEdit());">${s.contaAgenda ? "Nao contar" : "Contar"}</button>
-  </div>
- `).join("");
-}
-
-async function adicionarServico(){
- if(!novoServico.value || !novoPreco.value) return;
- const nome = limparTexto(novoServico.value);
- config.servicos.push({nome,preco:Number(novoPreco.value),contaAgenda:inferirContaAgenda(nome)});
- try{
-   await salvarConfig();
-   renderPainelServicos();
-   renderQuickServices();
-   toast("Servico adicionado.","good");
- }catch(e){
-   alert("Erro ao adicionar servico: "+limparTexto(e.message));
- }
-}
-
-function renderPainelMensagem(){
- ajustesPainel.innerHTML = `
-  <h3 class="title">Mensagem do WhatsApp</h3>
-  <p class="small">Use: {numero}, {nome}, {data}, {hora}, {itens}, {valor}, {pagamento}</p>
-  <label>Mensagem da OS</label><textarea id="templateMsg">${config.template || defaultTemplate}</textarea>
-  <button class="btn btn-primary" onclick="config.template=templateMsg.value; salvarConfig().then(()=>toast('Mensagem salva.','good'))">Salvar mensagem da OS</button>
-  <label>Mensagem de servico pronto</label><textarea id="templateProntoMsg">${config.templatePronto || defaultTemplatePronto}</textarea>
-  <button class="btn btn-primary" onclick="config.templatePronto=templateProntoMsg.value; salvarConfig().then(()=>toast('Mensagem de pronto salva.','good'))">Salvar mensagem de pronto</button>
- `;
-}
-
-function renderPainelBackup(){
- ajustesPainel.innerHTML = `
-  <h3 class="title">Backup / seguranca Firebase</h3>
-  <p class="small">Os dados ficam salvos no Firebase. O backup abaixo baixa uma copia JSON do que esta carregado nesta tela.</p>
-  <label>Proximo numero da OS</label><input id="setProximoNumero" type="number" min="1" value="">
-  <button class="btn btn-primary" onclick="salvarProximoNumeroOS()">Salvar proximo numero</button>
-  <button class="btn btn-blue" onclick="carregarNumeroAtual()">Ver numero atual</button>
-  <button class="btn btn-blue" onclick="exportarBackup()">Baixar backup JSON</button>
-  <label>Importar backup JSON</label><input id="backupFile" type="file" accept="application/json" onchange="importarBackup(event)">
- `;
- carregarNumeroAtual();
-}
-
-async function carregarNumeroAtual(){
- if(!document.getElementById("setProximoNumero")) return;
- try{
-   const snap = await db.doc(DOC_CONTADOR_OS).get();
-   const ultimo = snap.exists ? Number(snap.data().ultimo || 0) : 0;
-   setProximoNumero.value = ultimo + 1;
- }catch(e){}
-}
-
-async function salvarProximoNumeroOS(){
- const n = Number(setProximoNumero.value || 1);
- if(n < 1){alert("Digite um numero maior que zero."); return;}
- try{
-   await db.doc(DOC_CONTADOR_OS).set({
-     ultimo:n-1,
-     atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()
-   },{merge:true});
-   toast("Proxima OS definida como "+n+".","good");
- }catch(e){
-   alert("Erro ao salvar numeracao: "+limparTexto(e.message));
- }
-}
-
-function exportarBackup(){
- const dados = {ordens,despesas,config,contador:"ver Firebase contadores/ordens"};
- baixarArquivo("afia_backup_firebase.json", JSON.stringify(dados,null,2), "application/json");
-}
-
-function importarBackup(e){
- const file = e.target.files && e.target.files[0];
- if(!file) return;
- const reader = new FileReader();
- reader.onload = async ()=>{
-   try{
-     const dados = JSON.parse(reader.result);
-     if(!confirm("Importar backup? Isso adiciona as ordens e despesas do arquivo no Firebase.")) return;
-
-     if(Array.isArray(dados.ordens)){
-       for(const o of dados.ordens){
-         const copia = {...o};
-         delete copia.id;
-         if(!copia.criadoEm || (typeof copia.criadoEm === "string")){
-           copia.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
-         }
-         await db.collection(COL_ORDENS).add(copia);
-       }
-     }
-     if(Array.isArray(dados.despesas)){
-       for(const d of dados.despesas){
-         const copia = {...d};
-         delete copia.id;
-         if(!copia.criadoEm) copia.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
-         await db.collection(COL_DESPESAS).add(copia);
-       }
-     }
-     if(dados.config){
-       config = {...config, ...dados.config};
-       ensureVisualConfig();
-       await salvarConfig();
-     }
-     toast("Backup importado.","good");
-   }catch(err){
-     alert("Arquivo invalido ou erro ao importar.");
-   }
- };
- reader.readAsText(file);
-}
-
-function baixarArquivo(nome, conteudo, tipo){
- const blob = new Blob([conteudo],{type:tipo||"text/plain;charset=utf-8"});
- const url = URL.createObjectURL(blob);
- const a = document.createElement("a");
- a.href = url;
- a.download = nome;
- document.body.appendChild(a);
- a.click();
- document.body.removeChild(a);
- setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function renderAll(){
- aplicarVisualConfig();
- renderAgenda();
- renderServicosLista();
- renderClientes();
-}
-
-iniciar();
-
-</script>
-</body>
-</html>
