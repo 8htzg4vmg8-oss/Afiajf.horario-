@@ -1393,7 +1393,7 @@ body.ajustes-lista .ajustes-hub .shortcut{
  gap:14px;
 }
 .balcao-service-btn{
- min-height:188px;
+ min-height:162px;
  border:1px solid #bfdbfe;
  background:linear-gradient(180deg,#f8fbff 0%,#e8f1ff 100%);
  border-radius:24px;
@@ -1402,7 +1402,8 @@ body.ajustes-lista .ajustes-hub .shortcut{
  display:flex;
  flex-direction:column;
  align-items:stretch;
- justify-content:space-between;
+ justify-content:flex-start;
+ gap:8px;
  box-shadow:0 10px 18px rgba(59,130,246,.08);
  position:relative;
  overflow:visible;
@@ -1442,19 +1443,7 @@ body.ajustes-lista .ajustes-hub .shortcut{
  font-size:12px;
  font-weight:850;
 }
-.balcao-service-btn .svc-touch{
- display:inline-flex;
- align-items:center;
- justify-content:center;
- margin-top:9px;
- background:#2563eb;
- color:#fff;
- border-radius:999px;
- padding:7px 12px;
- font-size:12px;
- font-weight:950;
- width:max-content;
-}
+.balcao-service-btn .svc-touch{display:none!important}
 .service-count-badge{display:none!important}
 .service-notify-badge{
  position:absolute;
@@ -1595,7 +1584,7 @@ body.ajustes-lista .ajustes-hub .shortcut{
 }
 @media(max-width:380px){
  .quick-services-grid.balcao-add{gap:10px}
- .balcao-service-btn{min-height:172px;padding:11px}
+ .balcao-service-btn{min-height:154px;padding:11px}
  .balcao-service-btn b{font-size:14px}
  .svc-image-wrap{height:82px}
  .time-pill{padding:10px 13px;font-size:14px}
@@ -1611,7 +1600,7 @@ body.ajustes-lista .ajustes-hub .shortcut{
 <div class="container">
  <div class="header">
   <h1 class="logo">AFIA</h1>
-  <div class="version">V16.7 FIREBASE - SERVICOS COM IMAGENS</div>
+  <div class="version">V17.0 FIREBASE - TESTE FINAL</div>
  </div>
 
  <section id="loginScreen" class="card login-card">
@@ -1814,7 +1803,7 @@ body.ajustes-lista .ajustes-hub .shortcut{
     <h3 class="title">Clientes - opcao C</h3>
     <div class="search-row">
      <input id="buscaCliente" oninput="renderClientes()" placeholder="Nome ou telefone">
-     <button class="icon-btn" type="button">ð</button>
+     <button class="icon-btn" type="button">Buscar</button>
     </div>
     <p id="clientesEncontrados" class="small"></p>
    </div>
@@ -1838,42 +1827,42 @@ body.ajustes-lista .ajustes-hub .shortcut{
 
     <div class="shortcut-grid" id="ajustesHubGrid">
      <button class="shortcut" data-cat="financeiro" onclick="abrirPainelAjustes('financeiro')" type="button">
-      <span class="big-icon icon-money">R$</span>
+      <span class="big-icon icon-money"><svg viewBox="0 0 24 24"><path d="M12 2v20"></path><path d="M17 6.5c0-1.7-2.2-3-5-3s-5 1.3-5 3 2.2 3 5 3 5 1.3 5 3-2.2 3-5 3-5-1.3-5-3"></path></svg></span>
       <span><b>Financeiro</b><p>Contas, pagamentos e recebimentos.</p><small class="green-dot">Conectado</small></span>
      </button>
 
      <button class="shortcut" data-cat="financeiro" onclick="abrirPainelAjustes('despesas')" type="button">
-      <span class="big-icon icon-despesas">D</span>
+      <span class="big-icon icon-despesas"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="13" y2="16"></line></svg></span>
       <span><b>Despesas</b><p>Cadastre e controle suas despesas.</p><small class="green-dot">Sincronizado</small></span>
      </button>
 
      <button class="shortcut" data-cat="financeiro" onclick="abrirPainelAjustes('relatorio')" type="button">
-      <span class="big-icon icon-relatorio">R</span>
+      <span class="big-icon icon-relatorio"><svg viewBox="0 0 24 24"><line x1="6" y1="18" x2="6" y2="12"></line><line x1="12" y1="18" x2="12" y2="8"></line><line x1="18" y1="18" x2="18" y2="5"></line></svg></span>
       <span><b>Relatorio</b><p>Visualize relatorios e indicadores.</p><small class="green-dot">Pronto</small></span>
      </button>
 
      <button class="shortcut" data-cat="app" onclick="abrirPainelAjustes('servicos')" type="button">
-      <span class="big-icon icon-servicos">S</span>
+      <span class="big-icon icon-servicos"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.4 0l-2.3-2.3a1 1 0 0 1 0-1.4l7-7a1 1 0 0 1 1.4 0z"></path><path d="M13 8l3 3"></path><path d="M16.8 3.2a2 2 0 1 1 2.8 2.8l-2.2 2.2-2.8-2.8z"></path></svg></span>
       <span><b>Servicos</b><p>Gerencie servicos, precos e regras.</p><small class="green-dot">Sincronizado</small></span>
      </button>
 
      <button class="shortcut" data-cat="app" onclick="abrirPainelAjustes('mensagem')" type="button">
-      <span class="big-icon icon-mensagem">W</span>
+      <span class="big-icon icon-mensagem"><svg viewBox="0 0 24 24"><path d="M20 11.5A8.5 8.5 0 1 1 8.5 3a8.4 8.4 0 0 1 8 5.7"></path><path d="M8 21l-1.2-4.2"></path><path d="M9.5 9.5c.6 1.2 1.5 2.2 2.7 3 .9.6 1.4.8 2.2.4l1-.5c.3-.1.6 0 .8.2l1.7 1.8"></path></svg></span>
       <span><b>Mensagem</b><p>Configure mensagens automaticas.</p><small class="green-dot">Conectado</small></span>
      </button>
 
      <button class="shortcut" data-cat="sistema" onclick="abrirPainelAjustes('backup')" type="button">
-      <span class="big-icon icon-backup">B</span>
+      <span class="big-icon icon-backup"><svg viewBox="0 0 24 24"><path d="M12 21s7-3.5 7-9V5l-7-2-7 2v7c0 5.5 7 9 7 9z"></path><path d="M12 8v7"></path><path d="M9.5 12.5L12 15l2.5-2.5"></path></svg></span>
       <span><b>Backup/Seguranca</b><p>Backup, numeracao e permissoes.</p><small class="green-dot">Protegido</small></span>
      </button>
 
      <button class="shortcut" data-cat="app" onclick="abrirPainelAjustes('layout')" type="button">
-      <span class="big-icon icon-layout">L</span>
+      <span class="big-icon icon-layout"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="3" y1="10" x2="21" y2="10"></line><line x1="9" y1="10" x2="9" y2="20"></line></svg></span>
       <span><b>Layout do app</b><p>Escolha telas, busca fixa e visual.</p><small class="green-dot">Editavel</small></span>
      </button>
 
      <button class="shortcut" data-cat="sistema" onclick="abrirPainelAjustes('firebase')" type="button">
-      <span class="big-icon icon-firebase">F</span>
+      <span class="big-icon icon-firebase"><svg viewBox="0 0 24 24"><path d="M12 2l7 4v6c0 5.5-3.5 8.6-7 10-3.5-1.4-7-4.5-7-10V6z"></path><path d="M9.5 12h5"></path><path d="M9.5 9h5"></path><path d="M9.5 15h3"></path></svg></span>
       <span><b>Firebase/Login</b><p>Status, usuario e diagnostico.</p><small class="green-dot">Online</small></span>
      </button>
     </div>
@@ -1923,6 +1912,54 @@ const defaultServices = [
  {nome:"Tesoura", preco:20, contaAgenda:true},
  {nome:"Espatula", preco:5, contaAgenda:false}
 ];
+
+const servicosObrigatorios = [
+ {nome:"Alicates de cuticula", preco:15, contaAgenda:true, tipo:"cuticula"},
+ {nome:"Molas", preco:5, contaAgenda:false, tipo:"mola"},
+ {nome:"Alicate novo afiado 777", preco:50, contaAgenda:false, tipo:"777"},
+ {nome:"Alicate novo afiado 722", preco:60, contaAgenda:false, tipo:"722"},
+ {nome:"Faca", preco:15, contaAgenda:true, tipo:"faca"},
+ {nome:"Tesoura", preco:20, contaAgenda:true, tipo:"tesoura"},
+ {nome:"Espatula", preco:5, contaAgenda:false, tipo:"espatula"}
+];
+
+function tipoServico(nome){
+ const n = normalizar(nome);
+ if(n.includes("777")) return "777";
+ if(n.includes("722")) return "722";
+ if(n.includes("mola")) return "mola";
+ if(n.includes("espatu")) return "espatula";
+ if(n.includes("tesoura")) return "tesoura";
+ if(n.includes("faca")) return "faca";
+ if(n.includes("cut") || (n.includes("alic") && !n.includes("novo"))) return "cuticula";
+ return "";
+}
+
+function precoPadraoPorTipo(tipo){
+ const s = servicosObrigatorios.find(x=>x.tipo === tipo);
+ return s ? Number(s.preco || 0) : 0;
+}
+
+function garantirServicosObrigatorios(lista){
+ let arr = Array.isArray(lista) ? [...lista] : [];
+
+ servicosObrigatorios.forEach(base=>{
+   const existe = arr.some(s=>tipoServico(s.nome) === base.tipo);
+   if(!existe){
+     arr.push({...base});
+   }
+ });
+
+ return arr.map(s=>{
+   const tipo = tipoServico(s.nome);
+   const base = servicosObrigatorios.find(x=>x.tipo === tipo);
+   return {
+     nome: limparTexto(s.nome || (base ? base.nome : "Servico")),
+     preco: Number(s.preco || (base ? base.preco : 0)),
+     contaAgenda: Object.prototype.hasOwnProperty.call(s, "contaAgenda") ? Boolean(s.contaAgenda) : (base ? base.contaAgenda : inferirContaAgenda(s.nome))
+   };
+ });
+}
 
 const defaultTemplate =
 `*AFIA - ORDEM DE SERVICO*
@@ -1983,7 +2020,7 @@ function ensureVisualConfig(){
  if(!config.servicos || !Array.isArray(config.servicos) || !config.servicos.length) config.servicos = defaultServices;
  if(!config.template) config.template = defaultTemplate;
  if(!config.templatePronto) config.templatePronto = defaultTemplatePronto;
- config.servicos = normalizarServicos(config.servicos);
+ config.servicos = garantirServicosObrigatorios(normalizarServicos(config.servicos));
  return config.visual;
 }
 
@@ -2894,6 +2931,11 @@ const SERVICE_IMAGE_MAP = {
 };
 
 function getServiceImage(nome){
+  const tipo = tipoServico(nome);
+  if(tipo === "cuticula") return SERVICE_IMAGE_MAP["Alicates de cuticula"] || "";
+  if(tipo === "mola") return SERVICE_IMAGE_MAP["Molas"] || "";
+  if(tipo === "777") return SERVICE_IMAGE_MAP["Alicate novo afiado 777"] || "";
+  if(tipo === "722") return SERVICE_IMAGE_MAP["Alicate novo afiado 722"] || "";
   return SERVICE_IMAGE_MAP[nome] || "";
 }
 
@@ -2919,7 +2961,6 @@ function renderQuickServices(){
      <b>${nome}</b>
      <span class="svc-price">${moeda(s.preco)} cada</span>
     </div>
-    <span class="svc-touch">Toque para adicionar</span>
    `;
    quickServicesGrid.appendChild(btn);
  });
@@ -2991,8 +3032,14 @@ function ajustarSelecionado(nome,delta){
 }
 
 function precoServico(nome){
- const s = (config.servicos || []).find(x=>normalizar(x.nome) === normalizar(nome));
- return s ? Number(s.preco || 0) : 0;
+ const tipo = tipoServico(nome);
+ const s = (config.servicos || []).find(x=>normalizar(x.nome) === normalizar(nome)) ||
+           (config.servicos || []).find(x=>tipo && tipoServico(x.nome) === tipo);
+
+ const preco = s ? Number(s.preco || 0) : 0;
+ if(preco > 0) return preco;
+
+ return precoPadraoPorTipo(tipo);
 }
 
 function valorSelecionado(){
@@ -3011,7 +3058,7 @@ function renderMiniCart(){
 
  el.innerHTML = entries.map(([nome,qtd])=>`
   <div class="mini-cart-row">
-   <div><b>${nome}</b><span>${moeda(precoServico(nome))} cada</span></div>
+   <div><b>${nome}</b><span>${moeda(precoServico(nome))} cada - ${moeda(precoServico(nome) * Number(qtd || 0))}</span></div>
    <span class="mini-cart-qty">${qtd}</span>
    <button type="button" class="mini-cart-minus" onclick="ajustarSelecionado('${escapeJS(nome)}',-1)">-</button>
   </div>
@@ -3030,6 +3077,41 @@ function renderSelected(){
  renderMiniCart();
  atualizarResumoOS();
 }
+function setPagamento(p){
+ pagamentoAtual = p || "Pagar na retirada";
+
+ const retirada = document.getElementById("payRetirada");
+ const parcial = document.getElementById("payParcial");
+ const pago = document.getElementById("payPago");
+
+ if(retirada) retirada.classList.toggle("active", pagamentoAtual === "Pagar na retirada");
+ if(parcial) parcial.classList.toggle("active", pagamentoAtual === "Parcial");
+ if(pago) pago.classList.toggle("active", pagamentoAtual === "Pago");
+
+ const view = document.getElementById("pagamentoAtualView");
+ if(view) view.textContent = pagamentoAtual;
+
+ atualizarResumoOS();
+}
+
+function togglePagamentoOS(){
+ const el = document.getElementById("paymentOptions");
+ if(!el) return;
+
+ el.classList.toggle("open");
+}
+
+function toggleMaisOpcoes(){
+ const el = document.getElementById("maisOpcoesOS");
+ if(!el) return;
+
+ el.classList.toggle("open");
+
+ if(el.classList.contains("open")){
+   renderExtraServices();
+ }
+}
+
 function buscarClientePorTelefone(){
  const tel = limparTelefone(telefone.value);
  if(tel.length < 4) return;
@@ -3110,8 +3192,10 @@ async function salvarOS(e){
    observacao: limparTexto(observacao.value),
    status: "Recebido",
    pagamento: pagamentoAtual,
-   valor: valorSelecionado()
+   valor: Number(valorSelecionado() || 0)
  };
+
+ atualizarResumoOS();
 
  btnSalvarOS.disabled = true;
  btnSalvarOS.textContent = "Salvando...";
@@ -3204,7 +3288,7 @@ function nomeServicoCurto(nome){
  if(n.includes("faca")) return "Facas";
  if(n.includes("espatu")) return "Espatulas";
  if(n.includes("outro")) return "Outros";
- return nome.length > 16 ? nome.slice(0,16)+"â¦" : nome;
+ return nome.length > 16 ? nome.slice(0,16)+"..." : nome;
 }
 
 function htmlChips(os){
@@ -3259,7 +3343,7 @@ function renderServicosLista(){
     </div>
     <div class="os-client"><b>${os.nome}</b><span>${os.telefone}</span></div>
     <div class="chips">${htmlChips(os)}</div>
-    <div class="status-line">â¢ ${os.status || "Recebido"}<span>Total da OS: ${getTotalServicosOS(os)} servico(s)</span></div>
+    <div class="status-line">&bull; ${os.status || "Recebido"}<span>Total da OS: ${getTotalServicosOS(os)} servico(s)</span></div>
     <button class="details-btn" type="button" onclick="toggleDetalhes('${os.id}')">Detalhes ></button>
     <div id="det_${os.id}" class="details-panel hidden">
      <p class="small"><b>Obs:</b> ${os.observacao || "-"}</p>
@@ -3322,6 +3406,15 @@ async function apagarOS(id){
  }
 }
 
+function escaparHtml(txt){
+ return String(txt === undefined || txt === null ? "" : txt)
+   .replaceAll("&","&amp;")
+   .replaceAll("<","&lt;")
+   .replaceAll(">","&gt;")
+   .replaceAll('"',"&quot;")
+   .replaceAll("'","&#039;");
+}
+
 function itensTexto(os, sep){
  return Object.entries(os.itens || {}).map(([n,q])=>`${n}: ${q}`).join(sep || "\n");
 }
@@ -3337,12 +3430,36 @@ function montarMensagemWhatsApp(os, template){
    .replaceAll("{pagamento}", os.pagamento);
 }
 
+async function copiarTextoSeguro(texto){
+ try{
+   await navigator.clipboard.writeText(texto);
+   toast("Mensagem copiada.","good");
+ }catch(e){
+   alert(texto);
+ }
+}
+
 function enviarWhatsApp(os, template){
  let tel = limparTelefone(os.telefone);
- if(!tel.startsWith("55")) tel = "55"+tel;
  const msg = montarMensagemWhatsApp(os, template || config.template);
+
+ if(!tel || tel.length < 8){
+   alert("Telefone invalido ou vazio. A mensagem sera mostrada para copiar.");
+   copiarTextoSeguro(msg);
+   return false;
+ }
+
+ if(!tel.startsWith("55")) tel = "55"+tel;
  const url = "https://wa.me/"+tel+"?text="+encodeURIComponent(msg);
- window.open(url,"_blank");
+ const janela = window.open(url,"_blank");
+
+ if(!janela){
+   alert("O navegador bloqueou o WhatsApp. A mensagem sera copiada para voce colar manualmente.");
+   copiarTextoSeguro(msg);
+   return false;
+ }
+
+ return true;
 }
 
 function enviarUltimaOS(){
@@ -3364,7 +3481,7 @@ function imprimir(id){
 }
 
 function abrirViaImpressao(os){
- const htmlItens = Object.entries(os.itens || {}).map(([n,q])=>`<div>${n}: <b>${q}</b></div>`).join("");
+ const htmlItens = Object.entries(os.itens || {}).map(([n,q])=>`<div>${escaparHtml(n)}: <b>${Number(q || 0)}</b></div>`).join("");
  const w = window.open("", "_blank");
  if(!w){
    alert("O navegador bloqueou a via de impressao.");
@@ -3686,7 +3803,7 @@ body.ajustes-lista .ajustes-hub .shortcut{
 }
 @media(max-width:380px){
  .quick-services-grid.balcao-add{gap:10px}
- .balcao-service-btn{min-height:172px;padding:11px}
+ .balcao-service-btn{min-height:154px;padding:11px}
  .balcao-service-btn b{font-size:14px}
  .svc-image-wrap{height:82px}
  .time-pill{padding:10px 13px;font-size:14px}
@@ -3696,8 +3813,8 @@ body.ajustes-lista .ajustes-hub .shortcut{
 
 </style></head><body><div class="box"><div class="no-print"><button class="btn" onclick="window.print()">Imprimir ou salvar PDF</button><button class="btn btn-gray" onclick="window.close()">Fechar</button></div>
  <div class="recibo"><div class="centro titulo">AFIA</div><div class="centro">VIA DA LOJA</div><div class="centro" style="font-size:28px;font-weight:900;margin:8px 0">OS ${numeroTextoOS(os)}</div><hr>
- <div class="linha">Cliente: ${os.nome}</div><div class="linha">Telefone: ${os.telefone}</div><div class="linha">Entrega: ${dataBR(os.data)} ${os.hora}</div><hr>
- <div class="linha"><b>Servicos</b></div>${htmlItens}<hr><div class="linha">Total de servicos: <b>${getTotalServicosOS(os)}</b></div><div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div><div class="linha">Valor: <b>${moeda(os.valor)}</b></div><div class="linha">Pagamento: ${os.pagamento}</div>${os.observacao ? `<div class="linha">Obs: ${os.observacao}</div>` : ""}</div></div></body></html>`);
+ <div class="linha">Cliente: ${escaparHtml(os.nome)}</div><div class="linha">Telefone: ${escaparHtml(os.telefone)}</div><div class="linha">Entrega: ${escaparHtml(dataBR(os.data))} ${escaparHtml(os.hora)}</div><hr>
+ <div class="linha"><b>Servicos</b></div>${htmlItens}<hr><div class="linha">Total de servicos: <b>${getTotalServicosOS(os)}</b></div><div class="linha">Ocupa agenda: <b>${getPecasAgenda(os)}</b></div><div class="linha">Valor: <b>${moeda(os.valor)}</b></div><div class="linha">Pagamento: ${escaparHtml(os.pagamento)}</div>${os.observacao ? `<div class="linha">Obs: ${escaparHtml(os.observacao)}</div>` : ""}</div></div></body></html>`);
  w.document.close();
 }
 
@@ -3747,7 +3864,7 @@ function renderClientes(){
      return `
       <div class="client-card" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
        <div class="client-card-top">
-        <div class="avatar">ð¤</div>
+        <div class="avatar">C</div>
         <div><b>${c.nome}</b><br><span class="small">${c.telefone}</span></div>
        </div>
        <div class="client-card-stats">
@@ -3767,7 +3884,7 @@ function renderClientes(){
    const ultima = ordensOrdenadas[0];
    return `
     <div class="client-row ${layout === "historico" && c.key===clienteSelecionadoKey ? "selected" : ""}" onclick="clienteSelecionadoKey='${escapeJS(c.key)}'; renderClientes();">
-     <div class="avatar">ð¤</div>
+     <div class="avatar">C</div>
      <div><b>${c.nome}</b><span>${c.telefone}<br>Ultima visita: ${ultima ? dataBR(ultima.data) : "-"}</span></div>
      <div class="visit-count"><b>${c.visitas}</b><br><span>visitas</span></div>
     </div>
@@ -3901,7 +4018,7 @@ function renderPainelFirebase(){
   <h3 class="title">Firebase / Login</h3>
   <div class="ajustes-system-row">
    <div>
-    <p class="small"><b>Versao:</b> V16.7 Firebase completo</p>
+    <p class="small"><b>Versao:</b> V17.0 Firebase teste final</p>
     <p class="small"><b>Status:</b> <span id="ajusteStatus" class="ok">Conectado</span></p>
     <p class="small"><b>Login:</b> <span id="emailLogado">${emailUsuarioAtual() || "-"}</span></p>
    </div>
