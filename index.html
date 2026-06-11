@@ -128,7 +128,7 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito</h2>
+            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:red; font-size: 0.6em;">v3</span></h2>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -305,12 +305,13 @@
         // 1. CONFIGURAÇÃO DO FIREBASE
         // ==========================================
         const firebaseConfig = {
-            apiKey: "SUA_API_KEY_AQUI",
-            authDomain: "SEU_PROJETO.firebaseapp.com",
-            projectId: "SEU_PROJETO",
-            storageBucket: "SEU_PROJETO.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
+            apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
+            authDomain: "afia-37aa8.firebaseapp.com",
+            databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
+            projectId: "afia-37aa8",
+            storageBucket: "afia-37aa8.firebasestorage.app",
+            messagingSenderId: "961300018208",
+            appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -329,7 +330,7 @@
         };
 
         // ==========================================
-        // 2. AUTENTICAÇÃO E CARREGAMENTO (O SEGREDO DA NUVEM)
+        // 2. AUTENTICAÇÃO E CARREGAMENTO
         // ==========================================
         function fazerLogin() {
             let email = document.getElementById('login-email').value;
@@ -348,28 +349,25 @@
                 document.querySelector('.bottom-nav').style.display = 'flex';
                 switchTab('agenda', document.querySelectorAll('.nav-item')[0]);
                 
-                // CARREGA OS DADOS DO FIREBASE (O "Paredão")
                 carregarDadosDoFirebase();
             } else {
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                 document.getElementById('screen-login').classList.add('active');
                 document.querySelector('.bottom-nav').style.display = 'none';
-                historicoOS = []; bancoClientes = {}; // Limpa memória local ao sair
+                historicoOS = []; bancoClientes = {}; 
             }
         });
 
         function carregarDadosDoFirebase() {
-            // 1. Puxa as Ordens Pendentes e acha a última OS para o contador
             db.collection("ordens").get().then((querySnapshot) => {
                 historicoOS = [];
                 let maxNum = 0;
                 
                 querySnapshot.forEach((doc) => {
                     let data = doc.data();
-                    data.idFirebase = doc.id; // Chave secreta do Firebase para deletar/atualizar depois
+                    data.idFirebase = doc.id; 
                     historicoOS.push(data);
                     
-                    // Descobre o maior numero de OS para continuar a contagem
                     let numAtual = parseInt(data.numero.replace('#', ''));
                     if (numAtual > maxNum) maxNum = numAtual;
                 });
@@ -379,7 +377,6 @@
                 renderizarFilaServicos();
             });
 
-            // 2. Puxa os Clientes
             db.collection("clientes").get().then((querySnapshot) => {
                 bancoClientes = {};
                 querySnapshot.forEach((doc) => {
@@ -388,7 +385,6 @@
                 renderizarClientes();
             });
         }
-
 
         // ==========================================
         // 3. NAVEGAÇÃO, DATA E FRONT-END SIMPLES
@@ -487,7 +483,6 @@
             bancoClientes[tel].ferramentas += qtdFerramentas;
             bancoClientes[tel].totalGasto += valorGasto;
 
-            // Salva na nuvem
             db.collection("clientes").doc(tel).set(bancoClientes[tel]);
         }
 
@@ -550,9 +545,8 @@
                 statusCode: statusPagamentoVal
             };
             
-            // Grava na Nuvem do Firebase
             db.collection("ordens").add(novaOS).then((docRef) => {
-                novaOS.idFirebase = docRef.id; // Salva o ID oficial criado pela nuvem
+                novaOS.idFirebase = docRef.id; 
                 historicoOS.push(novaOS);
                 
                 contadorOS++; 
@@ -560,7 +554,6 @@
                 renderizarFilaServicos();
             });
             
-            // Limpa formulário
             document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
             document.getElementById('os-telefone').value = ""; document.getElementById('os-nome').value = "";
             document.getElementById('afia-outro-marca').value = ""; document.getElementById('os-status-pagamento').value = "retirada";
@@ -574,10 +567,8 @@
         function marcarComoPago(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(confirm(`Confirmar pagamento via Pix/Dinheiro para a OS ${os.numero}?`)) {
-                
-                // Atualiza na nuvem
                 db.collection("ordens").doc(idFirebase).update({ statusCode: "pago" }).then(() => {
-                    os.statusCode = "pago"; // Atualiza visualmente
+                    os.statusCode = "pago"; 
                     caixaAReceber -= os.valorNumerico;
                     caixaEntrou += os.valorNumerico;
                     atualizarDashboard();
@@ -590,8 +581,6 @@
         function darBaixaOS(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(confirm("Confirma a entrega desta OS ao cliente? Ela será removida da lista.")) {
-                
-                // Deleta da nuvem
                 db.collection("ordens").doc(idFirebase).delete().then(() => {
                     if (os.statusCode !== "pago") { 
                         caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico; atualizarDashboard(); 
@@ -603,7 +592,7 @@
         }
 
         // ==========================================
-        // RENDERIZAÇÃO DE TELAS (CLIENTES, FILA, WPP, PRINT)
+        // RENDERIZAÇÃO DE TELAS
         // ==========================================
         function renderizarClientes() {
             const container = document.getElementById('container-clientes');
@@ -693,4 +682,12 @@
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
                     <p style="font-size: 18px; margin: 5px 0;"><strong>TOTAL: ${os.valorFormatado}</strong></p><p style="margin: 5px 0; font-size: 14px;"><strong>Status:</strong> ${statusText}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
-                    <p style="text-align: center; font-size: 
+                    <p style="text-align: center; font-size: 11px;">Agradecemos a preferência!</p>
+                </div>`;
+            window.print();
+        }
+
+        atualizarVisorOS(); renderizarAgenda(); atualizarDashboard();
+    </script>
+</body>
+</html>
