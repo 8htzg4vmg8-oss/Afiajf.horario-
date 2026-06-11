@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Amolador Dois Irmãos - App</title>
+    <title>AFIA - App</title>
     <style>
         :root {
             --primary: #0284c7;
+            --primary-dark: #0369a1;
             --bg: #f4f4f5;
             --card-bg: #ffffff;
             --text-dark: #18181b;
@@ -17,109 +18,177 @@
             --warning: #f59e0b;
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg); color: var(--text-dark); padding-bottom: 75px; }
-        h2 { margin-top: 0; font-size: 1.3rem; }
-        h3 { margin-top: 0; font-size: 1.1rem; color: var(--text-dark); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        
-        .screen { display: none; padding: 15px; animation: fadeIn 0.2s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        * { -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0 0 78px 0;
+            background-color: var(--bg);
+            color: var(--text-dark);
+        }
 
-        .card { background: var(--card-bg); border-radius: 10px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        h2 { margin: 0 0 10px 0; font-size: 1.18rem; }
+        h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--text-dark); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        h4 { margin: 0 0 8px 0; }
+
+        .screen { display: none; padding: 10px; animation: fadeIn 0.18s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid rgba(228,228,231,0.7);
+        }
 
         /* TELA DE LOGIN */
         #screen-login { display: none; padding-top: 10vh; }
         #screen-login.active { display: block; }
-        .logo-login { text-align: center; margin-bottom: 30px; }
-        .logo-login h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 5px; }
-        .logo-login p { color: var(--text-light); margin-top: 0; font-weight: bold;}
+        .logo-login { text-align: center; margin-bottom: 25px; }
+        .logo-login h1 { color: var(--primary); font-size: 2.45rem; margin: 0 0 4px 0; letter-spacing: 0.02em; }
+        .logo-login p { color: var(--text-light); margin: 0; font-weight: 700; }
 
-        /* AGENDA E CONTADORES */
-        .progresso-container { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 15px; }
-        .progresso-stats { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #3f3f46; }
+        /* AGENDA */
+        .agenda-top {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: end;
+            margin-bottom: 10px;
+        }
+        .agenda-top input { padding: 8px; font-weight: 700; color: var(--primary-dark); }
+        .btn-mini {
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 7px;
+            padding: 9px 10px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .progresso-container { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 9px; margin-bottom: 10px; }
+        .progresso-stats { display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 700; margin-bottom: 7px; color: #3f3f46; }
         .progresso-bg { background-color: #e4e4e7; border-radius: 10px; height: 10px; width: 100%; overflow: hidden; }
-        .progresso-fill { height: 100%; width: 0%; background-color: var(--success); transition: 0.3s ease; }
-        .badge-producao { text-align: center; font-size: 0.85rem; margin-top: 10px; color: #3f3f46; font-weight: bold; background: #e0f2fe; padding: 5px; border-radius: 6px; border: 1px dashed var(--primary); }
+        .progresso-fill { height: 100%; width: 0%; background-color: var(--success); transition: 0.25s ease; }
+        .badge-producao { text-align: center; font-size: 0.82rem; margin-top: 8px; color: #3f3f46; font-weight: 800; background: #e0f2fe; padding: 5px; border-radius: 6px; border: 1px dashed var(--primary); }
 
-        .time-row { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .time-label { font-weight: 600; font-size: 1rem; width: 48px; margin-right: 10px; color: #3f3f46; }
-        .squares-container { display: flex; gap: 8px; } 
-        .square { width: 36px; height: 36px; border: 2px solid #d4d4d8; border-radius: 6px; background-color: #fafafa; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;}
+        .time-row { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 7px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+        .time-row:last-child { border-bottom: none; margin-bottom: 0; }
+        .time-label { font-weight: 800; font-size: 0.92rem; width: 47px; margin-right: 8px; color: #3f3f46; }
+        .squares-container { display: flex; gap: 7px; flex: 1; justify-content: space-between; max-width: 240px; }
+        .square { width: 34px; height: 34px; border: 2px solid #d4d4d8; border-radius: 7px; background-color: #fafafa; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; font-size: 0.86rem; font-weight: 800; }
         .square.booked { background-color: var(--primary); border-color: var(--primary); }
-        .square.locked { background-color: #0369a1; border-color: #0369a1; color: white; }
-        .lunch-break { text-align: center; padding: 12px; background-color: #fef3c7; color: #b45309; border-radius: 6px; margin: 10px 0; font-weight: bold; font-size: 0.9rem; }
+        .square.locked { background-color: var(--primary-dark); border-color: var(--primary-dark); color: white; }
+        .lunch-break { text-align: center; padding: 10px; background-color: #fef3c7; color: #b45309; border-radius: 7px; margin: 8px 0; font-weight: 800; font-size: 0.86rem; }
 
-        /* FORMULÁRIOS */
-        .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        .form-row > div { flex: 1; }
-        label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-light); font-size: 0.8rem; }
-        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; background-color: #fafafa; }
-        
-        .btn { background-color: var(--primary); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        /* FORMULÃRIOS */
+        .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .form-row > div { flex: 1; min-width: 0; }
+        .form-row:last-child { margin-bottom: 0; }
+        label { display: block; margin-bottom: 3px; font-weight: 800; color: var(--text-light); font-size: 0.72rem; line-height: 1.1; }
+        input, select {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            box-sizing: border-box;
+            font-size: 0.92rem;
+            background-color: #fafafa;
+            outline: none;
+        }
+        input:focus, select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 2px rgba(2,132,199,0.10); }
+
+        .os-top-card { padding: 9px; }
+        .os-top-card input, .os-top-card select { padding: 8px; font-size: 0.88rem; }
+        .os-top-card label { font-size: 0.68rem; }
+        .proxima-os-badge {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-weight: 700;
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 5px 8px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .btn { background-color: var(--primary); color: white; border: none; padding: 13px; width: 100%; border-radius: 8px; font-size: 0.98rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .btn:active { transform: scale(0.99); }
         .btn-success { background-color: var(--success); }
-        .btn-warning { background-color: var(--warning); color: #fff; margin-top: 0; margin-bottom: 10px; }
+        .btn-warning { background-color: var(--warning); color: #fff; margin-top: 0; margin-bottom: 8px; }
         .btn-danger { background-color: var(--danger); }
         .btn-dark { background-color: #3f3f46; }
 
-        /* MODAL DE SUCESSO (JANELA AUTOMÁTICA) */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; animation: fadeIn 0.2s ease;}
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        
-        /* LISTA DE SERVIÇOS E OS */
-        .service-group { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 15px; }
-        .service-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
-        .service-item:last-child { border-bottom: none; }
-        .service-name { font-size: 0.9rem; font-weight: 600; }
-        .service-controls { display: flex; align-items: center; gap: 12px; background: #ffffff; border: 1px solid #e4e4e7; padding: 4px; border-radius: 8px; }
-        .btn-qty { width: 30px; height: 30px; border-radius: 6px; border: none; background: #f4f4f5; color: var(--primary); font-weight: bold; font-size: 1.2rem; cursor: pointer; }
-        .btn-qty:active { background: #e0f2fe; }
-        .qty-display { font-weight: bold; width: 20px; text-align: center; font-size: 1rem; }
-        .badge-itens { background-color: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; }
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
+        .modal-content { background: white; padding: 20px; border-radius: 14px; width: 86%; max-width: 330px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
-        .os-resumo { background: #e0f2fe; border: 1px solid var(--primary); border-radius: 8px; padding: 15px; margin-top: 15px; }
-        .os-total { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 15px; }
-        
-        /* OS CADASTRADAS (SERVIÇOS) */
-        .os-card { background: #fff; border: 1px solid var(--primary); border-left: 5px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 15px; }
-        .os-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .os-number { font-weight: bold; font-size: 1.1rem; color: var(--primary); }
-        .os-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+        /* SERVIÃOS E OS */
+        .service-group { background: #f8fafc; border: 1px solid var(--border); border-radius: 9px; padding: 9px; margin-bottom: 10px; }
+        .service-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #e2e8f0; }
+        .service-item:last-child { border-bottom: none; }
+        .service-name { font-size: 0.9rem; font-weight: 800; flex: 1; min-width: 0; }
+        .service-controls { display: flex; align-items: center; gap: 8px; background: #ffffff; border: 1px solid #e4e4e7; padding: 3px; border-radius: 8px; flex-shrink: 0; }
+        .btn-qty { width: 30px; height: 30px; border-radius: 7px; border: none; background: #f4f4f5; color: var(--primary); font-weight: 900; font-size: 1.15rem; cursor: pointer; line-height: 1; }
+        .btn-qty:active { background: #e0f2fe; }
+        .qty-display { font-weight: 900; width: 20px; text-align: center; font-size: 0.98rem; }
+        .badge-itens { background-color: var(--primary); color: white; padding: 4px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 900; white-space: nowrap; }
+
+        .os-resumo { background: #e0f2fe; border: 1px solid var(--primary); border-radius: 9px; padding: 11px; margin-top: 12px; }
+        .os-total { display: flex; justify-content: space-between; align-items: center; font-size: 1.12rem; font-weight: 900; color: var(--primary); margin-bottom: 10px; }
+
+        .os-card { background: #fff; border: 1px solid var(--primary); border-left: 5px solid var(--primary); border-radius: 9px; padding: 11px; margin-bottom: 10px; }
+        .os-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+        .os-number { font-weight: 900; font-size: 0.98rem; color: var(--primary); line-height: 1.25; }
+        .os-badge { font-size: 0.72rem; padding: 4px 7px; border-radius: 999px; font-weight: 900; white-space: nowrap; }
         .badge-retirada { background: #fef08a; color: #a16207; border: 1px solid #fde047; }
         .badge-pago { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
         .badge-parcial { background: #fed7aa; color: #c2410c; border: 1px solid #fdba74; }
-        
-        .os-details { font-size: 0.85rem; color: var(--text-light); margin-bottom: 12px; line-height: 1.4; }
-        .os-detalhes-lista { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 8px; border-radius: 6px; margin: 6px 0; color: #334155; }
-        
-        .btn-group-os { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn-action { flex: 1; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+        .os-details { font-size: 0.84rem; color: var(--text-light); margin-bottom: 10px; line-height: 1.38; }
+        .os-detalhes-lista { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 8px; border-radius: 7px; margin: 7px 0; color: #334155; }
+        .btn-group-os { display: flex; gap: 7px; margin-bottom: 8px; }
+        .btn-action { flex: 1; padding: 10px 8px; border-radius: 7px; font-weight: 900; cursor: pointer; border: none; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-wpp { background: #25D366; color: white; }
         .btn-print { background: #3f3f46; color: white; }
-        .btn-baixa { background: #f4f4f5; border: 1px solid #d4d4d8; color: #3f3f46; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem;}
-        
+        .btn-baixa { background: #f4f4f5; border: 1px solid #d4d4d8; color: #3f3f46; padding: 11px; width: 100%; border-radius: 7px; font-weight: 900; cursor: pointer; font-size: 0.9rem; }
+
         /* DASHBOARD E CLIENTES */
-        .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;}
-        .stat-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
-        .stat-box span { display: block; font-size: 0.75rem; color: var(--text-light); margin-bottom: 3px; }
-        .stat-box strong { font-size: 1.1rem; color: var(--primary); }
+        .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .stat-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+        .stat-box span { display: block; font-size: 0.72rem; color: var(--text-light); margin-bottom: 3px; font-weight: 800; }
+        .stat-box strong { font-size: 1.02rem; color: var(--primary); }
         .destaque { background: #e0f2fe; border-color: var(--primary); }
 
-        .cliente-card { display: flex; flex-direction: column; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .search-sticky { position: sticky; top: 0; z-index: 10; padding: 8px; }
+        .cliente-card { display: flex; flex-direction: column; background: white; padding: 12px; border-radius: 9px; border: 1px solid var(--border); margin-bottom: 9px; }
         .cliente-header { border-bottom: 1px solid #f4f4f5; padding-bottom: 8px; margin-bottom: 8px; }
-        .cliente-nome { font-size: 1.1rem; font-weight: bold; color: var(--primary); margin: 0; }
-        .cliente-tel { font-size: 0.85rem; color: var(--text-light); margin: 2px 0 0 0; }
+        .cliente-nome { font-size: 1.02rem; font-weight: 900; color: var(--primary); margin: 0; }
+        .cliente-tel { font-size: 0.82rem; color: var(--text-light); margin: 2px 0 0 0; }
 
         /* MENU INFERIOR */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-between; padding: 8px 5px; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; display: none; }
-        .nav-item { text-align: center; color: var(--text-light); font-size: 0.7rem; cursor: pointer; flex: 1; padding: 4px 0; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { font-size: 1.3rem; display: block; margin-bottom: 2px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: none; justify-content: space-between; padding: 7px 4px calc(7px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.08); z-index: 1000; }
+        .nav-item { text-align: center; color: var(--text-light); font-size: 0.68rem; cursor: pointer; flex: 1; padding: 4px 0; border-radius: 8px; }
+        .nav-item.active { color: var(--primary); font-weight: 900; background: #e0f2fe; }
+        .nav-icon { font-size: 1.22rem; display: block; margin-bottom: 1px; }
 
-        /* ÁREA DE IMPRESSÃO */
+        /* IMPRESSÃO */
         #print-area { display: none; }
         @media print {
-            body * { visibility: hidden; } 
-            #print-area, #print-area * { visibility: visible; } 
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
             #print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; }
             .bottom-nav { display: none !important; }
             body { background: white; padding: 0; }
@@ -130,51 +199,60 @@
 
     <div id="screen-login" class="screen active">
         <div class="logo-login">
-            <h1>✂️ AFIA</h1>
-            <p>Amolador Dois Irmãos</p>
+            <h1>âï¸ AFIA</h1>
+            <p>AfiaÃ§Ã£o Profissional</p>
         </div>
-        <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">v7</span></h2>
+        <div class="card" style="max-width: 320px; margin: 0 auto; padding: 18px;">
+            <h2 style="text-align: center; margin-bottom: 18px;">Acesso Restrito <span style="color:var(--success); font-size: 0.62em;">v8</span></h2>
             <label>E-mail Firebase</label>
-            <input type="email" id="login-email" placeholder="seu@email.com">
+            <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
             <label style="margin-top: 10px;">Senha</label>
-            <input type="password" id="login-senha" placeholder="******">
-            <button class="btn btn-success" style="margin-top: 20px;" onclick="fazerLogin()">Entrar no Sistema</button>
+            <input type="password" id="login-senha" placeholder="******" autocomplete="current-password">
+            <button class="btn btn-success" style="margin-top: 18px;" onclick="fazerLogin()">Entrar no Sistema</button>
         </div>
     </div>
 
     <div id="screen-agenda" class="screen">
-        <h2>📅 Agenda de Serviços</h2>
-        <p style="color: #71717a; margin-top: -10px; font-size: 0.9rem;" id="data-hoje"></p>
-        
+        <div class="page-title"><h2>ð Agenda</h2></div>
+        <div class="card">
+            <div class="agenda-top">
+                <div>
+                    <label>Data da agenda</label>
+                    <input type="date" id="agenda-data" onchange="trocarDataAgenda(this.value)">
+                </div>
+                <button class="btn-mini" onclick="voltarAgendaHoje()">Hoje</button>
+            </div>
+            <p style="color:#71717a; margin:0; font-size:0.84rem; font-weight:700;" id="data-hoje"></p>
+        </div>
+
         <div class="progresso-container">
             <div class="progresso-stats">
                 <span>Ocupados: <strong id="vagas-ocupadas" style="color: var(--primary);">0</strong>/70</span>
                 <span>Livres: <strong id="vagas-livres" style="color: var(--success);">70</strong></span>
             </div>
             <div class="progresso-bg"><div class="progresso-fill" id="barra-progresso"></div></div>
-            <div class="badge-producao">🔥 Total Produzido (Período): <strong id="agenda-producao-total" style="color: var(--primary); font-size: 1.1rem;">0</strong> un.</div>
+            <div class="badge-producao">ð¥ Ferramentas em OS abertas: <strong id="agenda-producao-total" style="color: var(--primary); font-size: 1.05rem;">0</strong> un.</div>
         </div>
-        <div class="card" id="agenda-container" style="padding: 10px;"></div>
+        <div class="card" id="agenda-container" style="padding: 9px;"></div>
     </div>
 
     <div id="screen-os" class="screen">
-        <h2 style="display: flex; justify-content: space-between; align-items: center;">
-            📝 Nova OS
-            <span style="font-size: 0.9rem; color: var(--text-light); font-weight: normal;">Próx: <strong id="visor-proxima-os" style="color: var(--primary);">#001</strong></span>
-        </h2>
-        
-        <div class="card">
+        <div class="page-title">
+            <h2>ð Nova OS</h2>
+            <span class="proxima-os-badge">PrÃ³x: <strong id="visor-proxima-os" style="color: var(--primary);">#001</strong></span>
+        </div>
+
+        <div class="card os-top-card">
             <div class="form-row">
-                <div style="flex: 0.8;"><label>Telefone</label><input type="tel" id="os-telefone" placeholder="(32) 9..."></div>
-                <div style="flex: 1.2;"><label>Cliente</label><input type="text" id="os-nome" placeholder="Nome"></div>
+                <div style="flex: 0.85;"><label>Telefone</label><input type="tel" id="os-telefone" placeholder="(32) 9..." inputmode="tel"></div>
+                <div style="flex: 1.15;"><label>Cliente</label><input type="text" id="os-nome" placeholder="Nome"></div>
             </div>
             <div class="form-row">
-                <div><label>Data Retirada</label><input type="date" id="os-data"></div>
+                <div><label>Data retirada</label><input type="date" id="os-data"></div>
                 <div>
                     <label>Hora <span style="color:red;">*</span></label>
-                    <select id="os-hora" style="border: 1px solid var(--primary); font-weight: bold;">
-                        <option value="" disabled selected>Selecione a hora...</option>
+                    <select id="os-hora" style="border: 1px solid var(--primary); font-weight: 900;">
+                        <option value="" disabled selected>Hora...</option>
                         <option value="09:00">09:00</option><option value="09:30">09:30</option>
                         <option value="10:00">10:00</option><option value="10:30">10:30</option>
                         <option value="11:00">11:00</option><option value="11:30">11:30</option>
@@ -188,39 +266,39 @@
         </div>
 
         <div class="card">
-            <h3 style="display: flex; justify-content: space-between; align-items: center;">
-                Ferramentas (Agenda)
+            <h3 style="display: flex; justify-content: space-between; align-items: center; gap:8px;">
+                Ferramentas
                 <span class="badge-itens">Total: <span id="contador-ferramentas-os">0</span></span>
             </h3>
-            
+
             <div class="service-group">
-                <h4 style="margin: 0 0 10px 0; font-size: 0.85rem; color: var(--primary);">🗜️ Modelos de Alicate</h4>
-                <div class="service-item"><span class="service-name">Mundial 777</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-777', -1)">-</button><span class="qty-display" id="afia-777">0</span><button class="btn-qty" onclick="changeQty('afia-777', 1)">+</button></div></div>
-                <div class="service-item"><span class="service-name">Mundial 722</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-722', -1)">-</button><span class="qty-display" id="afia-722">0</span><button class="btn-qty" onclick="changeQty('afia-722', 1)">+</button></div></div>
-                <div class="service-item"><span class="service-name">Mundial 522</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-522', -1)">-</button><span class="qty-display" id="afia-522">0</span><button class="btn-qty" onclick="changeQty('afia-522', 1)">+</button></div></div>
+                <h4 style="font-size: 0.82rem; color: var(--primary);">ðï¸ Alicates</h4>
+                <div class="service-item"><span class="service-name">Mundial 777</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-777', -1)">â</button><span class="qty-display" id="afia-777">0</span><button class="btn-qty" onclick="changeQty('afia-777', 1)">+</button></div></div>
+                <div class="service-item"><span class="service-name">Mundial 722</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-722', -1)">â</button><span class="qty-display" id="afia-722">0</span><button class="btn-qty" onclick="changeQty('afia-722', 1)">+</button></div></div>
+                <div class="service-item"><span class="service-name">Mundial 522</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-522', -1)">â</button><span class="qty-display" id="afia-522">0</span><button class="btn-qty" onclick="changeQty('afia-522', 1)">+</button></div></div>
                 <div class="service-item" style="flex-wrap: wrap;">
-                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 8px;">
-                        <span class="service-name">Outro Modelo</span>
-                        <div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-outro', -1)">-</button><span class="qty-display" id="afia-outro">0</span><button class="btn-qty" onclick="changeQty('afia-outro', 1)">+</button></div>
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; gap:8px; margin-bottom: 7px;">
+                        <span class="service-name">Outro modelo</span>
+                        <div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-outro', -1)">â</button><span class="qty-display" id="afia-outro">0</span><button class="btn-qty" onclick="changeQty('afia-outro', 1)">+</button></div>
                     </div>
-                    <input type="text" id="afia-outro-marca" placeholder="Qual a marca/modelo?" style="margin-bottom: 0; padding: 6px; font-size: 0.85rem;">
+                    <input type="text" id="afia-outro-marca" placeholder="Qual marca/modelo?" style="margin-bottom: 0; padding: 7px; font-size: 0.84rem;">
                 </div>
             </div>
-            
-            <div class="service-item"><span class="service-name">Tesoura</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-tesoura', -1)">-</button><span class="qty-display" id="qtd-tesoura">0</span><button class="btn-qty" onclick="changeQty('qtd-tesoura', 1)">+</button></div></div>
-            <div class="service-item"><span class="service-name">Faca</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-faca', -1)">-</button><span class="qty-display" id="qtd-faca">0</span><button class="btn-qty" onclick="changeQty('qtd-faca', 1)">+</button></div></div>
-            
-            <h3 style="margin-top: 20px;">Miudezas / Vendas</h3>
-            <div class="service-item"><span class="service-name">Troca de Molinha</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-mola', -1)">-</button><span class="qty-display" id="qtd-mola">0</span><button class="btn-qty" onclick="changeQty('qtd-mola', 1)">+</button></div></div>
-            <div class="service-item"><span class="service-name">Venda Novo 777</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('venda-777', -1)">-</button><span class="qty-display" id="venda-777">0</span><button class="btn-qty" onclick="changeQty('venda-777', 1)">+</button></div></div>
+
+            <div class="service-item"><span class="service-name">Tesoura</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-tesoura', -1)">â</button><span class="qty-display" id="qtd-tesoura">0</span><button class="btn-qty" onclick="changeQty('qtd-tesoura', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Faca</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-faca', -1)">â</button><span class="qty-display" id="qtd-faca">0</span><button class="btn-qty" onclick="changeQty('qtd-faca', 1)">+</button></div></div>
+
+            <h3 style="margin-top: 16px;">Miudezas / Vendas</h3>
+            <div class="service-item"><span class="service-name">Troca de molinha</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-mola', -1)">â</button><span class="qty-display" id="qtd-mola">0</span><button class="btn-qty" onclick="changeQty('qtd-mola', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Venda novo 777</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('venda-777', -1)">â</button><span class="qty-display" id="venda-777">0</span><button class="btn-qty" onclick="changeQty('venda-777', 1)">+</button></div></div>
 
             <div class="os-resumo">
-                <div class="os-total"><span>Total da OS:</span><span id="valor-total-os">R$ 0,00</span></div>
-                <label style="color: var(--primary);">Status do Pagamento</label>
-                <select id="os-status-pagamento" style="border-color: var(--primary); font-weight: bold; color: var(--text-dark);">
-                    <option value="retirada">⏳ Pagar na Retirada</option>
-                    <option value="pago">✅ Totalmente Pago</option>
-                    <option value="parcial">⚠️ Pago Parcialmente (Sinal)</option>
+                <div class="os-total"><span>Total:</span><span id="valor-total-os">R$ 0,00</span></div>
+                <label style="color: var(--primary);">Status do pagamento</label>
+                <select id="os-status-pagamento" style="border-color: var(--primary); font-weight: 900; color: var(--text-dark);">
+                    <option value="retirada">â³ Pagar na retirada</option>
+                    <option value="pago">â Totalmente pago</option>
+                    <option value="parcial">â ï¸ Pago parcialmente / sinal</option>
                 </select>
             </div>
             <button class="btn btn-success" onclick="salvarOS()">Gerar OS e Alocar na Agenda</button>
@@ -228,95 +306,102 @@
     </div>
 
     <div id="screen-servicos" class="screen">
-        <h2>📋 Fila de Serviços (OS)</h2>
-        <div class="card" style="position: sticky; top: 0; z-index: 10;">
-            <input type="text" id="busca-os" placeholder="Buscar Nome, Tel ou OS..." oninput="renderizarFilaServicos()" style="margin-bottom: 0; padding: 12px; border-color: var(--primary);">
+        <div class="page-title"><h2>ð ServiÃ§os</h2></div>
+        <div class="card search-sticky">
+            <input type="text" id="busca-os" placeholder="Buscar nome, telefone ou OS..." oninput="renderizarFilaServicos()" style="margin-bottom: 0; padding: 11px; border-color: var(--primary);">
         </div>
         <div id="container-fila-os"></div>
     </div>
 
     <div id="screen-clientes" class="screen">
-        <h2>👥 Histórico de Clientes</h2>
-        <div class="card" style="position: sticky; top: 0; z-index: 10;">
-            <input type="text" id="busca-cliente" placeholder="Buscar por Telefone ou Nome..." oninput="renderizarClientes()" style="margin-bottom: 0; padding: 12px;">
+        <div class="page-title"><h2>ð¥ Clientes</h2></div>
+        <div class="card search-sticky">
+            <input type="text" id="busca-cliente" placeholder="Buscar telefone ou nome..." oninput="renderizarClientes()" style="margin-bottom: 0; padding: 11px;">
         </div>
         <div id="container-clientes"></div>
     </div>
-    
+
     <div id="screen-ajustes" class="screen">
-        <h2>⚙️ Ajustes e Financeiro</h2>
+        <div class="page-title"><h2>âï¸ Ajustes</h2></div>
 
         <div class="card">
-            <h3>Controle de Caixa (Atual)</h3>
+            <h3>Financeiro das OS abertas</h3>
             <div class="finance-grid">
                 <div class="stat-box" style="border-color: var(--success); background: #ecfdf5;">
-                    <span>Já Entrou (Pago)</span><strong id="caixa-entrou" style="color: var(--success);">R$ 0,00</strong>
+                    <span>JÃ¡ entrou</span><strong id="caixa-entrou" style="color: var(--success);">R$ 0,00</strong>
                 </div>
                 <div class="stat-box" style="border-color: var(--warning); background: #fffbeb;">
-                    <span>A Receber (Na Loja)</span><strong id="caixa-areceber" style="color: var(--warning);">R$ 0,00</strong>
+                    <span>A receber</span><strong id="caixa-areceber" style="color: var(--warning);">R$ 0,00</strong>
                 </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Resumo de produÃ§Ã£o</h3>
+            <div class="finance-grid">
+                <div class="stat-box"><span>Ferramentas</span><strong id="total-ferramentas-ui">0</strong></div>
+                <div class="stat-box"><span>Molinhas</span><strong id="total-molas-ui">0</strong></div>
+                <div class="stat-box" style="grid-column: span 2;"><span>Vendas novo 777</span><strong id="total-vendas-ui">0</strong></div>
             </div>
         </div>
 
         <div class="card destaque">
             <div class="form-row" style="margin-bottom: 0;">
                 <div style="text-align: center; flex: 1; border-right: 1px solid #bae6fd;">
-                    <span style="display:block; font-size: 0.8rem; color: #0369a1;">Dias Úteis Trab.</span>
-                    <input type="number" id="dias-uteis" value="22" onchange="atualizarDashboard()" style="width: 60px; text-align: center; margin-top: 5px; font-weight: bold;">
+                    <span style="display:block; font-size: 0.75rem; color: #0369a1; font-weight:900;">Dias Ãºteis</span>
+                    <input type="number" id="dias-uteis" value="22" onchange="atualizarDashboard()" style="width: 64px; text-align: center; margin-top: 5px; font-weight: 900;">
                 </div>
                 <div style="text-align: center; flex: 1.5;">
-                    <span style="display:block; font-size: 0.8rem; color: #0369a1;">MÉDIA DE AFIAÇÃO</span>
+                    <span style="display:block; font-size: 0.75rem; color: #0369a1; font-weight:900;">MÃ©dia de afiaÃ§Ã£o</span>
                     <strong id="media-diaria" style="color: var(--primary);">0 / dia</strong>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <h3>Tabela de Preços (R$)</h3>
+            <h3>Tabela de preÃ§os (R$)</h3>
             <div class="form-row">
-                <div><label>Alicate 777, 722, 522</label><input type="number" id="preco-alicate" value="10.00"></div>
-                <div><label>Outros Modelos</label><input type="number" id="preco-outro" value="10.00"></div>
+                <div><label>Alicate 777, 722, 522</label><input type="number" id="preco-alicate" value="10.00" step="0.01"></div>
+                <div><label>Outros modelos</label><input type="number" id="preco-outro" value="10.00" step="0.01"></div>
             </div>
             <div class="form-row">
-                <div><label>Tesoura</label><input type="number" id="preco-tesoura" value="12.00"></div>
-                <div><label>Faca</label><input type="number" id="preco-faca" value="15.00"></div>
+                <div><label>Tesoura</label><input type="number" id="preco-tesoura" value="12.00" step="0.01"></div>
+                <div><label>Faca</label><input type="number" id="preco-faca" value="15.00" step="0.01"></div>
             </div>
             <div class="form-row">
-                <div><label>Molinha</label><input type="number" id="preco-mola" value="3.00"></div>
-                <div><label>Venda Novo 777</label><input type="number" id="preco-venda-777" value="45.00"></div>
+                <div><label>Molinha</label><input type="number" id="preco-mola" value="3.00" step="0.01"></div>
+                <div><label>Venda novo 777</label><input type="number" id="preco-venda-777" value="45.00" step="0.01"></div>
             </div>
-            <button class="btn btn-dark" onclick="salvarPrecos()">Salvar Preços</button>
+            <button class="btn btn-dark" onclick="salvarPrecos()">Salvar PreÃ§os</button>
         </div>
 
         <div class="card" style="border: 1px solid var(--danger); background: #fef2f2;">
-            <h3 style="color: var(--danger); border-bottom-color: #fecaca;">🔒 Sessão e Segurança</h3>
-            <button class="btn btn-danger" onclick="fazerLogout()" style="margin-bottom: 10px;">Sair do App (Logout)</button>
-            <hr style="border: none; border-top: 1px dashed #fecaca; margin: 15px 0;">
-            <p style="font-size: 0.85rem; color: #7f1d1d; margin-top: 0;">Preso em um teste com a agenda lotada? Zere tudo aqui embaixo:</p>
-            <button class="btn btn-danger" style="background: white; color: var(--danger); border: 1px solid var(--danger); margin-top: 0;" onclick="zerarAgenda()">Limpar Agenda de Hoje</button>
+            <h3 style="color: var(--danger); border-bottom-color: #fecaca;">ð SessÃ£o e seguranÃ§a</h3>
+            <button class="btn btn-danger" onclick="fazerLogout()" style="margin-bottom: 10px;">Sair do app</button>
+            <hr style="border: none; border-top: 1px dashed #fecaca; margin: 14px 0;">
+            <p style="font-size: 0.83rem; color: #7f1d1d; margin-top: 0;">Preso em um teste com agenda lotada? Limpe somente a data aberta na agenda.</p>
+            <button class="btn btn-danger" style="background: white; color: var(--danger); border: 1px solid var(--danger); margin-top: 0;" onclick="zerarAgenda()">Limpar agenda da data aberta</button>
         </div>
     </div>
 
     <div id="modal-sucesso" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="color: var(--success); margin-top: 0;">✅ OS Salva!</h2>
-            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">Ordem registrada na nuvem com sucesso. O que deseja fazer agora?</p>
-            
-            <button class="btn btn-wpp" id="btn-modal-wpp" style="margin-bottom: 10px; font-size: 1.1rem;">📲 Enviar via WhatsApp</button>
-            <button class="btn btn-print" id="btn-modal-print" style="margin-bottom: 15px; font-size: 1.1rem;">🖨️ Imprimir Recibo</button>
-            
-            <button class="btn" style="background: #e4e4e7; color: #3f3f46;" onclick="document.getElementById('modal-sucesso').style.display='none'">Sair (Apenas Salvar)</button>
+            <h2 style="color: var(--success); margin-top: 0;">â OS Salva!</h2>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 18px;">Ordem registrada na nuvem. O que deseja fazer agora?</p>
+            <button class="btn btn-wpp" id="btn-modal-wpp" style="margin-bottom: 9px; font-size: 1.04rem;">ð² Enviar via WhatsApp</button>
+            <button class="btn btn-print" id="btn-modal-print" style="margin-bottom: 14px; font-size: 1.04rem;">ð¨ï¸ Imprimir Recibo</button>
+            <button class="btn" style="background: #e4e4e7; color: #3f3f46;" onclick="fecharModalSucesso()">Sair / apenas salvar</button>
         </div>
     </div>
 
     <div id="print-area"></div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('agenda', this)"><span class="nav-icon">📅</span> Agenda</div>
-        <div class="nav-item" onclick="switchTab('os', this)"><span class="nav-icon">📝</span> Nova OS</div>
-        <div class="nav-item" onclick="switchTab('servicos', this)"><span class="nav-icon">📋</span> Serviços</div>
-        <div class="nav-item" onclick="switchTab('clientes', this)"><span class="nav-icon">👥</span> Clientes</div>
-        <div class="nav-item" onclick="switchTab('ajustes', this)"><span class="nav-icon">⚙️</span> Ajustes</div>
+        <div class="nav-item active" onclick="switchTab('agenda', this)"><span class="nav-icon">ð</span>Agenda</div>
+        <div class="nav-item" onclick="switchTab('os', this)"><span class="nav-icon">ð</span>Nova OS</div>
+        <div class="nav-item" onclick="switchTab('servicos', this)"><span class="nav-icon">ð</span>ServiÃ§os</div>
+        <div class="nav-item" onclick="switchTab('clientes', this)"><span class="nav-icon">ð¥</span>Clientes</div>
+        <div class="nav-item" onclick="switchTab('ajustes', this)"><span class="nav-icon">âï¸</span>Ajustes</div>
     </nav>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -325,7 +410,7 @@
 
     <script>
         // ==========================================
-        // 1. CONFIGURAÇÃO DO FIREBASE
+        // 1. CONFIGURAÃÃO DO FIREBASE
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
@@ -341,33 +426,120 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // Variáveis Locais
         let contadorOS = 1;
         let historicoOS = [];
         let bancoClientes = {};
-        let caixaEntrou = 0, caixaAReceber = 0, statsFerramentas = 0, statsMolas = 0, statsVendas = 0;
+        let caixaEntrou = 0;
+        let caixaAReceber = 0;
+        let statsFerramentas = 0;
+        let statsMolas = 0;
+        let statsVendas = 0;
 
         let tabelaPrecos = {
-            'afia-777': 10.00, 'afia-722': 10.00, 'afia-522': 10.00, 'afia-outro': 10.00,
-            'qtd-tesoura': 12.00, 'qtd-faca': 15.00, 'qtd-mola': 3.00, 'venda-777': 45.00
+            'afia-777': 10.00,
+            'afia-722': 10.00,
+            'afia-522': 10.00,
+            'afia-outro': 10.00,
+            'qtd-tesoura': 12.00,
+            'qtd-faca': 15.00,
+            'qtd-mola': 3.00,
+            'venda-777': 45.00
         };
 
         const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
-        let estadoAgenda = {};
-        timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
+        let dataAgendaSelecionada = hojeISO();
+        let estadoAgenda = criarAgendaVazia();
 
         // ==========================================
-        // 2. AUTENTICAÇÃO E CARREGAMENTO
+        // 2. HELPERS
+        // ==========================================
+        function hojeISO() {
+            const d = new Date();
+            const ano = d.getFullYear();
+            const mes = String(d.getMonth() + 1).padStart(2, '0');
+            const dia = String(d.getDate()).padStart(2, '0');
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        function criarAgendaVazia() {
+            const agenda = {};
+            timeSlots.forEach(t => agenda[t] = [0, 0, 0, 0, 0]);
+            return agenda;
+        }
+
+        function normalizarAgenda(agenda) {
+            const base = criarAgendaVazia();
+            if (!agenda || typeof agenda !== 'object') return base;
+            timeSlots.forEach(hora => {
+                if (Array.isArray(agenda[hora])) {
+                    base[hora] = agenda[hora].slice(0, 5);
+                    while (base[hora].length < 5) base[hora].push(0);
+                }
+            });
+            return base;
+        }
+
+        function keyAgenda(dataISO) {
+            return (dataISO || hojeISO()).replace(/-/g, '-');
+        }
+
+        function dataBR(dataISO) {
+            if (!dataISO) return '';
+            const [ano, mes, dia] = dataISO.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function dataLonga(dataISO) {
+            const d = new Date(`${dataISO}T12:00:00`);
+            return d.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function moeda(valor) {
+            return "R$ " + (Number(valor) || 0).toFixed(2).replace('.', ',');
+        }
+
+        function telefoneLimpo(tel) {
+            return (tel || '').replace(/\D/g, '');
+        }
+
+        function getQtd(id) {
+            const el = document.getElementById(id);
+            return parseInt(el?.innerText || '0') || 0;
+        }
+
+        function setTexto(id, texto) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = texto;
+        }
+
+        function contarOcupados(agenda) {
+            let total = 0;
+            timeSlots.forEach(hora => {
+                (agenda[hora] || []).forEach(status => { if (status !== 0) total++; });
+            });
+            return total;
+        }
+
+        function vagasLivresAgenda(agenda) {
+            return 70 - contarOcupados(agenda);
+        }
+
+        function fecharModalSucesso() {
+            document.getElementById('modal-sucesso').style.display = 'none';
+        }
+
+        // ==========================================
+        // 3. AUTENTICAÃÃO E CARREGAMENTO
         // ==========================================
         function fazerLogin() {
-            let email = document.getElementById('login-email').value;
-            let senha = document.getElementById('login-senha').value;
-            if(!email || !senha) return alert("Preencha e-mail e senha.");
+            const email = document.getElementById('login-email').value.trim();
+            const senha = document.getElementById('login-senha').value;
+            if (!email || !senha) return alert("Preencha e-mail e senha.");
             auth.signInWithEmailAndPassword(email, senha).catch((error) => alert("Erro ao entrar: " + error.message));
         }
 
         function fazerLogout() {
-            if(confirm("Deseja sair do sistema?")) auth.signOut();
+            if (confirm("Deseja sair do sistema?")) auth.signOut();
         }
 
         auth.onAuthStateChanged((user) => {
@@ -380,127 +552,204 @@
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                 document.getElementById('screen-login').classList.add('active');
                 document.querySelector('.bottom-nav').style.display = 'none';
-                historicoOS = []; bancoClientes = {}; 
+                historicoOS = [];
+                bancoClientes = {};
             }
         });
 
         function carregarDadosDoFirebase() {
             db.ref("ordens").once("value").then((snapshot) => {
-                historicoOS = []; let maxNum = 0;
+                historicoOS = [];
+                let maxNum = 0;
                 snapshot.forEach((childSnapshot) => {
-                    let data = childSnapshot.val();
-                    data.idFirebase = childSnapshot.key; 
+                    const data = childSnapshot.val() || {};
+                    data.idFirebase = childSnapshot.key;
                     historicoOS.push(data);
-                    let numAtual = parseInt(data.numero.replace('#', ''));
+                    const numAtual = parseInt(String(data.numero || '').replace('#', '')) || 0;
                     if (numAtual > maxNum) maxNum = numAtual;
                 });
-                contadorOS = maxNum + 1; atualizarVisorOS(); renderizarFilaServicos();
+                contadorOS = maxNum + 1;
+                atualizarVisorOS();
+                recalcularDashboardPelasOS();
+                renderizarFilaServicos();
             });
 
             db.ref("clientes").once("value").then((snapshot) => {
-                bancoClientes = snapshot.val() || {}; renderizarClientes();
+                bancoClientes = snapshot.val() || {};
+                renderizarClientes();
             });
 
-            let hoje = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-            db.ref("agenda/" + hoje).once("value").then((snapshot) => {
-                if(snapshot.exists()) estadoAgenda = JSON.parse(snapshot.val().slots);
-                renderizarAgenda();
+            db.ref("config/precos").once("value").then((snapshot) => {
+                if (snapshot.exists()) {
+                    tabelaPrecos = { ...tabelaPrecos, ...snapshot.val() };
+                    preencherInputsPrecos();
+                    calcularTotal();
+                }
             });
+
+            trocarDataAgenda(dataAgendaSelecionada);
+        }
+
+        function carregarAgendaData(dataISO) {
+            return db.ref("agenda/" + keyAgenda(dataISO)).once("value").then((snapshot) => {
+                if (snapshot.exists()) {
+                    const val = snapshot.val();
+                    if (val && val.slots) return normalizarAgenda(JSON.parse(val.slots));
+                    return normalizarAgenda(val);
+                }
+                return criarAgendaVazia();
+            }).catch(() => criarAgendaVazia());
+        }
+
+        function salvarAgendaData(dataISO, agenda) {
+            return db.ref("agenda/" + keyAgenda(dataISO)).set({ slots: JSON.stringify(normalizarAgenda(agenda)) });
         }
 
         function salvarAgendaNoFirebase() {
-            let hoje = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-            db.ref("agenda/" + hoje).set({ slots: JSON.stringify(estadoAgenda) });
+            return salvarAgendaData(dataAgendaSelecionada, estadoAgenda);
         }
 
         // ==========================================
-        // 3. NAVEGAÇÃO E FRONT-END
+        // 4. NAVEGAÃÃO E FRONT-END
         // ==========================================
         function switchTab(tabId, element) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen-' + tabId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            element.classList.add('active');
-            if(tabId === 'clientes') renderizarClientes();
+            if (element) element.classList.add('active');
+            if (tabId === 'clientes') renderizarClientes();
+            if (tabId === 'servicos') renderizarFilaServicos();
+            if (tabId === 'agenda') renderizarAgenda();
         }
 
-        document.getElementById('data-hoje').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-        document.getElementById('os-data').valueAsDate = new Date();
+        document.getElementById('agenda-data').value = dataAgendaSelecionada;
+        document.getElementById('os-data').value = hojeISO();
 
         document.getElementById('os-telefone').addEventListener('input', function() {
-            let tel = this.value.replace(/\D/g, ''); 
-            if(bancoClientes[tel]) document.getElementById('os-nome').value = bancoClientes[tel].nome;
+            const tel = telefoneLimpo(this.value);
+            if (bancoClientes[tel]) document.getElementById('os-nome').value = bancoClientes[tel].nome;
             else if (this.value === "") document.getElementById('os-nome').value = "";
         });
 
+        function preencherInputsPrecos() {
+            document.getElementById('preco-alicate').value = Number(tabelaPrecos['afia-777'] || 0).toFixed(2);
+            document.getElementById('preco-outro').value = Number(tabelaPrecos['afia-outro'] || 0).toFixed(2);
+            document.getElementById('preco-tesoura').value = Number(tabelaPrecos['qtd-tesoura'] || 0).toFixed(2);
+            document.getElementById('preco-faca').value = Number(tabelaPrecos['qtd-faca'] || 0).toFixed(2);
+            document.getElementById('preco-mola').value = Number(tabelaPrecos['qtd-mola'] || 0).toFixed(2);
+            document.getElementById('preco-venda-777').value = Number(tabelaPrecos['venda-777'] || 0).toFixed(2);
+        }
+
         function salvarPrecos() {
-            let pA = parseFloat(document.getElementById('preco-alicate').value);
-            tabelaPrecos['afia-777'] = pA; tabelaPrecos['afia-722'] = pA; tabelaPrecos['afia-522'] = pA;
-            tabelaPrecos['afia-outro'] = parseFloat(document.getElementById('preco-outro').value);
-            tabelaPrecos['qtd-tesoura'] = parseFloat(document.getElementById('preco-tesoura').value);
-            tabelaPrecos['qtd-faca'] = parseFloat(document.getElementById('preco-faca').value);
-            tabelaPrecos['qtd-mola'] = parseFloat(document.getElementById('preco-mola').value);
-            tabelaPrecos['venda-777'] = parseFloat(document.getElementById('preco-venda-777').value);
-            alert("Tabela atualizada!"); calcularTotal(); 
+            const pA = parseFloat(document.getElementById('preco-alicate').value) || 0;
+            tabelaPrecos['afia-777'] = pA;
+            tabelaPrecos['afia-722'] = pA;
+            tabelaPrecos['afia-522'] = pA;
+            tabelaPrecos['afia-outro'] = parseFloat(document.getElementById('preco-outro').value) || 0;
+            tabelaPrecos['qtd-tesoura'] = parseFloat(document.getElementById('preco-tesoura').value) || 0;
+            tabelaPrecos['qtd-faca'] = parseFloat(document.getElementById('preco-faca').value) || 0;
+            tabelaPrecos['qtd-mola'] = parseFloat(document.getElementById('preco-mola').value) || 0;
+            tabelaPrecos['venda-777'] = parseFloat(document.getElementById('preco-venda-777').value) || 0;
+
+            db.ref("config/precos").set(tabelaPrecos).then(() => {
+                alert("Tabela atualizada e salva na nuvem!");
+                calcularTotal();
+            }).catch(() => {
+                alert("Tabela atualizada neste aparelho, mas nÃ£o consegui salvar na nuvem.");
+                calcularTotal();
+            });
         }
 
         function changeQty(id, value) {
             const el = document.getElementById(id);
             let result = parseInt(el.innerText) + value;
             el.innerText = result < 0 ? 0 : result;
-            calcularTotal(); 
+            calcularTotal();
         }
 
         function calcularTotal() {
             let totalMoeda = 0;
-            for (let id in tabelaPrecos) totalMoeda += (parseInt(document.getElementById(id).innerText) || 0) * tabelaPrecos[id];
-            document.getElementById('valor-total-os').innerText = "R$ " + totalMoeda.toFixed(2).replace('.', ',');
+            for (let id in tabelaPrecos) totalMoeda += getQtd(id) * (Number(tabelaPrecos[id]) || 0);
+            document.getElementById('valor-total-os').innerText = moeda(totalMoeda);
 
-            let tf = parseInt(document.getElementById('afia-777').innerText) + parseInt(document.getElementById('afia-722').innerText) +
-                     parseInt(document.getElementById('afia-522').innerText) + parseInt(document.getElementById('afia-outro').innerText) +
-                     parseInt(document.getElementById('qtd-tesoura').innerText) + parseInt(document.getElementById('qtd-faca').innerText);
+            const tf = getQtd('afia-777') + getQtd('afia-722') + getQtd('afia-522') + getQtd('afia-outro') + getQtd('qtd-tesoura') + getQtd('qtd-faca');
             document.getElementById('contador-ferramentas-os').innerText = tf;
         }
 
+        function recalcularDashboardPelasOS() {
+            caixaEntrou = 0;
+            caixaAReceber = 0;
+            statsFerramentas = 0;
+            statsMolas = 0;
+            statsVendas = 0;
+
+            historicoOS.forEach(os => {
+                const valor = Number(os.valorNumerico) || 0;
+                if (os.statusCode === "pago") caixaEntrou += valor;
+                else caixaAReceber += valor;
+                statsFerramentas += Number(os.ferramentas) || 0;
+                statsMolas += Number(os.qtdMola) || 0;
+                statsVendas += Number(os.qtdVenda) || 0;
+            });
+            atualizarDashboard();
+        }
+
         function atualizarDashboard() {
-            document.getElementById('caixa-entrou').innerText = "R$ " + caixaEntrou.toFixed(2).replace('.', ',');
-            document.getElementById('caixa-areceber').innerText = "R$ " + caixaAReceber.toFixed(2).replace('.', ',');
-            document.getElementById('total-ferramentas-ui').innerText = statsFerramentas;
-            document.getElementById('total-molas-ui').innerText = statsMolas;
-            document.getElementById('total-vendas-ui').innerText = statsVendas;
-            
-            // ATUALIZA O NOVO CONTADOR NA AGENDA (Total Produzido)
-            document.getElementById('agenda-producao-total').innerText = statsFerramentas;
-            
-            let d = parseInt(document.getElementById('dias-uteis').value) || 1;
-            document.getElementById('media-diaria').innerText = `${(statsFerramentas / d).toFixed(1)} / dia`;
+            setTexto('caixa-entrou', moeda(caixaEntrou));
+            setTexto('caixa-areceber', moeda(caixaAReceber));
+            setTexto('total-ferramentas-ui', statsFerramentas);
+            setTexto('total-molas-ui', statsMolas);
+            setTexto('total-vendas-ui', statsVendas);
+            setTexto('agenda-producao-total', statsFerramentas);
+
+            const d = parseInt(document.getElementById('dias-uteis').value) || 1;
+            setTexto('media-diaria', `${(statsFerramentas / d).toFixed(1)} / dia`);
         }
 
         // ==========================================
-        // 4. LÓGICA DA AGENDA 
+        // 5. AGENDA
         // ==========================================
+        function trocarDataAgenda(dataISO) {
+            if (!dataISO) dataISO = hojeISO();
+            dataAgendaSelecionada = dataISO;
+            document.getElementById('agenda-data').value = dataISO;
+            carregarAgendaData(dataISO).then((agenda) => {
+                estadoAgenda = agenda;
+                renderizarAgenda();
+            });
+        }
+
+        function voltarAgendaHoje() {
+            trocarDataAgenda(hojeISO());
+        }
+
         function renderizarAgenda() {
-            const container = document.getElementById('agenda-container'); container.innerHTML = ''; 
+            const container = document.getElementById('agenda-container');
+            if (!container) return;
+            container.innerHTML = '';
+            document.getElementById('data-hoje').innerText = dataLonga(dataAgendaSelecionada);
             let totalOcupados = 0;
-            
+
             timeSlots.forEach(hora => {
-                if(hora === "14:30") container.innerHTML += '<div class="lunch-break">☕ Pausa Almoço (13:30 - 14:30)</div>';
-                
+                if (hora === "14:30") container.innerHTML += '<div class="lunch-break">â Pausa almoÃ§o (13:30 - 14:30)</div>';
+
                 let sqs = "";
-                for(let i=0; i<5; i++) {
-                    let status = estadoAgenda[hora][i];
+                for (let i = 0; i < 5; i++) {
+                    const status = estadoAgenda[hora][i];
                     if (status !== 0) totalOcupados++;
-                    
-                    let cssClass = ""; let icone = "";
-                    if (status === 1) cssClass = "booked"; 
-                    if (status === 2) { cssClass = "locked"; icone = "🔒"; }
+
+                    let cssClass = "";
+                    let icone = "";
+                    if (status === 1) cssClass = "booked";
+                    if (status === 2) { cssClass = "locked"; icone = "ð"; }
 
                     sqs += `<div class="square ${cssClass}" onclick="toggleAgenda('${hora}', ${i})">${icone}</div>`;
                 }
                 container.innerHTML += `<div class="time-row"><div class="time-label">${hora}</div><div class="squares-container">${sqs}</div></div>`;
             });
-            
-            let totalLivres = 70 - totalOcupados; let pct = (totalOcupados / 70) * 100;
+
+            const totalLivres = 70 - totalOcupados;
+            const pct = (totalOcupados / 70) * 100;
             document.getElementById('vagas-ocupadas').innerText = totalOcupados;
             document.getElementById('vagas-livres').innerText = totalLivres;
             document.getElementById('vagas-livres').style.color = totalLivres <= 10 ? '#ef4444' : '#10b981';
@@ -508,264 +757,339 @@
             document.getElementById('barra-progresso').style.backgroundColor = pct < 50 ? '#10b981' : (pct < 85 ? '#f59e0b' : '#ef4444');
         }
 
-        function toggleAgenda(hora, index) { 
-            let statusAtual = estadoAgenda[hora][index];
+        function toggleAgenda(hora, index) {
+            const statusAtual = estadoAgenda[hora][index];
             if (statusAtual === 2) {
-                if(confirm("🔓 Liberar Vaga?\n\nEste horário está reservado para uma OS. Você já adiantou este serviço e deseja abrir essa vaga para um novo cliente?")) {
+                if (confirm("ð Liberar vaga?\n\nEste horÃ¡rio estÃ¡ reservado para uma OS. VocÃª jÃ¡ adiantou este serviÃ§o e deseja abrir essa vaga?")) {
                     estadoAgenda[hora][index] = 0;
                     renderizarAgenda();
                     salvarAgendaNoFirebase();
                 }
-                return; 
+                return;
             }
-            
-            estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0; 
-            renderizarAgenda(); salvarAgendaNoFirebase();
+
+            estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0;
+            renderizarAgenda();
+            salvarAgendaNoFirebase();
         }
 
         function zerarAgenda() {
-            if(confirm("Tem certeza que deseja limpar TODA a agenda de hoje? Isso removerá todos os cadeados e marcações manuais.")) {
-                timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
+            if (confirm("Tem certeza que deseja limpar TODA a agenda da data aberta?")) {
+                estadoAgenda = criarAgendaVazia();
                 renderizarAgenda();
-                salvarAgendaNoFirebase();
-                alert("Sua agenda de hoje foi limpa!");
+                salvarAgendaNoFirebase().then(() => alert("Agenda limpa!"));
             }
         }
 
+        function montarOrdemBusca(indexAlvo) {
+            const ordemBusca = [indexAlvo];
+            let offset = 1;
+            while (indexAlvo - offset >= 0 || indexAlvo + offset < timeSlots.length) {
+                if (indexAlvo + offset < timeSlots.length) ordemBusca.push(indexAlvo + offset);
+                if (indexAlvo - offset >= 0) ordemBusca.push(indexAlvo - offset);
+                offset++;
+            }
+            return ordemBusca;
+        }
+
+        function alocarNaAgenda(agenda, horaAlvo, qtdAfiar) {
+            const indexAlvo = timeSlots.indexOf(horaAlvo);
+            if (indexAlvo < 0) return agenda;
+
+            let pendentes = qtdAfiar;
+            const ordemBusca = montarOrdemBusca(indexAlvo);
+            for (let i of ordemBusca) {
+                if (pendentes <= 0) break;
+                const horaAtual = timeSlots[i];
+                for (let slot = 0; slot < 5; slot++) {
+                    if (agenda[horaAtual][slot] === 0 && pendentes > 0) {
+                        agenda[horaAtual][slot] = 2;
+                        pendentes--;
+                    }
+                }
+            }
+            return agenda;
+        }
+
         // ==========================================
-        // 5. LÓGICA DE SALVAR NO FIREBASE
+        // 6. SALVAR OS
         // ==========================================
         function formatarNumOS(num) { return "#" + num.toString().padStart(3, '0'); }
-        function atualizarVisorOS() { document.getElementById('visor-proxima-os').innerText = formatarNumOS(contadorOS); }
+        function atualizarVisorOS() { setTexto('visor-proxima-os', formatarNumOS(contadorOS)); }
 
         function registrarClienteNoFirebase(nome, telBruto, qtdFerramentas, valorGasto) {
-            let tel = telBruto.replace(/\D/g, ''); 
-            if (!tel) return; 
+            const tel = telefoneLimpo(telBruto);
+            if (!tel) return;
 
             if (!bancoClientes[tel]) bancoClientes[tel] = { nome: nome, telefone: telBruto, visitas: 0, ferramentas: 0, totalGasto: 0 };
-            bancoClientes[tel].visitas += 1; bancoClientes[tel].ferramentas += qtdFerramentas; bancoClientes[tel].totalGasto += valorGasto;
+            bancoClientes[tel].nome = nome;
+            bancoClientes[tel].telefone = telBruto;
+            bancoClientes[tel].visitas += 1;
+            bancoClientes[tel].ferramentas += qtdFerramentas;
+            bancoClientes[tel].totalGasto += valorGasto;
             db.ref("clientes/" + tel).set(bancoClientes[tel]);
         }
 
-        function salvarOS() {
-            let horaAlvo = document.getElementById('os-hora').value;
-            
+        async function salvarOS() {
+            const horaAlvo = document.getElementById('os-hora').value;
+
             if (!horaAlvo) {
-                alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
+                alert("â ATENÃÃO: selecione o horÃ¡rio de entrega.");
                 document.getElementById('os-hora').style.borderColor = "red";
                 return;
             }
-            document.getElementById('os-hora').style.borderColor = "var(--border)";
+            document.getElementById('os-hora').style.borderColor = "var(--primary)";
 
-            let nomeCliente = document.getElementById('os-nome').value.trim() || "Cliente Balcão";
-            let telCliente = document.getElementById('os-telefone').value.trim() || "";
-            let qtdAfiar = parseInt(document.getElementById('contador-ferramentas-os').innerText);
-            let dataAlvo = document.getElementById('os-data').value;
-            let statusPagamentoVal = document.getElementById('os-status-pagamento').value;
-            let totalFormatado = document.getElementById('valor-total-os').innerText;
-            
+            const dataAlvo = document.getElementById('os-data').value || hojeISO();
+            const nomeCliente = document.getElementById('os-nome').value.trim() || "Cliente BalcÃ£o";
+            const telCliente = document.getElementById('os-telefone').value.trim() || "";
+            const qtdAfiar = parseInt(document.getElementById('contador-ferramentas-os').innerText) || 0;
+            const statusPagamentoVal = document.getElementById('os-status-pagamento').value;
+
             let totalMoeda = 0;
-            for (let id in tabelaPrecos) totalMoeda += (parseInt(document.getElementById(id).innerText) || 0) * tabelaPrecos[id];
+            for (let id in tabelaPrecos) totalMoeda += getQtd(id) * (Number(tabelaPrecos[id]) || 0);
+            const totalFormatado = moeda(totalMoeda);
 
-            let descricaoArray = [];
-            let q777 = parseInt(document.getElementById('afia-777').innerText); if(q777 > 0) descricaoArray.push(`${q777}x Alicate Mundial 777`);
-            let q722 = parseInt(document.getElementById('afia-722').innerText); if(q722 > 0) descricaoArray.push(`${q722}x Alicate Mundial 722`);
-            let q522 = parseInt(document.getElementById('afia-522').innerText); if(q522 > 0) descricaoArray.push(`${q522}x Alicate Mundial 522`);
-            let qOutro = parseInt(document.getElementById('afia-outro').innerText); let marcaOutro = document.getElementById('afia-outro-marca').value.trim() || "Outro Modelo"; if(qOutro > 0) descricaoArray.push(`${qOutro}x Alicate ${marcaOutro}`);
-            let qTesoura = parseInt(document.getElementById('qtd-tesoura').innerText); if(qTesoura > 0) descricaoArray.push(`${qTesoura}x Tesoura`);
-            let qFaca = parseInt(document.getElementById('qtd-faca').innerText); if(qFaca > 0) descricaoArray.push(`${qFaca}x Faca`);
-            let qMola = parseInt(document.getElementById('qtd-mola').innerText); if(qMola > 0) descricaoArray.push(`${qMola}x Troca de Mola`);
-            let qVenda = parseInt(document.getElementById('venda-777').innerText); if(qVenda > 0) descricaoArray.push(`${qVenda}x Novo 777`);
+            const q777 = getQtd('afia-777');
+            const q722 = getQtd('afia-722');
+            const q522 = getQtd('afia-522');
+            const qOutro = getQtd('afia-outro');
+            const qTesoura = getQtd('qtd-tesoura');
+            const qFaca = getQtd('qtd-faca');
+            const qMola = getQtd('qtd-mola');
+            const qVenda = getQtd('venda-777');
+            const marcaOutro = document.getElementById('afia-outro-marca').value.trim() || "Outro modelo";
 
-            let descricaoServicos = descricaoArray.length > 0 ? descricaoArray.join('<br>') : "Nenhum serviço especificado";
+            const descricaoArray = [];
+            if (q777 > 0) descricaoArray.push(`${q777}x Alicate Mundial 777`);
+            if (q722 > 0) descricaoArray.push(`${q722}x Alicate Mundial 722`);
+            if (q522 > 0) descricaoArray.push(`${q522}x Alicate Mundial 522`);
+            if (qOutro > 0) descricaoArray.push(`${qOutro}x Alicate ${marcaOutro}`);
+            if (qTesoura > 0) descricaoArray.push(`${qTesoura}x Tesoura`);
+            if (qFaca > 0) descricaoArray.push(`${qFaca}x Faca`);
+            if (qMola > 0) descricaoArray.push(`${qMola}x Troca de mola`);
+            if (qVenda > 0) descricaoArray.push(`${qVenda}x Novo 777`);
 
-            // Distribuição na Agenda
+            if (descricaoArray.length === 0) {
+                alert("â Adicione pelo menos um serviÃ§o ou venda na OS.");
+                return;
+            }
+
+            const descricaoServicos = descricaoArray.join('<br>');
+            let agendaDestino = await carregarAgendaData(dataAlvo);
+
             if (qtdAfiar > 0) {
-                let vagasRestantes = parseInt(document.getElementById('vagas-livres').innerText);
-                if (qtdAfiar > vagasRestantes) { alert(`Faltam vagas na agenda.`); return; }
-                
-                let indexAlvo = timeSlots.indexOf(horaAlvo); 
-                let ordemBusca = [indexAlvo]; let offsetAntes = 1; let offsetDepois = 1;
-                while(indexAlvo - offsetAntes >= 0 || indexAlvo + offsetDepois < timeSlots.length) {
-                    if (indexAlvo - offsetAntes >= 0) { ordemBusca.push(indexAlvo - offsetAntes); offsetAntes++; }
-                    if (indexAlvo + offsetDepois < timeSlots.length) { ordemBusca.push(indexAlvo + offsetDepois); offsetDepois++; }
+                const livres = vagasLivresAgenda(agendaDestino);
+                if (qtdAfiar > livres) {
+                    alert(`Faltam vagas na agenda de ${dataBR(dataAlvo)}.\n\nVocÃª precisa de ${qtdAfiar} vagas, mas sÃ³ existem ${livres} livres.`);
+                    return;
                 }
-                
-                let pendentes = qtdAfiar;
-                for (let i of ordemBusca) {
-                    if (pendentes <= 0) break;
-                    let horaAtual = timeSlots[i];
-                    for (let slot = 0; slot < 5; slot++) {
-                        if (estadoAgenda[horaAtual][slot] === 0 && pendentes > 0) {
-                            estadoAgenda[horaAtual][slot] = 2; // Cadeado OS
-                            pendentes--;
-                        }
-                    }
+                agendaDestino = alocarNaAgenda(agendaDestino, horaAlvo, qtdAfiar);
+                await salvarAgendaData(dataAlvo, agendaDestino);
+
+                if (dataAlvo === dataAgendaSelecionada) {
+                    estadoAgenda = agendaDestino;
+                    renderizarAgenda();
                 }
-                renderizarAgenda(); salvarAgendaNoFirebase();
             }
 
             registrarClienteNoFirebase(nomeCliente, telCliente, qtdAfiar, totalMoeda);
 
-            statsFerramentas += qtdAfiar; statsMolas += parseInt(document.getElementById('qtd-mola').innerText); statsVendas += parseInt(document.getElementById('venda-777').innerText);
-            if (statusPagamentoVal === "pago") caixaEntrou += totalMoeda; else caixaAReceber += totalMoeda;
-            atualizarDashboard();
-
-            let novaOS = {
+            const novaOS = {
                 numero: formatarNumOS(contadorOS),
                 nome: nomeCliente,
                 telefone: telCliente || "Sem telefone",
-                dataStr: new Date(dataAlvo).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) + " às " + horaAlvo,
+                dataISO: dataAlvo,
+                hora: horaAlvo,
+                dataStr: dataBR(dataAlvo) + " Ã s " + horaAlvo,
                 ferramentas: qtdAfiar,
-                descricaoServicos: descricaoServicos, 
+                qtdMola: qMola,
+                qtdVenda: qVenda,
+                descricaoServicos: descricaoServicos,
                 valorFormatado: totalFormatado,
                 valorNumerico: totalMoeda,
-                statusCode: statusPagamentoVal
+                statusCode: statusPagamentoVal,
+                criadaEm: new Date().toISOString()
             };
-            
-            let novaOSRef = db.ref("ordens").push();
+
+            const novaOSRef = db.ref("ordens").push();
             novaOSRef.set(novaOS).then(() => {
-                novaOS.idFirebase = novaOSRef.key; 
+                novaOS.idFirebase = novaOSRef.key;
                 historicoOS.push(novaOS);
-                contadorOS++; 
+                contadorOS++;
                 atualizarVisorOS();
+                recalcularDashboardPelasOS();
                 renderizarFilaServicos();
-                
+
                 document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
-                document.getElementById('os-telefone').value = ""; document.getElementById('os-nome').value = "";
-                document.getElementById('afia-outro-marca').value = ""; document.getElementById('os-status-pagamento').value = "retirada";
-                document.getElementById('os-hora').value = ""; 
+                document.getElementById('os-telefone').value = "";
+                document.getElementById('os-nome').value = "";
+                document.getElementById('afia-outro-marca').value = "";
+                document.getElementById('os-status-pagamento').value = "retirada";
+                document.getElementById('os-hora').value = "";
                 calcularTotal();
-                
+
                 switchTab('servicos', document.querySelectorAll('.nav-item')[2]);
-                
+
                 document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
                 document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
                 document.getElementById('modal-sucesso').style.display = 'flex';
-                
-            }).catch(error => { alert("❌ ERRO AO SALVAR OS: " + error.message); });
+            }).catch(error => {
+                alert("â ERRO AO SALVAR OS: " + error.message);
+            });
         }
 
         // ==========================================
-        // 6. ATUALIZAR STATUS E DELETAR NA NUVEM
+        // 7. STATUS E BAIXA
         // ==========================================
         function marcarComoPago(idFirebase) {
-            let os = historicoOS.find(o => o.idFirebase === idFirebase);
-            if(confirm(`Confirmar pagamento via Pix/Dinheiro para a OS ${os.numero}?`)) {
+            const os = historicoOS.find(o => o.idFirebase === idFirebase);
+            if (!os) return alert("OS nÃ£o encontrada.");
+            if (confirm(`Confirmar pagamento da OS ${os.numero}?`)) {
                 db.ref("ordens/" + idFirebase).update({ statusCode: "pago" }).then(() => {
-                    os.statusCode = "pago"; 
-                    caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico;
-                    atualizarDashboard(); renderizarFilaServicos(); 
+                    os.statusCode = "pago";
+                    recalcularDashboardPelasOS();
+                    renderizarFilaServicos();
                 });
             }
         }
 
         function darBaixaOS(idFirebase) {
-            let os = historicoOS.find(o => o.idFirebase === idFirebase);
-            if(confirm("Confirma a entrega desta OS ao cliente? Ela será removida da lista.")) {
+            const os = historicoOS.find(o => o.idFirebase === idFirebase);
+            if (!os) return alert("OS nÃ£o encontrada.");
+            if (confirm("Confirma a entrega desta OS ao cliente? Ela serÃ¡ removida da lista de serviÃ§os.")) {
                 db.ref("ordens/" + idFirebase).remove().then(() => {
-                    if (os.statusCode !== "pago") { caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico; atualizarDashboard(); }
-                    historicoOS = historicoOS.filter(o => o.idFirebase !== idFirebase); renderizarFilaServicos(); 
+                    historicoOS = historicoOS.filter(o => o.idFirebase !== idFirebase);
+                    recalcularDashboardPelasOS();
+                    renderizarFilaServicos();
                 });
             }
         }
 
         // ==========================================
-        // 7. RENDERIZAÇÃO DE TELAS E RECURSOS
+        // 8. RENDERIZAÃÃO DE CLIENTES E SERVIÃOS
         // ==========================================
         function renderizarClientes() {
             const container = document.getElementById('container-clientes');
-            const termoBusca = document.getElementById('busca-cliente').value.toLowerCase().replace(/\D/g, ''); 
-            const termoNome = document.getElementById('busca-cliente').value.toLowerCase(); 
+            if (!container) return;
+            const campo = document.getElementById('busca-cliente');
+            const termoOriginal = (campo?.value || '').toLowerCase();
+            const termoNumero = telefoneLimpo(termoOriginal);
 
-            container.innerHTML = ''; let chavesClientes = Object.keys(bancoClientes); let encontrou = false;
+            container.innerHTML = '';
+            const chavesClientes = Object.keys(bancoClientes || {});
+            let encontrou = false;
+
             chavesClientes.forEach(tel => {
-                let cliente = bancoClientes[tel];
-                if(tel.includes(termoBusca) || cliente.nome.toLowerCase().includes(termoNome)) {
+                const cliente = bancoClientes[tel] || {};
+                const nome = (cliente.nome || '').toLowerCase();
+                if (!termoOriginal || tel.includes(termoNumero) || nome.includes(termoOriginal)) {
                     encontrou = true;
                     container.innerHTML += `
                         <div class="cliente-card">
-                            <div class="cliente-header"><p class="cliente-nome">${cliente.nome}</p><p class="cliente-tel">📞 ${cliente.telefone}</p></div>
+                            <div class="cliente-header"><p class="cliente-nome">${cliente.nome || 'Sem nome'}</p><p class="cliente-tel">ð ${cliente.telefone || tel}</p></div>
                             <div class="finance-grid" style="margin-bottom:0;">
-                                <div class="stat-box"><span>Visitas</span><strong>${cliente.visitas}</strong></div>
-                                <div class="stat-box"><span>Ferramentas</span><strong>${cliente.ferramentas}</strong></div>
-                                <div class="stat-box" style="grid-column: span 2;"><span>Gasto Total</span><strong style="color: var(--success);">R$ ${cliente.totalGasto.toFixed(2).replace('.', ',')}</strong></div>
+                                <div class="stat-box"><span>Visitas</span><strong>${cliente.visitas || 0}</strong></div>
+                                <div class="stat-box"><span>Ferramentas</span><strong>${cliente.ferramentas || 0}</strong></div>
+                                <div class="stat-box" style="grid-column: span 2;"><span>Gasto total</span><strong style="color: var(--success);">${moeda(cliente.totalGasto || 0)}</strong></div>
                             </div>
                         </div>`;
                 }
             });
-            if(!encontrou) container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhum cliente encontrado.</p>';
+            if (!encontrou) container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 35px;">Nenhum cliente encontrado.</p>';
         }
 
         function renderizarFilaServicos() {
             const container = document.getElementById('container-fila-os');
-            const termoBusca = document.getElementById('busca-os').value.toLowerCase();
-            
-            let filtrados = historicoOS.filter(os => os.numero.toLowerCase().includes(termoBusca) || os.nome.toLowerCase().includes(termoBusca) || os.telefone.includes(termoBusca));
-            if (filtrados.length === 0) { container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhuma OS em Serviços.</p>'; return; }
+            if (!container) return;
+            const termoBusca = (document.getElementById('busca-os')?.value || '').toLowerCase();
+            const termoNumero = telefoneLimpo(termoBusca);
 
-            container.innerHTML = ''; 
+            const filtrados = historicoOS.filter(os => {
+                const numero = (os.numero || '').toLowerCase();
+                const nome = (os.nome || '').toLowerCase();
+                const telRaw = (os.telefone || '').toLowerCase();
+                const telNum = telefoneLimpo(os.telefone || '');
+                return !termoBusca || numero.includes(termoBusca) || nome.includes(termoBusca) || telRaw.includes(termoBusca) || (termoNumero && telNum.includes(termoNumero));
+            });
+
+            if (filtrados.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 35px;">Nenhuma OS em ServiÃ§os.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
             filtrados.slice().reverse().forEach(os => {
-                let statusClass = os.statusCode === "pago" ? "badge-pago" : (os.statusCode === "parcial" ? "badge-parcial" : "badge-retirada");
-                let statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago Parcial" : "Pagar Retirada");
-                let btnPagarHTML = os.statusCode !== "pago" ? `<button class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago (Pix/Dinheiro)</button>` : "";
+                const statusClass = os.statusCode === "pago" ? "badge-pago" : (os.statusCode === "parcial" ? "badge-parcial" : "badge-retirada");
+                const statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago parcial" : "Pagar retirada");
+                const btnPagarHTML = os.statusCode !== "pago" ? `<button class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">ð° Marcar como pago</button>` : "";
 
                 container.innerHTML += `
                     <div class="os-card">
                         <div class="os-card-header"><span class="os-number">${os.numero} - ${os.nome}</span><span class="os-badge ${statusClass}">${statusText}</span></div>
                         <div class="os-details">
                             <strong>Tel:</strong> ${os.telefone}<br>
-                            <div class="os-detalhes-lista"><strong style="color:var(--primary);">Serviços:</strong><br>${os.descricaoServicos}</div>
-                            <strong>Total:</strong> <span style="color:var(--primary); font-weight:bold;">${os.valorFormatado}</span>
+                            <strong>Entrega:</strong> ${os.dataStr || ''}<br>
+                            <div class="os-detalhes-lista"><strong style="color:var(--primary);">ServiÃ§os:</strong><br>${os.descricaoServicos || ''}</div>
+                            <strong>Total:</strong> <span style="color:var(--primary); font-weight:900;">${os.valorFormatado || moeda(os.valorNumerico)}</span>
                         </div>
                         ${btnPagarHTML}
                         <div class="btn-group-os">
-                            <button class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">📲 WhatsApp</button>
-                            <button class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">🖨️ Imprimir</button>
+                            <button class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">ð² WhatsApp</button>
+                            <button class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">ð¨ï¸ Imprimir</button>
                         </div>
-                        <button class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">✅ Marcar como Entregue</button>
+                        <button class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">â Marcar como entregue</button>
                     </div>`;
             });
         }
 
         function enviarWhatsApp(idFirebase) {
-            let os = historicoOS.find(o => o.idFirebase === idFirebase);
-            let tel = os.telefone.replace(/\D/g, ''); 
-            if(tel.length < 10) return alert("O telefone preenchido parece inválido.");
-            if(tel.length === 10 || tel.length === 11) tel = "55" + tel; 
+            const os = historicoOS.find(o => o.idFirebase === idFirebase);
+            if (!os) return alert("OS nÃ£o encontrada.");
+            let tel = telefoneLimpo(os.telefone);
+            if (tel.length < 10) return alert("O telefone preenchido parece invÃ¡lido.");
+            if (tel.length === 10 || tel.length === 11) tel = "55" + tel;
 
-            let statusTxt = os.statusCode === 'pago' ? 'Totalmente Pago' : (os.statusCode === 'parcial' ? 'Pago Parcialmente (Sinal)' : 'Pagamento na Retirada');
-            let servs = os.descricaoServicos.replace(/<br>/g, '\n- ');
+            const statusTxt = os.statusCode === 'pago' ? 'Totalmente pago' : (os.statusCode === 'parcial' ? 'Pago parcialmente / sinal' : 'Pagamento na retirada');
+            const servs = (os.descricaoServicos || '').replace(/<br>/g, '\n- ');
 
-            let msg = `Olá, ${os.nome}! Aqui é da *Amolador Dois Irmãos* ✂️\n\nSua OS *${os.numero}* foi registrada.\n\n*Serviços:*\n- ${servs}\n\n*Entrega:* ${os.dataStr}\n*Total:* ${os.valorFormatado}\n*Status:* ${statusTxt}\n\nObrigado pela preferência!`;
+            const msg = `OlÃ¡, ${os.nome}! Aqui Ã© da *AFIA AfiaÃ§Ã£o Profissional* âï¸\n\nSua OS *${os.numero}* foi registrada.\n\n*ServiÃ§os:*\n- ${servs}\n\n*Entrega:* ${os.dataStr}\n*Total:* ${os.valorFormatado}\n*Status:* ${statusTxt}\n\nObrigado pela preferÃªncia!`;
             window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function imprimirOS(idFirebase) {
-            let os = historicoOS.find(o => o.idFirebase === idFirebase);
-            let area = document.getElementById('print-area');
-            let dataAtual = new Date().toLocaleString('pt-BR');
-            let statusText = os.statusCode === "pago" ? "PAGO" : (os.statusCode === "parcial" ? "PAGO PARCIAL" : "A PAGAR NA RETIRADA");
-            
+            const os = historicoOS.find(o => o.idFirebase === idFirebase);
+            if (!os) return alert("OS nÃ£o encontrada.");
+            const area = document.getElementById('print-area');
+            const dataAtual = new Date().toLocaleString('pt-BR');
+            const statusText = os.statusCode === "pago" ? "PAGO" : (os.statusCode === "parcial" ? "PAGO PARCIAL" : "A PAGAR NA RETIRADA");
+
             area.innerHTML = `
                 <div style="font-family: monospace; width: 300px; margin: 0 auto; padding: 10px; color: black;">
-                    <h2 style="text-align: center; margin-bottom: 5px; font-size: 18px;">AMOLADOR DOIS IRMÃOS</h2>
-                    <p style="text-align: center; margin-top: 0; font-size: 12px;">Comprovante de Serviço</p>
+                    <h2 style="text-align: center; margin-bottom: 5px; font-size: 18px;">AFIA</h2>
+                    <p style="text-align: center; margin-top: 0; font-size: 12px;">AfiaÃ§Ã£o Profissional</p>
                     <p style="text-align: center; font-size: 20px; font-weight: bold; margin: 5px 0;">OS ${os.numero}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
-                    <p style="margin: 3px 0;"><strong>Data Pedido:</strong> ${dataAtual}</p><p style="margin: 3px 0;"><strong>Entrega:</strong> ${os.dataStr}</p>
-                    <p style="margin: 3px 0;"><strong>Cliente:</strong> ${os.nome}</p><p style="margin: 3px 0;"><strong>Telefone:</strong> ${os.telefone}</p>
+                    <p style="margin: 3px 0;"><strong>Data Pedido:</strong> ${dataAtual}</p>
+                    <p style="margin: 3px 0;"><strong>Entrega:</strong> ${os.dataStr}</p>
+                    <p style="margin: 3px 0;"><strong>Cliente:</strong> ${os.nome}</p>
+                    <p style="margin: 3px 0;"><strong>Telefone:</strong> ${os.telefone}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
-                    <p style="margin: 5px 0; font-weight: bold;">SERVIÇOS:</p><p style="margin: 5px 0; font-size: 14px;">${os.descricaoServicos}</p>
+                    <p style="margin: 5px 0; font-weight: bold;">SERVIÃOS:</p>
+                    <p style="margin: 5px 0; font-size: 14px;">${os.descricaoServicos}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
-                    <p style="font-size: 18px; margin: 5px 0;"><strong>TOTAL: ${os.valorFormatado}</strong></p><p style="margin: 5px 0; font-size: 14px;"><strong>Status:</strong> ${statusText}</p>
+                    <p style="font-size: 18px; margin: 5px 0;"><strong>TOTAL: ${os.valorFormatado}</strong></p>
+                    <p style="margin: 5px 0; font-size: 14px;"><strong>Status:</strong> ${statusText}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
-                    <p style="text-align: center; font-size: 11px;">Agradecemos a preferência!</p>
+                    <p style="text-align: center; font-size: 11px;">Agradecemos a preferÃªncia!</p>
                 </div>`;
             window.print();
         }
 
-        atualizarVisorOS(); renderizarAgenda(); atualizarDashboard();
+        preencherInputsPrecos();
+        atualizarVisorOS();
+        renderizarAgenda();
+        atualizarDashboard();
     </script>
 </body>
 </html>
