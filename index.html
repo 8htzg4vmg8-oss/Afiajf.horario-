@@ -45,7 +45,7 @@
         .squares-container { display: flex; gap: 8px; } 
         .square { width: 36px; height: 36px; border: 2px solid #d4d4d8; border-radius: 6px; background-color: #fafafa; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;}
         .square.booked { background-color: var(--primary); border-color: var(--primary); }
-        .square.locked { background-color: #0369a1; border-color: #0369a1; color: white; } /* Cadeado OS */
+        .square.locked { background-color: #0369a1; border-color: #0369a1; color: white; }
         .lunch-break { text-align: center; padding: 12px; background-color: #fef3c7; color: #b45309; border-radius: 6px; margin: 10px 0; font-weight: bold; font-size: 0.9rem; }
 
         /* FORMULÁRIOS */
@@ -60,6 +60,10 @@
         .btn-danger { background-color: var(--danger); }
         .btn-dark { background-color: #3f3f46; }
 
+        /* MODAL DE SUCESSO (JANELA AUTOMÁTICA) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; animation: fadeIn 0.2s ease;}
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        
         /* LISTA DE SERVIÇOS E OS */
         .service-group { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 15px; }
         .service-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
@@ -129,7 +133,7 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">REALTIME DB</span></h2>
+            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">v5</span></h2>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -166,9 +170,9 @@
             <div class="form-row">
                 <div><label>Data Retirada</label><input type="date" id="os-data"></div>
                 <div>
-                    <label>Hora</label>
-                    <select id="os-hora">
-                        <option value="09:00">09:00</option><option value="09:30">09:30</option>
+                    <label>Hora <span style="color:red;">*</span></label>
+                    <select id="os-hora" style="border: 1px solid var(--primary); font-weight: bold;">
+                        <option value="" disabled selected>Selecione a hora...</option> <option value="09:00">09:00</option><option value="09:30">09:30</option>
                         <option value="10:00">10:00</option><option value="10:30">10:30</option>
                         <option value="11:00">11:00</option><option value="11:30">11:30</option>
                         <option value="12:00">12:00</option><option value="12:30">12:30</option>
@@ -287,6 +291,18 @@
         </div>
     </div>
 
+    <div id="modal-sucesso" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="color: var(--success); margin-top: 0;">✅ OS Salva!</h2>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">Ordem registrada na nuvem com sucesso. O que deseja fazer agora?</p>
+            
+            <button class="btn btn-wpp" id="btn-modal-wpp" style="margin-bottom: 10px; font-size: 1.1rem;">📲 Enviar via WhatsApp</button>
+            <button class="btn btn-print" id="btn-modal-print" style="margin-bottom: 15px; font-size: 1.1rem;">🖨️ Imprimir Recibo</button>
+            
+            <button class="btn" style="background: #e4e4e7; color: #3f3f46;" onclick="document.getElementById('modal-sucesso').style.display='none'">Sair (Apenas Salvar)</button>
+        </div>
+    </div>
+
     <div id="print-area"></div>
 
     <nav class="bottom-nav">
@@ -299,7 +315,9 @@
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script> <script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <script>
         // ==========================================
         // 1. CONFIGURAÇÃO DO FIREBASE
         // ==========================================
@@ -315,7 +333,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.database(); // Agora usando o Realtime Database
+        const db = firebase.database();
 
         // Variáveis Locais
         let contadorOS = 1;
@@ -328,7 +346,6 @@
             'qtd-tesoura': 12.00, 'qtd-faca': 15.00, 'qtd-mola': 3.00, 'venda-777': 45.00
         };
 
-        // Lógica da Agenda Diária: Array para cada horário (0 = Livre, 1 = Manual, 2 = OS)
         const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
         let estadoAgenda = {};
         timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
@@ -362,30 +379,22 @@
         });
 
         function carregarDadosDoFirebase() {
-            // Puxa as OS do Realtime DB
             db.ref("ordens").once("value").then((snapshot) => {
-                historicoOS = [];
-                let maxNum = 0;
+                historicoOS = []; let maxNum = 0;
                 snapshot.forEach((childSnapshot) => {
                     let data = childSnapshot.val();
                     data.idFirebase = childSnapshot.key; 
                     historicoOS.push(data);
-                    
                     let numAtual = parseInt(data.numero.replace('#', ''));
                     if (numAtual > maxNum) maxNum = numAtual;
                 });
-                contadorOS = maxNum + 1;
-                atualizarVisorOS();
-                renderizarFilaServicos();
-            }).catch(err => alert("Erro ao carregar OS: " + err.message));
-
-            // Puxa Clientes
-            db.ref("clientes").once("value").then((snapshot) => {
-                bancoClientes = snapshot.val() || {};
-                renderizarClientes();
+                contadorOS = maxNum + 1; atualizarVisorOS(); renderizarFilaServicos();
             });
 
-            // Puxa a Agenda do Dia
+            db.ref("clientes").once("value").then((snapshot) => {
+                bancoClientes = snapshot.val() || {}; renderizarClientes();
+            });
+
             let hoje = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
             db.ref("agenda/" + hoje).once("value").then((snapshot) => {
                 if(snapshot.exists()) estadoAgenda = JSON.parse(snapshot.val().slots);
@@ -395,12 +404,11 @@
 
         function salvarAgendaNoFirebase() {
             let hoje = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-            db.ref("agenda/" + hoje).set({ slots: JSON.stringify(estadoAgenda) })
-                .catch(e => console.error("Erro ao salvar agenda: ", e));
+            db.ref("agenda/" + hoje).set({ slots: JSON.stringify(estadoAgenda) });
         }
 
         // ==========================================
-        // 3. NAVEGAÇÃO, DATA E FRONT-END SIMPLES
+        // 3. NAVEGAÇÃO E FRONT-END
         // ==========================================
         function switchTab(tabId, element) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -459,7 +467,7 @@
         }
 
         // ==========================================
-        // 4. LÓGICA DA AGENDA (TOQUES E BLOQUEIOS)
+        // 4. LÓGICA DA AGENDA 
         // ==========================================
         function renderizarAgenda() {
             const container = document.getElementById('agenda-container'); container.innerHTML = ''; 
@@ -492,19 +500,14 @@
 
         function toggleAgenda(hora, index) { 
             let statusAtual = estadoAgenda[hora][index];
-            
-            if (statusAtual === 2) {
-                alert("❌ Bloqueado! Este horário foi reservado por uma Ordem de Serviço (OS).");
-                return;
-            }
+            if (statusAtual === 2) return alert("❌ Bloqueado! Este horário foi reservado por uma Ordem de Serviço (OS).");
             
             estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0; 
-            renderizarAgenda(); 
-            salvarAgendaNoFirebase();
+            renderizarAgenda(); salvarAgendaNoFirebase();
         }
 
         // ==========================================
-        // 5. LÓGICA DE SALVAR NO FIREBASE REALTIME DB
+        // 5. LÓGICA DE SALVAR NO FIREBASE
         // ==========================================
         function formatarNumOS(num) { return "#" + num.toString().padStart(3, '0'); }
         function atualizarVisorOS() { document.getElementById('visor-proxima-os').innerText = formatarNumOS(contadorOS); }
@@ -513,21 +516,25 @@
             let tel = telBruto.replace(/\D/g, ''); 
             if (!tel) return; 
 
-            if (!bancoClientes[tel]) {
-                bancoClientes[tel] = { nome: nome, telefone: telBruto, visitas: 0, ferramentas: 0, totalGasto: 0 };
-            }
-            bancoClientes[tel].visitas += 1;
-            bancoClientes[tel].ferramentas += qtdFerramentas;
-            bancoClientes[tel].totalGasto += valorGasto;
-
+            if (!bancoClientes[tel]) bancoClientes[tel] = { nome: nome, telefone: telBruto, visitas: 0, ferramentas: 0, totalGasto: 0 };
+            bancoClientes[tel].visitas += 1; bancoClientes[tel].ferramentas += qtdFerramentas; bancoClientes[tel].totalGasto += valorGasto;
             db.ref("clientes/" + tel).set(bancoClientes[tel]);
         }
 
         function salvarOS() {
+            let horaAlvo = document.getElementById('os-hora').value;
+            
+            // TRAVA DE SEGURANÇA: Horário Obrigatório
+            if (!horaAlvo) {
+                alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
+                document.getElementById('os-hora').style.borderColor = "red";
+                return;
+            }
+            document.getElementById('os-hora').style.borderColor = "var(--primary)";
+
             let nomeCliente = document.getElementById('os-nome').value.trim() || "Cliente Balcão";
             let telCliente = document.getElementById('os-telefone').value.trim() || "";
             let qtdAfiar = parseInt(document.getElementById('contador-ferramentas-os').innerText);
-            let horaAlvo = document.getElementById('os-hora').value;
             let dataAlvo = document.getElementById('os-data').value;
             let statusPagamentoVal = document.getElementById('os-status-pagamento').value;
             let totalFormatado = document.getElementById('valor-total-os').innerText;
@@ -547,7 +554,7 @@
 
             let descricaoServicos = descricaoArray.length > 0 ? descricaoArray.join('<br>') : "Nenhum serviço especificado";
 
-            // Distribuição inteligente na Agenda (Marcando com status 2 / Cadeado)
+            // Distribuição na Agenda
             if (qtdAfiar > 0) {
                 let vagasRestantes = parseInt(document.getElementById('vagas-livres').innerText);
                 if (qtdAfiar > vagasRestantes) { alert(`Faltam vagas na agenda.`); return; }
@@ -563,16 +570,14 @@
                 for (let i of ordemBusca) {
                     if (pendentes <= 0) break;
                     let horaAtual = timeSlots[i];
-                    
                     for (let slot = 0; slot < 5; slot++) {
                         if (estadoAgenda[horaAtual][slot] === 0 && pendentes > 0) {
-                            estadoAgenda[horaAtual][slot] = 2; // 2 = OS Confirmada (Cadeado)
+                            estadoAgenda[horaAtual][slot] = 2; // Cadeado OS
                             pendentes--;
                         }
                     }
                 }
-                renderizarAgenda();
-                salvarAgendaNoFirebase();
+                renderizarAgenda(); salvarAgendaNoFirebase();
             }
 
             registrarClienteNoFirebase(nomeCliente, telCliente, qtdAfiar, totalMoeda);
@@ -593,28 +598,30 @@
                 statusCode: statusPagamentoVal
             };
             
-            // Grava na Nuvem do Realtime Database
+            // Grava na Nuvem e Aciona o MODAL
             let novaOSRef = db.ref("ordens").push();
             novaOSRef.set(novaOS).then(() => {
                 novaOS.idFirebase = novaOSRef.key; 
                 historicoOS.push(novaOS);
-                
                 contadorOS++; 
                 atualizarVisorOS();
                 renderizarFilaServicos();
-                
-                alert(`✅ OS ${novaOS.numero} salva com sucesso na nuvem!`);
                 
                 // Limpa formulário
                 document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
                 document.getElementById('os-telefone').value = ""; document.getElementById('os-nome').value = "";
                 document.getElementById('afia-outro-marca').value = ""; document.getElementById('os-status-pagamento').value = "retirada";
+                document.getElementById('os-hora').value = ""; // Reseta o horário
                 calcularTotal();
+                
                 switchTab('servicos', document.querySelectorAll('.nav-item')[2]);
                 
-            }).catch(error => {
-                alert("❌ ERRO AO SALVAR OS: " + error.message);
-            });
+                // ABRE A JANELA COM OS BOTÕES WPP E PRINT
+                document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
+                document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
+                document.getElementById('modal-sucesso').style.display = 'flex';
+                
+            }).catch(error => { alert("❌ ERRO AO SALVAR OS: " + error.message); });
         }
 
         // ==========================================
@@ -625,12 +632,9 @@
             if(confirm(`Confirmar pagamento via Pix/Dinheiro para a OS ${os.numero}?`)) {
                 db.ref("ordens/" + idFirebase).update({ statusCode: "pago" }).then(() => {
                     os.statusCode = "pago"; 
-                    caixaAReceber -= os.valorNumerico;
-                    caixaEntrou += os.valorNumerico;
-                    atualizarDashboard();
-                    renderizarFilaServicos(); 
-                    alert("Pagamento registrado no caixa!");
-                }).catch(err => alert("Erro ao salvar pagamento: " + err.message));
+                    caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico;
+                    atualizarDashboard(); renderizarFilaServicos(); 
+                });
             }
         }
 
@@ -638,17 +642,14 @@
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(confirm("Confirma a entrega desta OS ao cliente? Ela será removida da lista.")) {
                 db.ref("ordens/" + idFirebase).remove().then(() => {
-                    if (os.statusCode !== "pago") { 
-                        caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico; atualizarDashboard(); 
-                    }
-                    historicoOS = historicoOS.filter(o => o.idFirebase !== idFirebase); 
-                    renderizarFilaServicos(); 
-                }).catch(err => alert("Erro ao deletar OS: " + err.message));
+                    if (os.statusCode !== "pago") { caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico; atualizarDashboard(); }
+                    historicoOS = historicoOS.filter(o => o.idFirebase !== idFirebase); renderizarFilaServicos(); 
+                });
             }
         }
 
         // ==========================================
-        // 7. RENDERIZAÇÃO DE TELAS
+        // 7. RENDERIZAÇÃO DE TELAS E RECURSOS
         // ==========================================
         function renderizarClientes() {
             const container = document.getElementById('container-clientes');
@@ -685,7 +686,6 @@
             filtrados.slice().reverse().forEach(os => {
                 let statusClass = os.statusCode === "pago" ? "badge-pago" : (os.statusCode === "parcial" ? "badge-parcial" : "badge-retirada");
                 let statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago Parcial" : "Pagar Retirada");
-
                 let btnPagarHTML = os.statusCode !== "pago" ? `<button class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago (Pix/Dinheiro)</button>` : "";
 
                 container.innerHTML += `
