@@ -133,7 +133,11 @@
 
         /* MODAL */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
-        .modal-content { background: white; padding: 20px; border-radius: 14px; width: 86%; max-width: 330px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-content { background: white; padding: 20px; border-radius: 14px; width: 86%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-os-resumo { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; margin: 12px 0 16px; text-align: left; }
+        .modal-os-numero { color: var(--success); font-size: 1.25rem; font-weight: 800; display: block; margin-bottom: 4px; }
+        .modal-os-cliente { color: #166534; font-size: 0.92rem; font-weight: 700; display: block; }
+        .modal-os-info { color: #3f3f46; font-size: 0.84rem; margin-top: 7px; line-height: 1.35; }
 
         /* SERVIÃOS E OS */
         .service-group { background: #f8fafc; border: 1px solid var(--border); border-radius: 9px; padding: 9px; margin-bottom: 10px; }
@@ -386,11 +390,18 @@
 
     <div id="modal-sucesso" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="color: var(--success); margin-top: 0;">â OS Salva!</h2>
-            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 18px;">Ordem registrada na nuvem. O que deseja fazer agora?</p>
-            <button class="btn btn-wpp" id="btn-modal-wpp" style="margin-bottom: 9px; font-size: 1.04rem;">ð² Enviar via WhatsApp</button>
-            <button class="btn btn-print" id="btn-modal-print" style="margin-bottom: 14px; font-size: 1.04rem;">ð¨ï¸ Imprimir Recibo</button>
-            <button class="btn" style="background: #e4e4e7; color: #3f3f46;" onclick="fecharModalSucesso()">Sair / apenas salvar</button>
+            <h2 style="color: var(--success); margin-top: 0; margin-bottom: 6px;">â OS gerada com sucesso!</h2>
+            <p style="color: var(--text-light); font-size: 0.88rem; margin: 0;">A ordem foi salva e entrou na fila de serviÃ§os.</p>
+
+            <div class="modal-os-resumo">
+                <span class="modal-os-numero" id="modal-os-numero">#000</span>
+                <span class="modal-os-cliente" id="modal-os-cliente">Cliente</span>
+                <div class="modal-os-info" id="modal-os-info">Escolha abaixo se deseja enviar ao cliente ou imprimir sua via.</div>
+            </div>
+
+            <button class="btn btn-wpp" id="btn-modal-wpp" style="margin-bottom: 9px; font-size: 1.02rem;">ð² Enviar OS para o cliente pelo WhatsApp</button>
+            <button class="btn btn-print" id="btn-modal-print" style="margin-bottom: 14px; font-size: 1.02rem;">ð¨ï¸ Imprimir via da loja</button>
+            <button class="btn" style="background: #e4e4e7; color: #3f3f46;" onclick="fecharModalSucesso()">Fechar e continuar nos ServiÃ§os</button>
         </div>
     </div>
 
@@ -526,6 +537,16 @@
 
         function fecharModalSucesso() {
             document.getElementById('modal-sucesso').style.display = 'none';
+        }
+
+        function abrirModalSucesso(os) {
+            if (!os) return;
+            setTexto('modal-os-numero', os.numero || '#000');
+            setTexto('modal-os-cliente', os.nome || 'Cliente');
+            setTexto('modal-os-info', `${os.dataStr || ''} â¢ ${os.valorFormatado || 'R$ 0,00'}`);
+            document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(os.idFirebase);
+            document.getElementById('btn-modal-print').onclick = () => imprimirOS(os.idFirebase);
+            document.getElementById('modal-sucesso').style.display = 'flex';
         }
 
         // ==========================================
@@ -931,9 +952,7 @@
 
                 switchTab('servicos', document.querySelectorAll('.nav-item')[2]);
 
-                document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
-                document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
-                document.getElementById('modal-sucesso').style.display = 'flex';
+                abrirModalSucesso(novaOS);
             }).catch(error => {
                 alert("â ERRO AO SALVAR OS: " + error.message);
             });
@@ -1036,7 +1055,7 @@
                         ${btnPagarHTML}
                         <div class="btn-group-os">
                             <button class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">ð² WhatsApp</button>
-                            <button class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">ð¨ï¸ Imprimir</button>
+                            <button class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">ð¨ï¸ Via loja</button>
                         </div>
                         <button class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">â Marcar como entregue</button>
                     </div>`;
@@ -1068,6 +1087,7 @@
                 <div style="font-family: monospace; width: 300px; margin: 0 auto; padding: 10px; color: black;">
                     <h2 style="text-align: center; margin-bottom: 5px; font-size: 18px;">AFIA</h2>
                     <p style="text-align: center; margin-top: 0; font-size: 12px;">AfiaÃ§Ã£o Profissional</p>
+                    <p style="text-align: center; margin: 4px 0; font-size: 12px; font-weight: bold; letter-spacing: 1px;">VIA DA LOJA</p>
                     <p style="text-align: center; font-size: 20px; font-weight: bold; margin: 5px 0;">OS ${os.numero}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
                     <p style="margin: 3px 0;"><strong>Data Pedido:</strong> ${dataAtual}</p>
