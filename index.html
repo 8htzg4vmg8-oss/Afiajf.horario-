@@ -39,6 +39,7 @@
         .progresso-stats { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #3f3f46; }
         .progresso-bg { background-color: #e4e4e7; border-radius: 10px; height: 10px; width: 100%; overflow: hidden; }
         .progresso-fill { height: 100%; width: 0%; background-color: var(--success); transition: 0.3s ease; }
+        .badge-producao { text-align: center; font-size: 0.85rem; margin-top: 10px; color: #3f3f46; font-weight: bold; background: #e0f2fe; padding: 5px; border-radius: 6px; border: 1px dashed var(--primary); }
 
         .time-row { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
         .time-label { font-weight: 600; font-size: 1rem; width: 48px; margin-right: 10px; color: #3f3f46; }
@@ -133,7 +134,7 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">Final</span></h2>
+            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">v7</span></h2>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -152,6 +153,7 @@
                 <span>Livres: <strong id="vagas-livres" style="color: var(--success);">70</strong></span>
             </div>
             <div class="progresso-bg"><div class="progresso-fill" id="barra-progresso"></div></div>
+            <div class="badge-producao">🔥 Total Produzido (Período): <strong id="agenda-producao-total" style="color: var(--primary); font-size: 1.1rem;">0</strong> un.</div>
         </div>
         <div class="card" id="agenda-container" style="padding: 10px;"></div>
     </div>
@@ -172,7 +174,8 @@
                 <div>
                     <label>Hora <span style="color:red;">*</span></label>
                     <select id="os-hora" style="border: 1px solid var(--primary); font-weight: bold;">
-                        <option value="" disabled selected>Selecione a hora...</option> <option value="09:00">09:00</option><option value="09:30">09:30</option>
+                        <option value="" disabled selected>Selecione a hora...</option>
+                        <option value="09:00">09:00</option><option value="09:30">09:30</option>
                         <option value="10:00">10:00</option><option value="10:30">10:30</option>
                         <option value="11:00">11:00</option><option value="11:30">11:30</option>
                         <option value="12:00">12:00</option><option value="12:30">12:30</option>
@@ -465,6 +468,10 @@
             document.getElementById('total-ferramentas-ui').innerText = statsFerramentas;
             document.getElementById('total-molas-ui').innerText = statsMolas;
             document.getElementById('total-vendas-ui').innerText = statsVendas;
+            
+            // ATUALIZA O NOVO CONTADOR NA AGENDA (Total Produzido)
+            document.getElementById('agenda-producao-total').innerText = statsFerramentas;
+            
             let d = parseInt(document.getElementById('dias-uteis').value) || 1;
             document.getElementById('media-diaria').innerText = `${(statsFerramentas / d).toFixed(1)} / dia`;
         }
@@ -503,13 +510,19 @@
 
         function toggleAgenda(hora, index) { 
             let statusAtual = estadoAgenda[hora][index];
-            if (statusAtual === 2) return alert("❌ Bloqueado! Este horário foi reservado por uma Ordem de Serviço (OS).");
+            if (statusAtual === 2) {
+                if(confirm("🔓 Liberar Vaga?\n\nEste horário está reservado para uma OS. Você já adiantou este serviço e deseja abrir essa vaga para um novo cliente?")) {
+                    estadoAgenda[hora][index] = 0;
+                    renderizarAgenda();
+                    salvarAgendaNoFirebase();
+                }
+                return; 
+            }
             
             estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0; 
             renderizarAgenda(); salvarAgendaNoFirebase();
         }
 
-        // NOVO: Função salva-vidas para destravar a agenda de testes
         function zerarAgenda() {
             if(confirm("Tem certeza que deseja limpar TODA a agenda de hoje? Isso removerá todos os cadeados e marcações manuais.")) {
                 timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
@@ -537,7 +550,6 @@
         function salvarOS() {
             let horaAlvo = document.getElementById('os-hora').value;
             
-            // TRAVA: Obrigatório marcar horário
             if (!horaAlvo) {
                 alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
                 document.getElementById('os-hora').style.borderColor = "red";
@@ -611,7 +623,6 @@
                 statusCode: statusPagamentoVal
             };
             
-            // Grava na Nuvem e Aciona o MODAL
             let novaOSRef = db.ref("ordens").push();
             novaOSRef.set(novaOS).then(() => {
                 novaOS.idFirebase = novaOSRef.key; 
@@ -620,7 +631,6 @@
                 atualizarVisorOS();
                 renderizarFilaServicos();
                 
-                // Limpa formulário
                 document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
                 document.getElementById('os-telefone').value = ""; document.getElementById('os-nome').value = "";
                 document.getElementById('afia-outro-marca').value = ""; document.getElementById('os-status-pagamento').value = "retirada";
@@ -629,7 +639,6 @@
                 
                 switchTab('servicos', document.querySelectorAll('.nav-item')[2]);
                 
-                // ABRE A JANELA
                 document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
                 document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
                 document.getElementById('modal-sucesso').style.display = 'flex';
