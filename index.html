@@ -133,7 +133,7 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">v5</span></h2>
+            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">Final</span></h2>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -287,7 +287,10 @@
 
         <div class="card" style="border: 1px solid var(--danger); background: #fef2f2;">
             <h3 style="color: var(--danger); border-bottom-color: #fecaca;">🔒 Sessão e Segurança</h3>
-            <button class="btn btn-danger" onclick="fazerLogout()" style="margin-bottom: 15px;">Sair do App (Logout)</button>
+            <button class="btn btn-danger" onclick="fazerLogout()" style="margin-bottom: 10px;">Sair do App (Logout)</button>
+            <hr style="border: none; border-top: 1px dashed #fecaca; margin: 15px 0;">
+            <p style="font-size: 0.85rem; color: #7f1d1d; margin-top: 0;">Preso em um teste com a agenda lotada? Zere tudo aqui embaixo:</p>
+            <button class="btn btn-danger" style="background: white; color: var(--danger); border: 1px solid var(--danger); margin-top: 0;" onclick="zerarAgenda()">Limpar Agenda de Hoje</button>
         </div>
     </div>
 
@@ -506,6 +509,16 @@
             renderizarAgenda(); salvarAgendaNoFirebase();
         }
 
+        // NOVO: Função salva-vidas para destravar a agenda de testes
+        function zerarAgenda() {
+            if(confirm("Tem certeza que deseja limpar TODA a agenda de hoje? Isso removerá todos os cadeados e marcações manuais.")) {
+                timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
+                renderizarAgenda();
+                salvarAgendaNoFirebase();
+                alert("Sua agenda de hoje foi limpa!");
+            }
+        }
+
         // ==========================================
         // 5. LÓGICA DE SALVAR NO FIREBASE
         // ==========================================
@@ -524,13 +537,13 @@
         function salvarOS() {
             let horaAlvo = document.getElementById('os-hora').value;
             
-            // TRAVA DE SEGURANÇA: Horário Obrigatório
+            // TRAVA: Obrigatório marcar horário
             if (!horaAlvo) {
                 alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
                 document.getElementById('os-hora').style.borderColor = "red";
                 return;
             }
-            document.getElementById('os-hora').style.borderColor = "var(--primary)";
+            document.getElementById('os-hora').style.borderColor = "var(--border)";
 
             let nomeCliente = document.getElementById('os-nome').value.trim() || "Cliente Balcão";
             let telCliente = document.getElementById('os-telefone').value.trim() || "";
@@ -611,12 +624,12 @@
                 document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
                 document.getElementById('os-telefone').value = ""; document.getElementById('os-nome').value = "";
                 document.getElementById('afia-outro-marca').value = ""; document.getElementById('os-status-pagamento').value = "retirada";
-                document.getElementById('os-hora').value = ""; // Reseta o horário
+                document.getElementById('os-hora').value = ""; 
                 calcularTotal();
                 
                 switchTab('servicos', document.querySelectorAll('.nav-item')[2]);
                 
-                // ABRE A JANELA COM OS BOTÕES WPP E PRINT
+                // ABRE A JANELA
                 document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
                 document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
                 document.getElementById('modal-sucesso').style.display = 'flex';
