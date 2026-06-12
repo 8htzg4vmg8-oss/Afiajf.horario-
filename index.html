@@ -134,8 +134,8 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v11 FINAL</h2>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Bug do WhatsApp Resolvido!</p>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v12</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Bugs de Travamento Resolvidos!</p>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -330,9 +330,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
     <script>
-        // ==========================================
-        // 1. CONFIGURAÇÃO DO FIREBASE
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
             authDomain: "afia-37aa8.firebaseapp.com",
@@ -347,9 +344,7 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        let contadorOS = 1;
-        let historicoOS = [];
-        let bancoClientes = {};
+        let contadorOS = 1; let historicoOS = []; let bancoClientes = {};
         let caixaEntrou = 0, caixaAReceber = 0, statsFerramentas = 0, statsMolas = 0, statsVendas = 0;
 
         let tabelaPrecos = {
@@ -359,12 +354,8 @@
         };
 
         const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
-        let estadoAgenda = {};
-        timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
+        let estadoAgenda = {}; timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
 
-        // ==========================================
-        // 2. AUTENTICAÇÃO E CARREGAMENTO
-        // ==========================================
         function fazerLogin() {
             let email = document.getElementById('login-email').value;
             let senha = document.getElementById('login-senha').value;
@@ -372,9 +363,7 @@
             auth.signInWithEmailAndPassword(email, senha).catch((error) => alert("Erro ao entrar: " + error.message));
         }
 
-        function fazerLogout() {
-            if(confirm("Deseja sair do sistema?")) auth.signOut();
-        }
+        function fazerLogout() { if(confirm("Deseja sair do sistema?")) auth.signOut(); }
 
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -394,8 +383,7 @@
             db.ref("ordens").once("value").then((snapshot) => {
                 historicoOS = []; let maxNum = 0;
                 snapshot.forEach((childSnapshot) => {
-                    let data = childSnapshot.val();
-                    data.idFirebase = childSnapshot.key; 
+                    let data = childSnapshot.val(); data.idFirebase = childSnapshot.key; 
                     historicoOS.push(data);
                     let numAtual = parseInt(data.numero.replace('#', ''));
                     if (numAtual > maxNum) maxNum = numAtual;
@@ -419,12 +407,7 @@
             db.ref("agenda/" + hoje).set({ slots: JSON.stringify(estadoAgenda) });
         }
 
-        // ==========================================
-        // 3. NAVEGAÇÃO E FRONT-END
-        // ==========================================
-        function fecharModal() {
-            document.getElementById('modal-sucesso').style.display = 'none';
-        }
+        function fecharModal() { document.getElementById('modal-sucesso').style.display = 'none'; }
 
         function switchTab(tabId, element) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -443,49 +426,32 @@
             else if (this.value === "") document.getElementById('os-nome').value = "";
         });
 
-        // Função 100% blindada para buscar os valores do HTML
         function pegarValorSeguro(id) {
-            let el = document.getElementById(id);
-            return el ? (parseFloat(el.value) || parseInt(el.innerText) || 0) : 0;
+            let el = document.getElementById(id); return el ? (parseFloat(el.value) || parseInt(el.innerText) || 0) : 0;
         }
 
         function salvarPrecos() {
-            tabelaPrecos['afia-777'] = pegarValorSeguro('preco-alicate'); 
-            tabelaPrecos['afia-722'] = pegarValorSeguro('preco-alicate'); 
-            tabelaPrecos['afia-522'] = pegarValorSeguro('preco-alicate');
-            tabelaPrecos['afia-outro'] = pegarValorSeguro('preco-outro');
-            tabelaPrecos['qtd-tesoura'] = pegarValorSeguro('preco-tesoura');
-            tabelaPrecos['qtd-faca'] = pegarValorSeguro('preco-faca');
-            tabelaPrecos['qtd-mola'] = pegarValorSeguro('preco-mola');
-            tabelaPrecos['venda-espatula'] = pegarValorSeguro('preco-espatula');
-            tabelaPrecos['venda-alicate-777'] = pegarValorSeguro('preco-venda-777');
-            tabelaPrecos['venda-alicate-722'] = pegarValorSeguro('preco-alicate-722');
+            tabelaPrecos['afia-777'] = pegarValorSeguro('preco-alicate'); tabelaPrecos['afia-722'] = pegarValorSeguro('preco-alicate'); 
+            tabelaPrecos['afia-522'] = pegarValorSeguro('preco-alicate'); tabelaPrecos['afia-outro'] = pegarValorSeguro('preco-outro');
+            tabelaPrecos['qtd-tesoura'] = pegarValorSeguro('preco-tesoura'); tabelaPrecos['qtd-faca'] = pegarValorSeguro('preco-faca');
+            tabelaPrecos['qtd-mola'] = pegarValorSeguro('preco-mola'); tabelaPrecos['venda-espatula'] = pegarValorSeguro('preco-espatula');
+            tabelaPrecos['venda-alicate-777'] = pegarValorSeguro('preco-venda-777'); tabelaPrecos['venda-alicate-722'] = pegarValorSeguro('preco-alicate-722');
             alert("Tabela de Preços salva!"); calcularTotal(); 
         }
 
         function changeQty(id, value) {
             let el = document.getElementById(id);
-            if(el) {
-                let result = parseInt(el.innerText) + value;
-                el.innerText = result < 0 ? 0 : result;
-                calcularTotal(); 
-            }
+            if(el) { let result = parseInt(el.innerText) + value; el.innerText = result < 0 ? 0 : result; calcularTotal(); }
         }
 
         function calcularTotal() {
             let totalMoeda = 0;
-            for (let id in tabelaPrecos) {
-                totalMoeda += pegarValorSeguro(id) * tabelaPrecos[id];
-            }
+            for (let id in tabelaPrecos) totalMoeda += pegarValorSeguro(id) * tabelaPrecos[id];
             let elValor = document.getElementById('valor-total-os');
             if(elValor) elValor.innerText = "R$ " + totalMoeda.toFixed(2).replace('.', ',');
 
-            let tf = 0;
-            ['afia-777', 'afia-722', 'afia-522', 'afia-outro', 'qtd-tesoura', 'qtd-faca'].forEach(id => {
-                tf += pegarValorSeguro(id);
-            });
-            let elContador = document.getElementById('contador-ferramentas-os');
-            if(elContador) elContador.innerText = tf;
+            let tf = 0; ['afia-777', 'afia-722', 'afia-522', 'afia-outro', 'qtd-tesoura', 'qtd-faca'].forEach(id => { tf += pegarValorSeguro(id); });
+            let elContador = document.getElementById('contador-ferramentas-os'); if(elContador) elContador.innerText = tf;
         }
 
         function atualizarDashboard() {
@@ -493,14 +459,10 @@
             let eCaixaR = document.getElementById('caixa-areceber'); if(eCaixaR) eCaixaR.innerText = "R$ " + caixaAReceber.toFixed(2).replace('.', ',');
             let eTotalP = document.getElementById('agenda-producao-total'); if(eTotalP) eTotalP.innerText = statsFerramentas;
             
-            let d = pegarValorSeguro('dias-uteis') || 1;
-            let eMedia = document.getElementById('media-diaria');
+            let d = pegarValorSeguro('dias-uteis') || 1; let eMedia = document.getElementById('media-diaria');
             if(eMedia) eMedia.innerText = `${(statsFerramentas / d).toFixed(1)} / dia`;
         }
 
-        // ==========================================
-        // 4. LÓGICA DA AGENDA
-        // ==========================================
         function renderizarAgenda() {
             const container = document.getElementById('agenda-container'); if(!container) return;
             container.innerHTML = ''; let totalOcupados = 0;
@@ -528,36 +490,27 @@
         }
 
         function toggleAgenda(hora, index) { 
-            if(!estadoAgenda[hora]) return;
-            let statusAtual = estadoAgenda[hora][index];
+            if(!estadoAgenda[hora]) return; let statusAtual = estadoAgenda[hora][index];
             if (statusAtual === 2) {
                 if(confirm("🔓 Liberar Vaga?\n\nEste horário está reservado para uma OS. Você já adiantou este serviço e deseja abrir essa vaga para um novo cliente?")) {
-                    estadoAgenda[hora][index] = 0;
-                    renderizarAgenda(); salvarAgendaNoFirebase();
+                    estadoAgenda[hora][index] = 0; renderizarAgenda(); salvarAgendaNoFirebase();
                 }
                 return; 
             }
-            estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0; 
-            renderizarAgenda(); salvarAgendaNoFirebase();
+            estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0; renderizarAgenda(); salvarAgendaNoFirebase();
         }
 
         function zerarAgenda() {
             if(confirm("Tem certeza que deseja limpar TODA a agenda de hoje?")) {
-                timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
-                renderizarAgenda(); salvarAgendaNoFirebase();
-                alert("Agenda de hoje limpa!");
+                timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]); renderizarAgenda(); salvarAgendaNoFirebase(); alert("Agenda limpa!");
             }
         }
 
-        // ==========================================
-        // 5. LÓGICA DE SALVAR OS BLINDADA
-        // ==========================================
         function formatarNumOS(num) { return "#" + num.toString().padStart(3, '0'); }
         function atualizarVisorOS() { let e = document.getElementById('visor-proxima-os'); if(e) e.innerText = formatarNumOS(contadorOS); }
 
         function registrarClienteNoFirebase(nome, telBruto, qtdFerramentas, valorGasto) {
-            let tel = telBruto.replace(/\D/g, ''); 
-            if (!tel) return; 
+            let tel = telBruto.replace(/\D/g, ''); if (!tel) return; 
             if (!bancoClientes[tel]) bancoClientes[tel] = { nome: nome, telefone: telBruto, visitas: 0, ferramentas: 0, totalGasto: 0 };
             bancoClientes[tel].visitas += 1; bancoClientes[tel].ferramentas += qtdFerramentas; bancoClientes[tel].totalGasto += valorGasto;
             db.ref("clientes/" + tel).set(bancoClientes[tel]);
@@ -565,14 +518,9 @@
 
         function salvarOS() {
             try {
-                let elHora = document.getElementById('os-hora');
-                let horaAlvo = elHora ? elHora.value : "";
+                let elHora = document.getElementById('os-hora'); let horaAlvo = elHora ? elHora.value : "";
                 
-                if (!horaAlvo) {
-                    alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
-                    if(elHora) elHora.style.borderColor = "red";
-                    return;
-                }
+                if (!horaAlvo) { alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!"); if(elHora) elHora.style.borderColor = "red"; return; }
                 if(elHora) elHora.style.borderColor = "var(--border)";
 
                 let elNome = document.getElementById('os-nome'); let nomeCliente = (elNome && elNome.value.trim()) ? elNome.value.trim() : "Cliente Balcão";
@@ -582,50 +530,34 @@
                 let elStatus = document.getElementById('os-status-pagamento'); let statusPagamentoVal = elStatus ? elStatus.value : "retirada";
                 let elTotalFormatado = document.getElementById('valor-total-os'); let totalFormatado = elTotalFormatado ? elTotalFormatado.innerText : "R$ 0,00";
                 
-                let totalMoeda = 0;
-                for (let id in tabelaPrecos) totalMoeda += pegarValorSeguro(id) * tabelaPrecos[id];
+                let totalMoeda = 0; for (let id in tabelaPrecos) totalMoeda += pegarValorSeguro(id) * tabelaPrecos[id];
 
-                // Coleta Descritiva Blindada
                 let descricaoArray = [];
                 let addServ = (id, nomeItem) => { let q = pegarValorSeguro(id); if(q > 0) descricaoArray.push(`${q}x ${nomeItem}`); };
 
-                addServ('afia-777', 'Alicate Mundial 777');
-                addServ('afia-722', 'Alicate Mundial 722');
-                addServ('afia-522', 'Alicate Mundial 522');
-                
+                addServ('afia-777', 'Alicate Mundial 777'); addServ('afia-722', 'Alicate Mundial 722'); addServ('afia-522', 'Alicate Mundial 522');
                 let qOutro = pegarValorSeguro('afia-outro');
                 if(qOutro > 0) {
                     let eMarca = document.getElementById('afia-outro-marca');
                     let marca = (eMarca && eMarca.value.trim()) ? eMarca.value.trim() : "Outro Modelo";
                     descricaoArray.push(`${qOutro}x Alicate ${marca}`);
                 }
-
-                addServ('qtd-tesoura', 'Tesoura');
-                addServ('qtd-faca', 'Faca');
-                addServ('qtd-mola', 'Troca de Mola');
-                addServ('venda-espatula', 'Espátula');
-                addServ('venda-alicate-777', 'Alicate Novo 777');
-                addServ('venda-alicate-722', 'Alicate Novo 722');
+                addServ('qtd-tesoura', 'Tesoura'); addServ('qtd-faca', 'Faca'); addServ('qtd-mola', 'Troca de Mola');
+                addServ('venda-espatula', 'Espátula'); addServ('venda-alicate-777', 'Alicate Novo 777'); addServ('venda-alicate-722', 'Alicate Novo 722');
 
                 let descricaoServicos = descricaoArray.length > 0 ? descricaoArray.join('<br>') : "Nenhum serviço especificado";
 
-                // Tratamento de Data Seguro
                 let dataStr = "Sem data";
                 if (dataAlvo) {
                     let partes = dataAlvo.split('-');
                     if (partes.length === 3) dataStr = `${partes[2]}/${partes[1]}/${partes[0]} às ${horaAlvo}`;
                     else dataStr = dataAlvo + " às " + horaAlvo;
-                } else {
-                    dataStr = new Date().toLocaleDateString('pt-BR') + " às " + horaAlvo;
-                }
+                } else { dataStr = new Date().toLocaleDateString('pt-BR') + " às " + horaAlvo; }
 
-                // Agenda
                 if (qtdAfiar > 0) {
                     let vagasRestantes = pegarValorSeguro('vagas-livres');
                     if (qtdAfiar > vagasRestantes) { alert(`Faltam vagas na agenda.`); return; }
-                    
-                    let indexAlvo = timeSlots.indexOf(horaAlvo); 
-                    if(indexAlvo === -1) indexAlvo = 0; 
+                    let indexAlvo = timeSlots.indexOf(horaAlvo); if(indexAlvo === -1) indexAlvo = 0; 
                     
                     let ordemBusca = [indexAlvo]; let offsetAntes = 1; let offsetDepois = 1;
                     while(indexAlvo - offsetAntes >= 0 || indexAlvo + offsetDepois < timeSlots.length) {
@@ -635,13 +567,11 @@
                     
                     let pendentes = qtdAfiar;
                     for (let i of ordemBusca) {
-                        if (pendentes <= 0) break;
-                        let horaAtual = timeSlots[i];
+                        if (pendentes <= 0) break; let horaAtual = timeSlots[i];
                         if(estadoAgenda[horaAtual]) {
                             for (let slot = 0; slot < 5; slot++) {
                                 if (estadoAgenda[horaAtual][slot] === 0 && pendentes > 0) {
-                                    estadoAgenda[horaAtual][slot] = 2; // Cadeado OS
-                                    pendentes--;
+                                    estadoAgenda[horaAtual][slot] = 2; pendentes--;
                                 }
                             }
                         }
@@ -650,68 +580,46 @@
                 }
 
                 registrarClienteNoFirebase(nomeCliente, telCliente, qtdAfiar, totalMoeda);
-
-                statsFerramentas += qtdAfiar; 
-                statsMolas += pegarValorSeguro('qtd-mola'); 
-                statsVendas += pegarValorSeguro('venda-alicate-777') + pegarValorSeguro('venda-alicate-722');
-                
+                statsFerramentas += qtdAfiar; statsMolas += pegarValorSeguro('qtd-mola'); statsVendas += pegarValorSeguro('venda-alicate-777') + pegarValorSeguro('venda-alicate-722');
                 if (statusPagamentoVal === "pago") caixaEntrou += totalMoeda; else caixaAReceber += totalMoeda;
                 atualizarDashboard();
 
                 let novaOS = {
-                    numero: formatarNumOS(contadorOS),
-                    nome: nomeCliente,
-                    telefone: telCliente || "",
-                    dataStr: dataStr,
-                    ferramentas: qtdAfiar,
-                    descricaoServicos: descricaoServicos, 
-                    valorFormatado: totalFormatado,
-                    valorNumerico: totalMoeda,
-                    statusCode: statusPagamentoVal
+                    numero: formatarNumOS(contadorOS), nome: nomeCliente, telefone: telCliente || "", dataStr: dataStr,
+                    ferramentas: qtdAfiar, descricaoServicos: descricaoServicos, valorFormatado: totalFormatado, valorNumerico: totalMoeda, statusCode: statusPagamentoVal
                 };
                 
-                // SALVAMENTO OTIMISTA NA TELA
                 let novaOSRef = db.ref("ordens").push();
                 novaOS.idFirebase = novaOSRef.key; 
-                historicoOS.push(novaOS);
-                contadorOS++; 
-                atualizarVisorOS();
+                historicoOS.push(novaOS); contadorOS++; atualizarVisorOS();
                 
-                // ABRE A JANELA IMEDIATAMENTE (O pulo do gato!)
                 let btnWpp = document.getElementById('btn-modal-wpp'); if(btnWpp) btnWpp.onclick = () => enviarWhatsApp(novaOS.idFirebase);
                 let btnPrint = document.getElementById('btn-modal-print'); if(btnPrint) btnPrint.onclick = () => imprimirOS(novaOS.idFirebase);
                 let modal = document.getElementById('modal-sucesso'); if(modal) modal.style.display = 'flex';
                 
-                // Reseta formulário
                 document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
                 if(elTel) elTel.value = ""; if(elNome) elNome.value = "";
                 let eMarcaOutro = document.getElementById('afia-outro-marca'); if(eMarcaOutro) eMarcaOutro.value = ""; 
-                if(elStatus) elStatus.value = "retirada";
-                if(elHora) elHora.value = ""; 
+                if(elStatus) elStatus.value = "retirada"; if(elHora) elHora.value = ""; 
                 calcularTotal();
                 
                 let tabServ = document.querySelectorAll('.nav-item')[2];
                 if(tabServ) switchTab('servicos', tabServ);
-                renderizarFilaServicos();
+                renderizarFilaServicos(); // Só é chamado DEPOIS de ir pra aba Serviços
 
-                // Envia para o Firebase no fundo silenciosamente
                 novaOSRef.set(novaOS).catch(error => { console.error("Firebase falhou", error); });
 
             } catch(erro) {
-                alert("❌ Erro interno no aplicativo. Detalhe: " + erro.message);
+                alert("❌ Erro interno ao salvar OS. Detalhe: " + erro.message);
                 console.error(erro);
             }
         }
 
-        // ==========================================
-        // 6. ATUALIZAR STATUS E DELETAR NA NUVEM
-        // ==========================================
         function marcarComoPago(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(confirm(`Confirmar pagamento para a OS ${os.numero}?`)) {
                 db.ref("ordens/" + idFirebase).update({ statusCode: "pago" }).then(() => {
-                    os.statusCode = "pago"; 
-                    caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico;
+                    os.statusCode = "pago"; caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico;
                     atualizarDashboard(); renderizarFilaServicos(); 
                 });
             }
@@ -727,73 +635,85 @@
             }
         }
 
-        // ==========================================
-        // 7. RENDERIZAÇÃO DE TELAS E RECURSOS
-        // ==========================================
-        function renderizarClientes() {
-            const container = document.getElementById('container-clientes'); if(!container) return;
-            let elBusca = document.getElementById('busca-cliente');
-            const termoBusca = elBusca ? elBusca.value.toLowerCase().replace(/\D/g, '') : ""; 
-            const termoNome = elBusca ? elBusca.value.toLowerCase() : ""; 
-
-            container.innerHTML = ''; let chavesClientes = Object.keys(bancoClientes); let encontrou = false;
-            chavesClientes.forEach(tel => {
-                let cliente = bancoClientes[tel];
-                if(tel.includes(termoBusca) || cliente.nome.toLowerCase().includes(termoNome)) {
-                    encontrou = true;
-                    container.innerHTML += `
-                        <div class="cliente-card">
-                            <div class="cliente-header"><p class="cliente-nome">${cliente.nome}</p><p class="cliente-tel">📞 ${cliente.telefone}</p></div>
-                            <div class="finance-grid" style="margin-bottom:0;">
-                                <div class="stat-box"><span>Visitas</span><strong>${cliente.visitas}</strong></div>
-                                <div class="stat-box"><span>Ferramentas</span><strong>${cliente.ferramentas}</strong></div>
-                                <div class="stat-box" style="grid-column: span 2;"><span>Gasto Total</span><strong style="color: var(--success);">R$ ${cliente.totalGasto.toFixed(2).replace('.', ',')}</strong></div>
-                            </div>
-                        </div>`;
-                }
-            });
-            if(!encontrou) container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhum cliente encontrado.</p>';
-        }
-
+        // CORREÇÃO 1: BLINDAGEM DA FILA DE SERVIÇOS CONTRA OS ANTIGAS SEM TELEFONE
         function renderizarFilaServicos() {
-            const container = document.getElementById('container-fila-os'); if(!container) return;
-            let elBusca = document.getElementById('busca-os');
-            const termoBusca = elBusca ? elBusca.value.toLowerCase() : "";
-            
-            let filtrados = historicoOS.filter(os => os.numero.toLowerCase().includes(termoBusca) || os.nome.toLowerCase().includes(termoBusca) || os.telefone.includes(termoBusca));
-            if (filtrados.length === 0) { container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhuma OS em Serviços.</p>'; return; }
+            try {
+                const container = document.getElementById('container-fila-os'); if(!container) return;
+                let elBusca = document.getElementById('busca-os');
+                const termoBusca = elBusca ? elBusca.value.toLowerCase() : "";
+                
+                let filtrados = historicoOS.filter(os => {
+                    let n = (os.numero || "").toLowerCase();
+                    let nm = (os.nome || "").toLowerCase();
+                    let t = (os.telefone || "");
+                    return n.includes(termoBusca) || nm.includes(termoBusca) || t.includes(termoBusca);
+                });
+                
+                if (filtrados.length === 0) { container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhuma OS em Serviços.</p>'; return; }
 
-            container.innerHTML = ''; 
-            filtrados.slice().reverse().forEach(os => {
-                let statusClass = os.statusCode === "pago" ? "badge-pago" : (os.statusCode === "parcial" ? "badge-parcial" : "badge-retirada");
-                let statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago Parcial" : "Pagar Retirada");
-                let btnPagarHTML = os.statusCode !== "pago" ? `<button type="button" class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago</button>` : "";
+                container.innerHTML = ''; 
+                filtrados.slice().reverse().forEach(os => {
+                    let statusClass = os.statusCode === "pago" ? "badge-pago" : (os.statusCode === "parcial" ? "badge-parcial" : "badge-retirada");
+                    let statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago Parcial" : "Pagar Retirada");
+                    let btnPagarHTML = os.statusCode !== "pago" ? `<button type="button" class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago</button>` : "";
 
-                container.innerHTML += `
-                    <div class="os-card">
-                        <div class="os-card-header"><span class="os-number">${os.numero} - ${os.nome}</span><span class="os-badge ${statusClass}">${statusText}</span></div>
-                        <div class="os-details">
-                            <strong>Tel:</strong> ${os.telefone || "Não informado"}<br>
-                            <div class="os-detalhes-lista"><strong style="color:var(--primary);">Serviços:</strong><br>${os.descricaoServicos}</div>
-                            <strong>Total:</strong> <span style="color:var(--primary); font-weight:bold;">${os.valorFormatado}</span>
-                        </div>
-                        ${btnPagarHTML}
-                        <div class="btn-group-os">
-                            <button type="button" class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">📲 WhatsApp</button>
-                            <button type="button" class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">🖨️ Imprimir</button>
-                        </div>
-                        <button type="button" class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">✅ Marcar como Entregue</button>
-                    </div>`;
-            });
+                    container.innerHTML += `
+                        <div class="os-card">
+                            <div class="os-card-header"><span class="os-number">${os.numero} - ${os.nome}</span><span class="os-badge ${statusClass}">${statusText}</span></div>
+                            <div class="os-details">
+                                <strong>Tel:</strong> ${os.telefone || "Não informado"}<br>
+                                <div class="os-detalhes-lista"><strong style="color:var(--primary);">Serviços:</strong><br>${os.descricaoServicos}</div>
+                                <strong>Total:</strong> <span style="color:var(--primary); font-weight:bold;">${os.valorFormatado}</span>
+                            </div>
+                            ${btnPagarHTML}
+                            <div class="btn-group-os">
+                                <button type="button" class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">📲 WhatsApp</button>
+                                <button type="button" class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">🖨️ Imprimir</button>
+                            </div>
+                            <button type="button" class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">✅ Marcar como Entregue</button>
+                        </div>`;
+                });
+            } catch (err) {
+                console.error("Erro ao renderizar serviços:", err);
+            }
         }
 
+        function renderizarClientes() {
+            try {
+                const container = document.getElementById('container-clientes'); if(!container) return;
+                let elBusca = document.getElementById('busca-cliente');
+                const termoBusca = elBusca ? elBusca.value.toLowerCase().replace(/\D/g, '') : ""; 
+                const termoNome = elBusca ? elBusca.value.toLowerCase() : ""; 
+
+                container.innerHTML = ''; let chavesClientes = Object.keys(bancoClientes); let encontrou = false;
+                chavesClientes.forEach(tel => {
+                    let cliente = bancoClientes[tel];
+                    let nm = (cliente.nome || "").toLowerCase();
+                    if(tel.includes(termoBusca) || nm.includes(termoNome)) {
+                        encontrou = true;
+                        container.innerHTML += `
+                            <div class="cliente-card">
+                                <div class="cliente-header"><p class="cliente-nome">${cliente.nome}</p><p class="cliente-tel">📞 ${cliente.telefone}</p></div>
+                                <div class="finance-grid" style="margin-bottom:0;">
+                                    <div class="stat-box"><span>Visitas</span><strong>${cliente.visitas}</strong></div>
+                                    <div class="stat-box"><span>Ferramentas</span><strong>${cliente.ferramentas}</strong></div>
+                                    <div class="stat-box" style="grid-column: span 2;"><span>Gasto Total</span><strong style="color: var(--success);">R$ ${cliente.totalGasto.toFixed(2).replace('.', ',')}</strong></div>
+                                </div>
+                            </div>`;
+                    }
+                });
+                if(!encontrou) container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhum cliente encontrado.</p>';
+            } catch (err) {}
+        }
+
+        // CORREÇÃO 2: MÉTODO ANTI-BLOQUEIO DO WHATSAPP
         function enviarWhatsApp(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(!os) return alert("Erro: OS não encontrada.");
 
             let tel = (os.telefone || "").replace(/\D/g, ''); 
             let statusTxt = os.statusCode === 'pago' ? 'Totalmente Pago' : (os.statusCode === 'parcial' ? 'Pago Parcialmente (Sinal)' : 'Pagamento na Retirada');
-            let servs = os.descricaoServicos.replace(/<br>/g, '\n- ');
+            let servs = (os.descricaoServicos || "").replace(/<br>/g, '\n- ');
 
             let msg = `Olá, ${os.nome}! Aqui é da *Amolador Dois Irmãos* ✂️\n\nSua OS *${os.numero}* foi registrada.\n\n*Serviços:*\n- ${servs}\n\n*Entrega:* ${os.dataStr}\n*Total:* ${os.valorFormatado}\n*Status:* ${statusTxt}\n\nObrigado pela preferência!`;
             
@@ -805,10 +725,18 @@
                 linkWpp = `https://wa.me/?text=${encodeURIComponent(msg)}`;
             }
             
-            window.open(linkWpp, '_blank');
-            fecharModal();
+            fecharModal(); 
+
+            // Simula um clique real para passar pelo bloqueador de Pop-ups do celular
+            let a = document.createElement('a');
+            a.href = linkWpp;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
+        // CORREÇÃO 3: IMPRESSÃO APENAS APÓS A TELA LIMPAR
         function imprimirOS(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(!os) return alert("Erro: OS não encontrada.");
@@ -832,8 +760,14 @@
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
                     <p style="text-align: center; font-size: 11px;">Agradecemos a preferência!</p>
                 </div>`;
-            window.print();
+            
+            // Fecha o modal antes
             fecharModal();
+            
+            // Dá um respiro de meio segundo para o navegador processar a nova tela antes de puxar a impressora
+            setTimeout(() => {
+                window.print();
+            }, 500);
         }
 
         atualizarVisorOS(); renderizarAgenda(); atualizarDashboard();
