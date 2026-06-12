@@ -134,8 +134,8 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v10 FINAL</h2>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Cache limpo com sucesso!</p>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v11 FINAL</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Bug do WhatsApp Resolvido!</p>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -214,7 +214,7 @@
             <h3 style="margin-top: 20px;">Miudezas / Vendas</h3>
             <div class="service-item"><span class="service-name">Troca de Molinha</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('qtd-mola', -1)">-</button><span class="qty-display" id="qtd-mola">0</span><button type="button" class="btn-qty" onclick="changeQty('qtd-mola', 1)">+</button></div></div>
             <div class="service-item"><span class="service-name">Espátula</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('venda-espatula', -1)">-</button><span class="qty-display" id="venda-espatula">0</span><button type="button" class="btn-qty" onclick="changeQty('venda-espatula', 1)">+</button></div></div>
-            <div class="service-item"><span class="service-name">Alicate Novo 777</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('venda-777', -1)">-</button><span class="qty-display" id="venda-777">0</span><button type="button" class="btn-qty" onclick="changeQty('venda-777', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Alicate Novo 777</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('venda-alicate-777', -1)">-</button><span class="qty-display" id="venda-alicate-777">0</span><button type="button" class="btn-qty" onclick="changeQty('venda-alicate-777', 1)">+</button></div></div>
             <div class="service-item"><span class="service-name">Alicate Novo 722</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('venda-alicate-722', -1)">-</button><span class="qty-display" id="venda-alicate-722">0</span><button type="button" class="btn-qty" onclick="changeQty('venda-alicate-722', 1)">+</button></div></div>
 
             <div class="os-resumo">
@@ -303,16 +303,6 @@
         </div>
     </div>
 
-    <div id="print-area"></div>
-
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('agenda', this)"><span class="nav-icon">📅</span> Agenda</div>
-        <div class="nav-item" onclick="switchTab('os', this)"><span class="nav-icon">📝</span> Nova OS</div>
-        <div class="nav-item" onclick="switchTab('servicos', this)"><span class="nav-icon">📋</span> Serviços</div>
-        <div class="nav-item" onclick="switchTab('clientes', this)"><span class="nav-icon">👥</span> Clientes</div>
-        <div class="nav-item" onclick="switchTab('ajustes', this)"><span class="nav-icon">⚙️</span> Ajustes</div>
-    </nav>
-
     <div id="modal-sucesso" class="modal-overlay">
         <div class="modal-content">
             <h2 style="color: var(--success); margin-top: 0;">✅ OS Salva!</h2>
@@ -324,6 +314,16 @@
             <button type="button" class="btn" style="background: #e4e4e7; color: #3f3f46; width: 100%;" onclick="fecharModal()">Sair (Apenas Salvar)</button>
         </div>
     </div>
+
+    <div id="print-area"></div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('agenda', this)"><span class="nav-icon">📅</span> Agenda</div>
+        <div class="nav-item" onclick="switchTab('os', this)"><span class="nav-icon">📝</span> Nova OS</div>
+        <div class="nav-item" onclick="switchTab('servicos', this)"><span class="nav-icon">📋</span> Serviços</div>
+        <div class="nav-item" onclick="switchTab('clientes', this)"><span class="nav-icon">👥</span> Clientes</div>
+        <div class="nav-item" onclick="switchTab('ajustes', this)"><span class="nav-icon">⚙️</span> Ajustes</div>
+    </nav>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -355,7 +355,7 @@
         let tabelaPrecos = {
             'afia-777': 10.00, 'afia-722': 10.00, 'afia-522': 10.00, 'afia-outro': 10.00,
             'qtd-tesoura': 12.00, 'qtd-faca': 15.00, 'qtd-mola': 3.00, 'venda-espatula': 5.00,
-            'venda-777': 45.00, 'venda-alicate-722': 45.00
+            'venda-alicate-777': 45.00, 'venda-alicate-722': 45.00
         };
 
         const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
@@ -443,23 +443,28 @@
             else if (this.value === "") document.getElementById('os-nome').value = "";
         });
 
+        // Função 100% blindada para buscar os valores do HTML
+        function pegarValorSeguro(id) {
+            let el = document.getElementById(id);
+            return el ? (parseFloat(el.value) || parseInt(el.innerText) || 0) : 0;
+        }
+
         function salvarPrecos() {
-            let getVal = (id) => { let el = document.getElementById(id); return el ? parseFloat(el.value) || 0 : 0; };
-            tabelaPrecos['afia-777'] = getVal('preco-alicate'); 
-            tabelaPrecos['afia-722'] = getVal('preco-alicate'); 
-            tabelaPrecos['afia-522'] = getVal('preco-alicate');
-            tabelaPrecos['afia-outro'] = getVal('preco-outro');
-            tabelaPrecos['qtd-tesoura'] = getVal('preco-tesoura');
-            tabelaPrecos['qtd-faca'] = getVal('preco-faca');
-            tabelaPrecos['qtd-mola'] = getVal('preco-mola');
-            tabelaPrecos['venda-espatula'] = getVal('preco-espatula');
-            tabelaPrecos['venda-777'] = getVal('preco-venda-777');
-            tabelaPrecos['venda-alicate-722'] = getVal('preco-alicate-722');
+            tabelaPrecos['afia-777'] = pegarValorSeguro('preco-alicate'); 
+            tabelaPrecos['afia-722'] = pegarValorSeguro('preco-alicate'); 
+            tabelaPrecos['afia-522'] = pegarValorSeguro('preco-alicate');
+            tabelaPrecos['afia-outro'] = pegarValorSeguro('preco-outro');
+            tabelaPrecos['qtd-tesoura'] = pegarValorSeguro('preco-tesoura');
+            tabelaPrecos['qtd-faca'] = pegarValorSeguro('preco-faca');
+            tabelaPrecos['qtd-mola'] = pegarValorSeguro('preco-mola');
+            tabelaPrecos['venda-espatula'] = pegarValorSeguro('preco-espatula');
+            tabelaPrecos['venda-alicate-777'] = pegarValorSeguro('preco-venda-777');
+            tabelaPrecos['venda-alicate-722'] = pegarValorSeguro('preco-alicate-722');
             alert("Tabela de Preços salva!"); calcularTotal(); 
         }
 
         function changeQty(id, value) {
-            const el = document.getElementById(id);
+            let el = document.getElementById(id);
             if(el) {
                 let result = parseInt(el.innerText) + value;
                 el.innerText = result < 0 ? 0 : result;
@@ -470,57 +475,56 @@
         function calcularTotal() {
             let totalMoeda = 0;
             for (let id in tabelaPrecos) {
-                let el = document.getElementById(id);
-                if(el) totalMoeda += (parseInt(el.innerText) || 0) * tabelaPrecos[id];
+                totalMoeda += pegarValorSeguro(id) * tabelaPrecos[id];
             }
-            document.getElementById('valor-total-os').innerText = "R$ " + totalMoeda.toFixed(2).replace('.', ',');
+            let elValor = document.getElementById('valor-total-os');
+            if(elValor) elValor.innerText = "R$ " + totalMoeda.toFixed(2).replace('.', ',');
 
             let tf = 0;
             ['afia-777', 'afia-722', 'afia-522', 'afia-outro', 'qtd-tesoura', 'qtd-faca'].forEach(id => {
-                let el = document.getElementById(id);
-                if(el) tf += parseInt(el.innerText) || 0;
+                tf += pegarValorSeguro(id);
             });
-            document.getElementById('contador-ferramentas-os').innerText = tf;
+            let elContador = document.getElementById('contador-ferramentas-os');
+            if(elContador) elContador.innerText = tf;
         }
 
         function atualizarDashboard() {
-            document.getElementById('caixa-entrou').innerText = "R$ " + caixaEntrou.toFixed(2).replace('.', ',');
-            document.getElementById('caixa-areceber').innerText = "R$ " + caixaAReceber.toFixed(2).replace('.', ',');
-            document.getElementById('agenda-producao-total').innerText = statsFerramentas;
-            let d = parseInt(document.getElementById('dias-uteis').value) || 1;
-            document.getElementById('media-diaria').innerText = `${(statsFerramentas / d).toFixed(1)} / dia`;
+            let eCaixaE = document.getElementById('caixa-entrou'); if(eCaixaE) eCaixaE.innerText = "R$ " + caixaEntrou.toFixed(2).replace('.', ',');
+            let eCaixaR = document.getElementById('caixa-areceber'); if(eCaixaR) eCaixaR.innerText = "R$ " + caixaAReceber.toFixed(2).replace('.', ',');
+            let eTotalP = document.getElementById('agenda-producao-total'); if(eTotalP) eTotalP.innerText = statsFerramentas;
+            
+            let d = pegarValorSeguro('dias-uteis') || 1;
+            let eMedia = document.getElementById('media-diaria');
+            if(eMedia) eMedia.innerText = `${(statsFerramentas / d).toFixed(1)} / dia`;
         }
 
         // ==========================================
-        // 4. LÓGICA DA AGENDA (TOQUES E BLOQUEIOS)
+        // 4. LÓGICA DA AGENDA
         // ==========================================
         function renderizarAgenda() {
-            const container = document.getElementById('agenda-container'); container.innerHTML = ''; 
-            let totalOcupados = 0;
+            const container = document.getElementById('agenda-container'); if(!container) return;
+            container.innerHTML = ''; let totalOcupados = 0;
             
             timeSlots.forEach(hora => {
                 if(hora === "14:30") container.innerHTML += '<div class="lunch-break">☕ Pausa Almoço (13:30 - 14:30)</div>';
-                
                 let sqs = "";
                 for(let i=0; i<5; i++) {
                     let status = estadoAgenda[hora] ? estadoAgenda[hora][i] : 0;
                     if (status !== 0) totalOcupados++;
-                    
                     let cssClass = ""; let icone = "";
                     if (status === 1) cssClass = "booked"; 
                     if (status === 2) { cssClass = "locked"; icone = "🔒"; }
-
                     sqs += `<div class="square ${cssClass}" onclick="toggleAgenda('${hora}', ${i})">${icone}</div>`;
                 }
                 container.innerHTML += `<div class="time-row"><div class="time-label">${hora}</div><div class="squares-container">${sqs}</div></div>`;
             });
             
             let totalLivres = 70 - totalOcupados; let pct = (totalOcupados / 70) * 100;
-            document.getElementById('vagas-ocupadas').innerText = totalOcupados;
-            document.getElementById('vagas-livres').innerText = totalLivres;
-            document.getElementById('vagas-livres').style.color = totalLivres <= 10 ? '#ef4444' : '#10b981';
-            document.getElementById('barra-progresso').style.width = pct + '%';
-            document.getElementById('barra-progresso').style.backgroundColor = pct < 50 ? '#10b981' : (pct < 85 ? '#f59e0b' : '#ef4444');
+            let eVagasOc = document.getElementById('vagas-ocupadas'); if(eVagasOc) eVagasOc.innerText = totalOcupados;
+            let eVagasLi = document.getElementById('vagas-livres'); 
+            if(eVagasLi) { eVagasLi.innerText = totalLivres; eVagasLi.style.color = totalLivres <= 10 ? '#ef4444' : '#10b981'; }
+            let eBarra = document.getElementById('barra-progresso');
+            if(eBarra) { eBarra.style.width = pct + '%'; eBarra.style.backgroundColor = pct < 50 ? '#10b981' : (pct < 85 ? '#f59e0b' : '#ef4444'); }
         }
 
         function toggleAgenda(hora, index) { 
@@ -533,7 +537,6 @@
                 }
                 return; 
             }
-            
             estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0; 
             renderizarAgenda(); salvarAgendaNoFirebase();
         }
@@ -547,15 +550,14 @@
         }
 
         // ==========================================
-        // 5. LÓGICA DE SALVAR OS E ABRIR MODAL AUTOMÁTICO
+        // 5. LÓGICA DE SALVAR OS BLINDADA
         // ==========================================
         function formatarNumOS(num) { return "#" + num.toString().padStart(3, '0'); }
-        function atualizarVisorOS() { document.getElementById('visor-proxima-os').innerText = formatarNumOS(contadorOS); }
+        function atualizarVisorOS() { let e = document.getElementById('visor-proxima-os'); if(e) e.innerText = formatarNumOS(contadorOS); }
 
         function registrarClienteNoFirebase(nome, telBruto, qtdFerramentas, valorGasto) {
             let tel = telBruto.replace(/\D/g, ''); 
             if (!tel) return; 
-
             if (!bancoClientes[tel]) bancoClientes[tel] = { nome: nome, telefone: telBruto, visitas: 0, ferramentas: 0, totalGasto: 0 };
             bancoClientes[tel].visitas += 1; bancoClientes[tel].ferramentas += qtdFerramentas; bancoClientes[tel].totalGasto += valorGasto;
             db.ref("clientes/" + tel).set(bancoClientes[tel]);
@@ -563,51 +565,47 @@
 
         function salvarOS() {
             try {
-                let horaAlvo = document.getElementById('os-hora').value;
+                let elHora = document.getElementById('os-hora');
+                let horaAlvo = elHora ? elHora.value : "";
+                
                 if (!horaAlvo) {
                     alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
-                    document.getElementById('os-hora').style.borderColor = "red";
+                    if(elHora) elHora.style.borderColor = "red";
                     return;
                 }
-                document.getElementById('os-hora').style.borderColor = "var(--border)";
+                if(elHora) elHora.style.borderColor = "var(--border)";
 
-                let nomeCliente = document.getElementById('os-nome').value.trim() || "Cliente Balcão";
-                let telCliente = document.getElementById('os-telefone').value.trim() || "";
-                let qtdAfiar = parseInt(document.getElementById('contador-ferramentas-os').innerText) || 0;
-                let dataAlvo = document.getElementById('os-data').value;
-                let statusPagamentoVal = document.getElementById('os-status-pagamento').value;
-                let totalFormatado = document.getElementById('valor-total-os').innerText;
+                let elNome = document.getElementById('os-nome'); let nomeCliente = (elNome && elNome.value.trim()) ? elNome.value.trim() : "Cliente Balcão";
+                let elTel = document.getElementById('os-telefone'); let telCliente = (elTel && elTel.value.trim()) ? elTel.value.trim() : "";
+                let qtdAfiar = pegarValorSeguro('contador-ferramentas-os');
+                let elData = document.getElementById('os-data'); let dataAlvo = elData ? elData.value : "";
+                let elStatus = document.getElementById('os-status-pagamento'); let statusPagamentoVal = elStatus ? elStatus.value : "retirada";
+                let elTotalFormatado = document.getElementById('valor-total-os'); let totalFormatado = elTotalFormatado ? elTotalFormatado.innerText : "R$ 0,00";
                 
                 let totalMoeda = 0;
-                for (let id in tabelaPrecos) {
-                    let el = document.getElementById(id);
-                    if(el) totalMoeda += (parseInt(el.innerText) || 0) * tabelaPrecos[id];
-                }
+                for (let id in tabelaPrecos) totalMoeda += pegarValorSeguro(id) * tabelaPrecos[id];
 
-                // Coleta de Descrição Robusta
+                // Coleta Descritiva Blindada
                 let descricaoArray = [];
-                let pegaValor = (id, nomeItem) => {
-                    let el = document.getElementById(id);
-                    if(el) { let q = parseInt(el.innerText) || 0; if(q > 0) descricaoArray.push(`${q}x ${nomeItem}`); }
-                };
+                let addServ = (id, nomeItem) => { let q = pegarValorSeguro(id); if(q > 0) descricaoArray.push(`${q}x ${nomeItem}`); };
 
-                pegaValor('afia-777', 'Alicate Mundial 777');
-                pegaValor('afia-722', 'Alicate Mundial 722');
-                pegaValor('afia-522', 'Alicate Mundial 522');
+                addServ('afia-777', 'Alicate Mundial 777');
+                addServ('afia-722', 'Alicate Mundial 722');
+                addServ('afia-522', 'Alicate Mundial 522');
                 
-                let elOutro = document.getElementById('afia-outro');
-                if(elOutro) {
-                    let qOutro = parseInt(elOutro.innerText) || 0;
-                    let marcaOutro = document.getElementById('afia-outro-marca').value.trim() || "Outro Modelo";
-                    if(qOutro > 0) descricaoArray.push(`${qOutro}x Alicate ${marcaOutro}`);
+                let qOutro = pegarValorSeguro('afia-outro');
+                if(qOutro > 0) {
+                    let eMarca = document.getElementById('afia-outro-marca');
+                    let marca = (eMarca && eMarca.value.trim()) ? eMarca.value.trim() : "Outro Modelo";
+                    descricaoArray.push(`${qOutro}x Alicate ${marca}`);
                 }
 
-                pegaValor('qtd-tesoura', 'Tesoura');
-                pegaValor('qtd-faca', 'Faca');
-                pegaValor('qtd-mola', 'Troca de Mola');
-                pegaValor('venda-espatula', 'Espátula');
-                pegaValor('venda-777', 'Alicate Novo 777');
-                pegaValor('venda-alicate-722', 'Alicate Novo 722');
+                addServ('qtd-tesoura', 'Tesoura');
+                addServ('qtd-faca', 'Faca');
+                addServ('qtd-mola', 'Troca de Mola');
+                addServ('venda-espatula', 'Espátula');
+                addServ('venda-alicate-777', 'Alicate Novo 777');
+                addServ('venda-alicate-722', 'Alicate Novo 722');
 
                 let descricaoServicos = descricaoArray.length > 0 ? descricaoArray.join('<br>') : "Nenhum serviço especificado";
 
@@ -623,7 +621,7 @@
 
                 // Agenda
                 if (qtdAfiar > 0) {
-                    let vagasRestantes = parseInt(document.getElementById('vagas-livres').innerText) || 0;
+                    let vagasRestantes = pegarValorSeguro('vagas-livres');
                     if (qtdAfiar > vagasRestantes) { alert(`Faltam vagas na agenda.`); return; }
                     
                     let indexAlvo = timeSlots.indexOf(horaAlvo); 
@@ -654,9 +652,8 @@
                 registrarClienteNoFirebase(nomeCliente, telCliente, qtdAfiar, totalMoeda);
 
                 statsFerramentas += qtdAfiar; 
-                let eMola = document.getElementById('qtd-mola'); if(eMola) statsMolas += parseInt(eMola.innerText) || 0;
-                let eV777 = document.getElementById('venda-777'); if(eV777) statsVendas += parseInt(eV777.innerText) || 0;
-                let eV722 = document.getElementById('venda-alicate-722'); if(eV722) statsVendas += parseInt(eV722.innerText) || 0;
+                statsMolas += pegarValorSeguro('qtd-mola'); 
+                statsVendas += pegarValorSeguro('venda-alicate-777') + pegarValorSeguro('venda-alicate-722');
                 
                 if (statusPagamentoVal === "pago") caixaEntrou += totalMoeda; else caixaAReceber += totalMoeda;
                 atualizarDashboard();
@@ -673,33 +670,35 @@
                     statusCode: statusPagamentoVal
                 };
                 
-                // SALVA LOCALMENTE E ABRE A TELA (Não trava esperando a internet)
+                // SALVAMENTO OTIMISTA NA TELA
                 let novaOSRef = db.ref("ordens").push();
                 novaOS.idFirebase = novaOSRef.key; 
                 historicoOS.push(novaOS);
                 contadorOS++; 
                 atualizarVisorOS();
                 
-                // Abre O Modal Automaticamente IMEDIATO
-                document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
-                document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
-                document.getElementById('modal-sucesso').style.display = 'flex';
+                // ABRE A JANELA IMEDIATAMENTE (O pulo do gato!)
+                let btnWpp = document.getElementById('btn-modal-wpp'); if(btnWpp) btnWpp.onclick = () => enviarWhatsApp(novaOS.idFirebase);
+                let btnPrint = document.getElementById('btn-modal-print'); if(btnPrint) btnPrint.onclick = () => imprimirOS(novaOS.idFirebase);
+                let modal = document.getElementById('modal-sucesso'); if(modal) modal.style.display = 'flex';
                 
-                // Reseta UI
+                // Reseta formulário
                 document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
-                document.getElementById('os-telefone').value = ""; document.getElementById('os-nome').value = "";
-                document.getElementById('afia-outro-marca').value = ""; document.getElementById('os-status-pagamento').value = "retirada";
-                document.getElementById('os-hora').value = ""; 
+                if(elTel) elTel.value = ""; if(elNome) elNome.value = "";
+                let eMarcaOutro = document.getElementById('afia-outro-marca'); if(eMarcaOutro) eMarcaOutro.value = ""; 
+                if(elStatus) elStatus.value = "retirada";
+                if(elHora) elHora.value = ""; 
                 calcularTotal();
                 
-                switchTab('servicos', document.querySelectorAll('.nav-item')[2]);
+                let tabServ = document.querySelectorAll('.nav-item')[2];
+                if(tabServ) switchTab('servicos', tabServ);
                 renderizarFilaServicos();
 
                 // Envia para o Firebase no fundo silenciosamente
                 novaOSRef.set(novaOS).catch(error => { console.error("Firebase falhou", error); });
 
             } catch(erro) {
-                alert("❌ Erro interno no aplicativo. Tente novamente.");
+                alert("❌ Erro interno no aplicativo. Detalhe: " + erro.message);
                 console.error(erro);
             }
         }
@@ -732,9 +731,10 @@
         // 7. RENDERIZAÇÃO DE TELAS E RECURSOS
         // ==========================================
         function renderizarClientes() {
-            const container = document.getElementById('container-clientes');
-            const termoBusca = document.getElementById('busca-cliente').value.toLowerCase().replace(/\D/g, ''); 
-            const termoNome = document.getElementById('busca-cliente').value.toLowerCase(); 
+            const container = document.getElementById('container-clientes'); if(!container) return;
+            let elBusca = document.getElementById('busca-cliente');
+            const termoBusca = elBusca ? elBusca.value.toLowerCase().replace(/\D/g, '') : ""; 
+            const termoNome = elBusca ? elBusca.value.toLowerCase() : ""; 
 
             container.innerHTML = ''; let chavesClientes = Object.keys(bancoClientes); let encontrou = false;
             chavesClientes.forEach(tel => {
@@ -756,8 +756,9 @@
         }
 
         function renderizarFilaServicos() {
-            const container = document.getElementById('container-fila-os');
-            const termoBusca = document.getElementById('busca-os').value.toLowerCase();
+            const container = document.getElementById('container-fila-os'); if(!container) return;
+            let elBusca = document.getElementById('busca-os');
+            const termoBusca = elBusca ? elBusca.value.toLowerCase() : "";
             
             let filtrados = historicoOS.filter(os => os.numero.toLowerCase().includes(termoBusca) || os.nome.toLowerCase().includes(termoBusca) || os.telefone.includes(termoBusca));
             if (filtrados.length === 0) { container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhuma OS em Serviços.</p>'; return; }
@@ -788,7 +789,7 @@
 
         function enviarWhatsApp(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
-            if(!os) return;
+            if(!os) return alert("Erro: OS não encontrada.");
 
             let tel = (os.telefone || "").replace(/\D/g, ''); 
             let statusTxt = os.statusCode === 'pago' ? 'Totalmente Pago' : (os.statusCode === 'parcial' ? 'Pago Parcialmente (Sinal)' : 'Pagamento na Retirada');
@@ -801,7 +802,6 @@
                 if(tel.length === 10 || tel.length === 11) tel = "55" + tel; 
                 linkWpp = `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
             } else {
-                // Abre o WhatsApp livre para o usuário escolher o contato
                 linkWpp = `https://wa.me/?text=${encodeURIComponent(msg)}`;
             }
             
@@ -811,7 +811,7 @@
 
         function imprimirOS(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
-            if(!os) return;
+            if(!os) return alert("Erro: OS não encontrada.");
             
             let area = document.getElementById('print-area');
             let dataAtual = new Date().toLocaleString('pt-BR');
