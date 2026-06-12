@@ -62,8 +62,8 @@
         .btn-dark { background-color: #3f3f46; }
 
         /* MODAL DE SUCESSO (JANELA AUTOMÁTICA) */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; animation: fadeIn 0.2s ease;}
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 99999; align-items: center; justify-content: center; animation: fadeIn 0.2s ease;}
+        .modal-content { background: white; padding: 25px 20px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
         /* LISTA DE SERVIÇOS E OS */
         .service-group { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 15px; }
@@ -134,12 +134,13 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Acesso Restrito <span style="color:var(--success); font-size: 0.6em;">v8</span></h2>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v10 FINAL</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Cache limpo com sucesso!</p>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
             <input type="password" id="login-senha" placeholder="******">
-            <button class="btn btn-success" style="margin-top: 20px;" onclick="fazerLogin()">Entrar no Sistema</button>
+            <button type="button" class="btn btn-success" style="margin-top: 20px;" onclick="fazerLogin()">Entrar no Sistema</button>
         </div>
     </div>
 
@@ -195,26 +196,26 @@
             
             <div class="service-group">
                 <h4 style="margin: 0 0 10px 0; font-size: 0.85rem; color: var(--primary);">🗜️ Modelos de Alicate</h4>
-                <div class="service-item"><span class="service-name">Mundial 777</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-777', -1)">-</button><span class="qty-display" id="afia-777">0</span><button class="btn-qty" onclick="changeQty('afia-777', 1)">+</button></div></div>
-                <div class="service-item"><span class="service-name">Mundial 722</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-722', -1)">-</button><span class="qty-display" id="afia-722">0</span><button class="btn-qty" onclick="changeQty('afia-722', 1)">+</button></div></div>
-                <div class="service-item"><span class="service-name">Mundial 522</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-522', -1)">-</button><span class="qty-display" id="afia-522">0</span><button class="btn-qty" onclick="changeQty('afia-522', 1)">+</button></div></div>
+                <div class="service-item"><span class="service-name">Mundial 777</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('afia-777', -1)">-</button><span class="qty-display" id="afia-777">0</span><button type="button" class="btn-qty" onclick="changeQty('afia-777', 1)">+</button></div></div>
+                <div class="service-item"><span class="service-name">Mundial 722</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('afia-722', -1)">-</button><span class="qty-display" id="afia-722">0</span><button type="button" class="btn-qty" onclick="changeQty('afia-722', 1)">+</button></div></div>
+                <div class="service-item"><span class="service-name">Mundial 522</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('afia-522', -1)">-</button><span class="qty-display" id="afia-522">0</span><button type="button" class="btn-qty" onclick="changeQty('afia-522', 1)">+</button></div></div>
                 <div class="service-item" style="flex-wrap: wrap;">
                     <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 8px;">
                         <span class="service-name">Outro Modelo</span>
-                        <div class="service-controls"><button class="btn-qty" onclick="changeQty('afia-outro', -1)">-</button><span class="qty-display" id="afia-outro">0</span><button class="btn-qty" onclick="changeQty('afia-outro', 1)">+</button></div>
+                        <div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('afia-outro', -1)">-</button><span class="qty-display" id="afia-outro">0</span><button type="button" class="btn-qty" onclick="changeQty('afia-outro', 1)">+</button></div>
                     </div>
                     <input type="text" id="afia-outro-marca" placeholder="Qual a marca/modelo?" style="margin-bottom: 0; padding: 6px; font-size: 0.85rem;">
                 </div>
             </div>
             
-            <div class="service-item"><span class="service-name">Tesoura</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-tesoura', -1)">-</button><span class="qty-display" id="qtd-tesoura">0</span><button class="btn-qty" onclick="changeQty('qtd-tesoura', 1)">+</button></div></div>
-            <div class="service-item"><span class="service-name">Faca</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-faca', -1)">-</button><span class="qty-display" id="qtd-faca">0</span><button class="btn-qty" onclick="changeQty('qtd-faca', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Tesoura</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('qtd-tesoura', -1)">-</button><span class="qty-display" id="qtd-tesoura">0</span><button type="button" class="btn-qty" onclick="changeQty('qtd-tesoura', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Faca</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('qtd-faca', -1)">-</button><span class="qty-display" id="qtd-faca">0</span><button type="button" class="btn-qty" onclick="changeQty('qtd-faca', 1)">+</button></div></div>
             
             <h3 style="margin-top: 20px;">Miudezas / Vendas</h3>
-            <div class="service-item"><span class="service-name">Troca de Molinha</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('qtd-mola', -1)">-</button><span class="qty-display" id="qtd-mola">0</span><button class="btn-qty" onclick="changeQty('qtd-mola', 1)">+</button></div></div>
-            <div class="service-item"><span class="service-name">Espátula</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('venda-espatula', -1)">-</button><span class="qty-display" id="venda-espatula">0</span><button class="btn-qty" onclick="changeQty('venda-espatula', 1)">+</button></div></div>
-            <div class="service-item"><span class="service-name">Alicate Novo</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('venda-alicate-geral', -1)">-</button><span class="qty-display" id="venda-alicate-geral">0</span><button class="btn-qty" onclick="changeQty('venda-alicate-geral', 1)">+</button></div></div>
-            <div class="service-item"><span class="service-name">Venda Novo 777</span><div class="service-controls"><button class="btn-qty" onclick="changeQty('venda-777', -1)">-</button><span class="qty-display" id="venda-777">0</span><button class="btn-qty" onclick="changeQty('venda-777', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Troca de Molinha</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('qtd-mola', -1)">-</button><span class="qty-display" id="qtd-mola">0</span><button type="button" class="btn-qty" onclick="changeQty('qtd-mola', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Espátula</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('venda-espatula', -1)">-</button><span class="qty-display" id="venda-espatula">0</span><button type="button" class="btn-qty" onclick="changeQty('venda-espatula', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Alicate Novo 777</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('venda-777', -1)">-</button><span class="qty-display" id="venda-777">0</span><button type="button" class="btn-qty" onclick="changeQty('venda-777', 1)">+</button></div></div>
+            <div class="service-item"><span class="service-name">Alicate Novo 722</span><div class="service-controls"><button type="button" class="btn-qty" onclick="changeQty('venda-alicate-722', -1)">-</button><span class="qty-display" id="venda-alicate-722">0</span><button type="button" class="btn-qty" onclick="changeQty('venda-alicate-722', 1)">+</button></div></div>
 
             <div class="os-resumo">
                 <div class="os-total"><span>Total da OS:</span><span id="valor-total-os">R$ 0,00</span></div>
@@ -225,7 +226,7 @@
                     <option value="parcial">⚠️ Pago Parcialmente (Sinal)</option>
                 </select>
             </div>
-            <button class="btn btn-success" onclick="salvarOS()">Gerar OS e Alocar na Agenda</button>
+            <button type="button" class="btn btn-success" onclick="salvarOS()">Gerar OS e Alocar na Agenda</button>
         </div>
     </div>
 
@@ -288,29 +289,17 @@
                 <div><label>Espátula</label><input type="number" id="preco-espatula" value="5.00"></div>
             </div>
             <div class="form-row">
-                <div><label>Alicate Novo</label><input type="number" id="preco-alicate-geral" value="45.00"></div>
-                <div><label>Venda Novo 777</label><input type="number" id="preco-venda-777" value="45.00"></div>
+                <div><label>Alicate Novo 777</label><input type="number" id="preco-venda-777" value="45.00"></div>
+                <div><label>Alicate Novo 722</label><input type="number" id="preco-alicate-722" value="45.00"></div>
             </div>
-            <button class="btn btn-dark" onclick="salvarPrecos()">Salvar Preços</button>
+            <button type="button" class="btn btn-dark" onclick="salvarPrecos()">Salvar Preços</button>
         </div>
 
         <div class="card" style="border: 1px solid var(--danger); background: #fef2f2;">
             <h3 style="color: var(--danger); border-bottom-color: #fecaca;">🔒 Sessão e Segurança</h3>
-            <button class="btn btn-danger" onclick="fazerLogout()" style="margin-bottom: 10px;">Sair do App (Logout)</button>
+            <button type="button" class="btn btn-danger" onclick="fazerLogout()" style="margin-bottom: 10px;">Sair do App (Logout)</button>
             <hr style="border: none; border-top: 1px dashed #fecaca; margin: 15px 0;">
-            <button class="btn btn-danger" style="background: white; color: var(--danger); border: 1px solid var(--danger); margin-top: 0;" onclick="zerarAgenda()">Limpar Agenda de Hoje</button>
-        </div>
-    </div>
-
-    <div id="modal-sucesso" class="modal-overlay">
-        <div class="modal-content">
-            <h2 style="color: var(--success); margin-top: 0;">✅ OS Salva!</h2>
-            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">Ordem registrada na nuvem com sucesso. O que deseja fazer agora?</p>
-            
-            <button class="btn btn-wpp" id="btn-modal-wpp" style="margin-bottom: 10px; font-size: 1.1rem;">📲 Enviar via WhatsApp</button>
-            <button class="btn btn-print" id="btn-modal-print" style="margin-bottom: 15px; font-size: 1.1rem;">🖨️ Imprimir Recibo</button>
-            
-            <button class="btn" style="background: #e4e4e7; color: #3f3f46;" onclick="document.getElementById('modal-sucesso').style.display='none'">Sair (Apenas Salvar)</button>
+            <button type="button" class="btn btn-danger" style="background: white; color: var(--danger); border: 1px solid var(--danger); margin-top: 0;" onclick="zerarAgenda()">Limpar Agenda de Hoje</button>
         </div>
     </div>
 
@@ -324,13 +313,25 @@
         <div class="nav-item" onclick="switchTab('ajustes', this)"><span class="nav-icon">⚙️</span> Ajustes</div>
     </nav>
 
+    <div id="modal-sucesso" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="color: var(--success); margin-top: 0;">✅ OS Salva!</h2>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">A ordem de serviço foi gerada. O que deseja fazer agora?</p>
+            
+            <button type="button" class="btn btn-wpp" id="btn-modal-wpp" style="margin-bottom: 10px; font-size: 1.1rem; width: 100%;">📲 Enviar via WhatsApp</button>
+            <button type="button" class="btn btn-print" id="btn-modal-print" style="margin-bottom: 15px; font-size: 1.1rem; width: 100%;">🖨️ Imprimir Recibo</button>
+            
+            <button type="button" class="btn" style="background: #e4e4e7; color: #3f3f46; width: 100%;" onclick="fecharModal()">Sair (Apenas Salvar)</button>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
     <script>
         // ==========================================
-        // 1. CONFIGURAÇÃO DO FIREBASE (REALTIME DB)
+        // 1. CONFIGURAÇÃO DO FIREBASE
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
@@ -346,7 +347,6 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // Variáveis Locais
         let contadorOS = 1;
         let historicoOS = [];
         let bancoClientes = {};
@@ -355,7 +355,7 @@
         let tabelaPrecos = {
             'afia-777': 10.00, 'afia-722': 10.00, 'afia-522': 10.00, 'afia-outro': 10.00,
             'qtd-tesoura': 12.00, 'qtd-faca': 15.00, 'qtd-mola': 3.00, 'venda-espatula': 5.00,
-            'venda-alicate-geral': 45.00, 'venda-777': 45.00
+            'venda-777': 45.00, 'venda-alicate-722': 45.00
         };
 
         const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
@@ -422,6 +422,10 @@
         // ==========================================
         // 3. NAVEGAÇÃO E FRONT-END
         // ==========================================
+        function fecharModal() {
+            document.getElementById('modal-sucesso').style.display = 'none';
+        }
+
         function switchTab(tabId, element) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen-' + tabId).classList.add('active');
@@ -440,33 +444,42 @@
         });
 
         function salvarPrecos() {
-            let pA = parseFloat(document.getElementById('preco-alicate').value);
-            tabelaPrecos['afia-777'] = pA; tabelaPrecos['afia-722'] = pA; tabelaPrecos['afia-522'] = pA;
-            tabelaPrecos['afia-outro'] = parseFloat(document.getElementById('preco-outro').value);
-            tabelaPrecos['qtd-tesoura'] = parseFloat(document.getElementById('preco-tesoura').value);
-            tabelaPrecos['qtd-faca'] = parseFloat(document.getElementById('preco-faca').value);
-            tabelaPrecos['qtd-mola'] = parseFloat(document.getElementById('preco-mola').value);
-            tabelaPrecos['venda-espatula'] = parseFloat(document.getElementById('preco-espatula').value);
-            tabelaPrecos['venda-alicate-geral'] = parseFloat(document.getElementById('preco-alicate-geral').value);
-            tabelaPrecos['venda-777'] = parseFloat(document.getElementById('preco-venda-777').value);
+            let getVal = (id) => { let el = document.getElementById(id); return el ? parseFloat(el.value) || 0 : 0; };
+            tabelaPrecos['afia-777'] = getVal('preco-alicate'); 
+            tabelaPrecos['afia-722'] = getVal('preco-alicate'); 
+            tabelaPrecos['afia-522'] = getVal('preco-alicate');
+            tabelaPrecos['afia-outro'] = getVal('preco-outro');
+            tabelaPrecos['qtd-tesoura'] = getVal('preco-tesoura');
+            tabelaPrecos['qtd-faca'] = getVal('preco-faca');
+            tabelaPrecos['qtd-mola'] = getVal('preco-mola');
+            tabelaPrecos['venda-espatula'] = getVal('preco-espatula');
+            tabelaPrecos['venda-777'] = getVal('preco-venda-777');
+            tabelaPrecos['venda-alicate-722'] = getVal('preco-alicate-722');
             alert("Tabela de Preços salva!"); calcularTotal(); 
         }
 
         function changeQty(id, value) {
             const el = document.getElementById(id);
-            let result = parseInt(el.innerText) + value;
-            el.innerText = result < 0 ? 0 : result;
-            calcularTotal(); 
+            if(el) {
+                let result = parseInt(el.innerText) + value;
+                el.innerText = result < 0 ? 0 : result;
+                calcularTotal(); 
+            }
         }
 
         function calcularTotal() {
             let totalMoeda = 0;
-            for (let id in tabelaPrecos) totalMoeda += (parseInt(document.getElementById(id).innerText) || 0) * tabelaPrecos[id];
+            for (let id in tabelaPrecos) {
+                let el = document.getElementById(id);
+                if(el) totalMoeda += (parseInt(el.innerText) || 0) * tabelaPrecos[id];
+            }
             document.getElementById('valor-total-os').innerText = "R$ " + totalMoeda.toFixed(2).replace('.', ',');
 
-            let tf = parseInt(document.getElementById('afia-777').innerText) + parseInt(document.getElementById('afia-722').innerText) +
-                     parseInt(document.getElementById('afia-522').innerText) + parseInt(document.getElementById('afia-outro').innerText) +
-                     parseInt(document.getElementById('qtd-tesoura').innerText) + parseInt(document.getElementById('qtd-faca').innerText);
+            let tf = 0;
+            ['afia-777', 'afia-722', 'afia-522', 'afia-outro', 'qtd-tesoura', 'qtd-faca'].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) tf += parseInt(el.innerText) || 0;
+            });
             document.getElementById('contador-ferramentas-os').innerText = tf;
         }
 
@@ -490,7 +503,7 @@
                 
                 let sqs = "";
                 for(let i=0; i<5; i++) {
-                    let status = estadoAgenda[hora][i];
+                    let status = estadoAgenda[hora] ? estadoAgenda[hora][i] : 0;
                     if (status !== 0) totalOcupados++;
                     
                     let cssClass = ""; let icone = "";
@@ -511,6 +524,7 @@
         }
 
         function toggleAgenda(hora, index) { 
+            if(!estadoAgenda[hora]) return;
             let statusAtual = estadoAgenda[hora][index];
             if (statusAtual === 2) {
                 if(confirm("🔓 Liberar Vaga?\n\nEste horário está reservado para uma OS. Você já adiantou este serviço e deseja abrir essa vaga para um novo cliente?")) {
@@ -533,7 +547,7 @@
         }
 
         // ==========================================
-        // 5. LÓGICA DE SALVAR NO FIREBASE (BUG CORRIGIDO)
+        // 5. LÓGICA DE SALVAR OS E ABRIR MODAL AUTOMÁTICO
         // ==========================================
         function formatarNumOS(num) { return "#" + num.toString().padStart(3, '0'); }
         function atualizarVisorOS() { document.getElementById('visor-proxima-os').innerText = formatarNumOS(contadorOS); }
@@ -548,124 +562,146 @@
         }
 
         function salvarOS() {
-            let horaAlvo = document.getElementById('os-hora').value;
-            
-            if (!horaAlvo) {
-                alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
-                document.getElementById('os-hora').style.borderColor = "red";
-                return;
-            }
-            document.getElementById('os-hora').style.borderColor = "var(--border)";
+            try {
+                let horaAlvo = document.getElementById('os-hora').value;
+                if (!horaAlvo) {
+                    alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!");
+                    document.getElementById('os-hora').style.borderColor = "red";
+                    return;
+                }
+                document.getElementById('os-hora').style.borderColor = "var(--border)";
 
-            let nomeCliente = document.getElementById('os-nome').value.trim() || "Cliente Balcão";
-            let telCliente = document.getElementById('os-telefone').value.trim() || "";
-            let qtdAfiar = parseInt(document.getElementById('contador-ferramentas-os').innerText);
-            let dataAlvo = document.getElementById('os-data').value;
-            let statusPagamentoVal = document.getElementById('os-status-pagamento').value;
-            let totalFormatado = document.getElementById('valor-total-os').innerText;
-            
-            let totalMoeda = 0;
-            for (let id in tabelaPrecos) totalMoeda += (parseInt(document.getElementById(id).innerText) || 0) * tabelaPrecos[id];
+                let nomeCliente = document.getElementById('os-nome').value.trim() || "Cliente Balcão";
+                let telCliente = document.getElementById('os-telefone').value.trim() || "";
+                let qtdAfiar = parseInt(document.getElementById('contador-ferramentas-os').innerText) || 0;
+                let dataAlvo = document.getElementById('os-data').value;
+                let statusPagamentoVal = document.getElementById('os-status-pagamento').value;
+                let totalFormatado = document.getElementById('valor-total-os').innerText;
+                
+                let totalMoeda = 0;
+                for (let id in tabelaPrecos) {
+                    let el = document.getElementById(id);
+                    if(el) totalMoeda += (parseInt(el.innerText) || 0) * tabelaPrecos[id];
+                }
 
-            // LEITURA DO PAINEL DE QUANTIDADES
-            let descricaoArray = [];
-            let q777 = parseInt(document.getElementById('afia-777').innerText); if(q777 > 0) descricaoArray.push(`${q777}x Alicate Mundial 777`);
-            let q722 = parseInt(document.getElementById('afia-722').innerText); if(q722 > 0) descricaoArray.push(`${q722}x Alicate Mundial 722`);
-            let q522 = parseInt(document.getElementById('afia-522').innerText); if(q522 > 0) descricaoArray.push(`${q522}x Alicate Mundial 522`);
-            let qOutro = parseInt(document.getElementById('afia-outro').innerText); let marcaOutro = document.getElementById('afia-outro-marca').value.trim() || "Outro Modelo"; if(qOutro > 0) descricaoArray.push(`${qOutro}x Alicate ${marcaOutro}`);
-            let qTesoura = parseInt(document.getElementById('qtd-tesoura').innerText); if(qTesoura > 0) descricaoArray.push(`${qTesoura}x Tesoura`);
-            let qFaca = parseInt(document.getElementById('qtd-faca').innerText); if(qFaca > 0) descricaoArray.push(`${qFaca}x Faca`);
-            let qMola = parseInt(document.getElementById('qtd-mola').innerText); if(qMola > 0) descricaoArray.push(`${qMola}x Troca de Mola`);
-            
-            // NOVOS ITENS INSERIDOS NO DESCRITIVO
-            let qEspatula = parseInt(document.getElementById('venda-espatula').innerText); if(qEspatula > 0) descricaoArray.push(`${qEspatula}x Espátula`);
-            let qAlicateGeral = parseInt(document.getElementById('venda-alicate-geral').innerText); if(qAlicateGeral > 0) descricaoArray.push(`${qAlicateGeral}x Alicate Novo`);
-            let qVenda = parseInt(document.getElementById('venda-777').innerText); if(qVenda > 0) descricaoArray.push(`${qVenda}x Novo 777`);
+                // Coleta de Descrição Robusta
+                let descricaoArray = [];
+                let pegaValor = (id, nomeItem) => {
+                    let el = document.getElementById(id);
+                    if(el) { let q = parseInt(el.innerText) || 0; if(q > 0) descricaoArray.push(`${q}x ${nomeItem}`); }
+                };
 
-            let descricaoServicos = descricaoArray.length > 0 ? descricaoArray.join('<br>') : "Nenhum serviço especificado";
+                pegaValor('afia-777', 'Alicate Mundial 777');
+                pegaValor('afia-722', 'Alicate Mundial 722');
+                pegaValor('afia-522', 'Alicate Mundial 522');
+                
+                let elOutro = document.getElementById('afia-outro');
+                if(elOutro) {
+                    let qOutro = parseInt(elOutro.innerText) || 0;
+                    let marcaOutro = document.getElementById('afia-outro-marca').value.trim() || "Outro Modelo";
+                    if(qOutro > 0) descricaoArray.push(`${qOutro}x Alicate ${marcaOutro}`);
+                }
 
-            // FIX DO BUG: Tratamento de data blindado contra falhas em navegadores mobile/iOS
-            let dataStr = "Sem data";
-            if (dataAlvo) {
-                let partes = dataAlvo.split('-');
-                if (partes.length === 3) {
-                    dataStr = `${partes[2]}/${partes[1]}/${partes[0]} às ${horaAlvo}`;
+                pegaValor('qtd-tesoura', 'Tesoura');
+                pegaValor('qtd-faca', 'Faca');
+                pegaValor('qtd-mola', 'Troca de Mola');
+                pegaValor('venda-espatula', 'Espátula');
+                pegaValor('venda-777', 'Alicate Novo 777');
+                pegaValor('venda-alicate-722', 'Alicate Novo 722');
+
+                let descricaoServicos = descricaoArray.length > 0 ? descricaoArray.join('<br>') : "Nenhum serviço especificado";
+
+                // Tratamento de Data Seguro
+                let dataStr = "Sem data";
+                if (dataAlvo) {
+                    let partes = dataAlvo.split('-');
+                    if (partes.length === 3) dataStr = `${partes[2]}/${partes[1]}/${partes[0]} às ${horaAlvo}`;
+                    else dataStr = dataAlvo + " às " + horaAlvo;
                 } else {
-                    dataStr = dataAlvo + " às " + horaAlvo;
+                    dataStr = new Date().toLocaleDateString('pt-BR') + " às " + horaAlvo;
                 }
-            } else {
-                dataStr = new Date().toLocaleDateString('pt-BR') + " às " + horaAlvo;
-            }
 
-            // Alocação na Agenda
-            if (qtdAfiar > 0) {
-                let vagasRestantes = parseInt(document.getElementById('vagas-livres').innerText);
-                if (qtdAfiar > vagasRestantes) { alert(`Faltam vagas na agenda.`); return; }
-                
-                let indexAlvo = timeSlots.indexOf(horaAlvo); 
-                let ordemBusca = [indexAlvo]; let offsetAntes = 1; let offsetDepois = 1;
-                while(indexAlvo - offsetAntes >= 0 || indexAlvo + offsetDepois < timeSlots.length) {
-                    if (indexAlvo - offsetAntes >= 0) { ordemBusca.push(indexAlvo - offsetAntes); offsetAntes++; }
-                    if (indexAlvo + offsetDepois < timeSlots.length) { ordemBusca.push(indexAlvo + offsetDepois); offsetDepois++; }
-                }
-                
-                let pendentes = qtdAfiar;
-                for (let i of ordemBusca) {
-                    if (pendentes <= 0) break;
-                    let horaAtual = timeSlots[i];
-                    for (let slot = 0; slot < 5; slot++) {
-                        if (estadoAgenda[horaAtual][slot] === 0 && pendentes > 0) {
-                            estadoAgenda[horaAtual][slot] = 2; 
-                            pendentes--;
+                // Agenda
+                if (qtdAfiar > 0) {
+                    let vagasRestantes = parseInt(document.getElementById('vagas-livres').innerText) || 0;
+                    if (qtdAfiar > vagasRestantes) { alert(`Faltam vagas na agenda.`); return; }
+                    
+                    let indexAlvo = timeSlots.indexOf(horaAlvo); 
+                    if(indexAlvo === -1) indexAlvo = 0; 
+                    
+                    let ordemBusca = [indexAlvo]; let offsetAntes = 1; let offsetDepois = 1;
+                    while(indexAlvo - offsetAntes >= 0 || indexAlvo + offsetDepois < timeSlots.length) {
+                        if (indexAlvo - offsetAntes >= 0) { ordemBusca.push(indexAlvo - offsetAntes); offsetAntes++; }
+                        if (indexAlvo + offsetDepois < timeSlots.length) { ordemBusca.push(indexAlvo + offsetDepois); offsetDepois++; }
+                    }
+                    
+                    let pendentes = qtdAfiar;
+                    for (let i of ordemBusca) {
+                        if (pendentes <= 0) break;
+                        let horaAtual = timeSlots[i];
+                        if(estadoAgenda[horaAtual]) {
+                            for (let slot = 0; slot < 5; slot++) {
+                                if (estadoAgenda[horaAtual][slot] === 0 && pendentes > 0) {
+                                    estadoAgenda[horaAtual][slot] = 2; // Cadeado OS
+                                    pendentes--;
+                                }
+                            }
                         }
                     }
+                    renderizarAgenda(); salvarAgendaNoFirebase();
                 }
-                renderizarAgenda(); salvarAgendaNoFirebase();
-            }
 
-            registrarClienteNoFirebase(nomeCliente, telCliente, qtdAfiar, totalMoeda);
+                registrarClienteNoFirebase(nomeCliente, telCliente, qtdAfiar, totalMoeda);
 
-            statsFerramentas += qtdAfiar; statsMolas += qMola; statsVendas += qVenda;
-            if (statusPagamentoVal === "pago") caixaEntrou += totalMoeda; else caixaAReceber += totalMoeda;
-            atualizarDashboard();
+                statsFerramentas += qtdAfiar; 
+                let eMola = document.getElementById('qtd-mola'); if(eMola) statsMolas += parseInt(eMola.innerText) || 0;
+                let eV777 = document.getElementById('venda-777'); if(eV777) statsVendas += parseInt(eV777.innerText) || 0;
+                let eV722 = document.getElementById('venda-alicate-722'); if(eV722) statsVendas += parseInt(eV722.innerText) || 0;
+                
+                if (statusPagamentoVal === "pago") caixaEntrou += totalMoeda; else caixaAReceber += totalMoeda;
+                atualizarDashboard();
 
-            let novaOS = {
-                numero: formatarNumOS(contadorOS),
-                nome: nomeCliente,
-                telefone: telCliente || "Sem telefone",
-                dataStr: dataStr,
-                ferramentas: qtdAfiar,
-                descricaoServicos: descricaoServicos, 
-                valorFormatado: totalFormatado,
-                valorNumerico: totalMoeda,
-                statusCode: statusPagamentoVal
-            };
-            
-            // Grava na Nuvem do Realtime DB
-            let novaOSRef = db.ref("ordens").push();
-            novaOSRef.set(novaOS).then(() => {
+                let novaOS = {
+                    numero: formatarNumOS(contadorOS),
+                    nome: nomeCliente,
+                    telefone: telCliente || "",
+                    dataStr: dataStr,
+                    ferramentas: qtdAfiar,
+                    descricaoServicos: descricaoServicos, 
+                    valorFormatado: totalFormatado,
+                    valorNumerico: totalMoeda,
+                    statusCode: statusPagamentoVal
+                };
+                
+                // SALVA LOCALMENTE E ABRE A TELA (Não trava esperando a internet)
+                let novaOSRef = db.ref("ordens").push();
                 novaOS.idFirebase = novaOSRef.key; 
                 historicoOS.push(novaOS);
                 contadorOS++; 
                 atualizarVisorOS();
-                renderizarFilaServicos();
                 
-                // Reseta o formulário
+                // Abre O Modal Automaticamente IMEDIATO
+                document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
+                document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
+                document.getElementById('modal-sucesso').style.display = 'flex';
+                
+                // Reseta UI
                 document.querySelectorAll('.qty-display').forEach(c => c.innerText = "0");
                 document.getElementById('os-telefone').value = ""; document.getElementById('os-nome').value = "";
                 document.getElementById('afia-outro-marca').value = ""; document.getElementById('os-status-pagamento').value = "retirada";
                 document.getElementById('os-hora').value = ""; 
                 calcularTotal();
                 
-                // Redireciona para tela de listagem
                 switchTab('servicos', document.querySelectorAll('.nav-item')[2]);
-                
-                // ABRE POPUP AUTOMÁTICO NA TELA
-                document.getElementById('btn-modal-wpp').onclick = () => enviarWhatsApp(novaOS.idFirebase);
-                document.getElementById('btn-modal-print').onclick = () => imprimirOS(novaOS.idFirebase);
-                document.getElementById('modal-sucesso').style.display = 'flex';
-                
-            }).catch(error => { alert("❌ ERRO AO SALVAR OS: " + error.message); });
+                renderizarFilaServicos();
+
+                // Envia para o Firebase no fundo silenciosamente
+                novaOSRef.set(novaOS).catch(error => { console.error("Firebase falhou", error); });
+
+            } catch(erro) {
+                alert("❌ Erro interno no aplicativo. Tente novamente.");
+                console.error(erro);
+            }
         }
 
         // ==========================================
@@ -730,42 +766,53 @@
             filtrados.slice().reverse().forEach(os => {
                 let statusClass = os.statusCode === "pago" ? "badge-pago" : (os.statusCode === "parcial" ? "badge-parcial" : "badge-retirada");
                 let statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago Parcial" : "Pagar Retirada");
-                let btnPagarHTML = os.statusCode !== "pago" ? `<button class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago (Pix/Dinheiro)</button>` : "";
+                let btnPagarHTML = os.statusCode !== "pago" ? `<button type="button" class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago</button>` : "";
 
                 container.innerHTML += `
                     <div class="os-card">
                         <div class="os-card-header"><span class="os-number">${os.numero} - ${os.nome}</span><span class="os-badge ${statusClass}">${statusText}</span></div>
                         <div class="os-details">
-                            <strong>Tel:</strong> ${os.telefone}<br>
+                            <strong>Tel:</strong> ${os.telefone || "Não informado"}<br>
                             <div class="os-detalhes-lista"><strong style="color:var(--primary);">Serviços:</strong><br>${os.descricaoServicos}</div>
                             <strong>Total:</strong> <span style="color:var(--primary); font-weight:bold;">${os.valorFormatado}</span>
                         </div>
                         ${btnPagarHTML}
                         <div class="btn-group-os">
-                            <button class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">📲 WhatsApp</button>
-                            <button class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">🖨️ Imprimir</button>
+                            <button type="button" class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">📲 WhatsApp</button>
+                            <button type="button" class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">🖨️ Imprimir</button>
                         </div>
-                        <button class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">✅ Marcar como Entregue</button>
+                        <button type="button" class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">✅ Marcar como Entregue</button>
                     </div>`;
             });
         }
 
         function enviarWhatsApp(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
-            let tel = os.telefone.replace(/\D/g, ''); 
-            if(tel.length < 10) return alert("O telefone preenchido parece inválido.");
-            if(tel.length === 10 || tel.length === 11) tel = "55" + tel; 
+            if(!os) return;
 
+            let tel = (os.telefone || "").replace(/\D/g, ''); 
             let statusTxt = os.statusCode === 'pago' ? 'Totalmente Pago' : (os.statusCode === 'parcial' ? 'Pago Parcialmente (Sinal)' : 'Pagamento na Retirada');
             let servs = os.descricaoServicos.replace(/<br>/g, '\n- ');
 
             let msg = `Olá, ${os.nome}! Aqui é da *Amolador Dois Irmãos* ✂️\n\nSua OS *${os.numero}* foi registrada.\n\n*Serviços:*\n- ${servs}\n\n*Entrega:* ${os.dataStr}\n*Total:* ${os.valorFormatado}\n*Status:* ${statusTxt}\n\nObrigado pela preferência!`;
-            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
-            document.getElementById('modal-sucesso').style.display = 'none';
+            
+            let linkWpp = "";
+            if(tel.length >= 10) {
+                if(tel.length === 10 || tel.length === 11) tel = "55" + tel; 
+                linkWpp = `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
+            } else {
+                // Abre o WhatsApp livre para o usuário escolher o contato
+                linkWpp = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+            }
+            
+            window.open(linkWpp, '_blank');
+            fecharModal();
         }
 
         function imprimirOS(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
+            if(!os) return;
+            
             let area = document.getElementById('print-area');
             let dataAtual = new Date().toLocaleString('pt-BR');
             let statusText = os.statusCode === "pago" ? "PAGO" : (os.statusCode === "parcial" ? "PAGO PARCIAL" : "A PAGAR NA RETIRADA");
@@ -777,7 +824,7 @@
                     <p style="text-align: center; font-size: 20px; font-weight: bold; margin: 5px 0;">OS ${os.numero}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
                     <p style="margin: 3px 0;"><strong>Data Pedido:</strong> ${dataAtual}</p><p style="margin: 3px 0;"><strong>Entrega:</strong> ${os.dataStr}</p>
-                    <p style="margin: 3px 0;"><strong>Cliente:</strong> ${os.nome}</p><p style="margin: 3px 0;"><strong>Telefone:</strong> ${os.telefone}</p>
+                    <p style="margin: 3px 0;"><strong>Cliente:</strong> ${os.nome}</p><p style="margin: 3px 0;"><strong>Telefone:</strong> ${os.telefone || "Não informado"}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
                     <p style="margin: 5px 0; font-weight: bold;">SERVIÇOS:</p><p style="margin: 5px 0; font-size: 14px;">${os.descricaoServicos}</p>
                     <hr style="border: none; border-top: 1px dashed black; margin: 10px 0;">
@@ -786,7 +833,7 @@
                     <p style="text-align: center; font-size: 11px;">Agradecemos a preferência!</p>
                 </div>`;
             window.print();
-            document.getElementById('modal-sucesso').style.display = 'none';
+            fecharModal();
         }
 
         atualizarVisorOS(); renderizarAgenda(); atualizarDashboard();
