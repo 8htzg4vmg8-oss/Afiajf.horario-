@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -61,7 +62,7 @@
         .btn-danger { background-color: var(--danger); }
         .btn-dark { background-color: #3f3f46; }
 
-        /* MODAL DE SUCESSO (JANELA AUTOMÁTICA) */
+        /* MODAL DE SUCESSO */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 99999; align-items: center; justify-content: center; animation: fadeIn 0.2s ease;}
         .modal-content { background: white; padding: 25px 20px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
@@ -134,8 +135,8 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v12</h2>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Bugs de Travamento Resolvidos!</p>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v13</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Bug (NaN) Resolvido!</p>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -509,10 +510,21 @@
         function formatarNumOS(num) { return "#" + num.toString().padStart(3, '0'); }
         function atualizarVisorOS() { let e = document.getElementById('visor-proxima-os'); if(e) e.innerText = formatarNumOS(contadorOS); }
 
+        // ==========================================
+        // NOVA FUNÇÃO BLINDADA ANTI-NaN
+        // ==========================================
         function registrarClienteNoFirebase(nome, telBruto, qtdFerramentas, valorGasto) {
-            let tel = telBruto.replace(/\D/g, ''); if (!tel) return; 
-            if (!bancoClientes[tel]) bancoClientes[tel] = { nome: nome, telefone: telBruto, visitas: 0, ferramentas: 0, totalGasto: 0 };
-            bancoClientes[tel].visitas += 1; bancoClientes[tel].ferramentas += qtdFerramentas; bancoClientes[tel].totalGasto += valorGasto;
+            let tel = telBruto.replace(/\D/g, ''); 
+            if (!tel) return; 
+            
+            if (!bancoClientes[tel]) {
+                bancoClientes[tel] = { nome: nome, telefone: telBruto, visitas: 0, ferramentas: 0, totalGasto: 0 };
+            }
+            
+            bancoClientes[tel].visitas = (Number(bancoClientes[tel].visitas) || 0) + 1;
+            bancoClientes[tel].ferramentas = (Number(bancoClientes[tel].ferramentas) || 0) + (Number(qtdFerramentas) || 0);
+            bancoClientes[tel].totalGasto = (Number(bancoClientes[tel].totalGasto) || 0) + (Number(valorGasto) || 0);
+            
             db.ref("clientes/" + tel).set(bancoClientes[tel]);
         }
 
@@ -605,7 +617,7 @@
                 
                 let tabServ = document.querySelectorAll('.nav-item')[2];
                 if(tabServ) switchTab('servicos', tabServ);
-                renderizarFilaServicos(); // Só é chamado DEPOIS de ir pra aba Serviços
+                renderizarFilaServicos(); 
 
                 novaOSRef.set(novaOS).catch(error => { console.error("Firebase falhou", error); });
 
@@ -635,7 +647,6 @@
             }
         }
 
-        // CORREÇÃO 1: BLINDAGEM DA FILA DE SERVIÇOS CONTRA OS ANTIGAS SEM TELEFONE
         function renderizarFilaServicos() {
             try {
                 const container = document.getElementById('container-fila-os'); if(!container) return;
@@ -706,7 +717,6 @@
             } catch (err) {}
         }
 
-        // CORREÇÃO 2: MÉTODO ANTI-BLOQUEIO DO WHATSAPP
         function enviarWhatsApp(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(!os) return alert("Erro: OS não encontrada.");
@@ -727,7 +737,6 @@
             
             fecharModal(); 
 
-            // Simula um clique real para passar pelo bloqueador de Pop-ups do celular
             let a = document.createElement('a');
             a.href = linkWpp;
             a.target = '_blank';
@@ -736,7 +745,6 @@
             document.body.removeChild(a);
         }
 
-        // CORREÇÃO 3: IMPRESSÃO APENAS APÓS A TELA LIMPAR
         function imprimirOS(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
             if(!os) return alert("Erro: OS não encontrada.");
@@ -761,13 +769,9 @@
                     <p style="text-align: center; font-size: 11px;">Agradecemos a preferência!</p>
                 </div>`;
             
-            // Fecha o modal antes
             fecharModal();
             
-            // Dá um respiro de meio segundo para o navegador processar a nova tela antes de puxar a impressora
-            setTimeout(() => {
-                window.print();
-            }, 500);
+            setTimeout(() => { window.print(); }, 500);
         }
 
         atualizarVisorOS(); renderizarAgenda(); atualizarDashboard();
