@@ -96,6 +96,7 @@
         .btn-action { flex: 1; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .btn-wpp { background: #25D366; color: white; }
         .btn-print { background: #3f3f46; color: white; }
+        .btn-delete { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; flex: 0.6;}
         .btn-baixa { background: #f4f4f5; border: 1px solid #d4d4d8; color: #3f3f46; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem;}
         
         /* DASHBOARD E CLIENTES */
@@ -135,8 +136,8 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v15</h2>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Dashboard de Serviços Adicionado!</p>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v17</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Agenda com Liberação Automática!</p>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -420,7 +421,6 @@
             if(inputAgenda) inputAgenda.value = dataFormatoInput;
             
             dataAtualAgenda = `${dia}-${mes}-${ano}`;
-            
             carregarAgendaDataFirebase();
         }
 
@@ -564,10 +564,12 @@
             db.ref("clientes/" + tel).set(bancoClientes[tel]);
         }
 
-        function salvarOS() {
+        // ===============================================
+        // SALVAR OS (AGORA COM MEMÓRIA DE VAGAS)
+        // ===============================================
+        async function salvarOS() {
             try {
                 let elHora = document.getElementById('os-hora'); let horaAlvo = elHora ? elHora.value : "";
-                
                 if (!horaAlvo) { alert("❌ ATENÇÃO: Você esqueceu de selecionar o horário de entrega!"); if(elHora) elHora.style.borderColor = "red"; return; }
                 if(elHora) elHora.style.borderColor = "var(--border)";
 
@@ -596,25 +598,36 @@
                 let descricaoServicos = descricaoArray.length > 0 ? descricaoArray.join('<br>') : "Nenhum serviço especificado";
 
                 let dataStr = "Sem data";
-                let salvarAgendaNesseDia = false;
+                let dataFormatadaFirebase = "";
 
                 if (dataAlvo) {
                     let partes = dataAlvo.split('-');
                     if (partes.length === 3) {
                         dataStr = `${partes[2]}/${partes[1]}/${partes[0]} às ${horaAlvo}`;
-                        let dataFormatadaFirebase = `${partes[2]}-${partes[1]}-${partes[0]}`;
-                        if (dataFormatadaFirebase === dataAtualAgenda) salvarAgendaNesseDia = true;
+                        dataFormatadaFirebase = `${partes[2]}-${partes[1]}-${partes[0]}`; 
                     } else dataStr = dataAlvo + " às " + horaAlvo;
                 } else { 
                     dataStr = new Date().toLocaleDateString('pt-BR') + " às " + horaAlvo; 
-                    salvarAgendaNesseDia = true; 
+                    dataFormatadaFirebase = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
                 }
 
-                if (qtdAfiar > 0 && salvarAgendaNesseDia) {
-                    let vagasRestantes = pegarValorSeguro('vagas-livres');
-                    if (qtdAfiar > vagasRestantes) { alert(`Faltam vagas na agenda.`); return; }
+                // ARRAY QUE GUARDA A MEMÓRIA DOS QUADRADINHOS
+                let slotsAlocadosParaOS = [];
+
+                if (qtdAfiar > 0) {
+                    // Busca a agenda exata daquele dia (Mesmo que a tela esteja em outro dia)
+                    let snapshot = await db.ref("agenda/" + dataFormatadaFirebase).once("value");
+                    let agendaDoDia = {};
+                    if(snapshot.exists()) agendaDoDia = JSON.parse(snapshot.val().slots);
+                    else timeSlots.forEach(t => agendaDoDia[t] = [0, 0, 0, 0, 0]);
+
+                    let vagasOcupadasNoDia = 0;
+                    for(let h in agendaDoDia) {
+                        for(let s=0; s<5; s++) { if(agendaDoDia[h][s] !== 0) vagasOcupadasNoDia++; }
+                    }
+                    if (qtdAfiar > (70 - vagasOcupadasNoDia)) { alert(`Faltam vagas na agenda do dia ${dataFormatadaFirebase.replace(/-/g, '/')}.`); return; }
+
                     let indexAlvo = timeSlots.indexOf(horaAlvo); if(indexAlvo === -1) indexAlvo = 0; 
-                    
                     let ordemBusca = [indexAlvo]; let offsetAntes = 1; let offsetDepois = 1;
                     while(indexAlvo - offsetAntes >= 0 || indexAlvo + offsetDepois < timeSlots.length) {
                         if (indexAlvo - offsetAntes >= 0) { ordemBusca.push(indexAlvo - offsetAntes); offsetAntes++; }
@@ -623,18 +636,27 @@
                     
                     let pendentes = qtdAfiar;
                     for (let i of ordemBusca) {
-                        if (pendentes <= 0) break; let horaAtual = timeSlots[i];
-                        if(estadoAgenda[horaAtual]) {
+                        if (pendentes <= 0) break; 
+                        let horaAtual = timeSlots[i];
+                        if(agendaDoDia[horaAtual]) {
                             for (let slot = 0; slot < 5; slot++) {
-                                if (estadoAgenda[horaAtual][slot] === 0 && pendentes > 0) {
-                                    estadoAgenda[horaAtual][slot] = 2; pendentes--;
+                                if (agendaDoDia[horaAtual][slot] === 0 && pendentes > 0) {
+                                    agendaDoDia[horaAtual][slot] = 2; // Tranca o cadeado
+                                    slotsAlocadosParaOS.push({ hora: horaAtual, index: slot }); // Salva na memória
+                                    pendentes--;
                                 }
                             }
                         }
                     }
-                    renderizarAgenda(); salvarAgendaNoFirebase();
-                } else if (qtdAfiar > 0 && !salvarAgendaNesseDia) {
-                    alert("⚠️ Aviso: A OS foi gerada, mas os quadradinhos da agenda não foram preenchidos porque a data de retirada é diferente da data que você está visualizando no calendário da Agenda.");
+
+                    // Salva a agenda no banco
+                    await db.ref("agenda/" + dataFormatadaFirebase).set({ slots: JSON.stringify(agendaDoDia) });
+
+                    // Atualiza a tela imediatamente SE o usuário estiver olhando pro dia exato
+                    if (dataFormatadaFirebase === dataAtualAgenda) {
+                        estadoAgenda = agendaDoDia;
+                        renderizarAgenda();
+                    }
                 }
 
                 registrarClienteNoFirebase(nomeCliente, telCliente, qtdAfiar, totalMoeda);
@@ -644,6 +666,7 @@
 
                 let novaOS = {
                     numero: formatarNumOS(contadorOS), nome: nomeCliente, telefone: telCliente || "", dataStr: dataStr,
+                    dataAgendaFirebase: dataFormatadaFirebase, slotsAlocados: slotsAlocadosParaOS, // <--- Memória salva aqui
                     ferramentas: qtdAfiar, descricaoServicos: descricaoServicos, valorFormatado: totalFormatado, valorNumerico: totalMoeda, statusCode: statusPagamentoVal
                 };
                 
@@ -665,7 +688,7 @@
                 if(tabServ) switchTab('servicos', tabServ);
                 renderizarFilaServicos(); 
 
-                novaOSRef.set(novaOS).catch(error => { console.error("Firebase falhou", error); });
+                await novaOSRef.set(novaOS);
 
             } catch(erro) {
                 alert("❌ Erro interno ao salvar OS. Detalhe: " + erro.message);
@@ -693,24 +716,112 @@
             }
         }
 
+        // ===============================================
+        // EXCLUIR OS: AGORA LIBERA A AGENDA AUTOMATICAMENTE
+        // ===============================================
+        async function excluirOS(idFirebase) {
+            let os = historicoOS.find(o => o.idFirebase === idFirebase);
+            if(!os) return;
+
+            if(confirm(`🚨 ATENÇÃO!\n\nTem certeza que deseja EXCLUIR DEFINITIVAMENTE a OS ${os.numero}? Os valores serão estornados e a agenda liberada automaticamente.`)) {
+                
+                // 1. Deleta do Banco de Dados
+                await db.ref("ordens/" + idFirebase).remove();
+                historicoOS = historicoOS.filter(o => o.idFirebase !== idFirebase);
+
+                // 2. A MÁGICA: Destranca a agenda usando a Memória
+                let dataFB = os.dataAgendaFirebase;
+                if (!dataFB && os.dataStr) {
+                    let parts = os.dataStr.split(" ");
+                    if (parts[0] && parts[0].includes("/")) dataFB = parts[0].replace(/\//g, '-');
+                }
+
+                if (dataFB) {
+                    let snap = await db.ref("agenda/" + dataFB).once("value");
+                    if (snap.exists()) {
+                        let agendaDoDia = JSON.parse(snap.val().slots);
+                        let alterouAgenda = false;
+
+                        // Se tiver a memória exata das vagas (Versão 17 em diante)
+                        if (os.slotsAlocados && os.slotsAlocados.length > 0) {
+                            os.slotsAlocados.forEach(alocado => {
+                                if (agendaDoDia[alocado.hora] && agendaDoDia[alocado.hora][alocado.index] === 2) {
+                                    agendaDoDia[alocado.hora][alocado.index] = 0; // Abre o cadeado
+                                    alterouAgenda = true;
+                                }
+                            });
+                        } 
+                        // Sistema de backup (para OS antigas da versão 16 pra baixo)
+                        else if (os.ferramentas > 0) {
+                            let freed = 0;
+                            let targetHora = os.dataStr.split("às ")[1];
+                            if (targetHora) targetHora = targetHora.trim();
+                            let startIdx = timeSlots.indexOf(targetHora) !== -1 ? timeSlots.indexOf(targetHora) : 0;
+                            let searchOrder = [startIdx]; let offsetA = 1, offsetD = 1;
+                            while(startIdx - offsetA >= 0 || startIdx + offsetD < timeSlots.length) {
+                                if (startIdx - offsetA >= 0) { searchOrder.push(startIdx - offsetA); offsetA++; }
+                                if (startIdx + offsetD < timeSlots.length) { searchOrder.push(startIdx + offsetD); offsetD++; }
+                            }
+                            for (let i of searchOrder) {
+                                if (freed >= os.ferramentas) break;
+                                let h = timeSlots[i];
+                                if(agendaDoDia[h]) {
+                                    for(let slot=0; slot<5; slot++) {
+                                        if(agendaDoDia[h][slot] === 2 && freed < os.ferramentas) {
+                                            agendaDoDia[h][slot] = 0; freed++; alterouAgenda = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (alterouAgenda) {
+                            await db.ref("agenda/" + dataFB).set({ slots: JSON.stringify(agendaDoDia) });
+                            if (dataFB === dataAtualAgenda) { estadoAgenda = agendaDoDia; renderizarAgenda(); }
+                        }
+                    }
+                }
+
+                // 3. Estorna do Caixa Atual
+                if (os.statusCode === "pago") caixaEntrou -= os.valorNumerico;
+                else caixaAReceber -= os.valorNumerico;
+                statsFerramentas -= os.ferramentas;
+                
+                if(caixaEntrou < 0) caixaEntrou = 0;
+                if(caixaAReceber < 0) caixaAReceber = 0;
+                if(statsFerramentas < 0) statsFerramentas = 0;
+
+                // 4. Estorna do Histórico do Cliente
+                let tel = (os.telefone || "").replace(/\D/g, '');
+                if (tel && bancoClientes[tel]) {
+                    bancoClientes[tel].visitas -= 1;
+                    bancoClientes[tel].ferramentas -= (Number(os.ferramentas) || 0);
+                    bancoClientes[tel].totalGasto -= (Number(os.valorNumerico) || 0);
+
+                    if (bancoClientes[tel].visitas <= 0) {
+                         bancoClientes[tel].visitas = 0; bancoClientes[tel].ferramentas = 0; bancoClientes[tel].totalGasto = 0;
+                    }
+                    db.ref("clientes/" + tel).set(bancoClientes[tel]);
+                }
+
+                atualizarDashboard(); renderizarFilaServicos(); renderizarClientes();
+            }
+        }
+
         function renderizarFilaServicos() {
             try {
                 const container = document.getElementById('container-fila-os'); if(!container) return;
                 let elBusca = document.getElementById('busca-os');
                 const termoBusca = elBusca ? elBusca.value.toLowerCase() : "";
                 
-                // --- ATUALIZA O PAINEL DE RESUMO DA LOJA ---
                 let totalOSAtivas = historicoOS.length;
                 let totalFerramentasNaLoja = 0;
-                historicoOS.forEach(os => {
-                    totalFerramentasNaLoja += (Number(os.ferramentas) || 0);
-                });
+                historicoOS.forEach(os => { totalFerramentasNaLoja += (Number(os.ferramentas) || 0); });
                 
                 let elTotalOS = document.getElementById('visor-total-os-loja');
                 if (elTotalOS) elTotalOS.innerText = totalOSAtivas;
                 let elTotalFerramentas = document.getElementById('visor-total-ferramentas-loja');
                 if (elTotalFerramentas) elTotalFerramentas.innerText = totalFerramentasNaLoja;
-                // ------------------------------------------
 
                 let filtrados = historicoOS.filter(os => {
                     let n = (os.numero || "").toLowerCase();
@@ -727,7 +838,6 @@
                     let statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago Parcial" : "Pagar Retirada");
                     let btnPagarHTML = os.statusCode !== "pago" ? `<button type="button" class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago</button>` : "";
                     
-                    // Adicionada a quantidade de itens na própria OS (🛠️ X itens)
                     let badgeQtdFerramentas = (os.ferramentas > 0) ? `<span class="os-badge" style="background: #e0f2fe; color: var(--primary); border: 1px solid #bae6fd;">🛠️ ${os.ferramentas} itens</span>` : '';
 
                     container.innerHTML += `
@@ -747,7 +857,8 @@
                             ${btnPagarHTML}
                             <div class="btn-group-os">
                                 <button type="button" class="btn-action btn-wpp" onclick="enviarWhatsApp('${os.idFirebase}')">📲 WhatsApp</button>
-                                <button type="button" class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">🖨️ Imprimir</button>
+                                <button type="button" class="btn-action btn-print" onclick="imprimirOS('${os.idFirebase}')">🖨️ Recibo</button>
+                                <button type="button" class="btn-action btn-delete" onclick="excluirOS('${os.idFirebase}')">🗑️ Excluir</button>
                             </div>
                             <button type="button" class="btn-baixa" onclick="darBaixaOS('${os.idFirebase}')">✅ Marcar como Entregue</button>
                         </div>`;
