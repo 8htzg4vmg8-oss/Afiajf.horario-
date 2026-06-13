@@ -83,7 +83,8 @@
         .os-card { background: #fff; border: 1px solid var(--primary); border-left: 5px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 15px; }
         .os-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .os-number { font-weight: bold; font-size: 1.1rem; color: var(--primary); }
-        .os-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+        .os-badges-container { display: flex; gap: 5px; align-items: center; }
+        .os-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; white-space: nowrap; }
         .badge-retirada { background: #fef08a; color: #a16207; border: 1px solid #fde047; }
         .badge-pago { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
         .badge-parcial { background: #fed7aa; color: #c2410c; border: 1px solid #fdba74; }
@@ -100,7 +101,7 @@
         /* DASHBOARD E CLIENTES */
         .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;}
         .stat-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
-        .stat-box span { display: block; font-size: 0.75rem; color: var(--text-light); margin-bottom: 3px; }
+        .stat-box span { display: block; font-size: 0.75rem; color: var(--text-light); margin-bottom: 3px; font-weight: bold;}
         .stat-box strong { font-size: 1.1rem; color: var(--primary); }
         .destaque { background: #e0f2fe; border-color: var(--primary); }
 
@@ -134,8 +135,8 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v14</h2>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Navegação de Dias Adicionada!</p>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v15</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Dashboard de Serviços Adicionado!</p>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -231,7 +232,19 @@
     </div>
 
     <div id="screen-servicos" class="screen">
-        <h2>📋 Fila de Serviços (OS)</h2>
+        <h2>📋 Fila de Serviços (Na Loja)</h2>
+        
+        <div class="finance-grid" style="margin-bottom: 10px;">
+            <div class="stat-box" style="border-color: var(--primary); background: #e0f2fe;">
+                <span>OS Ativas na Loja</span>
+                <strong id="visor-total-os-loja" style="color: var(--primary);">0</strong>
+            </div>
+            <div class="stat-box" style="border-color: #0d9488; background: #ccfbf1;">
+                <span style="color: #0f766e;">Total de Ferramentas</span>
+                <strong id="visor-total-ferramentas-loja" style="color: #0f766e;">0</strong>
+            </div>
+        </div>
+
         <div class="card" style="position: sticky; top: 0; z-index: 10;">
             <input type="text" id="busca-os" placeholder="Buscar Nome, Tel ou OS..." oninput="renderizarFilaServicos()" style="margin-bottom: 0; padding: 12px; border-color: var(--primary);">
         </div>
@@ -347,7 +360,6 @@
         let contadorOS = 1; let historicoOS = []; let bancoClientes = {};
         let caixaEntrou = 0, caixaAReceber = 0, statsFerramentas = 0, statsMolas = 0, statsVendas = 0;
         
-        // VARIÁVEL NOVA: Guarda a data que está sendo exibida no momento
         let dataAtualAgenda = ""; 
 
         let tabelaPrecos = {
@@ -398,7 +410,6 @@
                 bancoClientes = snapshot.val() || {}; renderizarClientes();
             });
 
-            // CONFIGURAÇÃO INICIAL DA DATA DA AGENDA (HOJE)
             let inputAgenda = document.getElementById('data-agenda');
             let dataLocal = new Date();
             let ano = dataLocal.getFullYear();
@@ -408,34 +419,31 @@
             let dataFormatoInput = `${ano}-${mes}-${dia}`;
             if(inputAgenda) inputAgenda.value = dataFormatoInput;
             
-            dataAtualAgenda = `${dia}-${mes}-${ano}`; // Padrão que o firebase estava usando antes
+            dataAtualAgenda = `${dia}-${mes}-${ano}`;
             
             carregarAgendaDataFirebase();
         }
 
-        // NOVA FUNÇÃO: Busca a agenda da data escolhida
         function carregarAgendaDataFirebase() {
             db.ref("agenda/" + dataAtualAgenda).once("value").then((snapshot) => {
                 if(snapshot.exists()) {
                     estadoAgenda = JSON.parse(snapshot.val().slots);
                 } else {
-                    timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]); // Zera a tela se não tiver dados
+                    timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]); 
                 }
                 renderizarAgenda();
             });
         }
 
-        // NOVA FUNÇÃO: Acionada ao trocar o calendário
         function mudarDataAgenda() {
             let input = document.getElementById('data-agenda').value;
             if(!input) return;
-            let partes = input.split('-'); // O input entrega no formato AAAA-MM-DD
-            dataAtualAgenda = `${partes[2]}-${partes[1]}-${partes[0]}`; // Inverte para DD-MM-AAAA para o Firebase
+            let partes = input.split('-');
+            dataAtualAgenda = `${partes[2]}-${partes[1]}-${partes[0]}`; 
             carregarAgendaDataFirebase();
         }
 
         function salvarAgendaNoFirebase() {
-            // Salva na data que estiver aberta na tela, não necessariamente hoje
             db.ref("agenda/" + dataAtualAgenda).set({ slots: JSON.stringify(estadoAgenda) });
         }
 
@@ -594,17 +602,12 @@
                     let partes = dataAlvo.split('-');
                     if (partes.length === 3) {
                         dataStr = `${partes[2]}/${partes[1]}/${partes[0]} às ${horaAlvo}`;
-                        
-                        // Verifica se a OS é para o dia que está aberto na tela
                         let dataFormatadaFirebase = `${partes[2]}-${partes[1]}-${partes[0]}`;
-                        if (dataFormatadaFirebase === dataAtualAgenda) {
-                            salvarAgendaNesseDia = true;
-                        }
-
+                        if (dataFormatadaFirebase === dataAtualAgenda) salvarAgendaNesseDia = true;
                     } else dataStr = dataAlvo + " às " + horaAlvo;
                 } else { 
                     dataStr = new Date().toLocaleDateString('pt-BR') + " às " + horaAlvo; 
-                    salvarAgendaNesseDia = true; // Se não escolheu data de retirada, vai pra hoje
+                    salvarAgendaNesseDia = true; 
                 }
 
                 if (qtdAfiar > 0 && salvarAgendaNesseDia) {
@@ -696,6 +699,19 @@
                 let elBusca = document.getElementById('busca-os');
                 const termoBusca = elBusca ? elBusca.value.toLowerCase() : "";
                 
+                // --- ATUALIZA O PAINEL DE RESUMO DA LOJA ---
+                let totalOSAtivas = historicoOS.length;
+                let totalFerramentasNaLoja = 0;
+                historicoOS.forEach(os => {
+                    totalFerramentasNaLoja += (Number(os.ferramentas) || 0);
+                });
+                
+                let elTotalOS = document.getElementById('visor-total-os-loja');
+                if (elTotalOS) elTotalOS.innerText = totalOSAtivas;
+                let elTotalFerramentas = document.getElementById('visor-total-ferramentas-loja');
+                if (elTotalFerramentas) elTotalFerramentas.innerText = totalFerramentasNaLoja;
+                // ------------------------------------------
+
                 let filtrados = historicoOS.filter(os => {
                     let n = (os.numero || "").toLowerCase();
                     let nm = (os.nome || "").toLowerCase();
@@ -703,17 +719,26 @@
                     return n.includes(termoBusca) || nm.includes(termoBusca) || t.includes(termoBusca);
                 });
                 
-                if (filtrados.length === 0) { container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhuma OS em Serviços.</p>'; return; }
+                if (filtrados.length === 0) { container.innerHTML = '<p style="text-align: center; color: var(--text-light); margin-top: 40px;">Nenhuma OS na Fila.</p>'; return; }
 
                 container.innerHTML = ''; 
                 filtrados.slice().reverse().forEach(os => {
                     let statusClass = os.statusCode === "pago" ? "badge-pago" : (os.statusCode === "parcial" ? "badge-parcial" : "badge-retirada");
                     let statusText = os.statusCode === "pago" ? "Pago" : (os.statusCode === "parcial" ? "Pago Parcial" : "Pagar Retirada");
                     let btnPagarHTML = os.statusCode !== "pago" ? `<button type="button" class="btn btn-warning" onclick="marcarComoPago('${os.idFirebase}')">💰 Marcar como Pago</button>` : "";
+                    
+                    // Adicionada a quantidade de itens na própria OS (🛠️ X itens)
+                    let badgeQtdFerramentas = (os.ferramentas > 0) ? `<span class="os-badge" style="background: #e0f2fe; color: var(--primary); border: 1px solid #bae6fd;">🛠️ ${os.ferramentas} itens</span>` : '';
 
                     container.innerHTML += `
                         <div class="os-card">
-                            <div class="os-card-header"><span class="os-number">${os.numero} - ${os.nome}</span><span class="os-badge ${statusClass}">${statusText}</span></div>
+                            <div class="os-card-header">
+                                <span class="os-number">${os.numero} - ${os.nome}</span>
+                                <div class="os-badges-container">
+                                    ${badgeQtdFerramentas}
+                                    <span class="os-badge ${statusClass}">${statusText}</span>
+                                </div>
+                            </div>
                             <div class="os-details">
                                 <strong>Tel:</strong> ${os.telefone || "Não informado"}<br>
                                 <div class="os-detalhes-lista"><strong style="color:var(--primary);">Serviços:</strong><br>${os.descricaoServicos}</div>
