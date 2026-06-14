@@ -47,6 +47,7 @@
         .square { width: 36px; height: 36px; border: 2px solid #d4d4d8; border-radius: 6px; background-color: #fafafa; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;}
         .square.booked { background-color: var(--primary); border-color: var(--primary); }
         .square.locked { background-color: #0369a1; border-color: #0369a1; color: white; }
+        .square.done { background-color: #10b981; border-color: #10b981; color: white; font-size: 1.1rem; }
         .lunch-break { text-align: center; padding: 12px; background-color: #fef3c7; color: #b45309; border-radius: 6px; margin: 10px 0; font-weight: bold; font-size: 0.9rem; }
 
         /* FORMULÁRIOS */
@@ -136,8 +137,8 @@
             <p>Amolador Dois Irmãos</p>
         </div>
         <div class="card" style="max-width: 320px; margin: 0 auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v17</h2>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Agenda com Liberação Automática!</p>
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--danger);">Acesso Restrito v17.2</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--success); margin-top: -15px; margin-bottom: 20px;">Slot ✅ Feito: libera vaga sem perder produção!</p>
             <label>E-mail Firebase</label>
             <input type="email" id="login-email" placeholder="seu@email.com">
             <label style="margin-top: 10px;">Senha</label>
@@ -153,6 +154,7 @@
         <div class="progresso-container">
             <div class="progresso-stats">
                 <span>Ocupados: <strong id="vagas-ocupadas" style="color: var(--primary);">0</strong>/70</span>
+                <span>✅ Feitos: <strong id="vagas-feitas" style="color: var(--success);">0</strong></span>
                 <span>Livres: <strong id="vagas-livres" style="color: var(--success);">70</strong></span>
             </div>
             <div class="progresso-bg"><div class="progresso-fill" id="barra-progresso"></div></div>
@@ -273,6 +275,7 @@
                     <span>A Receber (Na Loja)</span><strong id="caixa-areceber" style="color: var(--warning);">R$ 0,00</strong>
                 </div>
             </div>
+            <button type="button" class="btn btn-dark" style="margin-top: 0;" onclick="zerarCaixa()">🔄 Zerar Caixa (Virada do Mês)</button>
         </div>
 
         <div class="card destaque">
@@ -372,6 +375,28 @@
         const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "14:30", "15:00", "15:30", "16:00", "16:30"];
         let estadoAgenda = {}; timeSlots.forEach(t => estadoAgenda[t] = [0, 0, 0, 0, 0]);
 
+        // ===============================================
+        // CAIXA: SALVAR E CARREGAR NO FIREBASE
+        // ===============================================
+        function salvarCaixaNoFirebase() {
+            db.ref("caixa").set({
+                entrou: caixaEntrou,
+                aReceber: caixaAReceber,
+                ferramentas: statsFerramentas
+            });
+        }
+
+        function zerarCaixa() {
+            if (confirm("Tem certeza que deseja ZERAR o caixa?\n\nFaça isso apenas na virada do mês. Esta ação não pode ser desfeita.")) {
+                caixaEntrou = 0;
+                caixaAReceber = 0;
+                statsFerramentas = 0;
+                salvarCaixaNoFirebase();
+                atualizarDashboard();
+                alert("Caixa zerado com sucesso!");
+            }
+        }
+
         function fazerLogin() {
             let email = document.getElementById('login-email').value;
             let senha = document.getElementById('login-senha').value;
@@ -409,6 +434,17 @@
 
             db.ref("clientes").once("value").then((snapshot) => {
                 bancoClientes = snapshot.val() || {}; renderizarClientes();
+            });
+
+            // CARREGA O CAIXA SALVO NO FIREBASE
+            db.ref("caixa").once("value").then((snapshot) => {
+                if (snapshot.exists()) {
+                    let d = snapshot.val();
+                    caixaEntrou = d.entrou || 0;
+                    caixaAReceber = d.aReceber || 0;
+                    statsFerramentas = d.ferramentas || 0;
+                }
+                atualizarDashboard();
             });
 
             let inputAgenda = document.getElementById('data-agenda');
@@ -504,24 +540,27 @@
 
         function renderizarAgenda() {
             const container = document.getElementById('agenda-container'); if(!container) return;
-            container.innerHTML = ''; let totalOcupados = 0;
+            container.innerHTML = ''; let totalOcupados = 0; let totalFeitos = 0;
             
             timeSlots.forEach(hora => {
                 if(hora === "14:30") container.innerHTML += '<div class="lunch-break">☕ Pausa Almoço (13:30 - 14:30)</div>';
                 let sqs = "";
                 for(let i=0; i<5; i++) {
                     let status = estadoAgenda[hora] ? estadoAgenda[hora][i] : 0;
-                    if (status !== 0) totalOcupados++;
+                    if (status === 1 || status === 2) totalOcupados++;
+                    if (status === 3) totalFeitos++;
                     let cssClass = ""; let icone = "";
                     if (status === 1) cssClass = "booked"; 
                     if (status === 2) { cssClass = "locked"; icone = "🔒"; }
+                    if (status === 3) { cssClass = "done"; icone = "✓"; }
                     sqs += `<div class="square ${cssClass}" onclick="toggleAgenda('${hora}', ${i})">${icone}</div>`;
                 }
                 container.innerHTML += `<div class="time-row"><div class="time-label">${hora}</div><div class="squares-container">${sqs}</div></div>`;
             });
             
-            let totalLivres = 70 - totalOcupados; let pct = (totalOcupados / 70) * 100;
+            let totalLivres = 70 - totalOcupados - totalFeitos; let pct = (totalOcupados / 70) * 100;
             let eVagasOc = document.getElementById('vagas-ocupadas'); if(eVagasOc) eVagasOc.innerText = totalOcupados;
+            let eVagasF = document.getElementById('vagas-feitas'); if(eVagasF) eVagasF.innerText = totalFeitos;
             let eVagasLi = document.getElementById('vagas-livres'); 
             if(eVagasLi) { eVagasLi.innerText = totalLivres; eVagasLi.style.color = totalLivres <= 10 ? '#ef4444' : '#10b981'; }
             let eBarra = document.getElementById('barra-progresso');
@@ -530,12 +569,23 @@
 
         function toggleAgenda(hora, index) { 
             if(!estadoAgenda[hora]) return; let statusAtual = estadoAgenda[hora][index];
+
+            // 🔒 OS agendada → toca = marca como FEITO ✅ (libera vaga, mantém produção)
             if (statusAtual === 2) {
-                if(confirm("🔓 Liberar Vaga?\n\nEste horário está reservado para uma OS. Você já adiantou este serviço e deseja abrir essa vaga para um novo cliente?")) {
-                    estadoAgenda[hora][index] = 0; renderizarAgenda(); salvarAgendaNoFirebase();
-                }
+                estadoAgenda[hora][index] = 3;
+                renderizarAgenda(); salvarAgendaNoFirebase();
                 return; 
             }
+
+            // ✅ Feito → toca = volta a livre (desfaz)
+            if (statusAtual === 3) {
+                if(confirm("Desfazer conclusão?\n\nEste slot voltará a ficar livre.")) {
+                    estadoAgenda[hora][index] = 0; renderizarAgenda(); salvarAgendaNoFirebase();
+                }
+                return;
+            }
+
+            // ⬜ Livre ↔ 🟦 Manual
             estadoAgenda[hora][index] = (statusAtual === 0) ? 1 : 0; renderizarAgenda(); salvarAgendaNoFirebase();
         }
 
@@ -565,7 +615,7 @@
         }
 
         // ===============================================
-        // SALVAR OS (AGORA COM MEMÓRIA DE VAGAS)
+        // SALVAR OS
         // ===============================================
         async function salvarOS() {
             try {
@@ -611,11 +661,9 @@
                     dataFormatadaFirebase = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
                 }
 
-                // ARRAY QUE GUARDA A MEMÓRIA DOS QUADRADINHOS
                 let slotsAlocadosParaOS = [];
 
                 if (qtdAfiar > 0) {
-                    // Busca a agenda exata daquele dia (Mesmo que a tela esteja em outro dia)
                     let snapshot = await db.ref("agenda/" + dataFormatadaFirebase).once("value");
                     let agendaDoDia = {};
                     if(snapshot.exists()) agendaDoDia = JSON.parse(snapshot.val().slots);
@@ -623,7 +671,7 @@
 
                     let vagasOcupadasNoDia = 0;
                     for(let h in agendaDoDia) {
-                        for(let s=0; s<5; s++) { if(agendaDoDia[h][s] !== 0) vagasOcupadasNoDia++; }
+                        for(let s=0; s<5; s++) { if(agendaDoDia[h][s] === 1 || agendaDoDia[h][s] === 2) vagasOcupadasNoDia++; }
                     }
                     if (qtdAfiar > (70 - vagasOcupadasNoDia)) { alert(`Faltam vagas na agenda do dia ${dataFormatadaFirebase.replace(/-/g, '/')}.`); return; }
 
@@ -640,19 +688,17 @@
                         let horaAtual = timeSlots[i];
                         if(agendaDoDia[horaAtual]) {
                             for (let slot = 0; slot < 5; slot++) {
-                                if (agendaDoDia[horaAtual][slot] === 0 && pendentes > 0) {
-                                    agendaDoDia[horaAtual][slot] = 2; // Tranca o cadeado
-                                    slotsAlocadosParaOS.push({ hora: horaAtual, index: slot }); // Salva na memória
+                                if ((agendaDoDia[horaAtual][slot] === 0 || agendaDoDia[horaAtual][slot] === 3) && pendentes > 0) {
+                                    agendaDoDia[horaAtual][slot] = 2;
+                                    slotsAlocadosParaOS.push({ hora: horaAtual, index: slot });
                                     pendentes--;
                                 }
                             }
                         }
                     }
 
-                    // Salva a agenda no banco
                     await db.ref("agenda/" + dataFormatadaFirebase).set({ slots: JSON.stringify(agendaDoDia) });
 
-                    // Atualiza a tela imediatamente SE o usuário estiver olhando pro dia exato
                     if (dataFormatadaFirebase === dataAtualAgenda) {
                         estadoAgenda = agendaDoDia;
                         renderizarAgenda();
@@ -663,10 +709,11 @@
                 statsFerramentas += qtdAfiar; statsMolas += pegarValorSeguro('qtd-mola'); statsVendas += pegarValorSeguro('venda-alicate-777') + pegarValorSeguro('venda-alicate-722');
                 if (statusPagamentoVal === "pago") caixaEntrou += totalMoeda; else caixaAReceber += totalMoeda;
                 atualizarDashboard();
+                salvarCaixaNoFirebase(); // SALVA CAIXA NO FIREBASE
 
                 let novaOS = {
                     numero: formatarNumOS(contadorOS), nome: nomeCliente, telefone: telCliente || "", dataStr: dataStr,
-                    dataAgendaFirebase: dataFormatadaFirebase, slotsAlocados: slotsAlocadosParaOS, // <--- Memória salva aqui
+                    dataAgendaFirebase: dataFormatadaFirebase, slotsAlocados: slotsAlocadosParaOS,
                     ferramentas: qtdAfiar, descricaoServicos: descricaoServicos, valorFormatado: totalFormatado, valorNumerico: totalMoeda, statusCode: statusPagamentoVal
                 };
                 
@@ -701,7 +748,9 @@
             if(confirm(`Confirmar pagamento para a OS ${os.numero}?`)) {
                 db.ref("ordens/" + idFirebase).update({ statusCode: "pago" }).then(() => {
                     os.statusCode = "pago"; caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico;
-                    atualizarDashboard(); renderizarFilaServicos(); 
+                    atualizarDashboard();
+                    salvarCaixaNoFirebase(); // SALVA CAIXA NO FIREBASE
+                    renderizarFilaServicos(); 
                 });
             }
         }
@@ -711,13 +760,14 @@
             if(confirm("Confirma a entrega desta OS ao cliente?")) {
                 db.ref("ordens/" + idFirebase).remove().then(() => {
                     if (os.statusCode !== "pago") { caixaAReceber -= os.valorNumerico; caixaEntrou += os.valorNumerico; atualizarDashboard(); }
+                    salvarCaixaNoFirebase(); // SALVA CAIXA NO FIREBASE
                     historicoOS = historicoOS.filter(o => o.idFirebase !== idFirebase); renderizarFilaServicos(); 
                 });
             }
         }
 
         // ===============================================
-        // EXCLUIR OS: AGORA LIBERA A AGENDA AUTOMATICAMENTE
+        // EXCLUIR OS: LIBERA A AGENDA AUTOMATICAMENTE
         // ===============================================
         async function excluirOS(idFirebase) {
             let os = historicoOS.find(o => o.idFirebase === idFirebase);
@@ -725,11 +775,9 @@
 
             if(confirm(`🚨 ATENÇÃO!\n\nTem certeza que deseja EXCLUIR DEFINITIVAMENTE a OS ${os.numero}? Os valores serão estornados e a agenda liberada automaticamente.`)) {
                 
-                // 1. Deleta do Banco de Dados
                 await db.ref("ordens/" + idFirebase).remove();
                 historicoOS = historicoOS.filter(o => o.idFirebase !== idFirebase);
 
-                // 2. A MÁGICA: Destranca a agenda usando a Memória
                 let dataFB = os.dataAgendaFirebase;
                 if (!dataFB && os.dataStr) {
                     let parts = os.dataStr.split(" ");
@@ -742,16 +790,14 @@
                         let agendaDoDia = JSON.parse(snap.val().slots);
                         let alterouAgenda = false;
 
-                        // Se tiver a memória exata das vagas (Versão 17 em diante)
                         if (os.slotsAlocados && os.slotsAlocados.length > 0) {
                             os.slotsAlocados.forEach(alocado => {
                                 if (agendaDoDia[alocado.hora] && agendaDoDia[alocado.hora][alocado.index] === 2) {
-                                    agendaDoDia[alocado.hora][alocado.index] = 0; // Abre o cadeado
+                                    agendaDoDia[alocado.hora][alocado.index] = 0;
                                     alterouAgenda = true;
                                 }
                             });
                         } 
-                        // Sistema de backup (para OS antigas da versão 16 pra baixo)
                         else if (os.ferramentas > 0) {
                             let freed = 0;
                             let targetHora = os.dataStr.split("às ")[1];
@@ -782,7 +828,6 @@
                     }
                 }
 
-                // 3. Estorna do Caixa Atual
                 if (os.statusCode === "pago") caixaEntrou -= os.valorNumerico;
                 else caixaAReceber -= os.valorNumerico;
                 statsFerramentas -= os.ferramentas;
@@ -791,7 +836,6 @@
                 if(caixaAReceber < 0) caixaAReceber = 0;
                 if(statsFerramentas < 0) statsFerramentas = 0;
 
-                // 4. Estorna do Histórico do Cliente
                 let tel = (os.telefone || "").replace(/\D/g, '');
                 if (tel && bancoClientes[tel]) {
                     bancoClientes[tel].visitas -= 1;
@@ -804,7 +848,9 @@
                     db.ref("clientes/" + tel).set(bancoClientes[tel]);
                 }
 
-                atualizarDashboard(); renderizarFilaServicos(); renderizarClientes();
+                atualizarDashboard();
+                salvarCaixaNoFirebase(); // SALVA CAIXA NO FIREBASE
+                renderizarFilaServicos(); renderizarClientes();
             }
         }
 
