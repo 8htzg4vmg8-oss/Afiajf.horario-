@@ -1,1137 +1,779 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>A F I A - Oficina de Afiação</title>
-  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22A%20F%20I%20A%22%2C%22short_name%22%3A%22AFIA%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%230D47A1%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'45'%20fill%3D'%230D47A1'%2F%3E%3Ctext%20x%3D'50'%20y%3D'70'%20font-size%3D'55'%20text-anchor%3D'middle'%20fill%3D'white'%3E%E2%9C%82%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>A F I A - Oficina de Afiação</title>
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22A%20F%20I%20A%22%2C%22short_name%22%3A%22AFIA%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%230D47A1%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'45'%20fill%3D'%230D47A1'%2F%3E%3Ctext%20x%3D'50'%20y%3D'70'%20font-size%3D'55'%20text-anchor%3D'middle'%20fill%3D'white'%3E%E2%9C%82%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
 
-  <!-- Firebase SDKs (versão compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-  <style>
-    /* ========== TEMAS ========== */
-    :root {
-      --bg: #f2f5f9; --card-bg: #fff; --text: #1a1a1a; --text-sec: #555;
-      --border: #e0e0e0; --input-bg: #f9fafb; --shadow: 0 2px 8px rgba(0,0,0,0.06);
-      --header-bg: #0D47A1; --header-text: #fff;
-      --afiacao-bg: #eef4ff; --afiacao-border: #c5d4f0; --afiacao-text: #1a3b6b;
-      --venda-bg: #edf7ee; --venda-border: #b8d9bb; --venda-text: #1b4d1f;
-    }
-    [data-theme="dark"] {
-      --bg: #121212; --card-bg: #1e1e1e; --text: #e0e0e0; --text-sec: #aaa;
-      --border: #333; --input-bg: #2a2a2a; --shadow: 0 2px 8px rgba(0,0,0,0.3);
-      --header-bg: #0a2f6b;
-      --afiacao-bg: #1a2538; --afiacao-border: #2a3f5f; --afiacao-text: #8db3e6;
-      --venda-bg: #1a2e1c; --venda-border: #2a4a2d; --venda-text: #8fc98a;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 0 0 70px 0; -webkit-tap-highlight-color: transparent; user-select: none; transition: background 0.3s, color 0.3s; }
-    header { background: var(--header-bg); color: var(--header-text); padding: 1rem 1rem; text-align: center; position: sticky; top: 0; z-index: 20; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
-    header h1 { font-size: 1.5rem; letter-spacing: 2px; font-weight: 700; }
-    header small { display: block; font-size: 0.7rem; opacity: 0.9; font-weight: 400; }
+    <style>
+        /* ========== TEMAS (cores dinâmicas via CSS vars) ========== */
+        :root {
+            --primary: #0D47A1;
+            --primary-light: #1565C0;
+            --primary-dark: #0a2f6b;
+            --bg: #f2f5f9;
+            --card-bg: #fff;
+            --text: #1a1a1a;
+            --text-sec: #555;
+            --border: #e0e0e0;
+            --input-bg: #f9fafb;
+            --shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --header-bg: var(--primary);
+            --header-text: #fff;
+            --afiacao-bg: #eef4ff;
+            --afiacao-border: #c5d4f0;
+            --venda-bg: #edf7ee;
+            --venda-border: #b8d9bb;
+        }
+        [data-theme="dark"] {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --text-sec: #aaa;
+            --border: #333;
+            --input-bg: #2a2a2a;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+            --afiacao-bg: #1a2538;
+            --afiacao-border: #2a3f5f;
+            --venda-bg: #1a2e1c;
+            --venda-border: #2a4a2d;
+            --header-bg: #0a1f3b;
+        }
 
-    /* ========== LOGIN ========== */
-    #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; padding: 2rem; }
-    #login-screen .card { width: 100%; max-width: 380px; text-align: center; }
-    #login-screen .logo { font-size: 3rem; margin-bottom: 0.5rem; }
-    #login-screen h2 { margin-bottom: 1.5rem; color: var(--text); }
-    #login-screen .btn { margin-top: 0.5rem; }
-    #login-error { color: #c62828; font-size: 0.8rem; margin-top: 0.5rem; display: none; }
-    .link-btn { background: none; border: none; color: #0D47A1; font-size: 0.85rem; cursor: pointer; margin-top: 0.8rem; text-decoration: underline; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 0 0 70px 0; -webkit-tap-highlight-color: transparent; user-select: none; transition: background 0.3s, color 0.3s; }
+        header { background: var(--header-bg); color: var(--header-text); padding: 1rem; text-align: center; position: sticky; top: 0; z-index: 20; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+        .logo-text { font-size: 1.8rem; font-weight: 800; letter-spacing: 4px; }
+        header small { display: block; font-size: 0.7rem; opacity: 0.9; font-weight: 400; }
 
-    /* ========== BOTTOM NAV ========== */
-    nav.bottom { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; border-top: 1px solid var(--border); z-index: 20; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 8px rgba(0,0,0,0.04); }
-    nav.bottom button { flex: 1; background: none; border: none; padding: 0.5rem 0.2rem; font-size: 0.65rem; color: #888; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; transition: 0.2s; }
-    nav.bottom button.active { color: #0D47A1; font-weight: 600; }
-    nav.bottom button svg { width: 22px; height: 22px; }
+        /* ========== SPLASH / LOGIN ========== */
+        #splash-screen { position: fixed; inset: 0; background: #0D47A1; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; color: white; font-size: 2.5rem; font-weight: 800; letter-spacing: 6px; animation: fadeOut 0.5s 1s forwards; }
+        @keyframes fadeOut { to { opacity: 0; pointer-events: none; } }
 
-    /* ========== VIEWS ========== */
-    .view { display: none; padding: 1rem; animation: fadeIn 0.2s; }
-    .view.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; padding: 2rem; }
+        #login-screen .card { width: 100%; max-width: 380px; text-align: center; }
+        #login-screen h2 { margin-bottom: 1.5rem; color: var(--text); }
+        #login-screen .btn { margin-top: 0.5rem; }
+        #login-error { color: #c62828; font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+        .link-btn { background: none; border: none; color: var(--primary); font-size: 0.85rem; cursor: pointer; margin-top: 0.8rem; text-decoration: underline; }
 
-    /* ========== CARDS ========== */
-    .card { background: var(--card-bg); border-radius: 14px; padding: 1.1rem; margin-bottom: 0.9rem; box-shadow: var(--shadow); transition: transform 0.15s; border: 1px solid var(--border); }
-    .card:active { transform: scale(0.99); }
-    .card h3 { font-size: 1rem; margin-bottom: 0.4rem; display: flex; justify-content: space-between; align-items: center; color: var(--text); }
-    .card p { font-size: 0.83rem; color: var(--text-sec); margin-bottom: 0.25rem; line-height: 1.4; }
+        /* ========== LOADING SPINNER ========== */
+        .spinner-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 50; display: flex; align-items: center; justify-content: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #fff; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ========== INPUTS & BUTTONS ========== */
-    input, select, textarea { width: 100%; padding: 0.75rem; margin-bottom: 0.7rem; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; background: var(--input-bg); color: var(--text); transition: border 0.2s; }
-    input:focus, select:focus, textarea:focus { border-color: #0D47A1; outline: none; box-shadow: 0 0 0 3px rgba(13,71,161,0.1); }
-    label { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; display: block; color: var(--text); }
-    .btn { background: #0D47A1; color: white; border: none; padding: 0.75rem; border-radius: 10px; font-size: 0.9rem; cursor: pointer; width: 100%; font-weight: 600; transition: 0.2s; letter-spacing: 0.3px; }
-    .btn:active { filter: brightness(0.85); transform: scale(0.98); }
-    .btn.secondary { background: #f0f0f0; color: #444; border: 1px solid #ddd; }
-    .btn.success { background: #2e7d32; }
-    .btn.danger { background: #c62828; color: white; }
-    .btn.whatsapp { background: #25D366; color: white; }
-    .btn.outline { background: transparent; border: 2px solid #0D47A1; color: #0D47A1; }
-    .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .btn-group .btn { flex: 1; min-width: 70px; font-size: 0.78rem; padding: 0.55rem; }
+        /* ========== BOTTOM NAV ========== */
+        nav.bottom { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; border-top: 1px solid var(--border); z-index: 20; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 8px rgba(0,0,0,0.04); }
+        nav.bottom button { flex: 1; background: none; border: none; padding: 0.5rem 0.2rem; font-size: 0.65rem; color: #888; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; transition: 0.2s; }
+        nav.bottom button.active { color: var(--primary); font-weight: 600; }
+        nav.bottom button svg { width: 22px; height: 22px; }
 
-    /* ========== BADGES ========== */
-    .badge { display: inline-block; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
-    .badge.recebida { background: #FFF3E0; color: #E65100; }
-    .badge.afiacao { background: #E3F2FD; color: #0D47A1; }
-    .badge.pronta { background: #E8F5E9; color: #2e7d32; }
-    .badge.entregue { background: #ECEFF1; color: #546e7a; }
-    .badge.orcamento { background: #F3E5F5; color: #7B1FA2; }
-    .badge.afiacao-tag { background: #dce8fc; color: #1a3b6b; font-size: 0.65rem; margin-left: 0.3rem; font-weight: 600; }
-    .badge.venda-tag { background: #d4edda; color: #1b4d1f; font-size: 0.65rem; margin-left: 0.3rem; font-weight: 600; }
+        /* ========== VIEWS ========== */
+        .view { display: none; padding: 1rem; animation: fadeIn 0.2s; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ========== DASHBOARD ========== */
-    .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }
-    .dash-card { background: var(--card-bg); border-radius: 14px; padding: 0.9rem; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); }
-    .dash-card .num { font-size: 1.8rem; font-weight: 700; color: #0D47A1; }
-    .dash-card .label { font-size: 0.7rem; color: var(--text-sec); font-weight: 500; }
+        /* ========== CARDS ========== */
+        .card { background: var(--card-bg); border-radius: 14px; padding: 1.1rem; margin-bottom: 0.9rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .card h3 { font-size: 1rem; margin-bottom: 0.4rem; display: flex; justify-content: space-between; align-items: center; color: var(--text); }
+        .card p { font-size: 0.83rem; color: var(--text-sec); margin-bottom: 0.25rem; line-height: 1.4; }
 
-    /* ========== FAB ========== */
-    .fab { position: fixed; bottom: 85px; right: 20px; width: 52px; height: 52px; border-radius: 50%; background: #0D47A1; color: white; border: none; font-size: 2rem; cursor: pointer; z-index: 15; box-shadow: 0 6px 16px rgba(13,71,161,0.4); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-    .fab:active { transform: scale(0.9); }
+        /* ========== INPUTS & BUTTONS ========== */
+        input, select, textarea { width: 100%; padding: 0.75rem; margin-bottom: 0.7rem; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; background: var(--input-bg); color: var(--text); }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(13,71,161,0.1); }
+        label { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; display: block; color: var(--text); }
+        .btn { background: var(--primary); color: white; border: none; padding: 0.75rem; border-radius: 10px; font-size: 0.9rem; cursor: pointer; width: 100%; font-weight: 600; transition: 0.2s; }
+        .btn:active { filter: brightness(0.85); transform: scale(0.98); }
+        .btn.secondary { background: #f0f0f0; color: #444; border: 1px solid #ddd; }
+        .btn.success { background: #2e7d32; }
+        .btn.danger { background: #c62828; color: white; }
+        .btn.whatsapp { background: #25D366; color: white; }
+        .btn.outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .btn-group .btn { flex: 1; min-width: 70px; font-size: 0.78rem; padding: 0.55rem; }
 
-    /* ========== SEARCH ========== */
-    .search-box { margin-bottom: 0.8rem; position: sticky; top: 72px; z-index: 5; }
-    .search-box input { margin-bottom: 0; padding-left: 2.5rem; }
-    .search-box::before { content: "🔍"; position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); font-size: 1.1rem; z-index: 1; }
+        /* ========== BADGES ========== */
+        .badge { display: inline-block; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        .badge.recebida { background: #FFF3E0; color: #E65100; }
+        .badge.afiacao { background: #E3F2FD; color: #0D47A1; }
+        .badge.pronta { background: #E8F5E9; color: #2e7d32; }
+        .badge.entregue { background: #ECEFF1; color: #546e7a; }
+        .badge.orcamento { background: #F3E5F5; color: #7B1FA2; }
+        .badge.afiacao-tag { background: #dce8fc; color: #1a3b6b; font-size: 0.65rem; margin-left: 0.3rem; font-weight: 600; }
+        .badge.venda-tag { background: #d4edda; color: #1b4d1f; font-size: 0.65rem; margin-left: 0.3rem; font-weight: 600; }
 
-    /* ========== FERRAMENTA CARD (OS e Ajustes) ========== */
-    .ferramenta-card { background: var(--card-bg); border-radius: 12px; padding: 0.9rem; margin-bottom: 0.7rem; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 0.8rem; transition: 0.2s; }
-    .ferramenta-card.afiacao { border-left: 4px solid #0D47A1; background: var(--afiacao-bg); }
-    .ferramenta-card.venda { border-left: 4px solid #2e7d32; background: var(--venda-bg); }
-    .ferramenta-card .info { flex: 1; }
-    .ferramenta-card .info .nome { font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 0.15rem; }
-    .ferramenta-card .info .preco { font-size: 0.78rem; color: var(--text-sec); }
-    .ferramenta-card .actions { display: flex; gap: 0.4rem; align-items: center; }
-    .btn-icon { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ccc; background: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; color: #333; }
-    .btn-icon.edit { border-color: #ffa726; color: #e65100; }
-    .btn-icon.delete { border-color: #ef9a9a; color: #c62828; }
-    .btn-icon:active { background: #f5f5f5; }
+        /* ========== DASHBOARD ========== */
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }
+        .dash-card { background: var(--card-bg); border-radius: 14px; padding: 0.9rem; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); }
+        .dash-card .num { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .dash-card .label { font-size: 0.7rem; color: var(--text-sec); font-weight: 500; }
 
-    /* ========== QUANTIDADE CONTROL (OS) ========== */
-    .qtd-control { display: flex; align-items: center; gap: 0.6rem; }
-    .qtd-control .qtd-num { min-width: 32px; text-align: center; font-weight: 700; font-size: 1.15rem; color: var(--text); }
-    .btn-qtd { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ccc; background: white; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #333; transition: 0.2s; }
-    .btn-qtd:active { background: #eee; border-color: #999; }
-    .btn-qtd.minus { color: #c62828; border-color: #f5c6cb; }
-    .btn-qtd.plus { color: #0D47A1; border-color: #b3cef5; }
+        /* ========== MINI GRÁFICO ========== */
+        .grafico-barras { display: flex; align-items: flex-end; gap: 4px; height: 80px; margin-top: 0.5rem; }
+        .grafico-barras .barra { flex: 1; background: var(--primary); border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.5s; }
+        .grafico-label { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--text-sec); margin-top: 0.2rem; }
 
-    /* ========== LEMBRETE CARD ========== */
-    .lembrete-card { background: #e8f0fe; border-radius: 12px; padding: 0.7rem 0.8rem; margin: 0.8rem 0; display: flex; align-items: center; gap: 0.6rem; border: 1px solid #c5d4f0; }
-    .lembrete-card input[type="checkbox"] { width: auto; margin: 0; }
-    .lembrete-card label { font-size: 0.85rem; font-weight: 600; color: #0D47A1; margin: 0; }
-    .lembrete-card small { color: #555; font-size: 0.7rem; }
+        /* ========== FILTRO PERÍODO ========== */
+        .filtro-periodo { display: flex; gap: 0.3rem; margin-bottom: 0.5rem; }
+        .filtro-periodo button { flex: 1; padding: 0.4rem; font-size: 0.7rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); cursor: pointer; }
+        .filtro-periodo button.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* ========== MODAL ========== */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 30; display: flex; align-items: center; justify-content: center; }
-    .modal { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; width: 90%; max-width: 400px; }
-    .modal h3 { margin-bottom: 1rem; }
+        /* ========== FAB ========== */
+        .fab { position: fixed; bottom: 85px; right: 20px; width: 52px; height: 52px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 2rem; cursor: pointer; z-index: 15; box-shadow: 0 6px 16px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .fab:active { transform: scale(0.9); }
 
-    /* ========== HISTÓRICO ========== */
-    .history-item { font-size: 0.75rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--border); }
-    details summary { cursor: pointer; color: #0D47A1; font-size: 0.85rem; font-weight: 500; }
+        /* ========== SEARCH ========== */
+        .search-box { margin-bottom: 0.8rem; position: sticky; top: 72px; z-index: 5; }
+        .search-box input { margin-bottom: 0; padding-left: 2.5rem; }
+        .search-box::before { content: "🔍"; position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); font-size: 1.1rem; z-index: 1; }
 
-    /* ========== EMPTY ========== */
-    .empty { text-align: center; color: #999; padding: 2rem; }
+        /* ========== FERRAMENTA CARD ========== */
+        .ferramenta-card { background: var(--card-bg); border-radius: 12px; padding: 0.9rem; margin-bottom: 0.7rem; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 0.8rem; transition: 0.2s; }
+        .ferramenta-card.afiacao { border-left: 4px solid var(--primary); background: var(--afiacao-bg); }
+        .ferramenta-card.venda { border-left: 4px solid #2e7d32; background: var(--venda-bg); }
+        .ferramenta-card .info { flex: 1; }
+        .ferramenta-card .info .nome { font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 0.15rem; }
+        .ferramenta-card .info .preco { font-size: 0.78rem; color: var(--text-sec); }
+        .ferramenta-card .actions { display: flex; gap: 0.4rem; align-items: center; }
+        .btn-icon { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ccc; background: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333; }
+        .btn-icon.edit { border-color: #ffa726; color: #e65100; }
+        .btn-icon.delete { border-color: #ef9a9a; color: #c62828; }
+        .btn-icon:active { background: #f5f5f5; }
 
-    /* ========== TOGGLE SWITCH ========== */
-    .toggle-row { display: flex; justify-content: space-between; align-items: center; }
-    .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; inset: 0; background: #ccc; border-radius: 26px; transition: 0.3s; }
-    .slider::before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
-    input:checked + .slider { background: #0D47A1; }
-    input:checked + .slider::before { transform: translateX(22px); }
+        /* ========== QUANTIDADE CONTROL ========== */
+        .qtd-control { display: flex; align-items: center; gap: 0.6rem; }
+        .qtd-num { min-width: 32px; text-align: center; font-weight: 700; font-size: 1.15rem; color: var(--text); transition: transform 0.15s; }
+        .qtd-num.pop { transform: scale(1.4); }
+        .btn-qtd { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ccc; background: white; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #333; }
+        .btn-qtd.minus { color: #c62828; border-color: #f5c6cb; }
+        .btn-qtd.plus { color: var(--primary); border-color: #b3cef5; }
 
-    /* ========== PRINT ========== */
-    @media print {
-      body { background: white; padding: 0; font-size: 12px; }
-      nav, header, .no-print, .fab, .search-box { display: none !important; }
-      .print-area { display: block !important; padding: 1rem; }
-    }
+        /* ========== LEMBRETE CARD ========== */
+        .lembrete-card { background: #e8f0fe; border-radius: 12px; padding: 0.7rem 0.8rem; margin: 0.8rem 0; display: flex; align-items: center; gap: 0.6rem; border: 1px solid #c5d4f0; }
+        .lembrete-card input[type="checkbox"] { width: auto; margin: 0; }
+        .lembrete-card label { font-size: 0.85rem; font-weight: 600; color: var(--primary); margin: 0; }
+        .lembrete-card small { color: #555; font-size: 0.7rem; }
 
-    /* ========== APP SCREEN ========== */
-    #app-screen { display: none; }
-    #app-screen.active { display: block; }
+        /* ========== MODAL ========== */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 30; display: flex; align-items: center; justify-content: center; }
+        .modal { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; width: 90%; max-width: 400px; }
+        .modal h3 { margin-bottom: 1rem; }
 
-    /* ========== LOGOUT BUTTON ========== */
-    .logout-btn { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.7rem; cursor: pointer; }
-    .logout-btn:active { background: rgba(255,255,255,0.3); }
+        /* ========== HISTÓRICO ========== */
+        .history-item { font-size: 0.75rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--border); }
+        details summary { cursor: pointer; color: var(--primary); font-size: 0.85rem; font-weight: 500; }
 
-    /* ========== RESPONSIVE ========== */
-    @media (min-width: 600px) { body { max-width: 480px; margin: 0 auto; border-left: 1px solid var(--border); border-right: 1px solid var(--border); } }
-  </style>
+        /* ========== EMPTY ========== */
+        .empty { text-align: center; color: #999; padding: 2rem; }
+
+        /* ========== TOGGLE SWITCH ========== */
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #ccc; border-radius: 26px; transition: 0.3s; }
+        .slider::before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider::before { transform: translateX(22px); }
+
+        /* ========== CORES ========== */
+        .cor-option { display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin: 0 5px; cursor: pointer; border: 3px solid transparent; }
+        .cor-option.active { border-color: var(--text); }
+
+        /* ========== PRINT ========== */
+        @media print {
+            body { background: white; padding: 0; font-size: 12px; }
+            nav, header, .no-print, .fab, .search-box { display: none !important; }
+            .print-area { display: block !important; padding: 1rem; }
+        }
+
+        /* ========== APP SCREEN ========== */
+        #app-screen { display: none; }
+        #app-screen.active { display: block; }
+
+        .logout-btn { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.7rem; cursor: pointer; }
+
+        @media (min-width: 600px) { body { max-width: 480px; margin: 0 auto; border-left: 1px solid var(--border); border-right: 1px solid var(--border); } }
+    </style>
 </head>
 <body>
 
-<!-- ==================== TELA DE LOGIN ==================== -->
+<!-- Splash Screen -->
+<div id="splash-screen">A F I A</div>
+
+<!-- Login -->
 <div id="login-screen">
-  <div class="card">
-    <div class="logo">✂️</div>
-    <h2>A F I A</h2>
-    <p style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-sec);">Acesse sua oficina</p>
-    <input type="email" id="login-email" placeholder="Email" autocomplete="email">
-    <input type="password" id="login-senha" placeholder="Senha" autocomplete="current-password">
-    <button class="btn" id="btn-login">🔐 Entrar</button>
-    <p id="login-error">Email ou senha inválidos.</p>
-    <button class="link-btn" id="btn-criar-conta">Criar conta nova</button>
-  </div>
+    <div class="card">
+        <div class="logo-text" style="font-size:2.5rem; margin-bottom:0.5rem; color:var(--primary);">A F I A</div>
+        <p style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-sec);">Oficina de Afiação & Vendas</p>
+        <input type="email" id="login-email" placeholder="Email" autocomplete="email">
+        <input type="password" id="login-senha" placeholder="Senha" autocomplete="current-password">
+        <button class="btn" id="btn-login">🔐 Entrar</button>
+        <p id="login-error">Email ou senha inválidos.</p>
+        <button class="link-btn" id="btn-criar-conta">Criar conta nova</button>
+    </div>
 </div>
 
-<!-- ==================== APP PRINCIPAL ==================== -->
+<!-- Spinner overlay -->
+<div id="spinner-overlay" class="spinner-overlay" style="display:none;"><div class="spinner"></div></div>
+
+<!-- App -->
 <div id="app-screen">
+    <header>
+        <div class="logo-text">A F I A</div>
+        <small>Oficina de Afiação & Vendas</small>
+        <button class="logout-btn" id="btn-logout">Sair</button>
+    </header>
 
-<header>
-  <h1>✂️ A F I A</h1>
-  <small>Oficina de Afiação & Vendas</small>
-  <button class="logout-btn" id="btn-logout">Sair</button>
-</header>
+    <div id="print-area" style="display:none;" class="print-area"></div>
+    <button class="fab no-print" id="fab-btn" title="Nova OS">+</button>
 
-<!-- Área de impressão oculta -->
-<div id="print-area" style="display:none;" class="print-area"></div>
-
-<!-- FAB (botão flutuante) -->
-<button class="fab no-print" id="fab-btn" title="Nova OS">+</button>
-
-<!-- Modal de edição de ferramenta -->
-<div id="modal-editar-fer" class="modal-overlay" style="display:none;">
-  <div class="modal">
-    <h3>Editar Ferramenta</h3>
-    <input type="hidden" id="edit-fer-id">
-    <label>Nome</label>
-    <input type="text" id="edit-fer-nome">
-    <label>Preço (R$)</label>
-    <input type="number" id="edit-fer-preco" step="0.01">
-    <label>Tipo</label>
-    <select id="edit-fer-tipo">
-      <option value="afiacao">Afiação</option>
-      <option value="venda">Venda</option>
-    </select>
-    <div class="btn-group" style="margin-top:1rem;">
-      <button class="btn secondary" onclick="fecharModal()">Cancelar</button>
-      <button class="btn" onclick="salvarEdicaoFer()">Salvar</button>
+    <!-- Modal Editar Ferramenta -->
+    <div id="modal-editar-fer" class="modal-overlay" style="display:none;">
+        <div class="modal">
+            <h3>Editar Ferramenta</h3>
+            <input type="hidden" id="edit-fer-id">
+            <label>Nome</label><input type="text" id="edit-fer-nome">
+            <label>Preço (R$)</label><input type="number" id="edit-fer-preco" step="0.01">
+            <label>Tipo</label><select id="edit-fer-tipo"><option value="afiacao">Afiação</option><option value="venda">Venda</option></select>
+            <div class="btn-group" style="margin-top:1rem;"><button class="btn secondary" onclick="fecharModal()">Cancelar</button><button class="btn" onclick="salvarEdicaoFer()">Salvar</button></div>
+        </div>
     </div>
-  </div>
+
+    <!-- Modal Orçamento -->
+    <div id="modal-orcamento" class="modal-overlay" style="display:none;">
+        <div class="modal"><h3>Salvar como Orçamento</h3><p style="font-size:0.9rem; margin-bottom:1rem;">O orçamento ficará salvo e poderá ser convertido em OS depois.</p>
+            <div class="btn-group"><button class="btn secondary" onclick="fecharModal()">Cancelar</button><button class="btn outline" onclick="salvarOrcamento()">Salvar Orçamento</button></div>
+        </div>
+    </div>
+
+    <!-- Modal Relatório -->
+    <div id="modal-relatorio" class="modal-overlay" style="display:none;">
+        <div class="modal"><h3>Relatório Mensal</h3>
+            <select id="mes-relatorio"><option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option><option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option><option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option><option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option></select>
+            <select id="ano-relatorio"></select>
+            <div id="resultado-relatorio" style="margin-top:1rem; font-size:0.9rem;"></div>
+            <div class="btn-group" style="margin-top:1rem;"><button class="btn secondary" onclick="fecharModal()">Fechar</button><button class="btn" onclick="gerarRelatorio()">Gerar</button></div>
+        </div>
+    </div>
+
+    <!-- Views -->
+    <div id="view-oficina" class="view active">
+        <div class="dashboard">
+            <div class="dash-card"><div class="num" id="dash-pendentes">0</div><div class="label">Pendentes</div></div>
+            <div class="dash-card"><div class="num" id="dash-prontas">0</div><div class="label">Prontas p/ Entrega</div></div>
+            <div class="dash-card"><div class="num">R$ <span id="dash-a-receber">0</span></div><div class="label">A receber</div></div>
+            <div class="dash-card"><div class="num" id="dash-hoje">0</div><div class="label">Entregas hoje</div></div>
+        </div>
+        <!-- Mini gráfico -->
+        <div class="card" style="padding:0.8rem;">
+            <h4 style="font-size:0.8rem; margin-bottom:0.5rem;">📊 Receita últimos 7 dias</h4>
+            <div class="grafico-barras" id="grafico-barras"></div>
+            <div class="grafico-label" id="grafico-label"></div>
+        </div>
+        <!-- Filtro período -->
+        <div class="filtro-periodo" id="filtro-periodo">
+            <button class="active" data-periodo="hoje">Hoje</button>
+            <button data-periodo="semana">Semana</button>
+            <button data-periodo="mes">Mês</button>
+            <button data-periodo="todos">Todos</button>
+        </div>
+        <div class="search-box"><input type="text" id="busca-oficina" placeholder="Buscar..." oninput="filtrarOS()"></div>
+        <div id="lista-oficina"></div>
+    </div>
+
+    <div id="view-nova-os" class="view">
+        <div class="card">
+            <label>📞 Telefone da cliente *</label>
+            <input type="tel" id="tel-cliente-os" placeholder="(XX) XXXXX-XXXX" oninput="aplicarMascaraTel(this); buscarClientePorTelefone()" maxlength="15" inputmode="numeric">
+            <label>👤 Nome</label>
+            <input type="text" id="nome-cliente-os" placeholder="Nome completo">
+            <div style="display:flex; gap:0.6rem; margin-bottom:0.4rem;">
+                <div style="flex:1;"><label>📅 Data</label><input type="date" id="data-entrega"></div>
+                <div style="flex:1;"><label>⏰ Hora</label><select id="hora-entrega"></select></div>
+            </div>
+            <div class="lembrete-card"><input type="checkbox" id="check-lembrete" checked><div><label for="check-lembrete">🔔 Me lembrar de entregar</label><small>Notificação no celular</small></div></div>
+        </div>
+        <div class="card">
+            <h4 style="margin-bottom:0.9rem; font-size:1rem;">🛠️ Ferramentas</h4>
+            <div id="lista-ferramentas-os"></div>
+            <div class="total-box" style="margin-top:1rem; text-align:right; font-size:1.3rem; font-weight:700;">Total: R$ <span id="total-os">0,00</span></div>
+        </div>
+        <div class="btn-group" style="margin-top:0.3rem;"><button class="btn success" onclick="criarOS()">✅ Criar OS</button><button class="btn outline" onclick="abrirModalOrcamento()">📋 Orçamento</button></div>
+    </div>
+
+    <div id="view-clientes" class="view">
+        <div class="search-box"><input type="text" id="busca-clientes" placeholder="Buscar cliente..." oninput="filtrarClientes()"></div>
+        <div id="lista-clientes"></div>
+    </div>
+
+    <div id="view-ajustes" class="view">
+        <div class="card">
+            <h3>🎨 Aparência</h3>
+            <div class="toggle-row"><span>🌙 Modo escuro</span><label class="switch"><input type="checkbox" id="toggle-dark" onchange="alternarTema()"><span class="slider"></span></label></div>
+            <p style="font-size:0.7rem; color:var(--text-sec);">Automático: segue o tema do sistema</p>
+            <div style="margin-top:0.5rem;"><span style="font-size:0.8rem; font-weight:600;">Cor principal:</span>
+                <span class="cor-option" style="background:#0D47A1;" onclick="mudarCor('#0D47A1')"></span>
+                <span class="cor-option" style="background:#2e7d32;" onclick="mudarCor('#2e7d32')"></span>
+                <span class="cor-option" style="background:#6A1B9A;" onclick="mudarCor('#6A1B9A')"></span>
+                <span class="cor-option" style="background:#c62828;" onclick="mudarCor('#c62828')"></span>
+                <span class="cor-option" style="background:#E65100;" onclick="mudarCor('#E65100')"></span>
+            </div>
+        </div>
+        <div class="card">
+            <h3>⚙️ Ferramentas & Preços</h3>
+            <div id="lista-ferramentas"></div>
+            <div class="card" style="margin-top:1rem; background: var(--input-bg);">
+                <h4 style="font-size:0.9rem; margin-bottom:0.8rem;">➕ Adicionar</h4>
+                <div style="display:flex; gap:0.5rem;"><input type="text" id="nova-ferramenta" placeholder="Nome" style="flex:2;"><input type="number" id="novo-preco" placeholder="Preço R$" step="0.01" style="flex:1;"></div>
+                <select id="novo-tipo" style="margin-top:0.4rem;"><option value="afiacao">Afiação</option><option value="venda">Venda</option></select>
+                <button class="btn" onclick="adicionarFerramenta()" style="margin-top:0.5rem;">➕ Adicionar</button>
+            </div>
+        </div>
+        <div class="card">
+            <h3>💰 Financeiro</h3>
+            <p><strong>Total recebido:</strong> R$ <span id="total-recebido">0,00</span></p>
+            <p><strong>OS pendentes:</strong> <span id="qtd-pendentes">0</span> | <strong>Entregues:</strong> <span id="qtd-entregues">0</span></p>
+            <button class="btn secondary" onclick="abrirModalRelatorio()" style="margin-top:0.5rem;">📊 Relatório Mensal</button>
+        </div>
+        <div class="card">
+            <h3>💾 Backup Local</h3>
+            <div class="btn-group"><button class="btn secondary" onclick="exportarDados()">📤 Exportar</button><button class="btn secondary" onclick="document.getElementById('input-import').click()">📥 Importar</button></div>
+            <input type="file" id="input-import" accept=".json" style="display:none;" onchange="importarDados(event)">
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom no-print">
+        <button class="active" data-view="oficina"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Oficina</button>
+        <button data-view="nova-os"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nova OS</button>
+        <button data-view="clientes"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Clientes</button>
+        <button data-view="ajustes"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>Ajustes</button>
+    </nav>
 </div>
-
-<!-- Modal de Orçamento -->
-<div id="modal-orcamento" class="modal-overlay" style="display:none;">
-  <div class="modal">
-    <h3>Salvar como Orçamento</h3>
-    <p style="font-size:0.9rem; margin-bottom:1rem;">O orçamento ficará salvo e poderá ser convertido em OS depois.</p>
-    <div class="btn-group">
-      <button class="btn secondary" onclick="fecharModal()">Cancelar</button>
-      <button class="btn outline" onclick="salvarOrcamento()">Salvar Orçamento</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de Relatório Mensal -->
-<div id="modal-relatorio" class="modal-overlay" style="display:none;">
-  <div class="modal">
-    <h3>Relatório Mensal</h3>
-    <select id="mes-relatorio">
-      <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
-      <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
-      <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
-      <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
-    </select>
-    <select id="ano-relatorio"></select>
-    <div id="resultado-relatorio" style="margin-top:1rem; font-size:0.9rem;"></div>
-    <div class="btn-group" style="margin-top:1rem;">
-      <button class="btn secondary" onclick="fecharModal()">Fechar</button>
-      <button class="btn" onclick="gerarRelatorio()">Gerar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Views -->
-<div id="view-oficina" class="view active">
-  <div class="dashboard">
-    <div class="dash-card"><div class="num" id="dash-pendentes">0</div><div class="label">Pendentes</div></div>
-    <div class="dash-card"><div class="num" id="dash-prontas">0</div><div class="label">Prontas p/ Entrega</div></div>
-    <div class="dash-card"><div class="num">R$ <span id="dash-a-receber">0</span></div><div class="label">A receber</div></div>
-    <div class="dash-card"><div class="num" id="dash-hoje">0</div><div class="label">Entregas hoje</div></div>
-  </div>
-  <div class="search-box">
-    <input type="text" id="busca-oficina" placeholder="Buscar por nome, telefone ou nº OS..." oninput="filtrarOS()">
-  </div>
-  <div id="lista-oficina"></div>
-</div>
-
-<div id="view-nova-os" class="view">
-  <div class="card">
-    <label>📞 Telefone da cliente *</label>
-    <input type="tel" id="tel-cliente-os" placeholder="(XX) XXXXX-XXXX" oninput="aplicarMascaraTel(this); buscarClientePorTelefone()" maxlength="15">
-    <label>👤 Nome</label>
-    <input type="text" id="nome-cliente-os" placeholder="Nome completo">
-    
-    <div style="display:flex; gap:0.6rem; margin-bottom:0.4rem;">
-      <div style="flex:1;">
-        <label>📅 Data de entrega</label>
-        <input type="date" id="data-entrega">
-      </div>
-      <div style="flex:1;">
-        <label>⏰ Hora de entrega</label>
-        <select id="hora-entrega"></select>
-      </div>
-    </div>
-    
-    <div class="lembrete-card">
-      <input type="checkbox" id="check-lembrete" checked>
-      <div>
-        <label for="check-lembrete">🔔 Me lembrar de entregar no horário</label>
-        <small>Você receberá uma notificação no celular</small>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h4 style="margin-bottom:0.9rem; font-size:1rem;">🛠️ Ferramentas</h4>
-    <div id="lista-ferramentas-os"></div>
-    <div class="total-box" style="margin-top:1rem; text-align:right; font-size:1.3rem; font-weight:700;">Total: R$ <span id="total-os">0,00</span></div>
-  </div>
-
-  <div class="btn-group" style="margin-top:0.3rem;">
-    <button class="btn success" onclick="criarOS()">✅ Criar OS</button>
-    <button class="btn outline" onclick="abrirModalOrcamento()">📋 Orçamento</button>
-  </div>
-</div>
-
-<div id="view-clientes" class="view">
-  <div class="search-box">
-    <input type="text" id="busca-clientes" placeholder="Buscar cliente..." oninput="filtrarClientes()">
-  </div>
-  <div id="lista-clientes"></div>
-</div>
-
-<div id="view-ajustes" class="view">
-  <div class="card">
-    <div class="toggle-row">
-      <span>🌙 Modo escuro</span>
-      <label class="switch"><input type="checkbox" id="toggle-dark" onchange="alternarTema()"><span class="slider"></span></label>
-    </div>
-  </div>
-  <div class="card">
-    <h3>⚙️ Gerenciar Ferramentas & Preços</h3>
-    <div id="lista-ferramentas"></div>
-    <div class="card" style="margin-top:1rem; background: var(--input-bg);">
-      <h4 style="font-size:0.9rem; margin-bottom:0.8rem;">➕ Adicionar nova ferramenta</h4>
-      <div style="display:flex; gap:0.5rem;">
-        <input type="text" id="nova-ferramenta" placeholder="Nome da ferramenta" style="flex:2;">
-        <input type="number" id="novo-preco" placeholder="Preço R$" step="0.01" style="flex:1;">
-      </div>
-      <select id="novo-tipo" style="margin-top:0.4rem;"><option value="afiacao">Afiação</option><option value="venda">Venda</option></select>
-      <button class="btn" onclick="adicionarFerramenta()" style="margin-top:0.5rem;">➕ Adicionar</button>
-    </div>
-  </div>
-  <div class="card">
-    <h3>💰 Financeiro</h3>
-    <p><strong>Total recebido (entregues):</strong> R$ <span id="total-recebido">0,00</span></p>
-    <p><strong>OS pendentes:</strong> <span id="qtd-pendentes">0</span></p>
-    <p><strong>OS entregues:</strong> <span id="qtd-entregues">0</span></p>
-    <button class="btn secondary" onclick="abrirModalRelatorio()" style="margin-top:0.5rem;">📊 Relatório Mensal</button>
-  </div>
-  <div class="card">
-    <h3>💾 Backup Local</h3>
-    <div class="btn-group">
-      <button class="btn secondary" onclick="exportarDados()">📤 Exportar</button>
-      <button class="btn secondary" onclick="document.getElementById('input-import').click()">📥 Importar</button>
-    </div>
-    <input type="file" id="input-import" accept=".json" style="display:none;" onchange="importarDados(event)">
-  </div>
-</div>
-
-<!-- Bottom Nav -->
-<nav class="bottom no-print">
-  <button class="active" data-view="oficina">
-    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Oficina
-  </button>
-  <button data-view="nova-os">
-    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nova OS
-  </button>
-  <button data-view="clientes">
-    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Clientes
-  </button>
-  <button data-view="ajustes">
-    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>Ajustes
-  </button>
-</nav>
-
-</div><!-- /app-screen -->
 
 <script>
 // ==================== FIREBASE ====================
 const firebaseConfig = {
-  apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
-  authDomain: "afia-37aa8.firebaseapp.com",
-  databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
-  projectId: "afia-37aa8",
-  storageBucket: "afia-37aa8.firebasestorage.app",
-  messagingSenderId: "961300018208",
-  appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
+    apiKey: "AIzaSyCXY6zQ6K-roWFFNBCU--LF5enWpVCoLpc",
+    authDomain: "afia-37aa8.firebaseapp.com",
+    databaseURL: "https://afia-37aa8-default-rtdb.firebaseio.com",
+    projectId: "afia-37aa8",
+    storageBucket: "afia-37aa8.firebasestorage.app",
+    messagingSenderId: "961300018208",
+    appId: "1:961300018208:web:3ee1ebf3020f3cd72fb845"
 };
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-// ==================== DADOS LOCAIS (cache) ====================
+// Ativar persistência offline
+db.goOffline && db.goOnline && firebase.database().ref('.info/connected').on('value', snap => {
+    if (snap.val() === true) { /* online */ } else { /* offline - Firebase cuida */ }
+});
+
+// ==================== ÁUDIO (sons de feedback) ====================
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+
+function playSound(freq, duration) {
+    if (!audioCtx) audioCtx = new AudioContext();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.type = 'sine'; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + duration);
+}
+
+// ==================== DADOS ====================
 const DEFAULT_FERRAMENTAS = [
-  { id: 1, nome: 'Afiação Alicate de Cutícula', preco: 25.00, tipo: 'afiacao' },
-  { id: 2, nome: 'Afiação de Faca', preco: 15.00, tipo: 'afiacao' },
-  { id: 3, nome: 'Afiação de Tesoura', preco: 20.00, tipo: 'afiacao' },
-  { id: 4, nome: 'Afiação Espátula de Unha', preco: 10.00, tipo: 'afiacao' },
-  { id: 5, nome: 'Alicate Mundial 777 (Novo Afiado)', preco: 85.00, tipo: 'venda' },
-  { id: 6, nome: 'Alicate Mundial 722 (Novo Afiado)', preco: 75.00, tipo: 'venda' }
+    { id: 1, nome: 'Afiação Alicate de Cutícula', preco: 25.00, tipo: 'afiacao' },
+    { id: 2, nome: 'Afiação de Faca', preco: 15.00, tipo: 'afiacao' },
+    { id: 3, nome: 'Afiação de Tesoura', preco: 20.00, tipo: 'afiacao' },
+    { id: 4, nome: 'Afiação Espátula de Unha', preco: 10.00, tipo: 'afiacao' },
+    { id: 5, nome: 'Alicate Mundial 777 (Novo Afiado)', preco: 85.00, tipo: 'venda' },
+    { id: 6, nome: 'Alicate Mundial 722 (Novo Afiado)', preco: 75.00, tipo: 'venda' }
 ];
 
-let DB = {
-  ferramentas: [],
-  clientes: [],
-  ordens: [],
-  contadorOS: 1
-};
-
+let DB = { ferramentas: [], clientes: [], ordens: [], contadorOS: 1 };
 let currentUser = null;
+let periodoAtual = 'hoje';
+let quantidadesOS = {};
+
+// ==================== SPLASH ====================
+setTimeout(() => {
+    const splash = document.getElementById('splash-screen');
+    if (splash) splash.style.display = 'none';
+}, 1500);
 
 // ==================== AUTENTICAÇÃO ====================
 document.getElementById('btn-login').addEventListener('click', () => {
-  const email = document.getElementById('login-email').value.trim();
-  const senha = document.getElementById('login-senha').value;
-  if (!email || !senha) {
-    document.getElementById('login-error').style.display = 'block';
-    document.getElementById('login-error').textContent = 'Preencha email e senha.';
-    return;
-  }
-  auth.signInWithEmailAndPassword(email, senha)
-    .catch(err => {
-      document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').textContent = 'Email ou senha inválidos.';
+    const email = document.getElementById('login-email').value.trim();
+    const senha = document.getElementById('login-senha').value;
+    if (!email || !senha) { document.getElementById('login-error').style.display = 'block'; document.getElementById('login-error').textContent = 'Preencha email e senha.'; return; }
+    auth.signInWithEmailAndPassword(email, senha).catch(() => {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Email ou senha inválidos.';
     });
 });
-
 document.getElementById('btn-criar-conta').addEventListener('click', () => {
-  const email = document.getElementById('login-email').value.trim();
-  const senha = document.getElementById('login-senha').value;
-  if (!email || !senha) {
-    document.getElementById('login-error').style.display = 'block';
-    document.getElementById('login-error').textContent = 'Preencha email e senha para criar conta.';
-    return;
-  }
-  auth.createUserWithEmailAndPassword(email, senha)
-    .catch(err => {
-      document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').textContent = 'Erro ao criar conta: ' + err.message;
+    const email = document.getElementById('login-email').value.trim();
+    const senha = document.getElementById('login-senha').value;
+    if (!email || !senha) { document.getElementById('login-error').style.display = 'block'; document.getElementById('login-error').textContent = 'Preencha email e senha.'; return; }
+    auth.createUserWithEmailAndPassword(email, senha).catch(err => {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Erro: ' + err.message;
     });
 });
-
-document.getElementById('btn-logout').addEventListener('click', () => {
-  auth.signOut();
-});
+document.getElementById('btn-logout').addEventListener('click', () => auth.signOut());
 
 auth.onAuthStateChanged(user => {
-  if (user) {
-    currentUser = user;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app-screen').classList.add('active');
-    document.getElementById('app-screen').style.display = 'block';
-    carregarDadosFirebase();
-  } else {
-    currentUser = null;
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('app-screen').classList.remove('active');
-    document.getElementById('app-screen').style.display = 'none';
-    document.getElementById('login-email').value = '';
-    document.getElementById('login-senha').value = '';
-    document.getElementById('login-error').style.display = 'none';
-  }
+    if (user) {
+        currentUser = user;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-screen').classList.add('active');
+        document.getElementById('app-screen').style.display = 'block';
+        carregarDadosFirebase();
+    } else {
+        currentUser = null;
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app-screen').classList.remove('active');
+        document.getElementById('app-screen').style.display = 'none';
+    }
 });
 
-// ==================== CARREGAR DADOS DO FIREBASE ====================
 function carregarDadosFirebase() {
-  const uid = currentUser.uid;
-  
-  // Ferramentas
-  db.ref('users/' + uid + '/ferramentas').once('value').then(snap => {
-    if (snap.exists()) {
-      DB.ferramentas = snap.val();
+    mostrarLoading(true);
+    const uid = currentUser.uid;
+    let loaded = 0;
+    db.ref('users/' + uid + '/ferramentas').once('value').then(snap => {
+        DB.ferramentas = snap.exists() ? snap.val() : [...DEFAULT_FERRAMENTAS];
+        if (!snap.exists()) db.ref('users/' + uid + '/ferramentas').set(DB.ferramentas);
+        loaded++; if (loaded >= 4) finalizarInit();
+    });
+    db.ref('users/' + uid + '/clientes').once('value').then(snap => { DB.clientes = snap.exists() ? snap.val() : []; loaded++; if (loaded >= 4) finalizarInit(); });
+    db.ref('users/' + uid + '/ordens').once('value').then(snap => { DB.ordens = snap.exists() ? snap.val() : []; loaded++; if (loaded >= 4) finalizarInit(); });
+    db.ref('users/' + uid + '/contadorOS').once('value').then(snap => { DB.contadorOS = snap.exists() ? snap.val() : 1; loaded++; if (loaded >= 4) finalizarInit(); });
+}
+function finalizarInit() {
+    popularHoraSelect(); setDataHoje(); renderAll(); renderFerramentasOS();
+    aplicarCorSalva(); aplicarTemaSalvo(); atualizarSelecaoCores();
+    mostrarLoading(false);
+}
+function saveDB() { if (!currentUser) return; const uid = currentUser.uid; db.ref('users/' + uid + '/ferramentas').set(DB.ferramentas); db.ref('users/' + uid + '/clientes').set(DB.clientes); db.ref('users/' + uid + '/ordens').set(DB.ordens); db.ref('users/' + uid + '/contadorOS').set(DB.contadorOS); }
+function mostrarLoading(on) { document.getElementById('spinner-overlay').style.display = on ? 'flex' : 'none'; }
+
+// ==================== COR E TEMA ====================
+function mudarCor(cor) {
+    document.documentElement.style.setProperty('--primary', cor);
+    document.documentElement.style.setProperty('--primary-light', cor);
+    document.documentElement.style.setProperty('--header-bg', cor);
+    localStorage.setItem('afia_cor', cor);
+    atualizarSelecaoCores();
+}
+function aplicarCorSalva() {
+    const cor = localStorage.getItem('afia_cor') || '#0D47A1';
+    document.documentElement.style.setProperty('--primary', cor);
+    document.documentElement.style.setProperty('--primary-light', cor);
+    document.documentElement.style.setProperty('--header-bg', cor);
+}
+function atualizarSelecaoCores() {
+    const corAtual = localStorage.getItem('afia_cor') || '#0D47A1';
+    document.querySelectorAll('.cor-option').forEach(el => el.classList.toggle('active', el.style.background === corAtual || el.getAttribute('style')?.includes(corAtual)));
+}
+function alternarTema() {
+    const dark = document.getElementById('toggle-dark').checked;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('afia_tema_manual', dark ? 'dark' : 'light');
+}
+function aplicarTemaSalvo() {
+    const manual = localStorage.getItem('afia_tema_manual');
+    if (manual) {
+        document.documentElement.setAttribute('data-theme', manual);
+        document.getElementById('toggle-dark').checked = manual === 'dark';
     } else {
-      DB.ferramentas = [...DEFAULT_FERRAMENTAS];
-      db.ref('users/' + uid + '/ferramentas').set(DB.ferramentas);
+        const prefereDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefereDark ? 'dark' : 'light');
+        document.getElementById('toggle-dark').checked = prefereDark;
     }
-    continuarInicializacao();
-  });
-
-  // Clientes
-  db.ref('users/' + uid + '/clientes').once('value').then(snap => {
-    DB.clientes = snap.exists() ? snap.val() : [];
-    continuarInicializacao();
-  });
-
-  // Ordens
-  db.ref('users/' + uid + '/ordens').once('value').then(snap => {
-    DB.ordens = snap.exists() ? snap.val() : [];
-    continuarInicializacao();
-  });
-
-  // Contador OS
-  db.ref('users/' + uid + '/contadorOS').once('value').then(snap => {
-    DB.contadorOS = snap.exists() ? snap.val() : 1;
-    continuarInicializacao();
-  });
 }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (!localStorage.getItem('afia_tema_manual')) {
+        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        document.getElementById('toggle-dark').checked = e.matches;
+    }
+});
 
-let initCount = 0;
-function continuarInicializacao() {
-  initCount++;
-  if (initCount >= 4) {
-    initCount = 0;
-    popularHoraSelect();
-    setDataHoje();
-    renderAll();
-    renderFerramentasOS();
-  }
-}
-
-function saveDB() {
-  if (!currentUser) return;
-  const uid = currentUser.uid;
-  db.ref('users/' + uid + '/ferramentas').set(DB.ferramentas);
-  db.ref('users/' + uid + '/clientes').set(DB.clientes);
-  db.ref('users/' + uid + '/ordens').set(DB.ordens);
-  db.ref('users/' + uid + '/contadorOS').set(DB.contadorOS);
-}
-
-// ==================== HORÁRIOS DISPONÍVEIS ====================
+// ==================== HORÁRIOS ====================
 function popularHoraSelect() {
-  const select = document.getElementById('hora-entrega');
-  if (!select) return;
-  select.innerHTML = '';
-  for (let h = 7; h < 18; h++) {
-    for (let m = 0; m < 60; m += 15) {
-      const hora = String(h).padStart(2, '0');
-      const minuto = String(m).padStart(2, '0');
-      const option = document.createElement('option');
-      option.value = `${hora}:${minuto}`;
-      option.textContent = `${hora}:${minuto}`;
-      select.appendChild(option);
+    const select = document.getElementById('hora-entrega'); if (!select) return;
+    select.innerHTML = '';
+    for (let h = 7; h < 18; h++) for (let m = 0; m < 60; m += 15) {
+        select.innerHTML += `<option value="${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}">${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}</option>`;
     }
-  }
-  const option18 = document.createElement('option');
-  option18.value = '18:00';
-  option18.textContent = '18:00';
-  select.appendChild(option18);
+    select.innerHTML += '<option value="18:00">18:00</option>';
 }
-
 function setDataHoje() {
-  const hoje = new Date();
-  const yyyy = hoje.getFullYear();
-  const mm = String(hoje.getMonth() + 1).padStart(2, '0');
-  const dd = String(hoje.getDate()).padStart(2, '0');
-  const inputData = document.getElementById('data-entrega');
-  if (inputData) inputData.value = `${yyyy}-${mm}-${dd}`;
+    const hoje = new Date();
+    document.getElementById('data-entrega').value = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
 }
 
-// ==================== NOVA OS - LISTA DE FERRAMENTAS COM QUANTIDADE ====================
-let quantidadesOS = {};
-
+// ==================== FERRAMENTAS OS ====================
 function renderFerramentasOS() {
-  const container = document.getElementById('lista-ferramentas-os');
-  if (!container) return;
-  if (DB.ferramentas.length === 0) {
-    container.innerHTML = '<p style="color:#999; text-align:center; padding:1rem;">Nenhuma ferramenta cadastrada.<br>Vá em <strong>Ajustes</strong> para adicionar.</p>';
-    return;
-  }
-  container.innerHTML = DB.ferramentas.map(f => {
-    const qtd = quantidadesOS[f.id] || 0;
-    const tipoClass = f.tipo === 'venda' ? 'venda' : 'afiacao';
-    const tipoBadge = f.tipo === 'venda' ? 'Venda' : 'Afiação';
-    const badgeClass = f.tipo === 'venda' ? 'venda-tag' : 'afiacao-tag';
-    return `
-      <div class="ferramenta-card ${tipoClass}">
-        <div class="info">
-          <div class="nome">${f.nome} <span class="badge ${badgeClass}">${tipoBadge}</span></div>
-          <div class="preco">💰 R$ ${f.preco.toFixed(2)} cada</div>
-        </div>
-        <div class="qtd-control">
-          <button class="btn-qtd minus" onclick="alterarQtd(${f.id}, -1)">−</button>
-          <span class="qtd-num">${qtd}</span>
-          <button class="btn-qtd plus" onclick="alterarQtd(${f.id}, 1)">+</button>
-        </div>
-      </div>
-    `;
-  }).join('');
+    const container = document.getElementById('lista-ferramentas-os'); if (!container) return;
+    if (DB.ferramentas.length === 0) { container.innerHTML = '<p style="color:#999;text-align:center;padding:1rem;">Nenhuma ferramenta. Vá em Ajustes.</p>'; return; }
+    container.innerHTML = DB.ferramentas.map(f => {
+        const qtd = quantidadesOS[f.id] || 0;
+        return `<div class="ferramenta-card ${f.tipo==='venda'?'venda':'afiacao'}">
+            <div class="info"><div class="nome">${f.nome} <span class="badge ${f.tipo==='venda'?'venda-tag':'afiacao-tag'}">${f.tipo==='venda'?'Venda':'Afiação'}</span></div><div class="preco">💰 R$ ${f.preco.toFixed(2)} cada</div></div>
+            <div class="qtd-control"><button class="btn-qtd minus" onclick="alterarQtd(${f.id},-1)">−</button><span class="qtd-num" id="qtd-${f.id}">${qtd}</span><button class="btn-qtd plus" onclick="alterarQtd(${f.id},1)">+</button></div>
+        </div>`;
+    }).join('');
 }
-
 function alterarQtd(ferId, delta) {
-  if (!quantidadesOS[ferId]) quantidadesOS[ferId] = 0;
-  quantidadesOS[ferId] = Math.max(0, quantidadesOS[ferId] + delta);
-  renderFerramentasOS();
-  atualizarTotalOS();
+    if (!quantidadesOS[ferId]) quantidadesOS[ferId] = 0;
+    quantidadesOS[ferId] = Math.max(0, quantidadesOS[ferId] + delta);
+    const span = document.getElementById('qtd-' + ferId);
+    if (span) { span.textContent = quantidadesOS[ferId]; span.classList.add('pop'); setTimeout(() => span.classList.remove('pop'), 150); }
+    atualizarTotalOS();
 }
-
 function atualizarTotalOS() {
-  let total = 0;
-  for (const [ferId, qtd] of Object.entries(quantidadesOS)) {
-    const fer = DB.ferramentas.find(f => f.id === parseInt(ferId));
-    if (fer && qtd > 0) {
-      total += fer.preco * qtd;
+    let total = 0;
+    for (const [ferId, qtd] of Object.entries(quantidadesOS)) {
+        const fer = DB.ferramentas.find(f => f.id === parseInt(ferId));
+        if (fer && qtd > 0) total += fer.preco * qtd;
     }
-  }
-  const totalEl = document.getElementById('total-os');
-  if (totalEl) totalEl.textContent = total.toFixed(2);
+    document.getElementById('total-os').textContent = total.toFixed(2);
 }
-
 function getItensOS() {
-  const itens = [];
-  for (const [ferId, qtd] of Object.entries(quantidadesOS)) {
-    if (qtd > 0) {
-      const fer = DB.ferramentas.find(f => f.id === parseInt(ferId));
-      if (fer) {
-        itens.push({ ferId: fer.id, nome: fer.nome, preco: fer.preco, qtd, tipo: fer.tipo || 'afiacao' });
-      }
+    const itens = [];
+    for (const [ferId, qtd] of Object.entries(quantidadesOS)) if (qtd > 0) {
+        const fer = DB.ferramentas.find(f => f.id === parseInt(ferId));
+        if (fer) itens.push({ ferId: fer.id, nome: fer.nome, preco: fer.preco, qtd, tipo: fer.tipo || 'afiacao' });
     }
-  }
-  return itens;
+    return itens;
 }
-
 function limparFormularioOS() {
-  quantidadesOS = {};
-  document.getElementById('tel-cliente-os').value = '';
-  document.getElementById('nome-cliente-os').value = '';
-  document.getElementById('check-lembrete').checked = true;
-  setDataHoje();
-  document.getElementById('hora-entrega').value = '07:00';
-  renderFerramentasOS();
-  atualizarTotalOS();
+    quantidadesOS = {};
+    document.getElementById('tel-cliente-os').value = '';
+    document.getElementById('nome-cliente-os').value = '';
+    document.getElementById('check-lembrete').checked = true;
+    setDataHoje(); document.getElementById('hora-entrega').value = '07:00';
+    renderFerramentasOS(); atualizarTotalOS();
 }
 
 // ==================== NAVEGAÇÃO ====================
 document.querySelectorAll('nav.bottom button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('nav.bottom button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById('view-' + btn.dataset.view).classList.add('active');
-    const fab = document.getElementById('fab-btn');
-    fab.style.display = btn.dataset.view === 'oficina' ? 'flex' : 'none';
-    renderAll();
-  });
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('nav.bottom button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-' + btn.dataset.view).classList.add('active');
+        document.getElementById('fab-btn').style.display = btn.dataset.view === 'oficina' ? 'flex' : 'none';
+        renderAll();
+    });
 });
-
-document.getElementById('fab-btn').addEventListener('click', () => {
-  document.querySelector('nav.bottom button[data-view="nova-os"]').click();
-});
-
-// ==================== TEMA ====================
-function alternarTema() {
-  const dark = document.getElementById('toggle-dark').checked;
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  localStorage.setItem('afia_tema', dark ? 'dark' : 'light');
-}
-if (localStorage.getItem('afia_tema') === 'dark') {
-  document.documentElement.setAttribute('data-theme', 'dark');
-  document.getElementById('toggle-dark').checked = true;
-}
-
-// ==================== MÁSCARA TELEFONE ====================
-function aplicarMascaraTel(input) {
-  let v = input.value.replace(/\D/g, '');
-  if (v.length > 11) v = v.slice(0, 11);
-  if (v.length > 0) v = '(' + v;
-  if (v.length > 3) v = v.slice(0, 3) + ') ' + v.slice(3);
-  if (v.length > 10) v = v.slice(0, 10) + '-' + v.slice(10);
-  input.value = v;
-}
+document.getElementById('fab-btn').addEventListener('click', () => document.querySelector('nav.bottom button[data-view="nova-os"]').click());
 
 // ==================== RENDER ALL ====================
 function renderAll() {
-  renderOficina();
-  renderClientes();
-  renderFerramentasList();
-  updateFinanceiro();
-  updateDashboard();
-  if (document.getElementById('view-nova-os').classList.contains('active')) {
-    if (!document.getElementById('data-entrega').value) {
-      setDataHoje();
+    renderOficina(); renderClientes(); renderFerramentasList(); updateFinanceiro(); updateDashboard(); renderGrafico();
+    if (document.getElementById('view-nova-os').classList.contains('active')) {
+        if (!document.getElementById('data-entrega').value) setDataHoje();
+        if (!document.getElementById('hora-entrega').options.length) popularHoraSelect();
+        renderFerramentasOS(); atualizarTotalOS();
     }
-    if (!document.getElementById('hora-entrega').options.length) {
-      popularHoraSelect();
-    }
-    renderFerramentasOS();
-    atualizarTotalOS();
-  }
 }
 
 // ==================== DASHBOARD ====================
 function updateDashboard() {
-  const hoje = new Date().toLocaleDateString();
-  const pendentes = DB.ordens.filter(o => o.status !== 'entregue' && o.status !== 'orcamento').length;
-  const prontas = DB.ordens.filter(o => o.status === 'pronta').length;
-  const aReceber = DB.ordens.filter(o => o.status === 'pronta').reduce((s, o) => s + o.total, 0);
-  const entregasHoje = DB.ordens.filter(o => {
-    return o.status !== 'entregue' && o.dataEntrega && new Date(o.dataEntrega).toLocaleDateString() === hoje;
-  }).length;
-
-  document.getElementById('dash-pendentes').textContent = pendentes;
-  document.getElementById('dash-prontas').textContent = prontas;
-  document.getElementById('dash-a-receber').textContent = aReceber.toFixed(2);
-  document.getElementById('dash-hoje').textContent = entregasHoje;
+    const ordens = filtrarPorPeriodo();
+    const pendentes = ordens.filter(o => o.status !== 'entregue' && o.status !== 'orcamento').length;
+    const prontas = ordens.filter(o => o.status === 'pronta').length;
+    const aReceber = ordens.filter(o => o.status === 'pronta').reduce((s, o) => s + o.total, 0);
+    const hoje = new Date().toLocaleDateString();
+    const entregasHoje = DB.ordens.filter(o => o.status !== 'entregue' && o.dataEntrega && new Date(o.dataEntrega).toLocaleDateString() === hoje).length;
+    document.getElementById('dash-pendentes').textContent = pendentes;
+    document.getElementById('dash-prontas').textContent = prontas;
+    document.getElementById('dash-a-receber').textContent = aReceber.toFixed(2);
+    document.getElementById('dash-hoje').textContent = entregasHoje;
 }
 
-// ==================== ABA OFICINA ====================
-function filtrarOS() {
-  renderOficina(document.getElementById('busca-oficina').value.toLowerCase());
+// ==================== FILTRO PERÍODO ====================
+document.querySelectorAll('#filtro-periodo button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#filtro-periodo button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        periodoAtual = btn.dataset.periodo;
+        renderAll();
+    });
+});
+function filtrarPorPeriodo() {
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const agora = Date.now();
+    switch (periodoAtual) {
+        case 'hoje': return DB.ordens.filter(o => new Date(o.dataCriacao).toLocaleDateString() === hoje.toLocaleDateString());
+        case 'semana': { const ini = new Date(hoje); ini.setDate(ini.getDate() - ini.getDay()); return DB.ordens.filter(o => new Date(o.dataCriacao) >= ini); }
+        case 'mes': return DB.ordens.filter(o => new Date(o.dataCriacao).getMonth() === hoje.getMonth() && new Date(o.dataCriacao).getFullYear() === hoje.getFullYear());
+        default: return [...DB.ordens];
+    }
 }
 
+// ==================== GRÁFICO ====================
+function renderGrafico() {
+    const container = document.getElementById('grafico-barras');
+    const label = document.getElementById('grafico-label');
+    if (!container || !label) return;
+    const dias = []; const labels = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        dias.push(d.toLocaleDateString());
+        labels.push(d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.',''));
+    }
+    const totais = dias.map(dia => {
+        return DB.ordens.filter(o => o.status === 'entregue' && new Date(o.dataCriacao).toLocaleDateString() === dia).reduce((s, o) => s + o.total, 0);
+    });
+    const max = Math.max(...totais, 1);
+    container.innerHTML = totais.map(t => `<div class="barra" style="height:${(t/max)*100}%" title="R$ ${t.toFixed(2)}"></div>`).join('');
+    label.innerHTML = labels.map(l => `<span>${l}</span>`).join('');
+}
+
+// ==================== OFICINA ====================
+function filtrarOS() { renderOficina(document.getElementById('busca-oficina').value.toLowerCase()); }
 function mudarStatus(id, novoStatus) {
-  const os = DB.ordens.find(o => o.id === id);
-  if (!os) return;
-  os.status = novoStatus;
-  if (novoStatus === 'entregue') {
-    const cliente = DB.clientes.find(c => c.telefone && os.clienteTel && c.telefone.replace(/\D/g,'') === os.clienteTel.replace(/\D/g,''));
-    if (cliente) {
-      cliente.visitas = (cliente.visitas || 0) + 1;
-      cliente.ferramentasAfiadas = (cliente.ferramentasAfiadas || 0) + os.itens.reduce((s, i) => s + i.qtd, 0);
-    }
-    if (navigator.vibrate) navigator.vibrate(100);
-  }
-  saveDB();
-  renderAll();
-  if (navigator.vibrate) navigator.vibrate(30);
+    const os = DB.ordens.find(o => o.id === id); if (!os) return;
+    os.status = novoStatus;
+    if (novoStatus === 'entregue') {
+        const cliente = DB.clientes.find(c => c.telefone && os.clienteTel && c.telefone.replace(/\D/g,'') === os.clienteTel.replace(/\D/g,''));
+        if (cliente) { cliente.visitas = (cliente.visitas || 0) + 1; cliente.ferramentasAfiadas = (cliente.ferramentasAfiadas || 0) + os.itens.reduce((s, i) => s + i.qtd, 0); }
+        playSound(800, 0.1); if (navigator.vibrate) navigator.vibrate(100);
+    } else { playSound(400, 0.08); if (navigator.vibrate) navigator.vibrate(30); }
+    mostrarLoading(true); saveDB(); setTimeout(() => { mostrarLoading(false); renderAll(); }, 300);
 }
-
 function renderOficina(filtro = '') {
-  const container = document.getElementById('lista-oficina');
-  let lista = DB.ordens.sort((a, b) => b.id - a.id);
-  if (filtro) {
-    lista = lista.filter(os =>
-      os.numero.toString().includes(filtro) ||
-      (os.clienteNome || '').toLowerCase().includes(filtro) ||
-      (os.clienteTel || '').replace(/\D/g,'').includes(filtro.replace(/\D/g,''))
-    );
-  }
-  if (lista.length === 0) {
-    container.innerHTML = '<div class="empty">Nenhuma OS encontrada</div>';
-    return;
-  }
-  container.innerHTML = lista.map(os => {
-    const statusLabel = { recebida:'Recebida', afiacao:'Em Afiação', pronta:'Pronta', entregue:'Entregue', orcamento:'Orçamento' };
-    const botoesStatus = [];
-    if (os.status === 'recebida') botoesStatus.push({ s: 'afiacao', t: 'Iniciar', c: 'secondary' });
-    if (os.status === 'afiacao') botoesStatus.push({ s: 'pronta', t: 'Concluir', c: 'success' });
-    if (os.status === 'pronta') botoesStatus.push({ s: 'entregue', t: 'Entregar', c: 'success' });
-    if (os.status === 'orcamento') botoesStatus.push({ s: 'recebida', t: 'Converter em OS', c: 'secondary' });
-
-    return `
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3>OS #${os.numero} ${os.status === 'orcamento' ? '📋' : ''}</h3>
-          <span class="badge ${os.status}">${statusLabel[os.status] || os.status}</span>
-        </div>
-        <p><strong>Cliente:</strong> ${os.clienteNome || 'N/D'}</p>
-        <p><strong>Tel:</strong> ${os.clienteTel || 'N/D'}</p>
-        ${os.dataEntrega ? `<p><strong>Entrega:</strong> ${formatData(os.dataEntrega)}</p>` : ''}
-        <p><strong>Itens:</strong></p>
-        ${os.itens.map(i => `<span style="font-size:0.75rem;">${i.nome} x${i.qtd} <span class="badge ${i.tipo === 'venda' ? 'venda-tag' : 'afiacao-tag'}">${i.tipo === 'venda' ? 'Venda' : 'Afiação'}</span></span><br>`).join('')}
-        <p><strong>Total:</strong> R$ ${os.total.toFixed(2)}</p>
-        <div class="btn-group" style="margin-top:0.5rem;">
-          ${botoesStatus.map(b => `<button class="btn ${b.c}" onclick="mudarStatus(${os.id}, '${b.s}')">${b.t}</button>`).join('')}
-        </div>
-        <div class="btn-group" style="margin-top:0.3rem;">
-          <button class="btn whatsapp" onclick="enviarWhatsApp(${os.id})">📱</button>
-          <button class="btn secondary" onclick="imprimirOS(${os.id}, 'cupom')">🧾 Cupom</button>
-          <button class="btn secondary" onclick="imprimirOS(${os.id}, 'completa')">🖨️ Via</button>
-        </div>
-        <button class="btn danger" style="margin-top:0.3rem; font-size:0.8rem;" onclick="excluirOS(${os.id})">🗑️</button>
-      </div>
-    `;
-  }).join('');
+    const container = document.getElementById('lista-oficina');
+    let lista = filtrarPorPeriodo().sort((a, b) => b.id - a.id);
+    if (filtro) lista = lista.filter(os => os.numero.toString().includes(filtro) || (os.clienteNome||'').toLowerCase().includes(filtro) || (os.clienteTel||'').replace(/\D/g,'').includes(filtro.replace(/\D/g,'')));
+    if (lista.length === 0) { container.innerHTML = '<div class="empty">Nenhuma OS encontrada</div>'; return; }
+    container.innerHTML = lista.map(os => {
+        const statusLabel = { recebida:'Recebida', afiacao:'Em Afiação', pronta:'Pronta', entregue:'Entregue', orcamento:'Orçamento' };
+        const botoes = [];
+        if (os.status==='recebida') botoes.push({s:'afiacao',t:'Iniciar',c:'secondary'});
+        if (os.status==='afiacao') botoes.push({s:'pronta',t:'Concluir',c:'success'});
+        if (os.status==='pronta') botoes.push({s:'entregue',t:'Entregar',c:'success'});
+        if (os.status==='orcamento') botoes.push({s:'recebida',t:'Converter',c:'secondary'});
+        return `<div class="card"><div style="display:flex;justify-content:space-between;"><h3>OS #${os.numero}</h3><span class="badge ${os.status}">${statusLabel[os.status]}</span></div>
+            <p><strong>Cliente:</strong> ${os.clienteNome||'N/D'}</p><p><strong>Tel:</strong> ${os.clienteTel||'N/D'}</p>${os.dataEntrega?`<p><strong>Entrega:</strong> ${formatData(os.dataEntrega)}</p>`:''}
+            <p>${os.itens.map(i=>`${i.nome} x${i.qtd}`).join(', ')}</p><p><strong>Total: R$ ${os.total.toFixed(2)}</strong></p>
+            <div class="btn-group">${botoes.map(b=>`<button class="btn ${b.c}" onclick="mudarStatus(${os.id},'${b.s}')">${b.t}</button>`).join('')}</div>
+            <div class="btn-group" style="margin-top:0.3rem;"><button class="btn whatsapp" onclick="enviarWhatsApp(${os.id})">📱</button><button class="btn secondary" onclick="imprimirOS(${os.id},'cupom')">🧾</button><button class="btn secondary" onclick="imprimirOS(${os.id},'completa')">🖨️</button></div>
+            <button class="btn danger" style="margin-top:0.3rem;font-size:0.8rem;" onclick="excluirOS(${os.id})">🗑️</button></div>`;
+    }).join('');
 }
-
 function enviarWhatsApp(id) {
-  const os = DB.ordens.find(o => o.id === id);
-  if (!os) return;
-  const tipoOS = os.status === 'orcamento' ? 'Orçamento' : 'Ordem de Serviço';
-  const msg = `*A F I A - ${tipoOS} #${os.numero}*\n\n` +
-    `Cliente: ${os.clienteNome}\n` +
-    (os.dataEntrega ? `Entrega prevista: ${formatData(os.dataEntrega)}\n\n` : '\n') +
-    `Itens:\n${os.itens.map(i => `- ${i.nome} x${i.qtd}: R$ ${(i.preco * i.qtd).toFixed(2)}`).join('\n')}\n\n` +
-    `*Total: R$ ${os.total.toFixed(2)}*\n\n` +
-    `Obrigado pela preferência! 🛠️`;
-  const tel = os.clienteTel.replace(/\D/g, '');
-  const url = `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
+    const os = DB.ordens.find(o => o.id === id); if (!os) return;
+    const msg = `*A F I A - OS #${os.numero}*\n\nCliente: ${os.clienteNome}\n${os.dataEntrega?'Entrega: '+formatData(os.dataEntrega)+'\n\n':'\n'}Itens:\n${os.itens.map(i=>`- ${i.nome} x${i.qtd}: R$ ${(i.preco*i.qtd).toFixed(2)}`).join('\n')}\n\n*Total: R$ ${os.total.toFixed(2)}*\n\nObrigado! 🛠️`;
+    window.open(`https://wa.me/55${os.clienteTel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
 }
-
 function imprimirOS(id, modo) {
-  const os = DB.ordens.find(o => o.id === id);
-  if (!os) return;
-  const printDiv = document.getElementById('print-area');
-  if (modo === 'cupom') {
-    printDiv.innerHTML = `
-      <div style="font-family:monospace; font-size:11px; max-width:80mm;">
-        <strong>A F I A</strong><br>
-        OS #${os.numero} - ${os.status}<br>
-        Cliente: ${os.clienteNome}<br>
-        ${os.dataEntrega ? 'Entrega: ' + formatData(os.dataEntrega) + '<br>' : ''}
-        ------------------------------<br>
-        ${os.itens.map(i => `${i.nome} x${i.qtd} R$${(i.preco*i.qtd).toFixed(2)}`).join('<br>')}<br>
-        ------------------------------<br>
-        <strong>TOTAL: R$ ${os.total.toFixed(2)}</strong><br>
-        ------------------------------<br>
-        Ass: ___________________
-      </div>`;
-  } else {
-    printDiv.innerHTML = `
-      <h2>A F I A - Oficina de Afiação</h2>
-      <h3>Ordem de Serviço #${os.numero}</h3>
-      <p><strong>Cliente:</strong> ${os.clienteNome}</p>
-      <p><strong>Telefone:</strong> ${os.clienteTel}</p>
-      ${os.dataEntrega ? `<p><strong>Data de entrega:</strong> ${formatData(os.dataEntrega)}</p>` : ''}
-      <hr><p><strong>Itens:</strong></p>
-      <ul>${os.itens.map(i => `<li>${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}</li>`).join('')}</ul>
-      <p><strong>Total: R$ ${os.total.toFixed(2)}</strong></p>
-      <p>Status: ${os.status}</p>
-      <p style="margin-top:2rem;">Assinatura: ___________________________</p>`;
-  }
-  printDiv.style.display = 'block';
-  window.print();
-  printDiv.style.display = 'none';
-}
-
-function excluirOS(id) {
-  if (confirm('Tem certeza que deseja excluir esta OS?')) {
-    DB.ordens = DB.ordens.filter(o => o.id !== id);
-    saveDB();
-    renderAll();
-  }
-}
-
-// ==================== NOVA OS / ORÇAMENTO ====================
-function buscarClientePorTelefone() {
-  const tel = document.getElementById('tel-cliente-os').value.replace(/\D/g, '');
-  const cliente = DB.clientes.find(c => c.telefone.replace(/\D/g, '') === tel);
-  document.getElementById('nome-cliente-os').value = cliente ? cliente.nome : '';
-}
-
-function criarOS(status = 'recebida') {
-  const tel = document.getElementById('tel-cliente-os').value.trim();
-  let nome = document.getElementById('nome-cliente-os').value.trim();
-  const data = document.getElementById('data-entrega').value;
-  const hora = document.getElementById('hora-entrega').value;
-  const itens = getItensOS();
-
-  if (!tel || itens.length === 0) { 
-    alert('Preencha telefone e adicione pelo menos uma ferramenta com quantidade!'); 
-    return; 
-  }
-  if (!data || !hora) {
-    alert('Informe a data e hora de entrega!');
-    return;
-  }
-  if (!nome) nome = 'Cliente Avulso';
-
-  const dataEntrega = `${data}T${hora}:00`;
-
-  let cliente = DB.clientes.find(c => c.telefone.replace(/\D/g, '') === tel.replace(/\D/g, ''));
-  if (!cliente) {
-    cliente = { id: Date.now(), nome, telefone: tel, visitas: 0, ferramentasAfiadas: 0 };
-    DB.clientes.push(cliente);
-  } else { cliente.nome = nome; }
-
-  const novaOS = {
-    id: Date.now(),
-    numero: DB.contadorOS++,
-    clienteTel: tel,
-    clienteNome: nome,
-    dataEntrega: dataEntrega,
-    itens: itens,
-    total: itens.reduce((s, i) => s + (i.preco * i.qtd), 0),
-    status: status,
-    dataCriacao: new Date().toISOString()
-  };
-
-  DB.ordens.push(novaOS);
-  saveDB();
-
-  if (status !== 'orcamento' && document.getElementById('check-lembrete').checked) {
-    agendarLembrete(novaOS);
-  }
-
-  if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-
-  limparFormularioOS();
-
-  const tipo = status === 'orcamento' ? 'Orçamento' : 'OS';
-  if (confirm(`${tipo} #${novaOS.numero} criada! Deseja enviar pelo WhatsApp?`)) {
-    enviarWhatsApp(novaOS.id);
-  }
-  renderAll();
-}
-
-function abrirModalOrcamento() {
-  const tel = document.getElementById('tel-cliente-os').value.trim();
-  const itens = getItensOS();
-  if (!tel || itens.length === 0) { 
-    alert('Preencha telefone e adicione pelo menos uma ferramenta com quantidade!'); 
-    return; 
-  }
-  document.getElementById('modal-orcamento').style.display = 'flex';
-}
-
-function salvarOrcamento() {
-  document.getElementById('modal-orcamento').style.display = 'none';
-  criarOS('orcamento');
-}
-
-// ==================== LEMBRETES / NOTIFICAÇÕES ====================
-let lembretesAtivos = {};
-
-function agendarLembrete(os) {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'denied') return;
-
-  const solicitar = () => {
-    const dataEntrega = new Date(os.dataEntrega);
-    const agora = new Date();
-    const delay = dataEntrega.getTime() - agora.getTime();
-    if (delay <= 0) return;
-
-    const timeoutId = setTimeout(() => {
-      new Notification('A F I A - Lembrete de Entrega', {
-        body: `OS #${os.numero} - ${os.clienteNome}\nEntrega agora!\nTotal: R$ ${os.total.toFixed(2)}`,
-        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%230D47A1"/%3E%3Ctext x="50" y="70" font-size="55" text-anchor="middle" fill="white"%3E✂%3C/text%3E%3C/svg%3E',
-        vibrate: [200, 100, 200]
-      });
-      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-    }, delay);
-
-    lembretesAtivos[os.id] = timeoutId;
-  };
-
-  if (Notification.permission === 'granted') {
-    solicitar();
-  } else if (Notification.permission === 'default') {
-    Notification.requestPermission().then(p => { if (p === 'granted') solicitar(); });
-  }
-}
-
-// ==================== ABA CLIENTES ====================
-function filtrarClientes() {
-  renderClientes(document.getElementById('busca-clientes').value.toLowerCase());
-}
-
-function renderClientes(filtro = '') {
-  const container = document.getElementById('lista-clientes');
-  let lista = DB.clientes;
-  if (filtro) lista = lista.filter(c => c.nome.toLowerCase().includes(filtro) || c.telefone.includes(filtro));
-  if (lista.length === 0) { container.innerHTML = '<div class="empty">Nenhum cliente</div>'; return; }
-  container.innerHTML = lista.map(c => {
-    const historicoOS = DB.ordens.filter(o => o.clienteTel && o.clienteTel.replace(/\D/g,'') === c.telefone.replace(/\D/g,''));
-    return `
-      <div class="card">
-        <h3>${c.nome}</h3>
-        <p>📞 ${c.telefone}</p>
-        <p>🔢 Visitas: ${c.visitas || 0} | 🛠️ Ferramentas: ${c.ferramentasAfiadas || 0}</p>
-        <details><summary style="cursor:pointer; color:#0D47A1;">Histórico (${historicoOS.length} OS)</summary>
-          ${historicoOS.map(os => `<div class="history-item">OS #${os.numero} - ${formatData(os.dataCriacao)} - R$ ${os.total.toFixed(2)} - <span class="badge ${os.status}">${os.status}</span></div>`).join('')}
-        </details>
-        <button class="btn danger" style="margin-top:0.5rem; font-size:0.8rem;" onclick="excluirCliente(${c.id})">Excluir</button>
-      </div>`;
-  }).join('');
-}
-
-function excluirCliente(id) {
-  if (confirm('Excluir cliente? As OS associadas permanecerão.')) {
-    DB.clientes = DB.clientes.filter(c => c.id !== id);
-    saveDB();
-    renderAll();
-  }
-}
-
-// ==================== ABA AJUSTES ====================
-function renderFerramentasList() {
-  const container = document.getElementById('lista-ferramentas');
-  if (!container) return;
-  if (DB.ferramentas.length === 0) {
-    container.innerHTML = '<p style="color:#999; text-align:center; padding:1rem;">Nenhuma ferramenta cadastrada.</p>';
-    return;
-  }
-  container.innerHTML = DB.ferramentas.map(f => {
-    const tipoClass = f.tipo === 'venda' ? 'venda' : 'afiacao';
-    const tipoBadge = f.tipo === 'venda' ? 'Venda' : 'Afiação';
-    const badgeClass = f.tipo === 'venda' ? 'venda-tag' : 'afiacao-tag';
-    return `
-      <div class="ferramenta-card ${tipoClass}">
-        <div class="info">
-          <div class="nome">${f.nome} <span class="badge ${badgeClass}">${tipoBadge}</span></div>
-          <div class="preco">💰 R$ ${f.preco.toFixed(2)}</div>
-        </div>
-        <div class="actions">
-          <button class="btn-icon edit" onclick="editarFerramenta(${f.id})" title="Editar">✎</button>
-          <button class="btn-icon delete" onclick="removerFerramenta(${f.id})" title="Remover">✕</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function editarFerramenta(id) {
-  const fer = DB.ferramentas.find(f => f.id === id);
-  if (!fer) return;
-  document.getElementById('edit-fer-id').value = fer.id;
-  document.getElementById('edit-fer-nome').value = fer.nome;
-  document.getElementById('edit-fer-preco').value = fer.preco;
-  document.getElementById('edit-fer-tipo').value = fer.tipo || 'afiacao';
-  document.getElementById('modal-editar-fer').style.display = 'flex';
-}
-
-function salvarEdicaoFer() {
-  const id = parseInt(document.getElementById('edit-fer-id').value);
-  const fer = DB.ferramentas.find(f => f.id === id);
-  if (fer) {
-    fer.nome = document.getElementById('edit-fer-nome').value;
-    fer.preco = parseFloat(document.getElementById('edit-fer-preco').value) || 0;
-    fer.tipo = document.getElementById('edit-fer-tipo').value;
-    saveDB();
-  }
-  fecharModal();
-  renderAll();
-}
-
-function adicionarFerramenta() {
-  const nome = document.getElementById('nova-ferramenta').value.trim();
-  const preco = parseFloat(document.getElementById('novo-preco').value);
-  const tipo = document.getElementById('novo-tipo').value;
-  if (!nome || isNaN(preco) || preco <= 0) { alert('Preencha nome e preço válido!'); return; }
-  DB.ferramentas.push({ id: Date.now(), nome, preco, tipo });
-  saveDB();
-  document.getElementById('nova-ferramenta').value = '';
-  document.getElementById('novo-preco').value = '';
-  renderAll();
-}
-
-function removerFerramenta(id) {
-  if (confirm('Remover esta ferramenta?')) {
-    DB.ferramentas = DB.ferramentas.filter(f => f.id !== id);
-    saveDB();
-    renderAll();
-  }
-}
-
-function updateFinanceiro() {
-  const entregues = DB.ordens.filter(o => o.status === 'entregue');
-  const pendentes = DB.ordens.filter(o => o.status !== 'entregue' && o.status !== 'orcamento');
-  document.getElementById('total-recebido').textContent = entregues.reduce((s, o) => s + o.total, 0).toFixed(2);
-  document.getElementById('qtd-pendentes').textContent = pendentes.length;
-  document.getElementById('qtd-entregues').textContent = entregues.length;
-}
-
-// ==================== RELATÓRIO MENSAL ====================
-function abrirModalRelatorio() {
-  const anoSelect = document.getElementById('ano-relatorio');
-  const anoAtual = new Date().getFullYear();
-  anoSelect.innerHTML = '';
-  for (let a = anoAtual - 2; a <= anoAtual; a++) {
-    anoSelect.innerHTML += `<option value="${a}" ${a === anoAtual ? 'selected' : ''}>${a}</option>`;
-  }
-  document.getElementById('mes-relatorio').value = new Date().getMonth();
-  document.getElementById('resultado-relatorio').innerHTML = '';
-  document.getElementById('modal-relatorio').style.display = 'flex';
-}
-
-function gerarRelatorio() {
-  const mes = parseInt(document.getElementById('mes-relatorio').value);
-  const ano = parseInt(document.getElementById('ano-relatorio').value);
-  const ordensMes = DB.ordens.filter(o => {
-    const d = new Date(o.dataCriacao);
-    return d.getMonth() === mes && d.getFullYear() === ano && o.status !== 'orcamento';
-  });
-  const entregues = ordensMes.filter(o => o.status === 'entregue');
-  const total = entregues.reduce((s, o) => s + o.total, 0);
-  const ticketMedio = entregues.length > 0 ? total / entregues.length : 0;
-  document.getElementById('resultado-relatorio').innerHTML = `
-    <p><strong>OS criadas:</strong> ${ordensMes.length}</p>
-    <p><strong>OS entregues:</strong> ${entregues.length}</p>
-    <p><strong>Total recebido:</strong> R$ ${total.toFixed(2)}</p>
-    <p><strong>Ticket médio:</strong> R$ ${ticketMedio.toFixed(2)}</p>
-  `;
-}
-
-// ==================== BACKUP LOCAL (EXTRA) ====================
-function exportarDados() {
-  const dados = {
-    ferramentas: DB.ferramentas,
-    clientes: DB.clientes,
-    ordens: DB.ordens,
-    contadorOS: DB.contadorOS,
-    exportadoEm: new Date().toISOString()
-  };
-  const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `afia_backup_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importarDados(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const dados = JSON.parse(e.target.result);
-      if (dados.ferramentas && dados.clientes && dados.ordens) {
-        if (confirm('Importar dados? Isso substituirá os dados atuais.')) {
-          DB.ferramentas = dados.ferramentas;
-          DB.clientes = dados.clientes;
-          DB.ordens = dados.ordens;
-          DB.contadorOS = dados.contadorOS || 1;
-          saveDB();
-          alert('Dados importados com sucesso!');
-          renderAll();
-        }
-      } else {
-        alert('Arquivo inválido!');
-      }
-    } catch (err) {
-      alert('Erro ao ler arquivo.');
+    const os = DB.ordens.find(o => o.id === id); if (!os) return;
+    const printDiv = document.getElementById('print-area');
+    if (modo === 'cupom') {
+        printDiv.innerHTML = `<div style="font-family:monospace;font-size:10px;max-width:75mm;line-height:1.3;"><strong>A F I A</strong><br>OS #${os.numero}<br>Cliente: ${os.clienteNome}<br>Tel: ${os.clienteTel}<br>Entrega: ${os.dataEntrega?formatData(os.dataEntrega):'N/D'}<br>------------------------------<br>${os.itens.map(i=>`${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}`).join('<br>')}<br>------------------------------<br><strong>TOTAL: R$ ${os.total.toFixed(2)}</strong><br>------------------------------<br>Ass: ___________________</div>`;
+    } else {
+        printDiv.innerHTML = `<h2>A F I A</h2><h3>OS #${os.numero}</h3><p>Cliente: ${os.clienteNome}</p><p>Tel: ${os.clienteTel}</p>${os.dataEntrega?`<p>Entrega: ${formatData(os.dataEntrega)}</p>`:''}<hr><ul>${os.itens.map(i=>`<li>${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}</li>`).join('')}</ul><p><strong>Total: R$ ${os.total.toFixed(2)}</strong></p><p>Status: ${os.status}</p><p style="margin-top:2rem;">Ass: ___________________</p>`;
     }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
+    printDiv.style.display = 'block'; window.print(); printDiv.style.display = 'none';
 }
+function excluirOS(id) { if (confirm('Excluir esta OS?')) { DB.ordens = DB.ordens.filter(o => o.id !== id); saveDB(); renderAll(); } }
+
+// ==================== NOVA OS ====================
+function buscarClientePorTelefone() {
+    const tel = document.getElementById('tel-cliente-os').value.replace(/\D/g,'');
+    const cliente = DB.clientes.find(c => c.telefone.replace(/\D/g,'') === tel);
+    document.getElementById('nome-cliente-os').value = cliente ? cliente.nome : '';
+}
+function criarOS(status = 'recebida') {
+    const tel = document.getElementById('tel-cliente-os').value.trim();
+    let nome = document.getElementById('nome-cliente-os').value.trim();
+    const data = document.getElementById('data-entrega').value;
+    const hora = document.getElementById('hora-entrega').value;
+    const itens = getItensOS();
+    if (!tel || itens.length === 0) { alert('Preencha telefone e adicione itens!'); return; }
+    if (!data || !hora) { alert('Informe data e hora!'); return; }
+    if (!nome) nome = 'Cliente Avulso';
+    const dataEntrega = `${data}T${hora}:00`;
+    let cliente = DB.clientes.find(c => c.telefone.replace(/\D/g,'') === tel.replace(/\D/g,''));
+    if (!cliente) { cliente = { id: Date.now(), nome, telefone: tel, visitas: 0, ferramentasAfiadas: 0 }; DB.clientes.push(cliente); }
+    else cliente.nome = nome;
+    const novaOS = { id: Date.now(), numero: DB.contadorOS++, clienteTel: tel, clienteNome: nome, dataEntrega, itens, total: itens.reduce((s,i)=>s+(i.preco*i.qtd),0), status, dataCriacao: new Date().toISOString() };
+    DB.ordens.push(novaOS);
+    mostrarLoading(true);
+    saveDB();
+    setTimeout(() => { mostrarLoading(false); playSound(600, 0.12); if(navigator.vibrate) navigator.vibrate([50,30,50]); limparFormularioOS(); if(confirm(`OS #${novaOS.numero} criada! Enviar WhatsApp?`)) enviarWhatsApp(novaOS.id); renderAll(); }, 300);
+}
+function abrirModalOrcamento() { if (!document.getElementById('tel-cliente-os').value.trim() || getItensOS().length===0) { alert('Preencha telefone e itens!'); return; } document.getElementById('modal-orcamento').style.display = 'flex'; }
+function salvarOrcamento() { document.getElementById('modal-orcamento').style.display = 'none'; criarOS('orcamento'); }
+
+// ==================== CLIENTES ====================
+function filtrarClientes() { renderClientes(document.getElementById('busca-clientes').value.toLowerCase()); }
+function renderClientes(filtro = '') {
+    const container = document.getElementById('lista-clientes');
+    let lista = DB.clientes; if (filtro) lista = lista.filter(c => c.nome.toLowerCase().includes(filtro) || c.telefone.includes(filtro));
+    if (lista.length === 0) { container.innerHTML = '<div class="empty">Nenhum cliente</div>'; return; }
+    container.innerHTML = lista.map(c => {
+        const historico = DB.ordens.filter(o => o.clienteTel && o.clienteTel.replace(/\D/g,'') === c.telefone.replace(/\D/g,''));
+        return `<div class="card"><h3>${c.nome}</h3><p>📞 ${c.telefone}</p><p>🔢 Visitas: ${c.visitas||0} | 🛠️ Ferramentas: ${c.ferramentasAfiadas||0}</p><details><summary>Histórico (${historico.length} OS)</summary>${historico.map(os=>`<div class="history-item">OS #${os.numero} - ${formatData(os.dataCriacao)} - R$ ${os.total.toFixed(2)} - <span class="badge ${os.status}">${os.status}</span></div>`).join('')}</details><button class="btn danger" style="margin-top:0.5rem;font-size:0.8rem;" onclick="excluirCliente(${c.id})">Excluir</button></div>`;
+    }).join('');
+}
+function excluirCliente(id) { if (confirm('Excluir cliente?')) { DB.clientes = DB.clientes.filter(c => c.id !== id); saveDB(); renderAll(); } }
+
+// ==================== AJUSTES ====================
+function renderFerramentasList() {
+    const container = document.getElementById('lista-ferramentas'); if (!container) return;
+    if (DB.ferramentas.length === 0) { container.innerHTML = '<p style="color:#999;text-align:center;padding:1rem;">Nenhuma ferramenta.</p>'; return; }
+    container.innerHTML = DB.ferramentas.map(f => `<div class="ferramenta-card ${f.tipo==='venda'?'venda':'afiacao'}"><div class="info"><div class="nome">${f.nome} <span class="badge ${f.tipo==='venda'?'venda-tag':'afiacao-tag'}">${f.tipo==='venda'?'Venda':'Afiação'}</span></div><div class="preco">💰 R$ ${f.preco.toFixed(2)}</div></div><div class="actions"><button class="btn-icon edit" onclick="editarFerramenta(${f.id})">✎</button><button class="btn-icon delete" onclick="removerFerramenta(${f.id})">✕</button></div></div>`).join('');
+}
+function editarFerramenta(id) { const fer = DB.ferramentas.find(f=>f.id===id); if(!fer)return; document.getElementById('edit-fer-id').value=fer.id; document.getElementById('edit-fer-nome').value=fer.nome; document.getElementById('edit-fer-preco').value=fer.preco; document.getElementById('edit-fer-tipo').value=fer.tipo||'afiacao'; document.getElementById('modal-editar-fer').style.display='flex'; }
+function salvarEdicaoFer() { const id=parseInt(document.getElementById('edit-fer-id').value); const fer=DB.ferramentas.find(f=>f.id===id); if(fer){ fer.nome=document.getElementById('edit-fer-nome').value; fer.preco=parseFloat(document.getElementById('edit-fer-preco').value)||0; fer.tipo=document.getElementById('edit-fer-tipo').value; mostrarLoading(true); saveDB(); setTimeout(()=>{mostrarLoading(false); renderAll();},200); } fecharModal(); }
+function adicionarFerramenta() { const nome=document.getElementById('nova-ferramenta').value.trim(); const preco=parseFloat(document.getElementById('novo-preco').value); const tipo=document.getElementById('novo-tipo').value; if(!nome||isNaN(preco)||preco<=0){alert('Preencha corretamente!');return;} DB.ferramentas.push({id:Date.now(),nome,preco,tipo}); mostrarLoading(true); saveDB(); setTimeout(()=>{mostrarLoading(false); document.getElementById('nova-ferramenta').value=''; document.getElementById('novo-preco').value=''; renderAll();},200); }
+function removerFerramenta(id) { if(confirm('Remover?')){ DB.ferramentas=DB.ferramentas.filter(f=>f.id!==id); saveDB(); renderAll(); } }
+function updateFinanceiro() { const entregues=DB.ordens.filter(o=>o.status==='entregue'); document.getElementById('total-recebido').textContent=entregues.reduce((s,o)=>s+o.total,0).toFixed(2); document.getElementById('qtd-pendentes').textContent=DB.ordens.filter(o=>o.status!=='entregue'&&o.status!=='orcamento').length; document.getElementById('qtd-entregues').textContent=entregues.length; }
+
+// ==================== RELATÓRIO ====================
+function abrirModalRelatorio() { const ano=new Date().getFullYear(); document.getElementById('ano-relatorio').innerHTML=[ano-2,ano-1,ano].map(a=>`<option value="${a}" ${a===ano?'selected':''}>${a}</option>`).join(''); document.getElementById('mes-relatorio').value=new Date().getMonth(); document.getElementById('resultado-relatorio').innerHTML=''; document.getElementById('modal-relatorio').style.display='flex'; }
+function gerarRelatorio() { const mes=parseInt(document.getElementById('mes-relatorio').value); const ano=parseInt(document.getElementById('ano-relatorio').value); const ordens=DB.ordens.filter(o=>{const d=new Date(o.dataCriacao); return d.getMonth()===mes&&d.getFullYear()===ano&&o.status!=='orcamento';}); const entregues=ordens.filter(o=>o.status==='entregue'); const total=entregues.reduce((s,o)=>s+o.total,0); document.getElementById('resultado-relatorio').innerHTML=`<p>OS criadas: ${ordens.length}</p><p>Entregues: ${entregues.length}</p><p>Total recebido: R$ ${total.toFixed(2)}</p><p>Ticket médio: R$ ${entregues.length>0?(total/entregues.length).toFixed(2):'0,00'}</p>`; }
+
+// ==================== BACKUP ====================
+function exportarDados() { const dados={ferramentas:DB.ferramentas,clientes:DB.clientes,ordens:DB.ordens,contadorOS:DB.contadorOS,exportadoEm:new Date().toISOString()}; const blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`afia_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
+function importarDados(event) { const file=event.target.files[0]; if(!file)return; const reader=new FileReader(); reader.onload=function(e){ try{ const dados=JSON.parse(e.target.result); if(dados.ferramentas&&dados.clientes&&dados.ordens){ if(confirm('Importar? Substituirá dados atuais.')){ DB.ferramentas=dados.ferramentas; DB.clientes=dados.clientes; DB.ordens=dados.ordens; DB.contadorOS=dados.contadorOS||1; saveDB(); alert('Importado!'); renderAll(); } } }catch(err){ alert('Arquivo inválido'); } }; reader.readAsText(file); event.target.value=''; }
 
 // ==================== MODAIS ====================
-function fecharModal() {
-  document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
-}
+function fecharModal() { document.querySelectorAll('.modal-overlay').forEach(m=>m.style.display='none'); }
 
 // ==================== UTILITÁRIOS ====================
-function formatData(dataStr) {
-  if (!dataStr) return 'N/D';
-  const d = new Date(dataStr);
-  return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
-}
+function formatData(dataStr) { if(!dataStr) return 'N/D'; const d=new Date(dataStr); return d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function aplicarMascaraTel(input) { let v=input.value.replace(/\D/g,''); if(v.length>11) v=v.slice(0,11); if(v.length>0) v='('+v; if(v.length>3) v=v.slice(0,3)+') '+v.slice(3); if(v.length>10) v=v.slice(0,10)+'-'+v.slice(10); input.value=v; }
 
-// ==================== SERVICE WORKER PWA ====================
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('data:application/javascript,' + encodeURIComponent(
-    `self.addEventListener('fetch', e => {})`
-  )).catch(() => {});
-}
+// ==================== PWA ====================
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('data:application/javascript,'+encodeURIComponent('self.addEventListener("fetch",e=>{})')).catch(()=>{}); }
+if ('Notification' in window && Notification.permission === 'default') { setTimeout(() => Notification.requestPermission(), 3000); }
 
-// Solicitar permissão de notificação
-if ('Notification' in window && Notification.permission === 'default') {
-  setTimeout(() => Notification.requestPermission(), 3000);
-}
+// ==================== PULL TO REFRESH ====================
+let touchStartY = 0;
+document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, {passive: true});
+document.addEventListener('touchmove', e => {
+    if (window.scrollY === 0 && e.touches[0].clientY - touchStartY > 80) {
+        if (currentUser) { carregarDadosFirebase(); playSound(500, 0.05); }
+    }
+}, {passive: true});
 </script>
 </body>
 </html>
